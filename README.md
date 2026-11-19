@@ -1,3 +1,6 @@
+> [!NOTE]
+> **Zentra** es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck) (GPL v3), adaptado para un servicio de diagnóstico y optimización remota de PCs. El ejecutable es `Zentra.exe` y la interfaz está en español. Todo el crédito del motor original es de fatDuck y sus colaboradores. El README completo en español llega en la Fase 8; abajo sigue el README original como referencia.
+
 <div align="center">
 
 <a href="https://optimizerduck.vercel.app/"><img src="./.github/assets/optimizerDuck.png" alt="optimizerDuck Banner" title="optimizerDuck"/></a>
@@ -122,7 +125,7 @@ It also includes built-in management tools, allowing you to see what is running,
 | **Privacy**              | Disable Windows telemetry, error reporting, advertising ID, location tracking, Cortana, Copilot, and content delivery suggestions                    |
 | **GPU**                  | Vendor-specific registry tweaks for AMD, NVIDIA, and Intel GPUs, covering power states, clock gating, and display latency                            |
 | **Power**                | Disable hibernation and fast startup, turn off USB selective suspend, install a custom high-performance power plan, and disable power throttling     |
-| **Bloatware & Services** | Block OEM app reinstall behavior and fine-tune startup types for 200+ Windows services                                                               |
+| **Bloatware & Services** | Block OEM app reinstall behavior and set a short allow-list of rarely used services to Manual (never Disabled)                                       |
 | **User Experience**      | Remove menu show delays, disable visual effects like taskbar animations and transparency for a snappier feel                                         |
 | **AI**                   | Disable Windows Recall snapshots and the Click To Do AI overlay (Windows 11)                                                                         |
 
@@ -183,8 +186,8 @@ We recommend this order:
 
 Following this order helps avoid Windows or driver updates overwriting your optimizations later.
 
-> [!TIP]
-> Many advanced users choose to temporarily disable automatic Windows Updates after finishing their setup. Large Windows updates may restore default settings, reinstall certain components, or undo some optimizations. If you do this, remember to periodically enable Windows Update again to install important security updates before disabling it again.
+> [!IMPORTANT]
+> Zentra never turns off Windows Update. If a large update resets some settings, re-apply them from the app. When you need a quiet week (a tournament, a deadline), use the native Windows pause of at most 7 days: it expires on its own and security updates resume.
 
 > [!NOTE]
 > Every optimization provided by optimizerDuck can also be performed manually. The goal of optimizerDuck is simply to make Windows optimization easier, safer, and more convenient.
