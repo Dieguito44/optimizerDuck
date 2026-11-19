@@ -240,7 +240,7 @@ public class BloatwareService(
     /// </summary>
     private static string EscapeForPowerShellLiteral(string value)
     {
-        return value.Replace("'", "''");
+        return optimizerDuck.Common.Helpers.PowerShellText.EscapeSingleQuoted(value);
     }
 
     /// <summary>
