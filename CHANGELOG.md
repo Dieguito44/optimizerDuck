@@ -4,6 +4,34 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 3C: revisiones de solo lectura y una corrección de la 3A (19/11/2026, PR 15, sobre el PR 14)
+
+- **Corrección importante (también en los PR 13 y 14):** con presets, cualquier ajuste se puede previsualizar, no solo los del perfil.
+  - **El problema:** la limpieza de componentes de DISM y "/ResetBase" se ejecutaban **de verdad** durante la vista previa, porque usan un comando sin ensayo. Pasaba aunque el técnico cancelara.
+  - **El arreglo:** ahora la vista previa solo muestra el comando.
+  - **Consentimiento escrito (Fase 7):** ya no abre su ventana en la vista previa; se pide al aplicar.
+  - **Test nuevo sobre todos los ajustes.** Falla si alguno escribe directo, abre procesos o pide consentimiento sin guarda de vista previa, o si usa un comando de consulta que no sea de solo lectura.
+- **ReTrim de SSD (F3-07):** nuevo ajuste en Almacenamiento, "Optimizar los SSD ahora (ReTrim)". Corre `Optimize-Volume -ReTrim` en cada volumen fijo SSD o NVMe con letra.
+  - No cambia ninguna configuración.
+  - Solo pasan a PowerShell letras de la A a la Z.
+  - El estado de TRIM y de Storage Sense ya se leía (R-TRIM-OFF), y ambos se activan con el perfil.
+- **DNS (F3-10), regla R-DNS-REVIEW (Media):** marca los DNS **escritos a mano** que no son la red local ni un proveedor público conocido (Google, Cloudflare, Quad9, OpenDNS, AdGuard, CleanBrowsing).
+  - Los DNS que da la red (router o proveedor) nunca se marcan.
+  - "Desconocido" significa "revisar", no "malicioso".
+  - Zentra no cambia DNS ni toca HOSTS.
+- **Navegadores (F3-09):** lee Chrome, Edge, Brave y Firefox de la cuenta del cliente, más las directivas de la máquina y del usuario.
+  - **R-BROWSER-EXT (Media):** extensiones activas fuera de la tienda, forzadas por directiva o sin empaquetar. Las de la tienda con acceso a todos los sitios se listan sin restar puntos.
+  - **R-BROWSER-SEARCH (Media):** buscador predeterminado poco común. Lo acompañan las páginas de inicio, solo como nombre de host.
+  - El buscador de Firefox no se lee: está en un archivo comprimido.
+- **Privacidad:** nombres de extensiones, hosts y direcciones DNS quedan en el informe del técnico. A la IA solo llegan los conteos (nuevo `EvidenceFact.LocalOnly`).
+- **Catálogo:** 3 acciones nuevas (47) y 3 reglas nuevas (36).
+- **Verificado en el PC de Diego, solo lectura y mostrando solo conteos:**
+  - DNS: uno, puesto a mano, de un proveedor conocido.
+  - Extensiones: 3 en Chrome, 2 en Edge y 1 en Brave, todas de la tienda.
+  - Buscadores: los predeterminados.
+  - Esa prueba encontró dos errores, ya corregidos y con test: registros sobrantes sin `location` y la mezcla de Preferences con Secure Preferences.
+- **Tests:** 1642 en total, 0 fallos.
+
 ### Mejoras, Fase 3B: informe antes/después, huella e inventario (19/11/2026, PR 14, sobre el PR 13)
 
 - **Antes/después (F3-03):** el informe ya tenía puntaje, arranque, RAM, espacio libre y disco, con sus diferencias. Lo nuevo:
