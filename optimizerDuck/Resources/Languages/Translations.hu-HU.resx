@@ -3191,4 +3191,145 @@ Frissíts most, hogy élvezhesd a legújabb funkciókat, javításokat és hibaj
   <data name="Diagnostic.Action.ACT-BIOS-XMP.Review" xml:space="preserve">
     <value>Check the stability of the XMP/EXPO profile in the BIOS</value>
   </data>
+  <data name="Optimizer.Storage" xml:space="preserve">
+    <value>Storage</value>
+  </data>
+  <data name="Optimizer.Storage.DismComponentCleanup.Name" xml:space="preserve">
+    <value>Clean the Windows component store</value>
+  </data>
+  <data name="Optimizer.Storage.DismComponentCleanup.ShortDescription" xml:space="preserve">
+    <value>Removes old versions of Windows components left by updates (DISM StartComponentCleanup). Frees space. It cannot be undone: the removed versions do not come back.</value>
+  </data>
+  <data name="Optimizer.Storage.DismComponentCleanup.Progress.Analyze" xml:space="preserve">
+    <value>Analyzing the component store...</value>
+  </data>
+  <data name="Optimizer.Storage.DismComponentCleanup.Progress.Cleanup" xml:space="preserve">
+    <value>Cleaning the component store (it can take several minutes)...</value>
+  </data>
+  <data name="Optimizer.Storage.EnableStorageSense.Name" xml:space="preserve">
+    <value>Turn on Storage Sense</value>
+  </data>
+  <data name="Optimizer.Storage.EnableStorageSense.ShortDescription" xml:space="preserve">
+    <value>Lets Windows delete temporary files and empty the recycle bin by itself when space runs low.</value>
+  </data>
+  <data name="Optimizer.Storage.EnableTrim.Name" xml:space="preserve">
+    <value>Turn on TRIM</value>
+  </data>
+  <data name="Optimizer.Storage.EnableTrim.ShortDescription" xml:space="preserve">
+    <value>Makes sure Windows tells the SSD which blocks are free, so it keeps its speed over time.</value>
+  </data>
+  <data name="Optimizer.Storage.EnableCompactOs.Name" xml:space="preserve">
+    <value>Compress Windows (Compact OS)</value>
+  </data>
+  <data name="Optimizer.Storage.EnableCompactOs.ShortDescription" xml:space="preserve">
+    <value>Compresses the Windows system files to free several GB. Only for system disks of 256 GB or less. Takes 10 to 20 minutes.</value>
+  </data>
+  <data name="Optimizer.Storage.EnableCompactOs.Progress.Compressing" xml:space="preserve">
+    <value>Compressing Windows files (10 to 20 minutes)...</value>
+  </data>
+  <data name="Optimizer.Storage.DismResetBase.Name" xml:space="preserve">
+    <value>Remove update backups (ResetBase)</value>
+  </data>
+  <data name="Optimizer.Storage.DismResetBase.ShortDescription" xml:space="preserve">
+    <value>Frees more space than the normal cleanup, but the installed updates can no longer be uninstalled. It cannot be undone. Only with the client&apos;s consent.</value>
+  </data>
+  <data name="Optimizer.Storage.DismResetBase.Progress.Cleanup" xml:space="preserve">
+    <value>Cleaning and removing update backups (it can take several minutes)...</value>
+  </data>
+  <data name="Optimizer.Storage.Error.CommandFailed" xml:space="preserve">
+    <value>The command failed (code {0}).</value>
+  </data>
+  <data name="Condition.SmallSystemDisk.Title" xml:space="preserve">
+    <value>Only for small disks</value>
+  </data>
+  <data name="Condition.SmallSystemDisk.Description" xml:space="preserve">
+    <value>Compact OS is only worth it when the Windows disk is 256 GB or less.</value>
+  </data>
+  <data name="Optimizer.Performance.TcpAutoTuningNormal.Name" xml:space="preserve">
+    <value>Normal TCP auto-tuning</value>
+  </data>
+  <data name="Optimizer.Performance.TcpAutoTuningNormal.ShortDescription" xml:space="preserve">
+    <value>If a &quot;tweak&quot; disabled or limited TCP auto-tuning, puts it back to normal so downloads use the whole connection.</value>
+  </data>
+  <data name="Optimizer.Performance.TcpAutoTuningNormal.Error.ReadFailed" xml:space="preserve">
+    <value>Could not read the current TCP auto-tuning level.</value>
+  </data>
+  <data name="Sidebar.Repair" xml:space="preserve">
+    <value>Repair Windows</value>
+  </data>
+  <data name="Repair.Header.Title" xml:space="preserve">
+    <value>Repair Windows</value>
+  </data>
+  <data name="Repair.Header.Description" xml:space="preserve">
+    <value>Checks and repairs Windows system files and the disk with the tools built into Windows.</value>
+  </data>
+  <data name="Repair.Warning" xml:space="preserve">
+    <value>It can take 20 to 60 minutes. Create a restore point first and keep the PC on and plugged in. DISM may download files from Windows Update.</value>
+  </data>
+  <data name="Repair.Steps.Title" xml:space="preserve">
+    <value>What it does, in order</value>
+  </data>
+  <data name="Repair.Steps.Description" xml:space="preserve">
+    <value>1. DISM ScanHealth: checks the component store. 2. DISM RestoreHealth: repairs it, only if it is damaged. 3. sfc /scannow: checks and repairs system files. 4. chkdsk /scan: checks the Windows disk without restarting.</value>
+  </data>
+  <data name="Repair.Button.Run" xml:space="preserve">
+    <value>Repair Windows</value>
+  </data>
+  <data name="Repair.Results.Title" xml:space="preserve">
+    <value>Result</value>
+  </data>
+  <data name="Repair.Progress" xml:space="preserve">
+    <value>Step {0} of {1}: {2} ({3})</value>
+  </data>
+  <data name="Repair.Step.ScanHealth" xml:space="preserve">
+    <value>DISM ScanHealth</value>
+  </data>
+  <data name="Repair.Step.RestoreHealth" xml:space="preserve">
+    <value>DISM RestoreHealth</value>
+  </data>
+  <data name="Repair.Step.Sfc" xml:space="preserve">
+    <value>System File Checker (sfc)</value>
+  </data>
+  <data name="Repair.Step.ChkdskScan" xml:space="preserve">
+    <value>Disk check (chkdsk /scan)</value>
+  </data>
+  <data name="Repair.Outcome.Ok" xml:space="preserve">
+    <value>No problems</value>
+  </data>
+  <data name="Repair.Outcome.Repaired" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="Repair.Outcome.Skipped" xml:space="preserve">
+    <value>Not needed</value>
+  </data>
+  <data name="Repair.Outcome.Problem" xml:space="preserve">
+    <value>Problem found</value>
+  </data>
+  <data name="Repair.Outcome.Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="Repair.RestoreHealth.NotNeeded" xml:space="preserve">
+    <value>The component store is healthy: nothing to repair.</value>
+  </data>
+  <data name="Repair.TimedOut" xml:space="preserve">
+    <value>It took more than 60 minutes and was stopped.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-WIN-CORRUPT.Title" xml:space="preserve">
+    <value>Damaged Windows files</value>
+  </data>
+  <data name="Diagnostic.Rule.R-WIN-CORRUPT.Description" xml:space="preserve">
+    <value>The Windows component store reports damage. It can cause errors and failed updates. &quot;Repair Windows&quot; fixes it.</value>
+  </data>
+  <data name="Diagnostic.Evidence.windows.image_health" xml:space="preserve">
+    <value>Component store</value>
+  </data>
+  <data name="Diagnostic.Value.Repairable" xml:space="preserve">
+    <value>damaged, repairable</value>
+  </data>
+  <data name="Diagnostic.Value.NonRepairable" xml:space="preserve">
+    <value>damaged, not repairable</value>
+  </data>
+  <data name="Diagnostic.Value.Healthy" xml:space="preserve">
+    <value>healthy</value>
+  </data>
 </root>

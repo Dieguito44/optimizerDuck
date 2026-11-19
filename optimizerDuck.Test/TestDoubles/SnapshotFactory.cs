@@ -111,6 +111,9 @@ public static class SnapshotFactory
             IntegratedGraphicsOnly = Measured<bool>.Of(true),
             // Kernel start to logon, measured on 2026-11-19 (event 100 is not logged on this PC).
             BootMedianMs = Measured<int>.Of(6000),
+            ImageHealth = Measured<optimizerDuck.Services.Repair.WindowsImageHealth>.Of(
+                optimizerDuck.Services.Repair.WindowsImageHealth.Healthy
+            ),
             Disks =
             [
                 // Measured elevated on 2026-11-19: the A400 reports Wear 0 on SATA (unknown) and

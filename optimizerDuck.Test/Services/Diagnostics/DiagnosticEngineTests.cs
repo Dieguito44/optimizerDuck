@@ -78,7 +78,7 @@ public class ActionCatalogTests
             )
             .ToHashSet();
         Assert.Equal(ruleTypes, DiagnosticRules.All.Select(r => r.GetType()).ToHashSet());
-        Assert.Equal(18, ids.Count);
+        Assert.Equal(19, ids.Count);
     }
 }
 
