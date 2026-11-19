@@ -6,6 +6,7 @@ using optimizerDuck.Domain.Abstractions;
 using optimizerDuck.Domain.Configuration;
 using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Customize;
+using optimizerDuck.Services.Diagnostics;
 using optimizerDuck.Services.Optimization;
 using optimizerDuck.Services.Revert;
 using optimizerDuck.Services.System;
@@ -60,6 +61,8 @@ public static class ApplicationServiceCollectionExtensions
 
         services.AddSingleton<DashboardViewModel>();
         services.AddSingleton<DashboardPage>();
+        services.AddSingleton<DiagnosticViewModel>();
+        services.AddSingleton<DiagnosticPage>();
         services.AddSingleton<OptimizeViewModel>();
         services.AddSingleton<OptimizePage>();
         services.AddSingleton<SettingsViewModel>();
@@ -103,6 +106,10 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<UpdaterService>();
         services.AddSingleton<IRegistryWatcher, RegistryWatcher>();
         services.AddSingleton<UserErrorSurface>();
+
+        // Zentra diagnosis (read-only).
+        services.AddSingleton<IDiagnosticCollector, DiagnosticCollector>();
+        services.AddSingleton<DiagnosticService>();
 
         return services;
     }

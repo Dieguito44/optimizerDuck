@@ -45,6 +45,12 @@
                     Icon="{ui:SymbolIcon Home24}"
                     TargetPageType="{x:Type pages:DashboardPage}" />
 
+                <controls:FilledNavigationViewItem
+                    Content="{extensions:Loc Sidebar.Diagnostic}"
+                    Cursor="Hand"
+                    Icon="{ui:SymbolIcon Stethoscope24}"
+                    TargetPageType="{x:Type pages:DiagnosticPage}" />
+
                 <ui:NavigationViewItemSeparator Margin="0,2,0,2" />
 
                 <controls:FilledNavigationViewItem
