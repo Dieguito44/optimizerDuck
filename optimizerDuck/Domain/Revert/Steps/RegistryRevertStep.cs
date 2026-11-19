@@ -85,6 +85,28 @@ public class RegistryRevertStep : IRevertStep
     public async Task<bool> ExecuteAsync(RevertContext context, ILogger logger)
     {
         var opCall = new OpCall { Logger = logger };
+
+        // Zentra: a value to delete whose key is already gone is already reverted. Without this
+        // the step failed forever and its revert file stayed behind, so the setting looked
+        // applied for good (Diego's PC, 19/11/2026: a policy key that Windows removed).
+        var deletesValue =
+            Action is RevertAction.NoPreviousValue
+            || (Action is RevertAction.RestorePrevious && Value == null);
+        if (
+            deletesValue
+            && RegistryService.TryKeyExists(new RegistryItem(Path), out var exists, logger)
+            && !exists
+        )
+        {
+            logger.LogInformation(
+                "[REGISTRY][REVERT] {Path} no longer exists: nothing to delete",
+                Path
+            );
+            if (CreatedSubKeys?.Count > 0)
+                RegistryService.CleanupEmptyKeys(CreatedSubKeys, opCall.Logger);
+            return true;
+        }
+
         OpResult result = Action switch
         {
             RevertAction.NoPreviousValue => RegistryService.DeleteValue(

@@ -65,6 +65,29 @@ public class RegistryServiceTests : IDisposable
         new() { Changes = new ChangeSet(), Logger = NullLogger.Instance };
 
     /// <summary>
+    ///     A revert that deletes a value whose key is already gone is already done. It used to fail
+    ///     forever and keep its revert file (Diego's PC: a policy key Windows had removed).
+    /// </summary>
+    [Fact]
+    public async Task RevertDelete_WhenTheKeyIsAlreadyGone_Succeeds()
+    {
+        var step = new RegistryRevertStep
+        {
+            Action = RevertAction.NoPreviousValue,
+            Path = @"HKCU\Software\TestOptimizerDuck\Gone-" + Guid.NewGuid().ToString("N"),
+            Name = null,
+        };
+        var context = new optimizerDuck.Domain.Abstractions.RevertContext
+        {
+            Shell = null!,
+            PowerPlans = null!,
+            Logger = NullLogger.Instance,
+        };
+
+        Assert.True(await step.ExecuteAsync(context, NullLogger.Instance));
+    }
+
+    /// <summary>
     ///     Windows 11 25H2: administrators cannot set values on HKLM\SOFTWARE but can create keys
     ///     under it. Creating HKLM\SOFTWARE\Policies\...\NewKey must not ask the ancestors for
     ///     more than "read and create a child". Reproduced in HKCU with a deny-SetValue ancestor.
