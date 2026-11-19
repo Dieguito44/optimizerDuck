@@ -5578,4 +5578,55 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Optimizer.Details.Provider.Display" xml:space="preserve">
     <value>Pantalla</value>
   </data>
+  <data name="Diagnostic.Rule.R-THERMAL.Title" xml:space="preserve">
+    <value>CPU muy caliente o frenada por calor</value>
+  </data>
+  <data name="Diagnostic.Rule.R-THERMAL.Description" xml:space="preserve">
+    <value>El procesador llega a 90 °C o más, o Windows registró que el firmware le bajó la velocidad. Suele ser polvo, pasta térmica seca o un ventilador débil: necesita limpieza física.</value>
+  </data>
+  <data name="Diagnostic.Evidence.cpu.temperature" xml:space="preserve">
+    <value>Temperatura de la CPU</value>
+  </data>
+  <data name="Diagnostic.Evidence.cpu.throttling" xml:space="preserve">
+    <value>Velocidad limitada por el firmware (7 días)</value>
+  </data>
+  <data name="Temperature.Title" xml:space="preserve">
+    <value>Temperatura de la CPU</value>
+  </data>
+  <data name="Temperature.Help" xml:space="preserve">
+    <value>Leer los sensores de la CPU necesita el driver PawnIO. Zentra lo instala con winget solo para la medición (20 segundos) y lo desinstala enseguida. Si ya estaba instalado, se deja como está.</value>
+  </data>
+  <data name="Temperature.Button" xml:space="preserve">
+    <value>Medir temperatura</value>
+  </data>
+  <data name="Temperature.Confirm.Title" xml:space="preserve">
+    <value>¿Instalar PawnIO para la medición?</value>
+  </data>
+  <data name="Temperature.Confirm.Message" xml:space="preserve">
+    <value>PawnIO es un driver de kernel firmado (namazso.PawnIO en winget) que permite a Zentra leer los sensores de la CPU. Se instala ahora, se usa 20 segundos y se desinstala enseguida. Pregúntale al cliente antes de aceptar.</value>
+  </data>
+  <data name="Temperature.Confirm.Measure" xml:space="preserve">
+    <value>Instalar, medir y desinstalar</value>
+  </data>
+  <data name="Temperature.Measuring" xml:space="preserve">
+    <value>Midiendo durante {0} segundos...</value>
+  </data>
+  <data name="Temperature.Result" xml:space="preserve">
+    <value>CPU a {0} °C (mediana en reposo). El próximo diagnóstico la incluye.</value>
+  </data>
+  <data name="Temperature.NoSensor" xml:space="preserve">
+    <value>No se pudo leer ningún sensor de temperatura de la CPU en este PC.</value>
+  </data>
+  <data name="Temperature.InstallFailed" xml:space="preserve">
+    <value>No se pudo instalar PawnIO, así que no se midió nada.</value>
+  </data>
+  <data name="Temperature.UninstallFailed" xml:space="preserve">
+    <value>Atención: no se pudo desinstalar PawnIO; quítalo desde la configuración de Windows.</value>
+  </data>
+  <data name="Software.PawnIo.Name" xml:space="preserve">
+    <value>Driver PawnIO</value>
+  </data>
+  <data name="Software.PawnIo.Description" xml:space="preserve">
+    <value>Driver de kernel para leer sensores del hardware.</value>
+  </data>
 </root>

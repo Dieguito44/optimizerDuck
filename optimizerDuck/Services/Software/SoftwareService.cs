@@ -74,6 +74,17 @@ public static class SoftwareCatalog
     public const string UpgradeAllArguments =
         "upgrade --all --silent --accept-package-agreements --accept-source-agreements";
 
+    /// <summary>
+    ///     The PawnIO driver LibreHardwareMonitorLib needs to read CPU temperatures. Not in the
+    ///     visible catalog: Zentra installs it only for a temperature measurement and removes it.
+    /// </summary>
+    public static readonly SoftwarePackage PawnIo = new(
+        "namazso.PawnIO",
+        "PawnIo",
+        "Freeware",
+        SoftwareTarget.Any
+    );
+
     /// <summary>Stands for "every program" in the progress text of the upgrade run.</summary>
     public static readonly SoftwarePackage AllPrograms = new(
         "--all",

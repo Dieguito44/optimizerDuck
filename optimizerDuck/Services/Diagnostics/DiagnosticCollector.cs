@@ -96,6 +96,14 @@ public sealed class DiagnosticCollector(
             DisplayProbeResult.Failed(SectionStatus.TimedOut, NotMeasuredReason.TimedOut),
             ct
         );
+        var throttleTask = Run(
+            "throttling",
+            () => ThermalService.CountFirmwareThrottling(7, now),
+            ProbeTimeout,
+            TimedOut<int>(),
+            ct
+        );
+        var temperatureTask = ReadTemperatureAsync(now, ct);
         var startupTask = CountStartupAppsAsync(ct);
         var imageTask = ReadImageHealthAsync(ct);
         var bootTask = Run(
@@ -116,7 +124,9 @@ public sealed class DiagnosticCollector(
                 imageTask,
                 wingetTask,
                 puaTask,
-                displayTask
+                displayTask,
+                throttleTask,
+                temperatureTask
             )
             .ConfigureAwait(false);
 
@@ -165,6 +175,11 @@ public sealed class DiagnosticCollector(
                 info.Cpu.Vendor,
                 info.Cpu.Name
             ),
+            Thermal = new ThermalSnapshot
+            {
+                CpuTemperatureC = await temperatureTask.ConfigureAwait(false),
+                FirmwareThrottling7d = await throttleTask.ConfigureAwait(false),
+            },
             Maintenance = new MaintenanceSnapshot
             {
                 WingetUpgrades = await wingetTask.ConfigureAwait(false),
@@ -207,6 +222,30 @@ public sealed class DiagnosticCollector(
         {
             return Measured<Repair.WindowsImageHealth>.Missing(NotMeasuredReason.TimedOut);
         }
+    }
+
+    /// <summary>
+    ///     The CPU temperature: a recent reading from "Measure temperature", or a short one now
+    ///     when PawnIO is already installed. Zentra never installs PawnIO during a diagnosis.
+    /// </summary>
+    private async Task<Measured<double>> ReadTemperatureAsync(
+        DateTimeOffset now,
+        CancellationToken ct
+    )
+    {
+        if (
+            ThermalService.LastReading is { } last
+            && now - last.TakenAtUtc < ThermalService.ReadingValidFor
+        )
+            return Measured<double>.Of(last.Celsius);
+        if (!ThermalService.IsPawnIoInstalled())
+            return Measured<double>.Missing(NotMeasuredReason.RequiresExternalTool);
+        var reading = await ThermalService
+            .MeasureAsync(TimeSpan.FromSeconds(5), logger, ct)
+            .ConfigureAwait(false);
+        return reading is { } r
+            ? Measured<double>.Of(r.Celsius)
+            : Measured<double>.Missing(NotMeasuredReason.QueryFailed);
     }
 
     private async Task<Measured<int>> CountStartupAppsAsync(CancellationToken ct)

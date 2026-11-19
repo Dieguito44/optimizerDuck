@@ -366,5 +366,6 @@ public static class DiagnosticRules
         new MonitorHzRule(),
         new MonitorPortRule(),
         new GpuHybridRule(),
+        new ThermalRule(),
     ];
 }

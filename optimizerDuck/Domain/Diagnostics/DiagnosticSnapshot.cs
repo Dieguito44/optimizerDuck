@@ -16,6 +16,7 @@ public enum DiagnosticSection
     Stability,
     Maintenance,
     Display,
+    Thermal,
 }
 
 /// <summary>How a section's collection went.</summary>
@@ -101,6 +102,9 @@ public sealed record DiagnosticSnapshot
 
     /// <summary>Monitors, display adapters and games (phase 6B). Defaults to not measured.</summary>
     public DisplaySnapshot Display { get; init; } = new();
+
+    /// <summary>CPU temperature and throttling (phase 6B). Defaults to not measured.</summary>
+    public ThermalSnapshot Thermal { get; init; } = new();
 }
 
 public sealed record OsSnapshot
@@ -319,4 +323,14 @@ public sealed record MonitorSnapshot
                 or DisplayConnector.DisplayPort
                 or DisplayConnector.Dvi
                 or DisplayConnector.Vga;
+}
+
+/// <summary>CPU heat (phase 6B, R-THERMAL).</summary>
+public sealed record ThermalSnapshot
+{
+    /// <summary>Median CPU package temperature, °C. Needs the PawnIO driver.</summary>
+    public Measured<double> CpuTemperatureC { get; init; }
+
+    /// <summary>Firmware throttling events (Kernel-Processor-Power 37) in the last 7 days.</summary>
+    public Measured<int> FirmwareThrottling7d { get; init; }
 }

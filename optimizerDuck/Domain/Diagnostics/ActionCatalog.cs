@@ -168,7 +168,6 @@ public static class ActionCatalog
         ActionIds.HeavyApps,
         ActionIds.BackupSetup,
         ActionIds.HardwareBattery,
-        ActionIds.HardwareClean,
         ActionIds.HardwareNetCable,
     }.ToFrozenSet(StringComparer.Ordinal);
 
@@ -204,4 +203,5 @@ public static class RuleIds
     public const string MonitorHz = "R-MON-HZ";
     public const string MonitorPort = "R-MON-PORT";
     public const string GpuHybrid = "R-GPU-HYBRID";
+    public const string Thermal = "R-THERMAL";
 }

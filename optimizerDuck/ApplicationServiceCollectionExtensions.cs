@@ -75,6 +75,7 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<SoftwarePage>();
         services.AddSingleton<BiosGuideViewModel>();
         services.AddSingleton<BiosGuidePage>();
+        services.AddSingleton<TemperatureViewModel>();
         services.AddSingleton<OptimizeViewModel>();
         services.AddSingleton<OptimizePage>();
         services.AddSingleton<SettingsViewModel>();

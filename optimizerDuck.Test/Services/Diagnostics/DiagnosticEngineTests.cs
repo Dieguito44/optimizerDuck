@@ -78,7 +78,7 @@ public class ActionCatalogTests
             )
             .ToHashSet();
         Assert.Equal(ruleTypes, DiagnosticRules.All.Select(r => r.GetType()).ToHashSet());
-        Assert.Equal(24, ids.Count); // 19 of phases 2-4, 5 of phase 6B so far
+        Assert.Equal(25, ids.Count); // 19 of phases 2-4, 6 of phase 6B so far
     }
 }
 
