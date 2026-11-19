@@ -70,6 +70,11 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<SessionPage>();
         services.AddSingleton<RepairViewModel>();
         services.AddSingleton<RepairPage>();
+        services.AddSingleton<optimizerDuck.Services.Software.SoftwareService>();
+        services.AddSingleton<SoftwareViewModel>();
+        services.AddSingleton<SoftwarePage>();
+        services.AddSingleton<BiosGuideViewModel>();
+        services.AddSingleton<BiosGuidePage>();
         services.AddSingleton<OptimizeViewModel>();
         services.AddSingleton<OptimizePage>();
         services.AddSingleton<SettingsViewModel>();

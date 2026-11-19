@@ -63,6 +63,18 @@
                     Icon="{ui:SymbolIcon WrenchScrewdriver24}"
                     TargetPageType="{x:Type pages:RepairPage}" />
 
+                <controls:FilledNavigationViewItem
+                    Content="{extensions:Loc Sidebar.Software}"
+                    Cursor="Hand"
+                    Icon="{ui:SymbolIcon AppsAddIn24}"
+                    TargetPageType="{x:Type pages:SoftwarePage}" />
+
+                <controls:FilledNavigationViewItem
+                    Content="{extensions:Loc Sidebar.BiosGuide}"
+                    Cursor="Hand"
+                    Icon="{ui:SymbolIcon DeveloperBoard24}"
+                    TargetPageType="{x:Type pages:BiosGuidePage}" />
+
                 <ui:NavigationViewItemSeparator Margin="0,2,0,2" />
 
                 <controls:FilledNavigationViewItem
