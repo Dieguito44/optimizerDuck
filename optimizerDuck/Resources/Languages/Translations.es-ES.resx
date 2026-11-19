@@ -5113,4 +5113,103 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Ai.Template.NotMeasured" xml:space="preserve">
     <value>No se pudo medir: {0}</value>
   </data>
+  <data name="Session.Ai.Title" xml:space="preserve">
+    <value>Informe con IA</value>
+  </data>
+  <data name="Session.Ai.Help" xml:space="preserve">
+    <value>Pega la clave de la API de Claude para que la IA redacte el informe en palabras sencillas. Solo se envían datos anónimos: sin nombres, sin números de serie, sin programas. Sin clave, el informe sale con la plantilla de Zentra.</value>
+  </data>
+  <data name="Session.Ai.Button.UseKey" xml:space="preserve">
+    <value>Usar clave</value>
+  </data>
+  <data name="Session.Ai.Button.Forget" xml:space="preserve">
+    <value>Olvidar clave</value>
+  </data>
+  <data name="Session.Ai.Button.Write" xml:space="preserve">
+    <value>Redactar informe</value>
+  </data>
+  <data name="Session.Ai.Remember" xml:space="preserve">
+    <value>Recordar en este equipo (cifrada para este usuario de Windows)</value>
+  </data>
+  <data name="Session.Ai.RememberWarning" xml:space="preserve">
+    <value>Solo en el PC del técnico. En el PC de un cliente la clave queda en memoria y se borra al cerrar Zentra.</value>
+  </data>
+  <data name="Session.Ai.Key.None" xml:space="preserve">
+    <value>Sin clave: el informe saldrá con la plantilla.</value>
+  </data>
+  <data name="Session.Ai.Key.InMemory" xml:space="preserve">
+    <value>Clave cargada en memoria. Se borra al cerrar Zentra.</value>
+  </data>
+  <data name="Session.Ai.Key.Remembered" xml:space="preserve">
+    <value>Clave cargada y recordada en este equipo (cifrada).</value>
+  </data>
+  <data name="Session.Ai.KeyError.Empty" xml:space="preserve">
+    <value>Primero pega la clave.</value>
+  </data>
+  <data name="Session.Ai.KeyError.WrongPrefix" xml:space="preserve">
+    <value>Eso no parece una clave de la API de Claude (debe empezar por sk-ant-).</value>
+  </data>
+  <data name="Session.Ai.KeyError.BadCharacters" xml:space="preserve">
+    <value>La clave tiene espacios, saltos de línea o caracteres que no debería. Cópiala de nuevo.</value>
+  </data>
+  <data name="Session.Ai.KeyError.AdminKey" xml:space="preserve">
+    <value>Esa es una clave de administrador. Usa una clave de API normal creada solo para Zentra.</value>
+  </data>
+  <data name="Session.Ai.Writing" xml:space="preserve">
+    <value>Redactando el informe con la IA (hasta un minuto)...</value>
+  </data>
+  <data name="Session.Ai.WritingTemplate" xml:space="preserve">
+    <value>Redactando el informe con la plantilla...</value>
+  </data>
+  <data name="Session.Ai.Done" xml:space="preserve">
+    <value>Informe redactado por la IA y revisado ({0} tokens de entrada, {1} de salida).</value>
+  </data>
+  <data name="Session.Ai.Template.NoKey" xml:space="preserve">
+    <value>Informe redactado con la plantilla (sin clave).</value>
+  </data>
+  <data name="Session.Ai.Template.InvalidKey" xml:space="preserve">
+    <value>La API rechazó la clave; se borró de la memoria. El informe sale con la plantilla.</value>
+  </data>
+  <data name="Session.Ai.Template.RateLimited" xml:space="preserve">
+    <value>La API pidió esperar (límite de uso o de gasto). El informe sale con la plantilla.</value>
+  </data>
+  <data name="Session.Ai.Template.Overloaded" xml:space="preserve">
+    <value>La API está saturada en este momento. El informe sale con la plantilla.</value>
+  </data>
+  <data name="Session.Ai.Template.ServerError" xml:space="preserve">
+    <value>La API tuvo un error. El informe sale con la plantilla.</value>
+  </data>
+  <data name="Session.Ai.Template.BadRequest" xml:space="preserve">
+    <value>La API no aceptó la solicitud. El informe sale con la plantilla.</value>
+  </data>
+  <data name="Session.Ai.Template.Timeout" xml:space="preserve">
+    <value>La API tardó más de 60 segundos. El informe sale con la plantilla.</value>
+  </data>
+  <data name="Session.Ai.Template.Network" xml:space="preserve">
+    <value>Sin conexión con la API. El informe sale con la plantilla.</value>
+  </data>
+  <data name="Session.Ai.Template.MalformedResponse" xml:space="preserve">
+    <value>La respuesta de la API no tenía el formato pedido. El informe sale con la plantilla.</value>
+  </data>
+  <data name="Session.Ai.Template.Truncated" xml:space="preserve">
+    <value>La respuesta de la API llegó cortada. El informe sale con la plantilla.</value>
+  </data>
+  <data name="Session.Ai.Template.Refused" xml:space="preserve">
+    <value>La IA no quiso redactarlo. El informe sale con la plantilla.</value>
+  </data>
+  <data name="Session.Ai.Template.Rejected" xml:space="preserve">
+    <value>La respuesta de la IA no pasó la revisión automática dos veces. El informe sale con la plantilla.</value>
+  </data>
+  <data name="Report.Section.Summary" xml:space="preserve">
+    <value>Resumen</value>
+  </data>
+  <data name="Report.Section.Priorities" xml:space="preserve">
+    <value>Qué hacer, en orden</value>
+  </data>
+  <data name="Report.Written.Source.Ai" xml:space="preserve">
+    <value>Texto redactado con IA (Claude) a partir de los datos medidos y revisado automáticamente: cada cifra sale de las mediciones.</value>
+  </data>
+  <data name="Report.Written.Source.Template" xml:space="preserve">
+    <value>Texto redactado por Zentra a partir de los datos medidos.</value>
+  </data>
 </root>

@@ -169,9 +169,22 @@ public static partial class AiReportValidator
 
         problems.AddRange(CheckNumbers(texts, payload));
         problems.AddRange(CheckWords(texts));
+        if (texts.Any(t => t.Any(c => !IsPrintable(c))))
+            problems.Add(
+                "Usa solo letras, números y signos comunes: sin emojis, flechas ni símbolos."
+            );
 
         return problems.Distinct().ToList();
     }
+
+    /// <summary>
+    ///     The PDF font (Lato) covers Latin text and common punctuation; anything else would stop the
+    ///     PDF from rendering, so the answer may not contain it.
+    /// </summary>
+    internal static bool IsPrintable(char c) =>
+        c is '\n' or '–' or '—' or '‘' or '’' or '“' or '”' or '…' or '•' or '€'
+        || (c >= ' ' && c <= '~')
+        || (c >= ' ' && c <= 'ɏ');
 
     private static IEnumerable<string> CheckNumbers(IEnumerable<string> texts, AiPayload payload)
     {

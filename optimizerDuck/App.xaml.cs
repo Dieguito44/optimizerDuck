@@ -436,6 +436,8 @@ public partial class App : Application
         {
             if (_host != null)
             {
+                // The key lives only in memory; drop it before anything else on exit.
+                _host.Services.GetService<optimizerDuck.Services.Ai.ApiKeyStore>()?.Clear();
                 try
                 {
                     _host.StopAsync().Wait(TimeSpan.FromSeconds(2));

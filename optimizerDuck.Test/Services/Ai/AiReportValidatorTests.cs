@@ -147,3 +147,26 @@ public class AiReportValidatorTests
         Assert.NotEmpty(AiReportValidator.Validate(null, AiFixtures.Payload()));
     }
 }
+
+public class AiReportValidatorCharacterTests
+{
+    [Theory]
+    [InlineData("Tu PC quedó lista 🚀")]
+    [InlineData("Arranque: antes → después")]
+    public void SymbolsTheReportFontLacks_AreRejected(string summary)
+    {
+        var payload = AiFixtures.Payload();
+        var report = new AiReport(summary, [], []);
+
+        Assert.Contains(
+            AiReportValidator.Validate(report, payload with { Findings = [] }),
+            p => p.Contains("sin emojis")
+        );
+    }
+
+    [Fact]
+    public void SpanishLettersAndQuotes_ArePrintable()
+    {
+        Assert.All("áéíóúñÁÉÍÓÚÑ¿¡ü“”—…", c => Assert.True(AiReportValidator.IsPrintable(c)));
+    }
+}

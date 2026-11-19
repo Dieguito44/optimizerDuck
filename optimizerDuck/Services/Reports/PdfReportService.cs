@@ -31,19 +31,7 @@ public sealed class PdfReportService(
     /// <returns>The PDF path.</returns>
     public async Task<string> GenerateAsync(ServiceSession session, CancellationToken ct = default)
     {
-        await optimizations.EnsurePreloadedAsync().ConfigureAwait(false);
-        var names = optimizations
-            .OptimizationCategories.SelectMany(c => c.Optimizations)
-            .GroupBy(o => o.Id)
-            .ToDictionary(g => g.Key, g => g.First().Name);
-
-        var model = SessionReportModel.Build(
-            session,
-            ReadHistory(),
-            id => names.TryGetValue(id, out var name) ? name : null,
-            timeProvider.GetUtcNow(),
-            Loc.CurrentCulture
-        );
+        var model = await BuildModelAsync(session).ConfigureAwait(false);
 
         var folder = SessionStore.FolderFor(session);
         Directory.CreateDirectory(folder);
@@ -65,6 +53,24 @@ public sealed class PdfReportService(
         }
         logger.LogInformation("Report PDF written to {Path}", path);
         return path;
+    }
+
+    /// <summary>The report model for a session: the PDF draws it, the AI report is built from it.</summary>
+    public async Task<SessionReportModel> BuildModelAsync(ServiceSession session)
+    {
+        await optimizations.EnsurePreloadedAsync().ConfigureAwait(false);
+        var names = optimizations
+            .OptimizationCategories.SelectMany(c => c.Optimizations)
+            .GroupBy(o => o.Id)
+            .ToDictionary(g => g.Key, g => g.First().Name);
+
+        return SessionReportModel.Build(
+            session,
+            ReadHistory(),
+            id => names.TryGetValue(id, out var name) ? name : null,
+            timeProvider.GetUtcNow(),
+            Loc.CurrentCulture
+        );
     }
 
     private IEnumerable<ChangeRecord> ReadHistory()
@@ -153,6 +159,32 @@ public sealed class PdfReportService(
     private static void Content(ColumnDescriptor column, SessionReportModel model)
     {
         column.Spacing(10);
+
+        if (model.Written is { } written)
+        {
+            Section(column, "Report.Section.Summary");
+            column.Item().Text(written.Summary);
+            if (written.Priorities.Count > 0)
+            {
+                Section(column, "Report.Section.Priorities");
+                foreach (var p in written.Priorities)
+                    column
+                        .Item()
+                        .Column(item =>
+                        {
+                            item.Item()
+                                .Text(text =>
+                                {
+                                    text.Span($"{p.Number}. {p.Title}").Bold();
+                                    text.Span($"   {p.Who}").FontColor(Colors.Grey.Darken1);
+                                });
+                            item.Item().PaddingLeft(14).Text(p.Explanation);
+                        });
+            }
+            foreach (var warning in written.Warnings)
+                column.Item().Text($"• {warning}").FontColor(Colors.Orange.Darken3);
+            column.Item().Text(written.Source).FontSize(8).FontColor(Colors.Grey.Darken1);
+        }
 
         Section(column, "Report.Section.Metrics");
         column

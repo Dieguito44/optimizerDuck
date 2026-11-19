@@ -3322,4 +3322,103 @@ Aggiorna ora per godere delle ultime funzionalità, miglioramenti e correzioni.<
   <data name="Ai.Template.NotMeasured" xml:space="preserve">
     <value>Could not be measured: {0}</value>
   </data>
+  <data name="Session.Ai.Title" xml:space="preserve">
+    <value>Report with AI</value>
+  </data>
+  <data name="Session.Ai.Help" xml:space="preserve">
+    <value>Paste the Claude API key to have the AI write the report in plain words. Only anonymous data is sent: no names, no serial numbers, no programs. Without a key, the report is written with the Zentra template.</value>
+  </data>
+  <data name="Session.Ai.Button.UseKey" xml:space="preserve">
+    <value>Use key</value>
+  </data>
+  <data name="Session.Ai.Button.Forget" xml:space="preserve">
+    <value>Forget key</value>
+  </data>
+  <data name="Session.Ai.Button.Write" xml:space="preserve">
+    <value>Write report</value>
+  </data>
+  <data name="Session.Ai.Remember" xml:space="preserve">
+    <value>Remember on this PC (encrypted for this Windows user)</value>
+  </data>
+  <data name="Session.Ai.RememberWarning" xml:space="preserve">
+    <value>Only on the technician&apos;s own PC. On a client&apos;s PC the key stays in memory and is erased when Zentra closes.</value>
+  </data>
+  <data name="Session.Ai.Key.None" xml:space="preserve">
+    <value>No key: the report will use the template.</value>
+  </data>
+  <data name="Session.Ai.Key.InMemory" xml:space="preserve">
+    <value>Key loaded in memory. It is erased when Zentra closes.</value>
+  </data>
+  <data name="Session.Ai.Key.Remembered" xml:space="preserve">
+    <value>Key loaded and remembered on this PC (encrypted).</value>
+  </data>
+  <data name="Session.Ai.KeyError.Empty" xml:space="preserve">
+    <value>Paste the key first.</value>
+  </data>
+  <data name="Session.Ai.KeyError.WrongPrefix" xml:space="preserve">
+    <value>That does not look like a Claude API key (it must start with sk-ant-).</value>
+  </data>
+  <data name="Session.Ai.KeyError.BadCharacters" xml:space="preserve">
+    <value>The key has spaces, line breaks or characters it should not have. Copy it again.</value>
+  </data>
+  <data name="Session.Ai.KeyError.AdminKey" xml:space="preserve">
+    <value>That is an admin key. Use a normal API key created only for Zentra.</value>
+  </data>
+  <data name="Session.Ai.Writing" xml:space="preserve">
+    <value>Writing the report with the AI (up to a minute)...</value>
+  </data>
+  <data name="Session.Ai.WritingTemplate" xml:space="preserve">
+    <value>Writing the report with the template...</value>
+  </data>
+  <data name="Session.Ai.Done" xml:space="preserve">
+    <value>Report written by the AI and checked ({0} tokens in, {1} out).</value>
+  </data>
+  <data name="Session.Ai.Template.NoKey" xml:space="preserve">
+    <value>Report written with the template (no key).</value>
+  </data>
+  <data name="Session.Ai.Template.InvalidKey" xml:space="preserve">
+    <value>The API rejected the key; it was erased from memory. The report uses the template.</value>
+  </data>
+  <data name="Session.Ai.Template.RateLimited" xml:space="preserve">
+    <value>The API asked to wait (rate limit or spend limit). The report uses the template.</value>
+  </data>
+  <data name="Session.Ai.Template.Overloaded" xml:space="preserve">
+    <value>The API is overloaded right now. The report uses the template.</value>
+  </data>
+  <data name="Session.Ai.Template.ServerError" xml:space="preserve">
+    <value>The API had an error. The report uses the template.</value>
+  </data>
+  <data name="Session.Ai.Template.BadRequest" xml:space="preserve">
+    <value>The API did not accept the request. The report uses the template.</value>
+  </data>
+  <data name="Session.Ai.Template.Timeout" xml:space="preserve">
+    <value>The API took more than 60 seconds. The report uses the template.</value>
+  </data>
+  <data name="Session.Ai.Template.Network" xml:space="preserve">
+    <value>No connection to the API. The report uses the template.</value>
+  </data>
+  <data name="Session.Ai.Template.MalformedResponse" xml:space="preserve">
+    <value>The API answer had the wrong format. The report uses the template.</value>
+  </data>
+  <data name="Session.Ai.Template.Truncated" xml:space="preserve">
+    <value>The API answer was cut off. The report uses the template.</value>
+  </data>
+  <data name="Session.Ai.Template.Refused" xml:space="preserve">
+    <value>The AI declined to write it. The report uses the template.</value>
+  </data>
+  <data name="Session.Ai.Template.Rejected" xml:space="preserve">
+    <value>The AI answer did not pass the automatic checks twice. The report uses the template.</value>
+  </data>
+  <data name="Report.Section.Summary" xml:space="preserve">
+    <value>Summary</value>
+  </data>
+  <data name="Report.Section.Priorities" xml:space="preserve">
+    <value>What to do, in order</value>
+  </data>
+  <data name="Report.Written.Source.Ai" xml:space="preserve">
+    <value>Text written with AI (Claude) from the measured data and checked automatically: every figure comes from the measurements.</value>
+  </data>
+  <data name="Report.Written.Source.Template" xml:space="preserve">
+    <value>Text written by Zentra from the measured data.</value>
+  </data>
 </root>
