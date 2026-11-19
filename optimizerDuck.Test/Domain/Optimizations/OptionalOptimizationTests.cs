@@ -316,9 +316,6 @@ public class OptionalOptimizationTests
     [MemberData(nameof(ConsentGated))]
     public async Task WithoutConsent_NothingIsWritten(IOptimization optimization)
     {
-        // A library that passes every check, so the Defender option reaches the consent step.
-        SecurityAndPrivacy.DefenderGameLibraryExclusion.FolderSource = () =>
-            [@"D:\SteamLibrary\steamapps\common"];
         var context = new OptimizationContext
         {
             Snapshot = SystemInfo.Unknown,
@@ -328,7 +325,18 @@ public class OptionalOptimizationTests
             Logger = NullLogger.Instance,
         };
 
-        await optimization.ApplyAsync(new Progress<ProcessingProgress>(), context);
+        // A library that passes every check, so the Defender option reaches the consent step.
+        var realSource = SecurityAndPrivacy.DefenderGameLibraryExclusion.FolderSource;
+        SecurityAndPrivacy.DefenderGameLibraryExclusion.FolderSource = () =>
+            [@"D:\SteamLibrary\steamapps\common"];
+        try
+        {
+            await optimization.ApplyAsync(new Progress<ProcessingProgress>(), context);
+        }
+        finally
+        {
+            SecurityAndPrivacy.DefenderGameLibraryExclusion.FolderSource = realSource;
+        }
 
         // Refused (no consent, another user, a recent pause) or not applicable (Memory
         // Integrity locked on this machine): never a change.
