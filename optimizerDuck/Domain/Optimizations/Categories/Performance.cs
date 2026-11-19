@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.Windows;
 using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using optimizerDuck.Common.Extensions;
@@ -494,6 +495,62 @@ public class Performance : LocalizedObject, IOptimizationCategory
             if (context.Changes.Changes.Count == 0)
                 context.Changes.AddNotApplicable(Name, Loc.Instance[$"{ErrorPrefix}.NoFolders"]);
             return Task.FromResult(context.Changes.ToApplyResult());
+        }
+    }
+
+    /// <summary>
+    ///     Zentra ACT-GAMEMODE-ADV (plan section 1.1, phase 7): turns off Memory Integrity (HVCI)
+    ///     and the Virtual Machine Platform, which cost frames in some games. Risky: it lowers the
+    ///     protection against kernel attacks, so it needs written consent, only for clients who
+    ///     play, after an A/B test with the same game. Takes effect after a restart; the Session
+    ///     page keeps a visible button to turn the protection back on (revert).
+    /// </summary>
+    [Optimization(
+        Id = "9D4A7E16-B3C2-4F58-81E9-6A0F2C5D8B37",
+        Risk = OptimizationRisk.Risky,
+        Tags = OptimizationTags.Performance | OptimizationTags.Security
+    )]
+    public class AdvancedGameMode : BaseOptimization
+    {
+        public const string HvciKey =
+            @"HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity";
+
+        public override async Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            if (
+                !await Services.System.ClientConsent.Ask(
+                    Name,
+                    Loc.Instance[$"{ErrorPrefix}.Consent"]
+                )
+            )
+            {
+                context.Changes.AddRefused(Name, Loc.Instance["Consent.NotGiven"]);
+                return context.Changes.ToApplyResult();
+            }
+
+            RegistryService.Write(context, new RegistryItem(HvciKey, "Enabled", 0));
+
+            var vmp = await context.Shell.QueryPowerShellAsync(
+                "(Get-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform).State",
+                context.Logger,
+                ct: context.CancellationToken
+            );
+            if (vmp.Stdout?.Trim().Equals("Enabled", StringComparison.OrdinalIgnoreCase) == true)
+                await context.Shell.PowerShellAsync(
+                    "Disable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -NoRestart | Out-Null",
+                    context,
+                    "Enable-WindowsOptionalFeature -Online -FeatureName VirtualMachinePlatform -NoRestart | Out-Null"
+                );
+            else
+                context.Changes.AddSkip(Name, $"VirtualMachinePlatform: {vmp.Stdout?.Trim()}");
+
+            if (Application.Current is App app)
+                app.HasPendingChanges = true; // a restart applies it
+            context.Logger.LogInformation("Advanced game mode applied; restart required");
+            return context.Changes.ToApplyResult();
         }
     }
 }

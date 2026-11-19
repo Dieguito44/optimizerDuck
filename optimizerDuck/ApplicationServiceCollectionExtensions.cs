@@ -139,6 +139,7 @@ public static class ApplicationServiceCollectionExtensions
         >();
         services.AddSingleton<optimizerDuck.Services.Profiles.ServiceProfileRunner>();
         services.AddSingleton<optimizerDuck.UI.ViewModels.Pages.ServiceProfileViewModel>();
+        services.AddSingleton<optimizerDuck.UI.ViewModels.Pages.GameModeViewModel>();
         services.AddSingleton<PdfReportService>();
 
         // Zentra Windows repair (phase 4).
