@@ -6007,4 +6007,70 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   <data name="Session.Folder.NotYet" xml:space="preserve">
     <value>Todavía no hay carpeta de sesión: se crea con &quot;Medir antes&quot;.</value>
   </data>
+  <data name="Preset.Button.Import" xml:space="preserve">
+    <value>Importar preset</value>
+  </data>
+  <data name="Preset.Button.Export" xml:space="preserve">
+    <value>Exportar preset</value>
+  </data>
+  <data name="Preset.Button.Standard" xml:space="preserve">
+    <value>Volver al Servicio estándar</value>
+  </data>
+  <data name="Preset.Current.Standard" xml:space="preserve">
+    <value>Preset: Servicio estándar (incluido en Zentra).</value>
+  </data>
+  <data name="Preset.Current.Imported" xml:space="preserve">
+    <value>Preset: {0} (importado, {1} ajustes).</value>
+  </data>
+  <data name="Preset.FileFilter" xml:space="preserve">
+    <value>Preset de Zentra (*.json)|*.json</value>
+  </data>
+  <data name="Preset.Imported" xml:space="preserve">
+    <value>Preset &quot;{0}&quot; importado. &quot;Aplicar&quot; y &quot;Revertir&quot; ahora lo usan.</value>
+  </data>
+  <data name="Preset.Exported" xml:space="preserve">
+    <value>Preset guardado en {0}</value>
+  </data>
+  <data name="Preset.Invalid" xml:space="preserve">
+    <value>No se importó {0}:</value>
+  </data>
+  <data name="Preset.Confirm.Name" xml:space="preserve">
+    <value>Preset: {0}.</value>
+  </data>
+  <data name="Preset.Problem.NotJson" xml:space="preserve">
+    <value>No es un archivo de preset válido. {0}</value>
+  </data>
+  <data name="Preset.Problem.TooLarge" xml:space="preserve">
+    <value>El archivo es demasiado grande para ser un preset.</value>
+  </data>
+  <data name="Preset.Problem.UnsupportedSchema" xml:space="preserve">
+    <value>Esta versión de Zentra no admite el formato {0}.</value>
+  </data>
+  <data name="Preset.Problem.MissingName" xml:space="preserve">
+    <value>El preset necesita un nombre (hasta 80 caracteres).</value>
+  </data>
+  <data name="Preset.Problem.TooManyEntries" xml:space="preserve">
+    <value>El preset tiene demasiados ajustes o apps.</value>
+  </data>
+  <data name="Preset.Problem.UnknownSetting" xml:space="preserve">
+    <value>Esta versión de Zentra no tiene un ajuste con el ID {0}.</value>
+  </data>
+  <data name="Preset.Problem.DuplicateSetting" xml:space="preserve">
+    <value>El ajuste {0} está repetido.</value>
+  </data>
+  <data name="Preset.Problem.RiskyNotAllowed" xml:space="preserve">
+    <value>&quot;{0}&quot; es de nivel Experto y el preset no permite ese nivel (allowRisky).</value>
+  </data>
+  <data name="Preset.Problem.InvalidAppName" xml:space="preserve">
+    <value>&quot;{0}&quot; no es un nombre de paquete válido (los fragmentos necesitan al menos 6 caracteres).</value>
+  </data>
+  <data name="Preset.Problem.ProtectedApp" xml:space="preserve">
+    <value>&quot;{0}&quot; es una app protegida: Zentra nunca la quita.</value>
+  </data>
+  <data name="Preset.Problem.DuplicateApp" xml:space="preserve">
+    <value>La app {0} está repetida.</value>
+  </data>
+  <data name="Preset.Problem.Empty" xml:space="preserve">
+    <value>El preset no tiene ajustes ni apps.</value>
+  </data>
 </root>

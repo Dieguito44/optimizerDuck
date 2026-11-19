@@ -186,6 +186,12 @@
                             Style="{StaticResource CaptionTextStyle}"
                             Text="{ext:Loc Profile.Help}"
                             TextWrapping="Wrap" />
+                        <!--  Plan of improvements F3-01: which preset the buttons apply.  -->
+                        <ui:TextBlock
+                            Margin="0,0,0,6"
+                            FontTypography="Body"
+                            Text="{Binding ViewModel.Profile.PresetText}"
+                            TextWrapping="Wrap" />
                         <WrapPanel Orientation="Horizontal">
                             <ui:Button
                                 Margin="0,2,8,2"
@@ -193,6 +199,25 @@
                                 Content="{ext:Loc Profile.Button.Revert}"
                                 Cursor="Hand"
                                 Icon="{ui:SymbolIcon ArrowUndo24}" />
+                            <ui:Button
+                                Margin="0,2,8,2"
+                                Command="{Binding ViewModel.Profile.ImportPresetCommand}"
+                                Content="{ext:Loc Preset.Button.Import}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon FolderOpen24}" />
+                            <ui:Button
+                                Margin="0,2,8,2"
+                                Command="{Binding ViewModel.Profile.ExportPresetCommand}"
+                                Content="{ext:Loc Preset.Button.Export}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon Save24}" />
+                            <ui:Button
+                                Margin="0,2,8,2"
+                                Command="{Binding ViewModel.Profile.UseStandardPresetCommand}"
+                                Content="{ext:Loc Preset.Button.Standard}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon ArrowReset24}"
+                                Visibility="{Binding ViewModel.Profile.IsCustomPreset, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         </WrapPanel>
                         <ui:ProgressRing
                             Width="22"

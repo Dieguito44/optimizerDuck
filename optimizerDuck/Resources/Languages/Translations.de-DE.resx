@@ -4260,4 +4260,70 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="Session.Folder.NotYet" xml:space="preserve">
     <value>There is no session folder yet: it is created with &quot;Measure before&quot;.</value>
   </data>
+  <data name="Preset.Button.Import" xml:space="preserve">
+    <value>Import preset</value>
+  </data>
+  <data name="Preset.Button.Export" xml:space="preserve">
+    <value>Export preset</value>
+  </data>
+  <data name="Preset.Button.Standard" xml:space="preserve">
+    <value>Back to the standard service</value>
+  </data>
+  <data name="Preset.Current.Standard" xml:space="preserve">
+    <value>Preset: Standard service (built in).</value>
+  </data>
+  <data name="Preset.Current.Imported" xml:space="preserve">
+    <value>Preset: {0} (imported, {1} settings).</value>
+  </data>
+  <data name="Preset.FileFilter" xml:space="preserve">
+    <value>Zentra preset (*.json)|*.json</value>
+  </data>
+  <data name="Preset.Imported" xml:space="preserve">
+    <value>Preset &quot;{0}&quot; imported. &quot;Apply&quot; and &quot;Revert&quot; now use it.</value>
+  </data>
+  <data name="Preset.Exported" xml:space="preserve">
+    <value>Preset saved to {0}</value>
+  </data>
+  <data name="Preset.Invalid" xml:space="preserve">
+    <value>{0} was not imported:</value>
+  </data>
+  <data name="Preset.Confirm.Name" xml:space="preserve">
+    <value>Preset: {0}.</value>
+  </data>
+  <data name="Preset.Problem.NotJson" xml:space="preserve">
+    <value>It is not a valid preset file. {0}</value>
+  </data>
+  <data name="Preset.Problem.TooLarge" xml:space="preserve">
+    <value>The file is too large to be a preset.</value>
+  </data>
+  <data name="Preset.Problem.UnsupportedSchema" xml:space="preserve">
+    <value>Format version {0} is not supported by this Zentra.</value>
+  </data>
+  <data name="Preset.Problem.MissingName" xml:space="preserve">
+    <value>The preset needs a name (up to 80 characters).</value>
+  </data>
+  <data name="Preset.Problem.TooManyEntries" xml:space="preserve">
+    <value>The preset has too many settings or apps.</value>
+  </data>
+  <data name="Preset.Problem.UnknownSetting" xml:space="preserve">
+    <value>This Zentra has no setting with the ID {0}.</value>
+  </data>
+  <data name="Preset.Problem.DuplicateSetting" xml:space="preserve">
+    <value>The setting {0} is listed twice.</value>
+  </data>
+  <data name="Preset.Problem.RiskyNotAllowed" xml:space="preserve">
+    <value>&quot;{0}&quot; is Risky and the preset does not allow Risky settings (allowRisky).</value>
+  </data>
+  <data name="Preset.Problem.InvalidAppName" xml:space="preserve">
+    <value>&quot;{0}&quot; is not a valid app package name (fragments need at least 6 characters).</value>
+  </data>
+  <data name="Preset.Problem.ProtectedApp" xml:space="preserve">
+    <value>&quot;{0}&quot; is a protected app: Zentra never removes it.</value>
+  </data>
+  <data name="Preset.Problem.DuplicateApp" xml:space="preserve">
+    <value>The app {0} is listed twice.</value>
+  </data>
+  <data name="Preset.Problem.Empty" xml:space="preserve">
+    <value>The preset has no settings and no apps.</value>
+  </data>
 </root>
