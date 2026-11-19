@@ -7,6 +7,7 @@ using optimizerDuck.Domain.UI;
 using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Software;
 using optimizerDuck.Services.System;
+using Wpf.Ui.Extensions;
 
 namespace optimizerDuck.UI.ViewModels.Pages;
 
@@ -44,6 +45,7 @@ public partial class SoftwareViewModel(
     SoftwareService softwareService,
     ToolRunPresenter presenter,
     SystemInfoService systemInfoService,
+    Wpf.Ui.IContentDialogService dialogs,
     ILogger<SoftwareViewModel> logger
 ) : ViewModel
 {
@@ -51,6 +53,7 @@ public partial class SoftwareViewModel(
     [NotifyCanExecuteChangedFor(nameof(InstallCommand))]
     [NotifyCanExecuteChangedFor(nameof(UninstallCommand))]
     [NotifyCanExecuteChangedFor(nameof(RefreshCommand))]
+    [NotifyCanExecuteChangedFor(nameof(UpgradeAllCommand))]
     private bool _isBusy;
 
     [ObservableProperty]
@@ -104,6 +107,47 @@ public partial class SoftwareViewModel(
     [RelayCommand(CanExecute = nameof(CanRun))]
     private Task UninstallAsync(SoftwareItem? item) =>
         RunAsync(item, softwareService.BuildUninstallRequest);
+
+    /// <summary>
+    ///     ACT-WINGET-UPGRADE. Behind a confirmation: updates cannot be undone from Zentra, and a
+    ///     program the client keeps on an old version on purpose would be updated too.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private async Task UpgradeAllAsync()
+    {
+        var answer = await dialogs.ShowSimpleDialogAsync(
+            new Wpf.Ui.SimpleContentDialogCreateOptions
+            {
+                Title = Loc.Instance["Software.UpgradeAll.Confirm.Title"],
+                Content = Loc.Instance["Software.UpgradeAll.Confirm.Message"],
+                PrimaryButtonText = Loc.Instance["Software.Button.UpgradeAll"],
+                CloseButtonText = Loc.Instance["Button.Cancel"],
+            }
+        );
+        if (answer != Wpf.Ui.Controls.ContentDialogResult.Primary)
+            return;
+
+        IsBusy = true;
+        try
+        {
+            var request = softwareService.BuildUpgradeAllRequest();
+            var outcome = await presenter.RunAsync(request);
+            await presenter.ReportAsync(
+                request,
+                outcome,
+                Loc.Instance["Software.Button.UpgradeAll"]
+            );
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "winget upgrade --all failed");
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+        await RefreshAsync();
+    }
 
     [RelayCommand]
     private static void OpenDriverPage(string? url)

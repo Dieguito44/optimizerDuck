@@ -14,6 +14,7 @@ public enum DiagnosticSection
     SystemVolume,
     Config,
     Stability,
+    Maintenance,
 }
 
 /// <summary>How a section's collection went.</summary>
@@ -93,6 +94,9 @@ public sealed record DiagnosticSnapshot
 
     /// <summary>Component store state (DISM CheckHealth, read-only and fast).</summary>
     public Measured<Services.Repair.WindowsImageHealth> ImageHealth { get; init; }
+
+    /// <summary>Software upkeep and protection (phase 6B). Defaults to not measured.</summary>
+    public MaintenanceSnapshot Maintenance { get; init; } = new();
 }
 
 public sealed record OsSnapshot
@@ -215,4 +219,24 @@ public sealed record StabilitySnapshot
 
     /// <summary>Minidump files written in the last 30 days.</summary>
     public Measured<int> Minidumps30d { get; init; }
+}
+
+/// <summary>Defender's potentially unwanted app blocking (MSFT_MpPreference.PUAProtection).</summary>
+public enum PuaMode
+{
+    Off = 0,
+    On = 1,
+
+    /// <summary>Logs potentially unwanted apps but does not block them.</summary>
+    Audit = 2,
+}
+
+/// <summary>Phase 6B checks of software upkeep and protection.</summary>
+public sealed record MaintenanceSnapshot
+{
+    /// <summary>Programs winget can upgrade (rows of `winget upgrade`). Only the count.</summary>
+    public Measured<int> WingetUpgrades { get; init; }
+
+    /// <summary>PUA blocking. Not applicable when Defender is not the active antivirus.</summary>
+    public Measured<PuaMode> PuaProtection { get; init; }
 }

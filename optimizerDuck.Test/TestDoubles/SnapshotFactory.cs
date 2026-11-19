@@ -114,6 +114,13 @@ public static class SnapshotFactory
             ImageHealth = Measured<optimizerDuck.Services.Repair.WindowsImageHealth>.Of(
                 optimizerDuck.Services.Repair.WindowsImageHealth.Healthy
             ),
+            // Phase 6B maintenance checks have their own tests (MaintenanceRuleTests); here they
+            // pass so the golden diagnosis stays about the hardware findings.
+            Maintenance = new MaintenanceSnapshot
+            {
+                WingetUpgrades = Measured<int>.Of(0),
+                PuaProtection = Measured<PuaMode>.Of(PuaMode.On),
+            },
             Disks =
             [
                 // Measured elevated on 2026-11-19: the A400 reports Wear 0 on SATA (unknown) and

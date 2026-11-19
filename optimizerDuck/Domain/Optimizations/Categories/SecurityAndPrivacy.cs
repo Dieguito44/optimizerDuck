@@ -759,4 +759,57 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
             return Task.FromResult(context.Changes.ToApplyResult());
         }
     }
+
+    /// <summary>
+    ///     Zentra ACT-PUA-ON (plan phase 6B): Defender blocks potentially unwanted apps. Revert
+    ///     goes back to audit mode, never to off, even if it was off before (Diego's decision,
+    ///     19/11/2026: the blacklist never turns Defender protections off).
+    /// </summary>
+    [Optimization(
+        Id = "8E4B1C7A-2F69-4D3E-A1B5-C9D07E6F3A28",
+        Risk = OptimizationRisk.Safe,
+        Tags = OptimizationTags.Security
+    )]
+    public class EnablePuaProtection : BaseOptimization
+    {
+        internal const string RevertCommand = "Set-MpPreference -PUAProtection AuditMode";
+
+        public override async Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            var query = await context.Shell.QueryPowerShellAsync(
+                "(Get-MpPreference).PUAProtection",
+                context.Logger,
+                ct: context.CancellationToken
+            );
+
+            if (!int.TryParse(query.Stdout?.Trim(), out var current))
+            {
+                context.Changes.Add(
+                    ServiceStrings.ShellName,
+                    "Get-MpPreference",
+                    false,
+                    error: Loc.Instance[$"{ErrorPrefix}.ReadFailed"],
+                    errorDetail: query.Stdout + query.Stderr
+                );
+                return context.Changes.ToApplyResult();
+            }
+
+            if (current == 1)
+            {
+                context.Changes.AddSkip(Name, "PUAProtection: Enabled");
+                return context.Changes.ToApplyResult();
+            }
+
+            await context.Shell.PowerShellAsync(
+                "Set-MpPreference -PUAProtection Enabled",
+                context,
+                RevertCommand
+            );
+            context.Logger.LogInformation("PUA protection enabled (was {Previous})", current);
+            return context.Changes.ToApplyResult();
+        }
+    }
 }

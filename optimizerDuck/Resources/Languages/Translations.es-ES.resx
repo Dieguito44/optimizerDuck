@@ -5452,4 +5452,49 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Optimizer.Details.Provider.GroupPolicy" xml:space="preserve">
     <value>Directiva de grupo</value>
   </data>
+  <data name="Diagnostic.Rule.R-APPS-OUTDATED.Title" xml:space="preserve">
+    <value>Programas desactualizados</value>
+  </data>
+  <data name="Diagnostic.Rule.R-APPS-OUTDATED.Description" xml:space="preserve">
+    <value>Varios programas tienen una versión nueva. Las actualizaciones corrigen fallas de seguridad y errores.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-PUA-OFF.Title" xml:space="preserve">
+    <value>Bloqueo de aplicaciones no deseadas apagado</value>
+  </data>
+  <data name="Diagnostic.Rule.R-PUA-OFF.Description" xml:space="preserve">
+    <value>Seguridad de Windows no bloquea las aplicaciones potencialmente no deseadas (publicidad, barras de herramientas, instaladores con extras). En modo auditoría solo las registra.</value>
+  </data>
+  <data name="Diagnostic.Evidence.apps.outdated" xml:space="preserve">
+    <value>Programas con versión nueva</value>
+  </data>
+  <data name="Diagnostic.Evidence.defender.pua" xml:space="preserve">
+    <value>Bloqueo de aplicaciones no deseadas</value>
+  </data>
+  <data name="Diagnostic.Value.audit" xml:space="preserve">
+    <value>solo auditoría</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.EnablePuaProtection.Name" xml:space="preserve">
+    <value>Bloquear aplicaciones potencialmente no deseadas</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.EnablePuaProtection.ShortDescription" xml:space="preserve">
+    <value>Seguridad de Windows bloquea publicidad, barras de herramientas e instaladores que meten programas extra. Al revertir queda en modo auditoría (solo registra), nunca apagado.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.EnablePuaProtection.Error.ReadFailed" xml:space="preserve">
+    <value>No se pudo leer la configuración actual de Seguridad de Windows.</value>
+  </data>
+  <data name="Software.Button.UpgradeAll" xml:space="preserve">
+    <value>Actualizar todos</value>
+  </data>
+  <data name="Software.UpgradeAll.Name" xml:space="preserve">
+    <value>todos los programas</value>
+  </data>
+  <data name="Software.Run.UpgradeAll" xml:space="preserve">
+    <value>Actualizar todos los programas (winget)</value>
+  </data>
+  <data name="Software.UpgradeAll.Confirm.Title" xml:space="preserve">
+    <value>¿Actualizar todos los programas?</value>
+  </data>
+  <data name="Software.UpgradeAll.Confirm.Message" xml:space="preserve">
+    <value>winget actualiza sin ventanas todos los programas que tienen versión nueva. No se puede deshacer desde Zentra. Cierra antes los programas abiertos; puede tardar varios minutos.</value>
+  </data>
 </root>

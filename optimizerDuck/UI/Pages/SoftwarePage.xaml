@@ -35,6 +35,12 @@
                             Content="{ext:Loc Software.Button.Refresh}"
                             Cursor="Hand"
                             Icon="{ui:SymbolIcon ArrowClockwise24}" />
+                        <ui:Button
+                            Margin="8,0,0,0"
+                            Command="{Binding ViewModel.UpgradeAllCommand}"
+                            Content="{ext:Loc Software.Button.UpgradeAll}"
+                            Cursor="Hand"
+                            Icon="{ui:SymbolIcon ArrowSync24}" />
                         <ui:ProgressRing
                             Width="20"
                             Height="20"

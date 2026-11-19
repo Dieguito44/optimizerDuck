@@ -3644,4 +3644,49 @@
   <data name="Optimizer.Details.Provider.GroupPolicy" xml:space="preserve">
     <value>Group Policy</value>
   </data>
+  <data name="Diagnostic.Rule.R-APPS-OUTDATED.Title" xml:space="preserve">
+    <value>Outdated programs</value>
+  </data>
+  <data name="Diagnostic.Rule.R-APPS-OUTDATED.Description" xml:space="preserve">
+    <value>Several programs have a newer version. Updates fix security holes and bugs.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-PUA-OFF.Title" xml:space="preserve">
+    <value>Unwanted app blocking is off</value>
+  </data>
+  <data name="Diagnostic.Rule.R-PUA-OFF.Description" xml:space="preserve">
+    <value>Windows Security does not block potentially unwanted apps (adware, toolbars, bundled installers). In audit mode it only logs them.</value>
+  </data>
+  <data name="Diagnostic.Evidence.apps.outdated" xml:space="preserve">
+    <value>Programs with a newer version</value>
+  </data>
+  <data name="Diagnostic.Evidence.defender.pua" xml:space="preserve">
+    <value>Unwanted app blocking</value>
+  </data>
+  <data name="Diagnostic.Value.audit" xml:space="preserve">
+    <value>audit only</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.EnablePuaProtection.Name" xml:space="preserve">
+    <value>Block potentially unwanted apps</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.EnablePuaProtection.ShortDescription" xml:space="preserve">
+    <value>Windows Security blocks adware, toolbars and installers that bundle extra programs. Reverting leaves it in audit mode (logs only), never off.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.EnablePuaProtection.Error.ReadFailed" xml:space="preserve">
+    <value>Could not read the current setting of Windows Security.</value>
+  </data>
+  <data name="Software.Button.UpgradeAll" xml:space="preserve">
+    <value>Update all</value>
+  </data>
+  <data name="Software.UpgradeAll.Name" xml:space="preserve">
+    <value>all programs</value>
+  </data>
+  <data name="Software.Run.UpgradeAll" xml:space="preserve">
+    <value>Update every program (winget)</value>
+  </data>
+  <data name="Software.UpgradeAll.Confirm.Title" xml:space="preserve">
+    <value>Update every program?</value>
+  </data>
+  <data name="Software.UpgradeAll.Confirm.Message" xml:space="preserve">
+    <value>winget updates every program that has a newer version, silently. It cannot be undone from Zentra. Close open programs first; it can take several minutes.</value>
+  </data>
 </root>

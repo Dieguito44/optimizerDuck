@@ -81,6 +81,14 @@ public sealed class DiagnosticCollector(
             TimedOut<bool>(),
             ct
         );
+        var wingetTask = MaintenanceProbes.CountWingetUpgradesAsync(logger, ct);
+        var puaTask = Run(
+            "pua",
+            MaintenanceProbes.ReadPuaProtection,
+            ProbeTimeout,
+            TimedOut<PuaMode>(),
+            ct
+        );
         var startupTask = CountStartupAppsAsync(ct);
         var imageTask = ReadImageHealthAsync(ct);
         var bootTask = Run(
@@ -98,7 +106,9 @@ public sealed class DiagnosticCollector(
                 activationTask,
                 startupTask,
                 bootTask,
-                imageTask
+                imageTask,
+                wingetTask,
+                puaTask
             )
             .ConfigureAwait(false);
 
@@ -142,6 +152,11 @@ public sealed class DiagnosticCollector(
         {
             BootMedianMs = await bootTask.ConfigureAwait(false),
             ImageHealth = await imageTask.ConfigureAwait(false),
+            Maintenance = new MaintenanceSnapshot
+            {
+                WingetUpgrades = await wingetTask.ConfigureAwait(false),
+                PuaProtection = await puaTask.ConfigureAwait(false),
+            },
         };
         logger.LogInformation(
             "Diagnostic snapshot collected: {Disks} disks, {Gpus} GPUs, {Modules} RAM modules",

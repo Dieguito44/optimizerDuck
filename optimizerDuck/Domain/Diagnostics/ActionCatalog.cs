@@ -167,9 +167,6 @@ public static class ActionCatalog
         ActionIds.MonitorHz,
         ActionIds.MonitorCable,
         ActionIds.GpuPreference,
-        ActionIds.WingetUpgrade,
-        ActionIds.DefenderFull,
-        ActionIds.PuaOn,
         ActionIds.BrowserBackground,
         ActionIds.HeavyApps,
         ActionIds.BackupSetup,
@@ -203,4 +200,8 @@ public static class RuleIds
     public const string Unstable = "R-UNSTABLE";
     public const string VbsOn = "R-VBS-ON";
     public const string NotActivated = "R-NOT-ACTIVATED";
+
+    // Phase 6B
+    public const string AppsOutdated = "R-APPS-OUTDATED";
+    public const string PuaOff = "R-PUA-OFF";
 }

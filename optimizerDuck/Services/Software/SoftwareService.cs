@@ -69,6 +69,18 @@ public static class SoftwareCatalog
 
     public static string ListArguments(SoftwarePackage p) =>
         $"list --id {p.WingetId} -e --accept-source-agreements --disable-interactivity";
+
+    /// <summary>ACT-WINGET-UPGRADE, the exact command of the plan. It cannot be undone.</summary>
+    public const string UpgradeAllArguments =
+        "upgrade --all --silent --accept-package-agreements --accept-source-agreements";
+
+    /// <summary>Stands for "every program" in the progress text of the upgrade run.</summary>
+    public static readonly SoftwarePackage AllPrograms = new(
+        "--all",
+        "UpgradeAll",
+        "—",
+        SoftwareTarget.Any
+    );
 }
 
 /// <summary>
@@ -143,6 +155,22 @@ public sealed class SoftwareService(ILogger<SoftwareService> logger)
                 RunWingetAsync(
                     package,
                     SoftwareCatalog.UninstallArguments(package),
+                    progress,
+                    context
+                )
+        );
+
+    /// <summary>ACT-WINGET-UPGRADE: updates every program winget can. Recorded as irreversible.</summary>
+    public OperationRequest BuildUpgradeAllRequest() =>
+        new(
+            Subject,
+            Loc.Instance["Software.Run.UpgradeAll"],
+            logger,
+            RevertPersistence.Disabled,
+            (progress, context) =>
+                RunWingetAsync(
+                    SoftwareCatalog.AllPrograms,
+                    SoftwareCatalog.UpgradeAllArguments,
                     progress,
                     context
                 )
