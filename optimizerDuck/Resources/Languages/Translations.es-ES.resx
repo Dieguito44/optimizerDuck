@@ -5212,4 +5212,244 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Report.Written.Source.Template" xml:space="preserve">
     <value>Texto redactado por Zentra a partir de los datos medidos.</value>
   </data>
+  <data name="Optimizer.AI.SetAiServiceToManual.Name" xml:space="preserve">
+    <value>Servicio de IA de Windows solo cuando se necesite</value>
+  </data>
+  <data name="Optimizer.AI.SetAiServiceToManual.ShortDescription" xml:space="preserve">
+    <value>Pone el servicio de IA de Windows (WSAIFabricSvc) en Manual: ya no arranca con Windows, pero lo que lo necesite lo puede iniciar. Tomado de Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.AI.DisableEdgeAiFeatures.Name" xml:space="preserve">
+    <value>Desactivar la IA en Edge</value>
+  </data>
+  <data name="Optimizer.AI.DisableEdgeAiFeatures.ShortDescription" xml:space="preserve">
+    <value>Apaga Copilot, la barra lateral y las funciones de IA generativa de Edge con políticas del navegador. Edge sigue funcionando igual. Tomado de Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.AI.DisablePaintAiFeatures.Name" xml:space="preserve">
+    <value>Desactivar la IA en Paint</value>
+  </data>
+  <data name="Optimizer.AI.DisablePaintAiFeatures.ShortDescription" xml:space="preserve">
+    <value>Apaga Cocreator, el relleno y el borrado generativos, Image Creator y quitar el fondo en Paint. Tomado de Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.AI.DisableNotepadAiFeatures.Name" xml:space="preserve">
+    <value>Desactivar la IA en el Bloc de notas</value>
+  </data>
+  <data name="Optimizer.AI.DisableNotepadAiFeatures.ShortDescription" xml:space="preserve">
+    <value>Apaga las funciones de IA (reescribir, resumir) del Bloc de notas. Tomado de Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.PreventDeviceAppAutoDownload.Name" xml:space="preserve">
+    <value>No descargar apps de dispositivos automáticamente</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.PreventDeviceAppAutoDownload.ShortDescription" xml:space="preserve">
+    <value>Al conectar un dispositivo, Windows ya no descarga sola la app del fabricante. Los drivers se siguen instalando. Tomado de Win11Debloat.</value>
+  </data>
+  <data name="Profile.Title" xml:space="preserve">
+    <value>Perfil Servicio estándar</value>
+  </data>
+  <data name="Profile.Help" xml:space="preserve">
+    <value>Aplica los ajustes estándar (privacidad, IA, anuncios, almacenamiento) y quita las apps preinstaladas de la lista del servicio. Hazlo después de &quot;Medir antes&quot;. Cada ajuste se puede revertir; las apps quitadas se reinstalan desde la Microsoft Store.</value>
+  </data>
+  <data name="Profile.Button.Apply" xml:space="preserve">
+    <value>Aplicar perfil</value>
+  </data>
+  <data name="Profile.Button.Revert" xml:space="preserve">
+    <value>Revertir perfil</value>
+  </data>
+  <data name="Profile.Confirm.Title" xml:space="preserve">
+    <value>¿Aplicar el perfil Servicio estándar?</value>
+  </data>
+  <data name="Profile.Confirm.Message" xml:space="preserve">
+    <value>Primero se crea un punto de restauración. Luego se aplican {0} ajustes (cada uno se puede revertir) y se quitan {1} apps: {2}. Las apps quitadas no vuelven con &quot;Revertir perfil&quot;; se reinstalan desde la Microsoft Store.</value>
+  </data>
+  <data name="Profile.Confirm.NoApps" xml:space="preserve">
+    <value>ninguna de la lista está instalada</value>
+  </data>
+  <data name="Profile.Confirm.Apply" xml:space="preserve">
+    <value>Crear punto de restauración y aplicar</value>
+  </data>
+  <data name="Profile.Revert.Title" xml:space="preserve">
+    <value>¿Revertir el perfil Servicio estándar?</value>
+  </data>
+  <data name="Profile.Revert.Message" xml:space="preserve">
+    <value>Cada ajuste del perfil vuelve al valor que tenía antes. Las apps quitadas no se reinstalan.</value>
+  </data>
+  <data name="Profile.Revert.Confirm" xml:space="preserve">
+    <value>Revertir</value>
+  </data>
+  <data name="Profile.Progress" xml:space="preserve">
+    <value>{0} de {1}: {2}</value>
+  </data>
+  <data name="Profile.RestorePoint.Recent" xml:space="preserve">
+    <value>Windows ya creó un punto de restauración en las últimas 24 horas; ese cubre estos cambios.</value>
+  </data>
+  <data name="Profile.RestorePoint.Failed" xml:space="preserve">
+    <value>No se pudo crear el punto de restauración, así que no se cambió nada.</value>
+  </data>
+  <data name="Profile.Done.Applied" xml:space="preserve">
+    <value>Perfil aplicado: {0} cambiados, {1} ya estaban bien, {2} no aplican a este PC, {3} fallaron. Apps quitadas: {4}.</value>
+  </data>
+  <data name="Profile.Done.Reverted" xml:space="preserve">
+    <value>Perfil revertido: {0} ajustes volvieron atrás, {1} no tenían nada que revertir, {2} fallaron.</value>
+  </data>
+  <data name="Profile.Problem.Setting" xml:space="preserve">
+    <value>Falló: {0}. Ábrelo en Optimizar para reintentar.</value>
+  </data>
+  <data name="Profile.Problem.App" xml:space="preserve">
+    <value>No se pudo quitar: {0}</value>
+  </data>
+  <data name="Sidebar.Software" xml:space="preserve">
+    <value>Programas</value>
+  </data>
+  <data name="Software.Header.Title" xml:space="preserve">
+    <value>Programas</value>
+  </data>
+  <data name="Software.Header.Description" xml:space="preserve">
+    <value>Instala programas gratis de una lista cerrada con winget, sin ventanas. Cada instalación se deshace con Desinstalar.</value>
+  </data>
+  <data name="Software.Button.Refresh" xml:space="preserve">
+    <value>Revisar de nuevo</value>
+  </data>
+  <data name="Software.Button.Install" xml:space="preserve">
+    <value>Instalar</value>
+  </data>
+  <data name="Software.Button.Uninstall" xml:space="preserve">
+    <value>Desinstalar</value>
+  </data>
+  <data name="Software.Checking" xml:space="preserve">
+    <value>Revisando qué programas están instalados...</value>
+  </data>
+  <data name="Software.WingetMissing" xml:space="preserve">
+    <value>winget no pudo revisar algunos programas. Verifica que App Installer esté instalado y actualizado desde la Microsoft Store.</value>
+  </data>
+  <data name="Software.Status.Installed" xml:space="preserve">
+    <value>Instalado</value>
+  </data>
+  <data name="Software.Status.NotInstalled" xml:space="preserve">
+    <value>No instalado</value>
+  </data>
+  <data name="Software.Status.Unknown" xml:space="preserve">
+    <value>No se pudo revisar</value>
+  </data>
+  <data name="Software.Run.Install" xml:space="preserve">
+    <value>Instalar {0}</value>
+  </data>
+  <data name="Software.Run.Uninstall" xml:space="preserve">
+    <value>Desinstalar {0}</value>
+  </data>
+  <data name="Software.Run.Progress" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="Software.Run.TimedOut" xml:space="preserve">
+    <value>Tardó más de 30 minutos y se detuvo.</value>
+  </data>
+  <data name="Software.Run.Failed" xml:space="preserve">
+    <value>winget terminó con el código {0}.</value>
+  </data>
+  <data name="Software.Drivers.Title" xml:space="preserve">
+    <value>Drivers de video AMD y NVIDIA</value>
+  </data>
+  <data name="Software.Drivers.Description" xml:space="preserve">
+    <value>No están en winget. Se descargan de la página oficial del fabricante de la tarjeta de video.</value>
+  </data>
+  <data name="Software.SevenZip.Name" xml:space="preserve">
+    <value>7-Zip</value>
+  </data>
+  <data name="Software.SevenZip.Description" xml:space="preserve">
+    <value>Abre y crea archivos comprimidos (zip, rar, 7z).</value>
+  </data>
+  <data name="Software.Vlc.Name" xml:space="preserve">
+    <value>Reproductor VLC</value>
+  </data>
+  <data name="Software.Vlc.Description" xml:space="preserve">
+    <value>Reproduce casi cualquier video o audio.</value>
+  </data>
+  <data name="Software.LibreOffice.Name" xml:space="preserve">
+    <value>LibreOffice</value>
+  </data>
+  <data name="Software.LibreOffice.Description" xml:space="preserve">
+    <value>Suite de oficina gratis: documentos, hojas de cálculo y presentaciones, compatible con Word y Excel.</value>
+  </data>
+  <data name="Software.Chrome.Name" xml:space="preserve">
+    <value>Google Chrome</value>
+  </data>
+  <data name="Software.Chrome.Description" xml:space="preserve">
+    <value>Navegador web.</value>
+  </data>
+  <data name="Software.IntelDsa.Name" xml:space="preserve">
+    <value>Intel Driver &amp; Support Assistant</value>
+  </data>
+  <data name="Software.IntelDsa.Description" xml:space="preserve">
+    <value>Herramienta de Intel que busca y actualiza los drivers de procesadores y gráficos Intel. Solo aparece en PCs con Intel.</value>
+  </data>
+  <data name="Sidebar.BiosGuide" xml:space="preserve">
+    <value>Guía de BIOS</value>
+  </data>
+  <data name="BiosGuide.Header.Title" xml:space="preserve">
+    <value>Guía de BIOS</value>
+  </data>
+  <data name="BiosGuide.Header.Description" xml:space="preserve">
+    <value>Pasos para cambiar la velocidad de la RAM y la memoria de video en la BIOS. Zentra nunca cambia la BIOS: lo hace el técnico o el cliente.</value>
+  </data>
+  <data name="BiosGuide.Warning" xml:space="preserve">
+    <value>Un valor equivocado en la BIOS puede impedir que el PC arranque. Cambia una cosa a la vez y anota el valor que tenía. El manual advierte que las pantallas cambian con las actualizaciones de la BIOS.</value>
+  </data>
+  <data name="BiosGuide.Board" xml:space="preserve">
+    <value>Este PC: {0}, BIOS {1}</value>
+  </data>
+  <data name="BiosGuide.Match.Yes" xml:space="preserve">
+    <value>Hay guía para esta placa base.</value>
+  </data>
+  <data name="BiosGuide.Match.No" xml:space="preserve">
+    <value>Todavía no hay guía para esta placa base. Abajo se muestra la de {0}, solo como referencia.</value>
+  </data>
+  <data name="BiosGuide.Source" xml:space="preserve">
+    <value>Fuente: manual oficial,</value>
+  </data>
+  <data name="BiosGuide.Enter.Title" xml:space="preserve">
+    <value>1. Entrar a la BIOS</value>
+  </data>
+  <data name="BiosGuide.Enter.Body" xml:space="preserve">
+    <value>Enciende el PC y presiona F2 o Supr de inmediato. Si arranca Windows, reinicia y vuelve a intentarlo.</value>
+  </data>
+  <data name="BiosGuide.RamSpeed.Title" xml:space="preserve">
+    <value>2. Velocidad de la RAM</value>
+  </data>
+  <data name="BiosGuide.RamSpeed.Body" xml:space="preserve">
+    <value>OC Tweaker &gt; DRAM Timing Configuration &gt; DRAM Frequency. En Auto la placa elige la velocidad. Elige la velocidad que dice la etiqueta de la RAM (por ejemplo DDR4-3200), nunca una mayor.</value>
+  </data>
+  <data name="BiosGuide.Xmp.Title" xml:space="preserve">
+    <value>3. Perfil XMP</value>
+  </data>
+  <data name="BiosGuide.Xmp.Body" xml:space="preserve">
+    <value>El manual oficial no documenta una opción XMP para esta placa. Si tu BIOS muestra una en la pantalla OC Tweaker, carga la velocidad y los tiempos de la etiqueta de la RAM. La ruta se agregará cuando se verifique en una BIOS real.</value>
+  </data>
+  <data name="BiosGuide.Uma.Title" xml:space="preserve">
+    <value>4. Memoria de video (UMA) en 2 GB</value>
+  </data>
+  <data name="BiosGuide.Uma.Body" xml:space="preserve">
+    <value>Solo para PCs que usan los gráficos del procesador (APU) y tienen 16 GB de RAM o más. El manual oficial no documenta dónde está esta opción. La ruta se agregará cuando se verifique en una BIOS real.</value>
+  </data>
+  <data name="BiosGuide.Save.Title" xml:space="preserve">
+    <value>5. Guardar y salir</value>
+  </data>
+  <data name="BiosGuide.Save.Body" xml:space="preserve">
+    <value>Presiona F10, o Exit &gt; Save Changes and Exit, y confirma con OK. El PC reinicia con los valores nuevos.</value>
+  </data>
+  <data name="BiosGuide.Recover.Title" xml:space="preserve">
+    <value>Si algo sale mal</value>
+  </data>
+  <data name="BiosGuide.Recover.Body" xml:space="preserve">
+    <value>En la BIOS, F9 o Exit &gt; Load UEFI Defaults devuelve todo a los valores de fábrica; luego guarda con F10. Para salir sin guardar: F7 o Exit &gt; Discard Changes and Exit.</value>
+  </data>
+  <data name="Condition.WidgetsPolicy.Title" xml:space="preserve">
+    <value>Windows 11 Pro o superior</value>
+  </data>
+  <data name="Condition.WidgetsPolicy.Description" xml:space="preserve">
+    <value>La directiva &quot;Permitir widgets&quot; existe en Windows 11 Pro, Enterprise y Education, no en Home ni en Windows 10.</value>
+  </data>
+  <data name="Revert.GroupPolicy.Description" xml:space="preserve">
+    <value>Restaurar la directiva local {0}\{1}</value>
+  </data>
+  <data name="Optimizer.Details.Provider.GroupPolicy" xml:space="preserve">
+    <value>Directiva de grupo</value>
+  </data>
 </root>

@@ -13,7 +13,34 @@ The notices below come from optimizerDuck and still apply to Zentra. Components 
 | Component | License | Use in Zentra |
 |---|---|---|
 | [DiskSpd](https://github.com/microsoft/diskspd) | MIT, Copyright (c) 2014 Microsoft | Read-only disk benchmark. `Tools\diskspd.exe` is built by Zentra from the MIT source (commit 5e7025b, DISKSPD 2.3); see `optimizerDuck/Resources/Tools/DiskSpd/`. The Microsoft-signed release binary is not shipped (it carries a non-redistributable EULA). |
+| [Win11Debloat](https://github.com/Raphire/Win11Debloat) | MIT, Copyright (c) 2020 Raphire | Registry values of five settings, taken from its `Regfiles` (state of 2026-11-15): Windows AI service on demand, AI in Edge, AI in Paint, AI in Notepad and device app auto download. No code is copied. License text below. |
 | [QuestPDF](https://www.questpdf.com/) | QuestPDF Community License (source-available, not OSI). Free for individuals and companies under USD 1M annual gross revenue | Client PDF report. Its license terms must be reviewed before Zentra is published (see the project plan, section 11). |
+
+### License notice for [Win11Debloat](https://github.com/Raphire/Win11Debloat)
+
+```text
+MIT License
+
+Copyright (c) 2020 Raphire (https://github.com/Raphire)
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+```
 
 ---
 

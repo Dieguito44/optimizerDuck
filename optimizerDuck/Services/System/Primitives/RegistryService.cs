@@ -1066,6 +1066,17 @@ public static class RegistryService
         return (T)converted!;
     }
 
+    /// <summary>
+    ///     What a key on the way down needs: read it and create a child under it. Asking for full
+    ///     write access fails on Windows 11 25H2, where even administrators cannot set values on
+    ///     HKLM\SOFTWARE itself but can still create keys under it (Zentra, checked 19/11/2026).
+    /// </summary>
+    internal const RegistryRights ParentRights =
+        RegistryRights.ReadKey | RegistryRights.CreateSubKey;
+
+    /// <summary>What the target key needs: read, set values and create children.</summary>
+    internal const RegistryRights LeafRights = ParentRights | RegistryRights.SetValue;
+
     // walks each segment of the subkey path, creating missing segments one by one
     // only tracks the keys it actually creates so revert cleanup knows what to delete
     private static RegistryKey CreateSubKeyTrack(
@@ -1083,11 +1094,16 @@ public static class RegistryService
 
         try
         {
-            foreach (var part in parts)
+            for (var i = 0; i < parts.Length; i++)
             {
+                var part = parts[i];
                 currentPath = currentPath.Length == 0 ? part : $"{currentPath}\\{part}";
 
-                var next = current.OpenSubKey(part, true);
+                var next = current.OpenSubKey(
+                    part,
+                    RegistryKeyPermissionCheck.ReadWriteSubTree,
+                    i == parts.Length - 1 ? LeafRights : ParentRights
+                );
                 if (next == null)
                 {
                     next =
@@ -1160,7 +1176,13 @@ public static class RegistryService
                     }
                     else
                     {
-                        using var parent = root.OpenSubKey(parentPath, true);
+                        // The parent's own rights do not matter to the delete (it needs DELETE on
+                        // the child); full write here would fail on HKLM\SOFTWARE (see ParentRights).
+                        using var parent = root.OpenSubKey(
+                            parentPath,
+                            RegistryKeyPermissionCheck.ReadWriteSubTree,
+                            ParentRights
+                        );
                         parent?.DeleteSubKey(keyName, false);
                     }
 

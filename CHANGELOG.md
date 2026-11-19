@@ -4,6 +4,38 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Fase 6: perfil del servicio, privacidad e instalador (19/11/2026)
+
+**Perfil "Servicio estándar"** (tarjeta en la página Sesión, entre "Medir antes" y "Medir después")
+- 22 ajustes Safe y reversibles: IA (Click To Do, servicio de IA, Edge, Paint, Bloc de notas), apps preinstaladas y de dispositivos, TCP, anuncios y sugerencias, Noticias e intereses, Meet Now, historial de actividad, ubicación, Buscar mi dispositivo, entrega P2P, Sensor de almacenamiento, TRIM, menús más rápidos, búsqueda web y Recomendado del Inicio, anuncios de Microsoft 365.
+- Quita el bloatware de la sección 6.2 (incluye GetHelp, Family y Power Automate) y juegos de terceros preinstalados. No toca apps de streaming o redes sociales: el cliente puede usarlas.
+- Fuera, a propósito: la limpieza DISM (irreversible), GPU y energía (dependen del hardware), lo Moderate y Risky, y el inicio rápido.
+- Antes de cambiar nada pide confirmación (dice cuántos ajustes y qué apps) y crea el punto de restauración; si Windows ya hizo uno en las últimas 24 h, ese lo cubre. Sin punto de restauración no se aplica.
+- Usa el mismo camino que la página Optimizar: cada ajuste guarda su reversión y va al historial y al PDF. "Revertir perfil" devuelve cada ajuste a su valor; las apps quitadas se reinstalan desde la Microsoft Store.
+
+**Ajustes nuevos tomados de Win11Debloat** (MIT, aviso en THIRD-PARTY-NOTICES)
+- Servicio de IA de Windows (WSAIFabricSvc) en Manual, IA de Edge, Paint y Bloc de notas, y no descargar apps de dispositivos. Valores exactos de sus `Regfiles`.
+- "Anuncios de Microsoft 365 en Configuración" ya existía. El "historial de búsqueda local" ya no está en Win11Debloat y no se agregó.
+
+**Programas** (página nueva, winget)
+- Catálogo cerrado: 7-Zip, VLC, LibreOffice, Google Chrome e Intel Driver & Support Assistant (solo en PCs Intel). IDs verificados con `winget show`; comando exacto del plan.
+- Instalar y Desinstalar pasan por el diálogo de progreso y el historial. Los drivers de AMD y NVIDIA no están en winget: hay botones a sus páginas oficiales.
+
+**Guía de BIOS** (página nueva)
+- ASRock B450M-HDV R4.0 con lo que documenta su manual oficial (2021): entrar (F2/Supr), DRAM Frequency, guardar (F10) y valores de fábrica (F9).
+- El manual no documenta XMP ni la memoria de video (UMA): esos pasos lo dicen en vez de inventar una ruta.
+
+**Correcciones al motor heredado** (encontradas al probar en el PC de Diego)
+- En Windows 11 25H2 un administrador no puede escribir valores en `HKLM\SOFTWARE`, pero sí crear claves debajo. optimizerDuck pedía escritura completa en cada clave intermedia y fallaba al crear cualquier clave nueva en HKLM (8 de los ajustes del perfil). Ahora pide solo leer y crear en el camino.
+- Noticias e intereses: el driver de protección de Windows (UCPD) bloquea escribir su directiva directamente, aun como administrador. Ahora se pone por directiva de grupo local, como gpedit ("Permitir widgets" = Deshabilitada), y se revierte igual. Solo en Windows 11 Pro o superior: Home no tiene esa directiva.
+- Revertir un valor cuya clave ya no existe cuenta como hecho; antes el archivo de reversión quedaba atascado y el ajuste figuraba aplicado para siempre.
+
+**Prueba en el PC de Diego** (19/11/2026, autorizada)
+- Primer intento: 9 cambiados y 8 fallos (lo de HKLM). Tras la corrección: 16 cambiados y 1 fallo (UCPD). Con la directiva de grupo: **17 cambiados, 4 ya estaban bien, 1 no aplica, 0 fallos**.
+- Revertir: 17 revertidos, 0 fallos. Los 16 valores del registro que se fotografiaron antes quedaron idénticos, y los archivos de directiva local y las claves vacías se borraron.
+- Se quitaron 7 apps en el primer intento (Clipchamp, Noticias, El Tiempo, Obtener ayuda, Solitaire, Power Automate y To Do). No vuelven con "Revertir perfil".
+- winget: 7-Zip se instaló y se desinstaló (código 0 las dos veces).
+
 ### Fase 5: informe con IA desde la app (19/11/2026)
 
 **Qué hace**

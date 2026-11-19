@@ -3421,4 +3421,244 @@ Aggiorna ora per godere delle ultime funzionalità, miglioramenti e correzioni.<
   <data name="Report.Written.Source.Template" xml:space="preserve">
     <value>Text written by Zentra from the measured data.</value>
   </data>
+  <data name="Optimizer.AI.SetAiServiceToManual.Name" xml:space="preserve">
+    <value>Windows AI service on demand</value>
+  </data>
+  <data name="Optimizer.AI.SetAiServiceToManual.ShortDescription" xml:space="preserve">
+    <value>Sets the Windows AI service (WSAIFabricSvc) to Manual: it no longer starts with Windows, but anything that needs it can still start it. From Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.AI.DisableEdgeAiFeatures.Name" xml:space="preserve">
+    <value>Turn off AI in Edge</value>
+  </data>
+  <data name="Optimizer.AI.DisableEdgeAiFeatures.ShortDescription" xml:space="preserve">
+    <value>Turns off Copilot, the sidebar and the generative AI features in Edge with browser policies. Edge keeps working as usual. From Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.AI.DisablePaintAiFeatures.Name" xml:space="preserve">
+    <value>Turn off AI in Paint</value>
+  </data>
+  <data name="Optimizer.AI.DisablePaintAiFeatures.ShortDescription" xml:space="preserve">
+    <value>Turns off Cocreator, generative fill and erase, Image Creator and background removal in Paint. From Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.AI.DisableNotepadAiFeatures.Name" xml:space="preserve">
+    <value>Turn off AI in Notepad</value>
+  </data>
+  <data name="Optimizer.AI.DisableNotepadAiFeatures.ShortDescription" xml:space="preserve">
+    <value>Turns off the AI features (rewrite, summarize) in Notepad. From Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.PreventDeviceAppAutoDownload.Name" xml:space="preserve">
+    <value>Do not download device apps automatically</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.PreventDeviceAppAutoDownload.ShortDescription" xml:space="preserve">
+    <value>When a device is plugged in, Windows no longer downloads the maker&apos;s companion app by itself. Drivers still install. From Win11Debloat.</value>
+  </data>
+  <data name="Profile.Title" xml:space="preserve">
+    <value>Standard service profile</value>
+  </data>
+  <data name="Profile.Help" xml:space="preserve">
+    <value>Applies the standard settings (privacy, AI, ads, storage) and removes the preinstalled apps of the service list. Do it after &quot;Measure before&quot;. Every setting can be reverted; removed apps are reinstalled from the Microsoft Store.</value>
+  </data>
+  <data name="Profile.Button.Apply" xml:space="preserve">
+    <value>Apply profile</value>
+  </data>
+  <data name="Profile.Button.Revert" xml:space="preserve">
+    <value>Revert profile</value>
+  </data>
+  <data name="Profile.Confirm.Title" xml:space="preserve">
+    <value>Apply the standard service profile?</value>
+  </data>
+  <data name="Profile.Confirm.Message" xml:space="preserve">
+    <value>A restore point is created first. Then {0} settings are applied (each one can be reverted) and {1} apps are removed: {2}. Removed apps do not come back with &quot;Revert profile&quot;; they are reinstalled from the Microsoft Store.</value>
+  </data>
+  <data name="Profile.Confirm.NoApps" xml:space="preserve">
+    <value>none of the list is installed</value>
+  </data>
+  <data name="Profile.Confirm.Apply" xml:space="preserve">
+    <value>Create restore point and apply</value>
+  </data>
+  <data name="Profile.Revert.Title" xml:space="preserve">
+    <value>Revert the standard service profile?</value>
+  </data>
+  <data name="Profile.Revert.Message" xml:space="preserve">
+    <value>Every setting of the profile goes back to the value it had before. Removed apps are not reinstalled.</value>
+  </data>
+  <data name="Profile.Revert.Confirm" xml:space="preserve">
+    <value>Revert</value>
+  </data>
+  <data name="Profile.Progress" xml:space="preserve">
+    <value>{0} of {1}: {2}</value>
+  </data>
+  <data name="Profile.RestorePoint.Recent" xml:space="preserve">
+    <value>Windows already made a restore point in the last 24 hours; that one covers these changes.</value>
+  </data>
+  <data name="Profile.RestorePoint.Failed" xml:space="preserve">
+    <value>The restore point could not be created, so nothing was changed.</value>
+  </data>
+  <data name="Profile.Done.Applied" xml:space="preserve">
+    <value>Profile applied: {0} changed, {1} were already fine, {2} do not apply to this PC, {3} failed. Apps removed: {4}.</value>
+  </data>
+  <data name="Profile.Done.Reverted" xml:space="preserve">
+    <value>Profile reverted: {0} settings went back, {1} had nothing to revert, {2} failed.</value>
+  </data>
+  <data name="Profile.Problem.Setting" xml:space="preserve">
+    <value>Failed: {0}. Open it in Optimize to retry.</value>
+  </data>
+  <data name="Profile.Problem.App" xml:space="preserve">
+    <value>Could not remove: {0}</value>
+  </data>
+  <data name="Sidebar.Software" xml:space="preserve">
+    <value>Programs</value>
+  </data>
+  <data name="Software.Header.Title" xml:space="preserve">
+    <value>Programs</value>
+  </data>
+  <data name="Software.Header.Description" xml:space="preserve">
+    <value>Installs free programs from a closed list with winget, silently. Each install can be undone with Uninstall.</value>
+  </data>
+  <data name="Software.Button.Refresh" xml:space="preserve">
+    <value>Check again</value>
+  </data>
+  <data name="Software.Button.Install" xml:space="preserve">
+    <value>Install</value>
+  </data>
+  <data name="Software.Button.Uninstall" xml:space="preserve">
+    <value>Uninstall</value>
+  </data>
+  <data name="Software.Checking" xml:space="preserve">
+    <value>Checking which programs are installed...</value>
+  </data>
+  <data name="Software.WingetMissing" xml:space="preserve">
+    <value>winget could not check some programs. Check that App Installer is installed and updated from the Microsoft Store.</value>
+  </data>
+  <data name="Software.Status.Installed" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="Software.Status.NotInstalled" xml:space="preserve">
+    <value>Not installed</value>
+  </data>
+  <data name="Software.Status.Unknown" xml:space="preserve">
+    <value>Could not check</value>
+  </data>
+  <data name="Software.Run.Install" xml:space="preserve">
+    <value>Install {0}</value>
+  </data>
+  <data name="Software.Run.Uninstall" xml:space="preserve">
+    <value>Uninstall {0}</value>
+  </data>
+  <data name="Software.Run.Progress" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="Software.Run.TimedOut" xml:space="preserve">
+    <value>It took more than 30 minutes and was stopped.</value>
+  </data>
+  <data name="Software.Run.Failed" xml:space="preserve">
+    <value>winget ended with code {0}.</value>
+  </data>
+  <data name="Software.Drivers.Title" xml:space="preserve">
+    <value>AMD and NVIDIA graphics drivers</value>
+  </data>
+  <data name="Software.Drivers.Description" xml:space="preserve">
+    <value>They are not in winget. Download them from the official page of the maker of the graphics card.</value>
+  </data>
+  <data name="Software.SevenZip.Name" xml:space="preserve">
+    <value>7-Zip</value>
+  </data>
+  <data name="Software.SevenZip.Description" xml:space="preserve">
+    <value>Opens and creates compressed files (zip, rar, 7z).</value>
+  </data>
+  <data name="Software.Vlc.Name" xml:space="preserve">
+    <value>VLC media player</value>
+  </data>
+  <data name="Software.Vlc.Description" xml:space="preserve">
+    <value>Plays almost any video or audio file.</value>
+  </data>
+  <data name="Software.LibreOffice.Name" xml:space="preserve">
+    <value>LibreOffice</value>
+  </data>
+  <data name="Software.LibreOffice.Description" xml:space="preserve">
+    <value>Free office suite: documents, spreadsheets and presentations, compatible with Word and Excel.</value>
+  </data>
+  <data name="Software.Chrome.Name" xml:space="preserve">
+    <value>Google Chrome</value>
+  </data>
+  <data name="Software.Chrome.Description" xml:space="preserve">
+    <value>Web browser.</value>
+  </data>
+  <data name="Software.IntelDsa.Name" xml:space="preserve">
+    <value>Intel Driver &amp; Support Assistant</value>
+  </data>
+  <data name="Software.IntelDsa.Description" xml:space="preserve">
+    <value>Intel tool that finds and updates the drivers of Intel processors and graphics. Only shown on PCs with Intel.</value>
+  </data>
+  <data name="Sidebar.BiosGuide" xml:space="preserve">
+    <value>BIOS guide</value>
+  </data>
+  <data name="BiosGuide.Header.Title" xml:space="preserve">
+    <value>BIOS guide</value>
+  </data>
+  <data name="BiosGuide.Header.Description" xml:space="preserve">
+    <value>Steps to change the RAM speed and the graphics memory in the BIOS. Zentra never changes the BIOS: the technician or the client does it.</value>
+  </data>
+  <data name="BiosGuide.Warning" xml:space="preserve">
+    <value>A wrong BIOS value can keep the PC from starting. Change one thing at a time and write down the value it had. The manual warns that screens change with BIOS updates.</value>
+  </data>
+  <data name="BiosGuide.Board" xml:space="preserve">
+    <value>This PC: {0}, BIOS {1}</value>
+  </data>
+  <data name="BiosGuide.Match.Yes" xml:space="preserve">
+    <value>There is a guide for this motherboard.</value>
+  </data>
+  <data name="BiosGuide.Match.No" xml:space="preserve">
+    <value>There is no guide for this motherboard yet. Shown below: {0}, for reference only.</value>
+  </data>
+  <data name="BiosGuide.Source" xml:space="preserve">
+    <value>Source: official manual,</value>
+  </data>
+  <data name="BiosGuide.Enter.Title" xml:space="preserve">
+    <value>1. Enter the BIOS</value>
+  </data>
+  <data name="BiosGuide.Enter.Body" xml:space="preserve">
+    <value>Turn on the PC and press F2 or Delete right away. If Windows starts, restart and try again.</value>
+  </data>
+  <data name="BiosGuide.RamSpeed.Title" xml:space="preserve">
+    <value>2. RAM speed</value>
+  </data>
+  <data name="BiosGuide.RamSpeed.Body" xml:space="preserve">
+    <value>OC Tweaker &gt; DRAM Timing Configuration &gt; DRAM Frequency. In Auto the board picks the speed. Choose the speed printed on the RAM label (for example DDR4-3200), never a higher one.</value>
+  </data>
+  <data name="BiosGuide.Xmp.Title" xml:space="preserve">
+    <value>3. XMP profile</value>
+  </data>
+  <data name="BiosGuide.Xmp.Body" xml:space="preserve">
+    <value>The official manual does not document an XMP option for this board. If your BIOS shows one on the OC Tweaker screen, it loads the speed and timings of the RAM label. The path will be added when it is verified on a real BIOS.</value>
+  </data>
+  <data name="BiosGuide.Uma.Title" xml:space="preserve">
+    <value>4. Graphics memory (UMA) at 2 GB</value>
+  </data>
+  <data name="BiosGuide.Uma.Body" xml:space="preserve">
+    <value>Only for PCs that use the processor graphics (APU) and have 16 GB of RAM or more. The official manual does not document where this option is. The path will be added when it is verified on a real BIOS.</value>
+  </data>
+  <data name="BiosGuide.Save.Title" xml:space="preserve">
+    <value>5. Save and exit</value>
+  </data>
+  <data name="BiosGuide.Save.Body" xml:space="preserve">
+    <value>Press F10, or Exit &gt; Save Changes and Exit, and confirm with OK. The PC restarts with the new values.</value>
+  </data>
+  <data name="BiosGuide.Recover.Title" xml:space="preserve">
+    <value>If something goes wrong</value>
+  </data>
+  <data name="BiosGuide.Recover.Body" xml:space="preserve">
+    <value>In the BIOS, F9 or Exit &gt; Load UEFI Defaults puts every setting back to factory values; then save with F10. To leave without saving: F7 or Exit &gt; Discard Changes and Exit.</value>
+  </data>
+  <data name="Condition.WidgetsPolicy.Title" xml:space="preserve">
+    <value>Windows 11 Pro or higher</value>
+  </data>
+  <data name="Condition.WidgetsPolicy.Description" xml:space="preserve">
+    <value>The &quot;Allow widgets&quot; policy exists on Windows 11 Pro, Enterprise and Education, not on Home or Windows 10.</value>
+  </data>
+  <data name="Revert.GroupPolicy.Description" xml:space="preserve">
+    <value>Restore the local policy {0}\{1}</value>
+  </data>
+  <data name="Optimizer.Details.Provider.GroupPolicy" xml:space="preserve">
+    <value>Group Policy</value>
+  </data>
 </root>

@@ -62,6 +62,36 @@ public class BloatwareAndServices : LocalizedObject, IOptimizationCategory
     }
 
     /// <summary>
+    ///     From Win11Debloat "Disable_Device_Auto_App_Download" (MIT, Copyright (c) 2020 Raphire):
+    ///     Windows stops downloading the maker's companion apps when a device is plugged in.
+    ///     Drivers still install.
+    /// </summary>
+    [Optimization(
+        Id = "3F8A6D21-B4C9-4E57-9A02-7D1C5E8B4F63",
+        Risk = OptimizationRisk.Safe,
+        Tags = OptimizationTags.System
+    )]
+    public class PreventDeviceAppAutoDownload : BaseOptimization
+    {
+        public override Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            RegistryService.Write(
+                context,
+                new RegistryItem(
+                    @"HKLM\SOFTWARE\Policies\Microsoft\Windows\Device Metadata",
+                    "PreventDeviceMetadataFromNetwork",
+                    1
+                )
+            );
+            context.Logger.LogInformation("Blocked automatic download of device apps");
+            return Task.FromResult(context.Changes.ToApplyResult());
+        }
+    }
+
+    /// <summary>
     ///     Zentra replacement for the upstream "200+ services" tweak (plan section 1.1,
     ///     ACT-SERVICES-MANUAL). Only a short allow-list of rarely used services moves to
     ///     Manual, never Disabled: Windows still starts them on demand. A service missing on this

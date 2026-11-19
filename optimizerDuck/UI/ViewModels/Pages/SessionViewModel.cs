@@ -25,12 +25,16 @@ public partial class SessionViewModel(
     PdfReportService pdfReportService,
     AiReportService aiReportService,
     ApiKeyStore apiKeyStore,
+    ServiceProfileViewModel profile,
     TimeProvider timeProvider,
     ILogger<SessionViewModel> logger
 ) : ViewModel
 {
     private CancellationTokenSource? _cts;
     private ServiceSession? _session;
+
+    /// <summary>The "Servicio estándar" card (phase 6).</summary>
+    public ServiceProfileViewModel Profile { get; } = profile;
 
     [ObservableProperty]
     private string _clientLabel = string.Empty;

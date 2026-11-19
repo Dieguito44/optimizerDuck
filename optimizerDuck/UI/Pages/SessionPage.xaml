@@ -88,6 +88,55 @@
                     Style="{StaticResource CaptionTextStyle}"
                     Text="{ext:Loc Session.Steps.Help}" />
 
+                <!--  "Servicio estándar" profile (phase 6): between the "before" and "after" measurements.  -->
+                <Border Style="{StaticResource CardSurfaceStyle}">
+                    <StackPanel>
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Profile.Title}" />
+                        <ui:TextBlock
+                            Margin="0,2,0,8"
+                            Style="{StaticResource CaptionTextStyle}"
+                            Text="{ext:Loc Profile.Help}"
+                            TextWrapping="Wrap" />
+                        <WrapPanel Orientation="Horizontal">
+                            <ui:Button
+                                Margin="0,2,8,2"
+                                Appearance="Primary"
+                                Command="{Binding ViewModel.Profile.ApplyCommand}"
+                                Content="{ext:Loc Profile.Button.Apply}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon WrenchScrewdriver24}" />
+                            <ui:Button
+                                Margin="0,2,8,2"
+                                Command="{Binding ViewModel.Profile.RevertCommand}"
+                                Content="{ext:Loc Profile.Button.Revert}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon ArrowUndo24}" />
+                        </WrapPanel>
+                        <ui:ProgressRing
+                            Width="22"
+                            Height="22"
+                            Margin="0,6,0,0"
+                            HorizontalAlignment="Left"
+                            IsIndeterminate="True"
+                            Visibility="{Binding ViewModel.Profile.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <ui:TextBlock
+                            Margin="0,6,0,0"
+                            Text="{Binding ViewModel.Profile.StatusText}"
+                            TextWrapping="Wrap" />
+                        <ui:TextBlock
+                            Foreground="#D13438"
+                            Text="{Binding ViewModel.Profile.ErrorText}"
+                            TextWrapping="Wrap" />
+                        <ItemsControl ItemsSource="{Binding ViewModel.Profile.Problems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <ui:TextBlock Foreground="#C75000" Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap" />
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </Border>
+
                 <!--  Report with AI (phase 5). The key is read from a plain WPF PasswordBox, never bound.  -->
                 <Border Style="{StaticResource CardSurfaceStyle}">
                     <StackPanel>

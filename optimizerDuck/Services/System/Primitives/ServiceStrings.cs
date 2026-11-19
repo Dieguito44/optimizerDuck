@@ -67,6 +67,13 @@ public static class ServiceStrings
         "Cannot toggle startup app '{0}': its location is not supported";
 
     public const string HibernationName = "Hibernation";
+
+    // Local Group Policy (Zentra phase 6)
+    public const string GroupPolicyName = "Group Policy";
+    public const string GroupPolicyErrorNotApplied =
+        "Windows did not apply the policy (Windows Home editions do not process local policies)";
+    public const string GroupPolicyErrorFiles =
+        "The local policy files could not be read or written";
     public const string HibernationDescriptionDisable = "Disable hibernation and Fast Startup";
     public const string HibernationErrorChangeFailed =
         "Failed to change the hibernation file state: {0}";
