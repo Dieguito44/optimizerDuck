@@ -350,7 +350,9 @@ public partial class App : Application
 
         await Dispatcher.InvokeAsync(() =>
         {
-            Loc.Instance.ChangeCulture(new CultureInfo(appSettings.App.Language));
+            Loc.Instance.ChangeCulture(
+                Domain.UI.SupportedLanguages.Resolve(appSettings.App.Language).Culture
+            );
         });
 
         _logger = _host.Services.GetRequiredService<ILogger<App>>();

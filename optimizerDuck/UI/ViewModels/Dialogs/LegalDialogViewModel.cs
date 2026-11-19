@@ -31,7 +31,9 @@ public partial class LegalDialogViewModel(
 
     protected override Task InitializeOnceAsync()
     {
-        SelectedCultureName = appOptionsMonitor.CurrentValue.App.Language;
+        SelectedCultureName = SupportedLanguages
+            .Resolve(appOptionsMonitor.CurrentValue.App.Language)
+            .Culture.Name;
         CurrentApplicationTheme = ApplicationThemeManager.GetAppTheme();
         ApplicationThemeManager.Changed += OnThemeChanged;
         return Task.CompletedTask;

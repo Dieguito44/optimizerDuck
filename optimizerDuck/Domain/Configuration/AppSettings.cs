@@ -16,9 +16,9 @@ public sealed class AppSettings
     public sealed class AppOptions
     {
         /// <summary>
-        ///     The UI language code (e.g., "es-ES"). Zentra defaults to Spanish.
+        ///     The UI language code (e.g., "es-CO"). Zentra defaults to Colombian Spanish (F3-11).
         /// </summary>
-        public string Language { get; set; } = "es-ES";
+        public string Language { get; set; } = "es-CO";
 
         /// <summary>
         ///     The UI theme (e.g., "Dark").
