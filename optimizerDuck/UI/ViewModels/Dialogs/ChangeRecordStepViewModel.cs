@@ -197,6 +197,7 @@ public sealed class ChangeRecordStepViewModel
             "USB power" => Loc.Instance["Optimizer.Details.Provider.UsbPower"],
             "Shell" => Loc.Instance["Optimizer.Details.Provider.Shell"],
             "Group Policy" => Loc.Instance["Optimizer.Details.Provider.GroupPolicy"],
+            "Display" => Loc.Instance["Optimizer.Details.Provider.Display"],
             _ => name,
         };
     }

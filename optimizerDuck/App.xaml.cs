@@ -371,6 +371,10 @@ public partial class App : Application
 
         await _host.StartAsync();
 
+        // ACT-MON-HZ asks the person at the PC before keeping a new refresh rate.
+        optimizerDuck.Services.Diagnostics.DisplayModeService.Confirm =
+            DisplayConfirmWindow.AskAsync;
+
         var config = _host.Services.GetRequiredService<ConfigManager>();
         await config.InitializeAsync();
         await config.EnsureDefaultsAsync();

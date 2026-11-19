@@ -5539,4 +5539,43 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Diagnostic.Evidence.games.no_gpu_pref" xml:space="preserve">
     <value>Juegos sin preferencia de gráfica</value>
   </data>
+  <data name="Optimizer.Gpu.SetMonitorsToMaxRefresh.Name" xml:space="preserve">
+    <value>Monitores a sus Hz máximos</value>
+  </data>
+  <data name="Optimizer.Gpu.SetMonitorsToMaxRefresh.ShortDescription" xml:space="preserve">
+    <value>Sube cada monitor a sus Hz máximos en su resolución nativa. Una ventana le pregunta a quien está frente al PC si ve la imagen; si nadie responde en 15 segundos, vuelve solo.</value>
+  </data>
+  <data name="Optimizer.Gpu.SetGamesToHighPerformanceGpu.Name" xml:space="preserve">
+    <value>Juegos en la gráfica de alto rendimiento</value>
+  </data>
+  <data name="Optimizer.Gpu.SetGamesToHighPerformanceGpu.ShortDescription" xml:space="preserve">
+    <value>Para portátiles con dos gráficas: los juegos que Windows ha visto abrir, sin preferencia, quedan en &quot;Alto rendimiento&quot;. Una preferencia que ya elegiste no se cambia.</value>
+  </data>
+  <data name="Optimizer.Gpu.SetGamesToHighPerformanceGpu.Error.OtherUser" xml:space="preserve">
+    <value>Zentra corre con otra cuenta distinta a la del usuario que inició sesión, así que la preferencia no llegaría a sus juegos.</value>
+  </data>
+  <data name="Optimizer.Gpu.SetGamesToHighPerformanceGpu.Error.NothingToSet" xml:space="preserve">
+    <value>Ningún juego sin preferencia ({0} juegos encontrados).</value>
+  </data>
+  <data name="DisplayConfirm.Title" xml:space="preserve">
+    <value>Zentra: nueva frecuencia</value>
+  </data>
+  <data name="DisplayConfirm.Message" xml:space="preserve">
+    <value>Cambió la frecuencia de {0}. ¿Ves bien la imagen en ese monitor?</value>
+  </data>
+  <data name="DisplayConfirm.Countdown" xml:space="preserve">
+    <value>Vuelve sola en {0} s.</value>
+  </data>
+  <data name="DisplayConfirm.Keep" xml:space="preserve">
+    <value>Sí, dejarla</value>
+  </data>
+  <data name="DisplayConfirm.Back" xml:space="preserve">
+    <value>Volver</value>
+  </data>
+  <data name="Revert.DisplayMode.Description" xml:space="preserve">
+    <value>Devolver {0} a {1} Hz</value>
+  </data>
+  <data name="Optimizer.Details.Provider.Display" xml:space="preserve">
+    <value>Pantalla</value>
+  </data>
 </root>

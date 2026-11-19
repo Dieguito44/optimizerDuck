@@ -275,4 +275,85 @@ public class Gpu : LocalizedObject, IOptimizationCategory
             return [new RegistryItem(path, "AdaptiveVsyncEnable", 0)];
         }
     }
+
+    /// <summary>
+    ///     Zentra ACT-MON-HZ (plan phase 6B): every real monitor to its highest refresh rate at
+    ///     its native resolution. Tested, applied without saving, and kept only when someone at
+    ///     the PC confirms within 15 seconds (RustDesk does not show a black monitor).
+    /// </summary>
+    [Optimization(
+        Id = "4C9E2B71-8A35-4F6D-B0E2-17D5A3C8F964",
+        Risk = OptimizationRisk.Safe,
+        Tags = OptimizationTags.Display | OptimizationTags.Performance
+    )]
+    public class SetMonitorsToMaxRefresh : BaseOptimization
+    {
+        public override async Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            await Services.Diagnostics.DisplayModeService.ApplyAsync(context);
+            return context.Changes.ToApplyResult();
+        }
+    }
+
+    /// <summary>
+    ///     Zentra ACT-GPU-PREF (plan phase 6B): games Windows has seen run, with no GPU preference,
+    ///     go to "high performance". Only GpuPreference is added; any other setting of the game
+    ///     stays as it was, and a preference the user set is never changed.
+    /// </summary>
+    [Optimization(
+        Id = "B7D31F84-6C2A-4E95-A8B0-3F5E9D1C27A6",
+        Risk = OptimizationRisk.Safe,
+        Tags = OptimizationTags.Performance | OptimizationTags.Display
+    )]
+    public class SetGamesToHighPerformanceGpu : BaseOptimization
+    {
+        public override Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            if (!Services.Diagnostics.ConsoleUser.IsCurrentProcessUser())
+            {
+                // HKCU would be another account's: the games would not see the preference.
+                context.Changes.AddRefused(Name, Loc.Instance[$"{ErrorPrefix}.OtherUser"]);
+                return Task.FromResult(context.Changes.ToApplyResult());
+            }
+
+            var games = Services.Diagnostics.GameExecutableLocator.Find();
+            var changed = 0;
+            foreach (var exe in games)
+            {
+                var value = Services.Diagnostics.GpuPreferenceValue.WithHighPerformance(
+                    Services.Diagnostics.GpuPreferenceValue.Read(exe)
+                );
+                if (value is null)
+                    continue;
+                RegistryService.Write(
+                    context,
+                    new RegistryItem(
+                        $@"HKCU\{Services.Diagnostics.GpuPreferenceValue.Key}",
+                        exe,
+                        value,
+                        Microsoft.Win32.RegistryValueKind.String
+                    )
+                );
+                changed++;
+            }
+
+            if (changed == 0)
+                context.Changes.AddSkip(
+                    Name,
+                    Loc.Instance[$"{ErrorPrefix}.NothingToSet", games.Count]
+                );
+            context.Logger.LogInformation(
+                "GPU preference set for {Changed} of {Games} games",
+                changed,
+                games.Count
+            );
+            return Task.FromResult(context.Changes.ToApplyResult());
+        }
+    }
 }
