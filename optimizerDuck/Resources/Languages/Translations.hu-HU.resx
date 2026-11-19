@@ -3027,13 +3027,13 @@ Frissíts most, hogy élvezhesd a legújabb funkciókat, javításokat és hibaj
     <value>Only saved on this PC and printed on the PDF. It is never sent to the AI.</value>
   </data>
   <data name="Session.Button.Before" xml:space="preserve">
-    <value>1. Measure before</value>
+    <value>Measure before</value>
   </data>
   <data name="Session.Button.After" xml:space="preserve">
-    <value>2. Measure after</value>
+    <value>Measure after</value>
   </data>
   <data name="Session.Button.Pdf" xml:space="preserve">
-    <value>3. Create PDF</value>
+    <value>Create PDF</value>
   </data>
   <data name="Session.Button.Folder" xml:space="preserve">
     <value>Open folder</value>
@@ -3045,7 +3045,7 @@ Frissíts most, hogy élvezhesd a legújabb funkciókat, javításokat és hibaj
     <value>New session</value>
   </data>
   <data name="Session.Steps.Help" xml:space="preserve">
-    <value>Each measurement runs the diagnosis and takes about 2 minutes (more right after logon). Apply the optimizations between step 1 and step 2, and restart the PC before measuring after.</value>
+    <value>Each measurement runs the diagnosis and takes about 2 minutes (more right after logon). Apply the profile and any other optimizations between step 1 and step 3, and restart the PC before measuring after.</value>
   </data>
   <data name="Session.Step.Diagnosis" xml:space="preserve">
     <value>Running the diagnosis...</value>

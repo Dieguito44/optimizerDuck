@@ -164,9 +164,12 @@
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border Style="{StaticResource CardSurfaceStyle}">
-                                    <Grid ColumnDefinitions="4,*">
+                                    <!--  The stripe needs its width plus the gap: a 4 px column with a 12 px margin left nothing to paint.  -->
+                                    <Grid ColumnDefinitions="16,*">
                                         <Border
+                                            Width="4"
                                             Margin="0,0,12,0"
+                                            HorizontalAlignment="Left"
                                             Background="{Binding SeverityBrush}"
                                             CornerRadius="2" />
                                         <StackPanel Grid.Column="1">

@@ -4769,13 +4769,13 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
     <value>Solo se guarda en este PC y sale en el PDF. Nunca se envía a la IA.</value>
   </data>
   <data name="Session.Button.Before" xml:space="preserve">
-    <value>1. Medir antes</value>
+    <value>Medir antes</value>
   </data>
   <data name="Session.Button.After" xml:space="preserve">
-    <value>2. Medir después</value>
+    <value>Medir después</value>
   </data>
   <data name="Session.Button.Pdf" xml:space="preserve">
-    <value>3. Generar PDF</value>
+    <value>Generar PDF</value>
   </data>
   <data name="Session.Button.Folder" xml:space="preserve">
     <value>Abrir carpeta</value>
@@ -4787,7 +4787,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
     <value>Nueva sesión</value>
   </data>
   <data name="Session.Steps.Help" xml:space="preserve">
-    <value>Cada medición corre el diagnóstico y tarda unos 2 minutos (más si se acaba de iniciar sesión). Aplica las optimizaciones entre el paso 1 y el 2, y reinicia el PC antes de medir después.</value>
+    <value>Cada medición corre el diagnóstico y tarda unos 2 minutos (más si se acaba de iniciar sesión). Aplica el perfil y las demás optimizaciones entre el paso 1 y el 3, y reinicia el PC antes de medir después.</value>
   </data>
   <data name="Session.Step.Diagnosis" xml:space="preserve">
     <value>Corriendo el diagnóstico...</value>
