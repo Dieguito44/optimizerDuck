@@ -4,6 +4,24 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Fase 6B: diagnóstico ampliado y mantenimiento (19/11/2026, abierta: falta la prueba en el PC)
+
+**Diagnósticos nuevos**
+- R-MON-HZ (Alta): monitor por debajo de sus Hz. Solo monitores físicos con EDID, sin clonar, en su resolución nativa y con 10 Hz o más de diferencia. Monitores con la configuración de pantalla de Windows (CCD), no con WMI (que da una fila por adaptador).
+- R-MON-PORT (Crítica): sobremesa con gráfica dedicada sin monitores y un monitor externo en la integrada. Gráficas clasificadas con los bits del kernel (D3DKMT); sin Vortice.
+- R-GPU-HYBRID (Alta): portátil donde Windows sí cambia de gráfica y juegos vistos sin preferencia. Al snapshot solo van conteos, nunca rutas.
+- R-APPS-OUTDATED (Media): 5 o más programas con versión nueva en winget.
+- R-PUA-OFF (Media): bloqueo de aplicaciones no deseadas apagado **o en auditoría** (desviación: el plan solo nombra el valor 0; la auditoría no bloquea nada).
+- R-BATTERY (Alta), R-THERMAL (Alta), R-NET-100M (Media), R-RAM-IDLE-HIGH (Alta, desde la medición de la Sesión), R-BACKUP-NONE (Media).
+
+**Acciones nuevas**
+- Monitores a sus Hz máximos: prueba, aplica sin guardar, verifica y pide confirmación a quien está frente al PC en 15 s; sin respuesta vuelve solo. Diseñado con la consulta Fable (por RustDesk el técnico no ve una pantalla negra).
+- Juegos en la gráfica de alto rendimiento, bloqueo de PUA (al revertir queda en auditoría, nunca apagado), navegadores sin segundo plano, tarjeta de red sin ahorro de energía (con -NoRestart), puntos de restauración semanales, carpetas grandes fuera del indexador (ISearchCrawlScopeManager).
+- Escaneo completo y sin conexión de Defender (Reparar Windows), "Actualizar todos" (Programas), programas que más ocupan (PDF local).
+- Temperatura: LibreHardwareMonitorLib 0.9.6 (MPL-2.0) con el driver PawnIO, que Zentra instala con winget solo para medir, con consentimiento, y desinstala enseguida.
+
+**Estado:** los tests pasan en GitHub. La prueba en el PC de Diego no se pudo hacer: Smart App Control empezó a bloquear Zentra.exe sin firmar. Queda pendiente de la firma de código (Fase 8). La rama `fase-6b-diagnostico-ampliado` (PR 6) sigue sin fusionar.
+
 ### Fase 6: perfil del servicio, privacidad e instalador (19/11/2026)
 
 **Perfil "Servicio estándar"** (tarjeta en la página Sesión, entre "Medir antes" y "Medir después")
