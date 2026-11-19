@@ -121,6 +121,19 @@ public static class SnapshotFactory
                 WingetUpgrades = Measured<int>.Of(0),
                 PuaProtection = Measured<PuaMode>.Of(PuaMode.On),
             },
+            // What the display probe read on Diego's PC (one APU, an HDMI monitor at its maximum and a
+            // phantom DisplayPort output without EDID).
+            Display = optimizerDuck.Services.Diagnostics.DisplaySnapshotMapper.Map(
+                optimizerDuck.Test.Domain.Diagnostics.DisplayFixtures.DiegoPcProbe(),
+                CpuVendor.Amd,
+                "AMD Ryzen 5 5600GT with Radeon Graphics"
+            ),
+            // No throttling events; the temperature needs PawnIO (not installed).
+            Thermal = new ThermalSnapshot
+            {
+                CpuTemperatureC = Measured<double>.Missing(NotMeasuredReason.RequiresExternalTool),
+                FirmwareThrottling7d = Measured<int>.Of(0),
+            },
             Disks =
             [
                 // Measured elevated on 2026-11-19: the A400 reports Wear 0 on SATA (unknown) and
