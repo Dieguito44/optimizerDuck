@@ -34,6 +34,9 @@ public sealed class DiagnosticCollector(
     /// <summary>The battery report (powercfg) takes a few seconds more than a WMI read.</summary>
     private static readonly TimeSpan BatteryTimeout = TimeSpan.FromSeconds(35);
 
+    /// <summary>smartctl reads each SSD in a second or two; up to 15 s each before it is stopped.</summary>
+    private static readonly TimeSpan SmartctlTimeout = TimeSpan.FromSeconds(40);
+
     private static UpdateHealthSnapshot UpdateHealth(
         Measured<UpdateHistory> history,
         Measured<IReadOnlyList<string>> disabledServices
@@ -67,6 +70,7 @@ public sealed class DiagnosticCollector(
             ),
             ct
         );
+        var hostWritesTask = ReadHostWritesAsync(storageTask, ct);
         var stabilityTask = Run(
             "stability",
             () => DiagnosticProbes.ReadStability(now),
@@ -192,6 +196,7 @@ public sealed class DiagnosticCollector(
 
         await Task.WhenAll(
                 storageTask,
+                hostWritesTask,
                 stabilityTask,
                 configTask,
                 activationTask,
@@ -227,7 +232,7 @@ public sealed class DiagnosticCollector(
 
         var probes = new DiagnosticProbeData
         {
-            Disks = storage.Disks,
+            Disks = await hostWritesTask.ConfigureAwait(false),
             SystemDiskNumber = storage.SystemDiskNumber,
             PhysicallyInstalledBytes = DiagnosticProbes.ReadPhysicallyInstalledBytes(),
             Activated = await activationTask.ConfigureAwait(false),
@@ -397,6 +402,33 @@ public sealed class DiagnosticCollector(
             logger.LogError(ex, "Diagnostic probe {Probe} failed", name);
             return onTimeout;
         }
+    }
+
+    /// <summary>F2-09: adds smartctl's host writes to the SSD rows once the storage probe is done.</summary>
+    private async Task<IReadOnlyList<DiskProbeRow>> ReadHostWritesAsync(
+        Task<DiagnosticProbes.StorageProbeResult> storageTask,
+        CancellationToken ct
+    )
+    {
+        var disks = (await storageTask.ConfigureAwait(false)).Disks;
+        IReadOnlyList<DiskProbeRow> timedOut = disks
+            .Select(d =>
+                SmartctlProbe.IsCandidate(d)
+                    ? d with
+                    {
+                        HostWritesReason = NotMeasuredReason.TimedOut,
+                    }
+                    : d
+            )
+            .ToList();
+        return await Run(
+                "smartctl",
+                () => SmartctlProbe.WithHostWrites(disks),
+                SmartctlTimeout,
+                timedOut,
+                ct
+            )
+            .ConfigureAwait(false);
     }
 
     private static Measured<T> TimedOut<T>() => Measured<T>.Missing(NotMeasuredReason.TimedOut);

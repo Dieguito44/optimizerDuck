@@ -1,0 +1,19 @@
+smartctl.exe from smartmontools 7.5 (GPL-2.0-or-later, see LICENSE.txt), unmodified.
+
+Upstream: https://www.smartmontools.org
+Release:  https://github.com/smartmontools/smartmontools/releases/tag/RELEASE_7_5
+Source:   https://github.com/smartmontools/smartmontools/releases/download/RELEASE_7_5/smartmontools-7.5.tar.gz
+
+How it was obtained (2026-11-19):
+- Downloaded smartmontools-7.5.win32-setup.exe (1,508,408 bytes) with its .asc and .md5 from the release above.
+- MD5 matched. OpenPGP signature verified: "Good signature" from "Smartmontools Signing Key
+  (through 2025)", fingerprint 0C95 77FD 2C4C FCB4 B9A5 9964 0A30 812E FF3A EFF5
+  (signed 2025-04-30, inside the key's validity).
+- The installer was NOT run. The x64 smartctl.exe was extracted from its NSIS (LZMA solid) data.
+  Its SHA-256 matches the checksum list shipped inside the signed installer.
+
+SHA256: B5DB94E5082C042BE44994B7A4FA8F7B5C8E713B2AB1C9A560D8F7A7995EA27D
+Zentra checks this hash before every run and refuses to run a different file.
+
+GPL-2.0 section 3: any release of Zentra that includes smartctl.exe must also ship the
+source tarball above (or the complete corresponding source) next to the binary.

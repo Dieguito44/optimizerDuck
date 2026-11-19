@@ -356,6 +356,33 @@ public class SnapshotBuilderTests
         };
 
     [Fact]
+    public void Build_CarriesSmartctlHostWritesOrTheirReason()
+    {
+        var probes = Probes();
+        probes = probes with
+        {
+            Disks =
+            [
+                probes.Disks[0] with
+                {
+                    HostWritesBytes = 42,
+                },
+                probes.Disks[1] with
+                {
+                    HostWritesReason = NotMeasuredReason.AccessDenied,
+                },
+            ],
+        };
+        var disks = DiagnosticSnapshotBuilder.Build(Info(), probes, Now).Disks;
+
+        Assert.Equal(42, disks[0].BytesWritten.ValueOrDefault);
+        Assert.Equal(NotMeasuredReason.AccessDenied, disks[1].BytesWritten.Reason);
+        // Without smartctl's answer the reason stays "needs an external tool".
+        var plain = DiagnosticSnapshotBuilder.Build(Info(), Probes(), Now).Disks;
+        Assert.Equal(NotMeasuredReason.RequiresExternalTool, plain[0].BytesWritten.Reason);
+    }
+
+    [Fact]
     public void Build_UsesInstalledRamAndKeepsSlotsApart()
     {
         var snapshot = DiagnosticSnapshotBuilder.Build(Info(), Probes(), Now);

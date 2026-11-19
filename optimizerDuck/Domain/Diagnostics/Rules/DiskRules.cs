@@ -103,8 +103,9 @@ public sealed class SsdHealthRule : IDiagnosticRule
 }
 
 /// <summary>
-///     R-SSD-WEAR: an SSD at 80 % or more of its rated life. The TBW branch needs total host
-///     writes, which only smartctl gives; until then wear comes from Windows' reliability counter.
+///     R-SSD-WEAR: an SSD at 80 % or more of its rated life. Wear comes from Windows' reliability
+///     counter (real on NVMe); otherwise from smartctl's total host writes against the rated TBW
+///     in the reference table. A model not in the table is "not measurable", never a guess.
 /// </summary>
 public sealed class SsdWearRule : IDiagnosticRule
 {

@@ -1,7 +1,7 @@
 {
   "schema": 1,
   "updated": "2026-11-19",
-  "notes": "Rated endurance (TBW, terabytes written) by model, as Windows reports the model. Every value comes from the manufacturer's datasheet or flyer (URL in source, checked 2026-11-19). Not listed = not measurable, never a guess. Left out on purpose: Crucial P3 (no clear official table) and P3 Plus 4TB (the flyer and other sources disagree). Used once total host writes can be read (smartctl).",
+  "notes": "Rated endurance (TBW, terabytes written) by model, as Windows reports the model. Every value comes from the manufacturer's datasheet or flyer (URL in source, checked 2026-11-19). Not listed = not measurable, never a guess. Left out on purpose: Crucial P3 (no clear official table) and P3 Plus 4TB (the flyer and other sources disagree). Compared with the total host writes smartctl reads (F2-09).",
   "entries": [
     { "match": "regex", "pattern": "^KINGSTON SA400S37/?120G", "tbw_tb": 40, "source": "Kingston A400 datasheet, https://www.kingston.com/datasheets/SA400S37_us.pdf" },
     { "match": "regex", "pattern": "^KINGSTON SA400S37/?240G", "tbw_tb": 80, "source": "Kingston A400 datasheet, https://www.kingston.com/datasheets/SA400S37_us.pdf" },
