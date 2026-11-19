@@ -9,6 +9,7 @@ using Microsoft.Extensions.Options;
 using optimizerDuck.Common.Helpers;
 using optimizerDuck.Domain.Configuration;
 using optimizerDuck.Domain.Optimizations.Models.Bloatware;
+using optimizerDuck.Services.System;
 using optimizerDuck.Services.System.Primitives;
 using AppXPackage = optimizerDuck.Domain.Optimizations.Models.Bloatware.AppXPackage;
 using JsonSerializer = System.Text.Json.JsonSerializer;
@@ -33,6 +34,16 @@ public class BloatwareService(
         RegexOptions.IgnoreCase | RegexOptions.Compiled
     );
     private static readonly string[] SupportedImageExtensions = [".png", ".jpg", ".jpeg", ".ico"];
+
+    /// <summary>
+    ///     " -User '&lt;SID&gt;'" when Zentra runs as another administrator than the client
+    ///     (plan F2-05): the client's apps are listed and removed, not the administrator's.
+    ///     Only a validated user SID ever reaches the command line.
+    /// </summary>
+    internal static string UserArgument() =>
+        InteractiveUser.RedirectSid is { } sid && InteractiveUser.IsUserSid(sid)
+            ? $" -User '{sid}'"
+            : string.Empty;
 
     /// <summary>
     ///     Zentra's label for an app (plan 6.2, audit Z-15): "Safe", which the Bloatware page
@@ -62,7 +73,7 @@ public class BloatwareService(
                     $safeRegex = '{{safePattern}}'
                     $cautionRegex = '{{cautionPattern}}'
 
-                    Get-AppxPackage |
+                    Get-AppxPackage{{UserArgument()}} |
                     Where-Object {
                         $_.NonRemovable -eq $false -and
                         $_.IsFramework -eq $false
@@ -311,7 +322,7 @@ public class BloatwareService(
                 $pkgFull = '{{safePackageFullName}}'
                 $name = '{{safeName}}'
 
-                $installed = Get-AppxPackage -PackageTypeFilter Main,Bundle,Resource |
+                $installed = Get-AppxPackage{{UserArgument()}} -PackageTypeFilter Main,Bundle,Resource |
                              Where-Object { $_.PackageFullName -eq $pkgFull -or $_.Name -eq $name }
 
                 if (-not $installed) {
@@ -319,7 +330,7 @@ public class BloatwareService(
                 } else {
                     foreach ($p in $installed) {
                         try {
-                            Remove-AppxPackage -Package $p.PackageFullName -ErrorAction Stop
+                            Remove-AppxPackage{{UserArgument()}} -Package $p.PackageFullName -ErrorAction Stop
                             Write-Output "Removed: $($p.PackageFullName)"
                         } catch {
                             Write-Output "Failed: $($p.PackageFullName). Error: $($_.Exception.Message)"

@@ -24,5 +24,8 @@ internal static class TestCulture
         Thread.CurrentThread.CurrentCulture = culture;
         Thread.CurrentThread.CurrentUICulture = culture;
         Translations.Culture = culture;
+
+        // The build machine's console user must never change where HKCU tests write.
+        optimizerDuck.Services.System.InteractiveUser.Source = () => null;
     }
 }

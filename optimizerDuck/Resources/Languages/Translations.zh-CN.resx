@@ -4183,4 +4183,7 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="Optimizer.Storage.WeeklyRestorePoints.ProtectionFailed" xml:space="preserve">
     <value>Windows did not turn system protection on.</value>
   </data>
+  <data name="Session.UserRedirect" xml:space="preserve">
+    <value>Zentra is running with another administrator account than the person at this PC. User settings and apps are changed in the account of the person signed in at the PC, not in the administrator account.</value>
+  </data>
 </root>

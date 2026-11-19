@@ -66,6 +66,16 @@ public static class RegistryService
         }
 
         subPath = idx > 0 ? pathSpan[(idx + 1)..].ToString() : string.Empty;
+
+        // HKCU is the client's when Zentra runs as another administrator (plan F2-05): every
+        // read, write and revert of "HKCU\..." goes to HKEY_USERS\<client SID> instead.
+        if (
+            ReferenceEquals(rootKey, Registry.CurrentUser) && InteractiveUser.RedirectSid is { } sid
+        )
+        {
+            rootKey = Registry.Users;
+            subPath = subPath.Length == 0 ? sid : $@"{sid}\{subPath}";
+        }
         return true;
     }
 

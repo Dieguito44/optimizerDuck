@@ -394,6 +394,20 @@ internal static class ConsoleUser
         return current.Equals($"{domain}\\{user}", StringComparison.OrdinalIgnoreCase);
     }
 
+    /// <summary>The SID of the user signed in at the console, or null when there is none.</summary>
+    public static string? ConsoleUserSid()
+    {
+        var session = WTSGetActiveConsoleSessionId();
+        var user = Query(session, 5);
+        var domain = Query(session, 7);
+        if (string.IsNullOrEmpty(user))
+            return null;
+        var account = string.IsNullOrEmpty(domain)
+            ? new NTAccount(user)
+            : new NTAccount(domain, user);
+        return account.Translate(typeof(SecurityIdentifier)).Value;
+    }
+
     private static string? Query(uint session, int infoClass)
     {
         if (!WTSQuerySessionInformation(IntPtr.Zero, session, infoClass, out var buffer, out _))

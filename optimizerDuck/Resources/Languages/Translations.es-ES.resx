@@ -5974,4 +5974,7 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   <data name="Optimizer.Storage.WeeklyRestorePoints.ProtectionFailed" xml:space="preserve">
     <value>Windows no activó la protección del sistema.</value>
   </data>
+  <data name="Session.UserRedirect" xml:space="preserve">
+    <value>Zentra corre con otra cuenta de administrador distinta a la de quien está en este PC. Los ajustes y apps del usuario se cambian en la cuenta de quien tiene la sesión abierta en el PC, no en la del administrador.</value>
+  </data>
 </root>

@@ -216,7 +216,8 @@ public static partial class MaintenanceProbes
     /// <summary>A OneDrive account with a local folder (HKCU\Software\Microsoft\OneDrive\Accounts\*\UserFolder).</summary>
     public static Measured<bool> ReadOneDriveConfigured()
     {
-        using var accounts = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(
+        // The client's OneDrive, even when Zentra runs as another administrator (plan F2-05).
+        using var accounts = InteractiveUser.OpenCurrentUserKey(
             @"Software\Microsoft\OneDrive\Accounts"
         );
         if (accounts is null)

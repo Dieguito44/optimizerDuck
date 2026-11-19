@@ -120,6 +120,9 @@ public partial class SessionViewModel(
 
     public bool HasKey => apiKeyStore.HasKey;
     public bool CanRememberKey => apiKeyStore.CanRemember;
+
+    /// <summary>Zentra runs as another administrator than the person at the PC (plan F2-05).</summary>
+    public bool IsUserRedirected => optimizerDuck.Services.System.InteractiveUser.IsRedirected;
     public bool HasWritten => WrittenSummary is not null;
 
     public string KeyStatusText =>
@@ -235,7 +238,7 @@ public partial class SessionViewModel(
             sessionStore.Save(_session);
             LastPdfPath = await pdfReportService.GenerateAsync(_session);
             StatusText = Loc.Instance["Session.Pdf.Saved", LastPdfPath];
-            Process.Start(new ProcessStartInfo(LastPdfPath) { UseShellExecute = true });
+            UnelevatedShell.Open(LastPdfPath);
         }
         catch (Exception ex)
         {
@@ -255,7 +258,7 @@ public partial class SessionViewModel(
             return;
         var folder = SessionStore.FolderFor(_session);
         if (Directory.Exists(folder))
-            Process.Start(new ProcessStartInfo(folder) { UseShellExecute = true });
+            UnelevatedShell.Open(folder);
     }
 
     private async Task MeasureAsync(MeasurementPhase phase)

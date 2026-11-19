@@ -108,9 +108,7 @@ public partial class StartupManagerViewModel : ViewModel
     {
         try
         {
-            Process.Start(
-                new ProcessStartInfo("ms-settings:startupapps") { UseShellExecute = true }
-            );
+            UnelevatedShell.Open("ms-settings:startupapps");
         }
         catch (Exception ex)
         {
