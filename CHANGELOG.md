@@ -4,6 +4,18 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Fase 7: opciones con consentimiento escrito (19/11/2026, abierta: falta la prueba en el PC)
+
+Se apoya en la rama de la Fase 6B (PR 6), que debe fusionarse antes.
+
+- **Ventana de consentimiento:** cada opción pide marcar "El cliente aceptó por escrito este cambio". El texto dice qué cambia, el riesgo, si hace falta reiniciar y cómo se deshace. Sin ventana (tests, sin interfaz) la respuesta es siempre "no".
+- **Pausar Windows Update 7 días** (ACT-WU-PAUSE7, Moderate): los valores nativos de pausa que escribe Configuración, nunca más de 7 días. Se reanuda sola; revertir la reanuda ya.
+- **Excluir bibliotecas de juegos de Defender** (ACT-DEFENDER-EXCL, Moderate): solo carpetas de Steam y Epic. Nunca una unidad, Windows, Program Files, ProgramData, el perfil, el Escritorio, Documentos, AppData, Temp ni Descargas. Revertir quita cada exclusión.
+- **Modo juego avanzado** (ACT-GAMEMODE-ADV, Risky): apaga la Integridad de memoria (HVCI) y la Plataforma de máquina virtual. Pide prueba A/B con el mismo juego y reiniciar. Mientras está aplicado, la página Sesión muestra una tarjeta con el botón "Volver a activar la protección".
+- Ninguna de las tres está en el perfil "Servicio estándar".
+
+**Estado:** los tests corren en GitHub; en local Smart App Control ya bloquea también la DLL de tests. La prueba en el PC de Diego queda para cuando haya firma (Fase 8). PR 7 abierto.
+
 ### Fase 6B: diagnóstico ampliado y mantenimiento (19/11/2026, abierta: falta la prueba en el PC)
 
 **Diagnósticos nuevos**
