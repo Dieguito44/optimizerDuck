@@ -471,6 +471,11 @@ public class Performance : LocalizedObject, IOptimizationCategory
                         context.Changes.AddSkip(Name, folder);
                         continue;
                     }
+                    if (context.Preview is { } plan)
+                    {
+                        plan.Add(PlannedChangeKind.Command, folder, "indexed", "excluded");
+                        continue;
+                    }
                     var ok = SearchIndexService.Exclude(folder);
                     context.Changes.Add(
                         Name,
