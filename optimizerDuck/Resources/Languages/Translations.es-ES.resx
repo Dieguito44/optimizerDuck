@@ -6004,4 +6004,7 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   <data name="Profile.Preview.Kind.Command" xml:space="preserve">
     <value>Comando</value>
   </data>
+  <data name="Session.Folder.NotYet" xml:space="preserve">
+    <value>Todavía no hay carpeta de sesión: se crea con &quot;Medir antes&quot;.</value>
+  </data>
 </root>

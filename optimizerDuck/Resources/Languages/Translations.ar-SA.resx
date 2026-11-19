@@ -4247,5 +4247,8 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="Profile.Preview.Kind.Command" xml:space="preserve">
     <value>Command</value>
   </data>
+  <data name="Session.Folder.NotYet" xml:space="preserve">
+    <value>There is no session folder yet: it is created with &quot;Measure before&quot;.</value>
+  </data>
 </root>
 

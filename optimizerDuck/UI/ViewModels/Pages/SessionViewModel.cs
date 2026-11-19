@@ -254,11 +254,15 @@ public partial class SessionViewModel(
     [RelayCommand]
     private void OpenFolder()
     {
-        if (_session is null)
-            return;
-        var folder = SessionStore.FolderFor(_session);
-        if (Directory.Exists(folder))
+        // This session's folder once it exists (it is created by "Measure before"); before
+        // that, the folder with every earlier session. Never a silent click.
+        var folder = _session is null ? null : SessionStore.FolderFor(_session);
+        if (folder is not null && Directory.Exists(folder))
             UnelevatedShell.Open(folder);
+        else if (Directory.Exists(SessionStore.SessionsDirectory))
+            UnelevatedShell.Open(SessionStore.SessionsDirectory);
+        else
+            StatusText = Loc.Instance["Session.Folder.NotYet"];
     }
 
     private async Task MeasureAsync(MeasurementPhase phase)
