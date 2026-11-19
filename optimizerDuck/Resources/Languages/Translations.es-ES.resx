@@ -5074,4 +5074,43 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Diagnostic.Value.Healthy" xml:space="preserve">
     <value>sano</value>
   </data>
+  <data name="Ai.Who.Software" xml:space="preserve">
+    <value>Lo aplica Zentra</value>
+  </data>
+  <data name="Ai.Who.Manual" xml:space="preserve">
+    <value>Lo hace el técnico a mano</value>
+  </data>
+  <data name="Ai.Who.ManualBios" xml:space="preserve">
+    <value>Se cambia en la BIOS</value>
+  </data>
+  <data name="Ai.Who.Hardware" xml:space="preserve">
+    <value>Requiere una pieza o una visita</value>
+  </data>
+  <data name="Ai.Who.Informational" xml:space="preserve">
+    <value>Solo informativo</value>
+  </data>
+  <data name="Ai.Template.ScoreBoth" xml:space="preserve">
+    <value>El equipo pasó de {0} a {1} puntos de 100.</value>
+  </data>
+  <data name="Ai.Template.ScoreOne" xml:space="preserve">
+    <value>El equipo tiene {0} puntos de 100.</value>
+  </data>
+  <data name="Ai.Template.Improved" xml:space="preserve">
+    <value>Mejoró en: {0}.</value>
+  </data>
+  <data name="Ai.Template.Change" xml:space="preserve">
+    <value>{0}, de {1} a {2}</value>
+  </data>
+  <data name="Ai.Template.NoFindings" xml:space="preserve">
+    <value>No se encontraron problemas en las revisiones.</value>
+  </data>
+  <data name="Ai.Template.Findings" xml:space="preserve">
+    <value>Hay {0} puntos por atender; abajo van en orden de prioridad.</value>
+  </data>
+  <data name="Ai.Template.Priority" xml:space="preserve">
+    <value>{0}. Motivo: {1}.</value>
+  </data>
+  <data name="Ai.Template.NotMeasured" xml:space="preserve">
+    <value>No se pudo medir: {0}</value>
+  </data>
 </root>

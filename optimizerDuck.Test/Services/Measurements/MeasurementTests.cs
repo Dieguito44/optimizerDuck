@@ -130,7 +130,7 @@ public class DiskBenchmarkTests
 
 public class SessionPersistenceTests
 {
-    private static Measurement Before() =>
+    internal static Measurement Before() =>
         new()
         {
             Phase = MeasurementPhase.Before,

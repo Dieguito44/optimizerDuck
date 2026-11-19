@@ -3275,4 +3275,43 @@ Zaktualizuj teraz, aby korzystać z najnowszych funkcji, ulepszeń i poprawek b�
   <data name="Diagnostic.Value.Healthy" xml:space="preserve">
     <value>healthy</value>
   </data>
+  <data name="Ai.Who.Software" xml:space="preserve">
+    <value>Zentra applies it</value>
+  </data>
+  <data name="Ai.Who.Manual" xml:space="preserve">
+    <value>The technician does it by hand</value>
+  </data>
+  <data name="Ai.Who.ManualBios" xml:space="preserve">
+    <value>Changed in the BIOS</value>
+  </data>
+  <data name="Ai.Who.Hardware" xml:space="preserve">
+    <value>Needs a part or a visit</value>
+  </data>
+  <data name="Ai.Who.Informational" xml:space="preserve">
+    <value>Information only</value>
+  </data>
+  <data name="Ai.Template.ScoreBoth" xml:space="preserve">
+    <value>The PC went from {0} to {1} points out of 100.</value>
+  </data>
+  <data name="Ai.Template.ScoreOne" xml:space="preserve">
+    <value>The PC scores {0} points out of 100.</value>
+  </data>
+  <data name="Ai.Template.Improved" xml:space="preserve">
+    <value>It improved in: {0}.</value>
+  </data>
+  <data name="Ai.Template.Change" xml:space="preserve">
+    <value>{0}, from {1} to {2}</value>
+  </data>
+  <data name="Ai.Template.NoFindings" xml:space="preserve">
+    <value>No problems were found in the checks.</value>
+  </data>
+  <data name="Ai.Template.Findings" xml:space="preserve">
+    <value>{0} points need attention; they are listed below in order of priority.</value>
+  </data>
+  <data name="Ai.Template.Priority" xml:space="preserve">
+    <value>{0}. Reason: {1}.</value>
+  </data>
+  <data name="Ai.Template.NotMeasured" xml:space="preserve">
+    <value>Could not be measured: {0}</value>
+  </data>
 </root>
