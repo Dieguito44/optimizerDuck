@@ -3501,4 +3501,58 @@
   <data name="Optimizer.BloatwareAndServices.PreventDeviceAppAutoDownload.ShortDescription" xml:space="preserve">
     <value>When a device is plugged in, Windows no longer downloads the maker&apos;s companion app by itself. Drivers still install. From Win11Debloat.</value>
   </data>
+  <data name="Profile.Title" xml:space="preserve">
+    <value>Standard service profile</value>
+  </data>
+  <data name="Profile.Help" xml:space="preserve">
+    <value>Applies the standard settings (privacy, AI, ads, storage) and removes the preinstalled apps of the service list. Do it after &quot;Measure before&quot;. Every setting can be reverted; removed apps are reinstalled from the Microsoft Store.</value>
+  </data>
+  <data name="Profile.Button.Apply" xml:space="preserve">
+    <value>Apply profile</value>
+  </data>
+  <data name="Profile.Button.Revert" xml:space="preserve">
+    <value>Revert profile</value>
+  </data>
+  <data name="Profile.Confirm.Title" xml:space="preserve">
+    <value>Apply the standard service profile?</value>
+  </data>
+  <data name="Profile.Confirm.Message" xml:space="preserve">
+    <value>A restore point is created first. Then {0} settings are applied (each one can be reverted) and {1} apps are removed: {2}. Removed apps do not come back with &quot;Revert profile&quot;; they are reinstalled from the Microsoft Store.</value>
+  </data>
+  <data name="Profile.Confirm.NoApps" xml:space="preserve">
+    <value>none of the list is installed</value>
+  </data>
+  <data name="Profile.Confirm.Apply" xml:space="preserve">
+    <value>Create restore point and apply</value>
+  </data>
+  <data name="Profile.Revert.Title" xml:space="preserve">
+    <value>Revert the standard service profile?</value>
+  </data>
+  <data name="Profile.Revert.Message" xml:space="preserve">
+    <value>Every setting of the profile goes back to the value it had before. Removed apps are not reinstalled.</value>
+  </data>
+  <data name="Profile.Revert.Confirm" xml:space="preserve">
+    <value>Revert</value>
+  </data>
+  <data name="Profile.Progress" xml:space="preserve">
+    <value>{0} of {1}: {2}</value>
+  </data>
+  <data name="Profile.RestorePoint.Recent" xml:space="preserve">
+    <value>Windows already made a restore point in the last 24 hours; that one covers these changes.</value>
+  </data>
+  <data name="Profile.RestorePoint.Failed" xml:space="preserve">
+    <value>The restore point could not be created, so nothing was changed.</value>
+  </data>
+  <data name="Profile.Done.Applied" xml:space="preserve">
+    <value>Profile applied: {0} changed, {1} were already fine, {2} do not apply to this PC, {3} failed. Apps removed: {4}.</value>
+  </data>
+  <data name="Profile.Done.Reverted" xml:space="preserve">
+    <value>Profile reverted: {0} settings went back, {1} had nothing to revert, {2} failed.</value>
+  </data>
+  <data name="Profile.Problem.Setting" xml:space="preserve">
+    <value>Failed: {0}. Open it in Optimize to retry.</value>
+  </data>
+  <data name="Profile.Problem.App" xml:space="preserve">
+    <value>Could not remove: {0}</value>
+  </data>
 </root>

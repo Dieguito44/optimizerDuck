@@ -124,6 +124,14 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<SessionStore>();
         services.AddSingleton<optimizerDuck.Services.Ai.ApiKeyStore>();
         services.AddSingleton<optimizerDuck.Services.Ai.AiReportService>();
+
+        // Zentra "Servicio estándar" profile (phase 6).
+        services.AddSingleton<
+            optimizerDuck.Services.Profiles.IProfileOperations,
+            optimizerDuck.Services.Profiles.ProfileOperations
+        >();
+        services.AddSingleton<optimizerDuck.Services.Profiles.ServiceProfileRunner>();
+        services.AddSingleton<optimizerDuck.UI.ViewModels.Pages.ServiceProfileViewModel>();
         services.AddSingleton<PdfReportService>();
 
         // Zentra Windows repair (phase 4).
