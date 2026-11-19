@@ -13,7 +13,7 @@ public class UpdaterServiceTests
     {
         var header = UpdaterService.BuildUserAgentHeader();
 
-        Assert.Equal("optimizerDuck", header.Product?.Name);
+        Assert.Equal("Zentra", header.Product?.Name);
         Assert.Equal(Shared.FileVersion, header.Product?.Version);
     }
 
@@ -42,17 +42,38 @@ public class UpdaterServiceTests
     public void FindExecutableAsset_WithoutTheExecutable_IsNothing()
     {
         Assert.Null(UpdaterService.FindExecutableAsset(null));
-        Assert.Null(UpdaterService.FindExecutableAsset(Release("optimizerDuck.zip")));
+        Assert.Null(UpdaterService.FindExecutableAsset(Release("Zentra.zip")));
         Assert.Null(UpdaterService.FindExecutableAsset(Release("notes.txt")));
     }
 
     [Fact]
     public void FindExecutableAsset_WithTheExecutable_FindsIt()
     {
-        var asset = UpdaterService.FindExecutableAsset(Release("optimizerDuck-v1.2.3-win.exe"));
+        var asset = UpdaterService.FindExecutableAsset(Release("Zentra-Windows-x64-1.2.3.exe"));
 
         Assert.NotNull(asset);
-        Assert.Equal("optimizerDuck-v1.2.3-win.exe", asset!.Name);
+        Assert.Equal("Zentra-Windows-x64-1.2.3.exe", asset!.Name);
+    }
+
+    [Fact]
+    public void FindExecutableAsset_IgnoresUpstreamExecutables()
+    {
+        // An upstream optimizerDuck build must never be offered as a Zentra update.
+        Assert.Null(
+            UpdaterService.FindExecutableAsset(Release("optimizerDuck-Windows-x64-9.9.9.exe"))
+        );
+    }
+
+    [Fact]
+    public void LatestReleaseUrl_PointsAtTheZentraFork()
+    {
+        Assert.StartsWith(
+            "https://github.com/Dieguito44/",
+            UpdaterService.LatestReleaseUrl,
+            StringComparison.Ordinal
+        );
+        Assert.DoesNotContain("itsfatduck", UpdaterService.LatestReleaseUrl);
+        Assert.DoesNotContain("itsfatduck", Shared.GitHubRepoURL);
     }
 
     private static GitHubRelease Release(params string[] assetNames)

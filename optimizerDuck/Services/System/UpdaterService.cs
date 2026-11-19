@@ -8,7 +8,9 @@ namespace optimizerDuck.Services.System;
 
 public class UpdaterService : IDisposable
 {
-    private const string Owner = "itsfatduck";
+    // Updates come only from the Zentra fork. Pointing at the upstream repository would
+    // replace Zentra with plain optimizerDuck on the next update.
+    private const string Owner = "Dieguito44";
     private const string Repo = "optimizerDuck";
 
     /// <summary>The URL to the latest release page on GitHub.</summary>
@@ -32,7 +34,7 @@ public class UpdaterService : IDisposable
     /// <returns>The user agent header.</returns>
     internal static ProductInfoHeaderValue BuildUserAgentHeader()
     {
-        return new ProductInfoHeaderValue("optimizerDuck", Shared.FileVersion);
+        return new ProductInfoHeaderValue(Shared.AppName, Shared.FileVersion);
     }
 
     /// <summary>Parses the version a release tag names.</summary>
@@ -60,7 +62,7 @@ public class UpdaterService : IDisposable
     internal static GitHubAsset? FindExecutableAsset(GitHubRelease? release)
     {
         return release?.Assets.FirstOrDefault(asset =>
-            asset.Name.StartsWith("optimizerDuck", StringComparison.OrdinalIgnoreCase)
+            asset.Name.StartsWith(Shared.AppName, StringComparison.OrdinalIgnoreCase)
             && asset.Name.EndsWith(".exe", StringComparison.OrdinalIgnoreCase)
         );
     }
