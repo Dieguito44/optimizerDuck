@@ -109,7 +109,8 @@ public sealed class ApiKeyStore
 
         if (!CanRemember && File.Exists(_blobPath))
         {
-            // A remembered key on a PC that is not the technician's: remove it.
+            // A remembered key on a PC that is not the technician's: remove it. The store is built
+            // with the Session page, so this runs the first time that page opens.
             TryDelete();
             _logger.LogWarning("Remembered API key removed: not started in technician mode");
         }
@@ -183,7 +184,8 @@ public sealed class ApiKeyStore
                 return true;
             }
         }
-        catch (Exception ex) when (ex is CryptographicException or IOException)
+        catch (Exception ex)
+            when (ex is CryptographicException or IOException or UnauthorizedAccessException)
         {
             _logger.LogWarning("Remembered API key could not be read; it was removed");
         }
@@ -208,7 +210,8 @@ public sealed class ApiKeyStore
             File.WriteAllBytes(temp, blob);
             File.Move(temp, _blobPath, overwrite: true);
         }
-        catch (Exception ex) when (ex is CryptographicException or IOException)
+        catch (Exception ex)
+            when (ex is CryptographicException or IOException or UnauthorizedAccessException)
         {
             _logger.LogWarning("API key could not be remembered: {Error}", ex.GetType().Name);
         }
@@ -225,6 +228,6 @@ public sealed class ApiKeyStore
             if (File.Exists(_blobPath))
                 File.Delete(_blobPath);
         }
-        catch (IOException) { }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
     }
 }

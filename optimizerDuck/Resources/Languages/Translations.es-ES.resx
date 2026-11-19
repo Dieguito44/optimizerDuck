@@ -5117,7 +5117,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
     <value>Informe con IA</value>
   </data>
   <data name="Session.Ai.Help" xml:space="preserve">
-    <value>Pega la clave de la API de Claude para que la IA redacte el informe en palabras sencillas. Solo se envían datos anónimos: sin nombres, sin números de serie, sin programas. Sin clave, el informe sale con la plantilla de Zentra.</value>
+    <value>Pega la clave de la API de Claude para que la IA redacte el informe en palabras sencillas. Solo se envían datos anónimos: sin nombres, sin números de serie, sin programas. Al pegarla se vacían el portapapeles y su historial (Win+V). Sin clave, el informe sale con la plantilla de Zentra.</value>
   </data>
   <data name="Session.Ai.Button.UseKey" xml:space="preserve">
     <value>Usar clave</value>

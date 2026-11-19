@@ -156,6 +156,27 @@ public class ClaudeClientTests
         Assert.Equal(ClaudeFailure.MalformedResponse, result.Failure);
     }
 
+    [Theory]
+    [InlineData("{\"resumen\":\"ok\",\"prioridades\":[],\"advertencias\":[null]}")]
+    [InlineData("{\"resumen\":\"ok\",\"prioridades\":[null],\"advertencias\":[]}")]
+    [InlineData(
+        "{\"resumen\":\"ok\",\"prioridades\":[{\"action_id\":null,\"prioridad\":1,\"explicacion\":\"x\"}],\"advertencias\":[]}"
+    )]
+    [InlineData("{\"resumen\":null,\"prioridades\":[],\"advertencias\":[]}")]
+    [InlineData("{\"resumen\":\"ok\"}")]
+    public async Task AnswersWithNulls_AreMalformed_NotACrash(string reportJson)
+    {
+        var body = new JObject
+        {
+            ["stop_reason"] = "end_turn",
+            ["content"] = new JArray(new JObject { ["type"] = "text", ["text"] = reportJson }),
+        }.ToString();
+
+        var result = await Call(new FakeHandler(_ => FakeHandler.Json(body)));
+
+        Assert.Equal(ClaudeFailure.MalformedResponse, result.Failure);
+    }
+
     [Fact]
     public async Task NetworkErrors_AreCaught()
     {

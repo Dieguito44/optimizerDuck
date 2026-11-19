@@ -170,3 +170,64 @@ public class AiReportValidatorCharacterTests
         Assert.All("áéíóúñÁÉÍÓÚÑ¿¡ü“”—…", c => Assert.True(AiReportValidator.IsPrintable(c)));
     }
 }
+
+/// <summary>The blacklist net, with the phrasings the security review got past the first version.</summary>
+public class AiReportValidatorBlacklistTests
+{
+    [Theory]
+    [InlineData("Conviene apagar Windows Defender.")]
+    [InlineData("Puedes deshabilitar Windows Update y el antivirus.")]
+    [InlineData("Hay que desactivar UAC y BitLocker.")]
+    [InlineData("Desactiva el Control de cuentas de usuario.")]
+    [InlineData("Quita el archivo de paginacion.")]
+    [InlineData("Elimina el pagefile para ganar espacio.")]
+    [InlineData("Desinstala Microsoft Edge.")]
+    [InlineData("Usa un optimizador de RAM o un limpiador del registro.")]
+    [InlineData("Desactiva el auto-tuning de TCP.")]
+    [InlineData("Edita el fichero hosts.")]
+    [InlineData("Deshabilita Smart App Control.")]
+    [InlineData("Instala CCleaner.")]
+    [InlineData("Mira bit.ly/abc o ejemplo.xyz")]
+    public void BlacklistedAdvice_IsRejected(string text)
+    {
+        Assert.NotEmpty(AiReportValidator.CheckWords([text]));
+    }
+
+    [Theory]
+    [InlineData("El ajuste automático de TCP estaba desactivado y ya quedó en normal.")]
+    [InlineData("Se apagó el arranque en segundo plano de Edge.")]
+    [InlineData("Defender queda activo. Windows Update sigue funcionando.")]
+    [InlineData("Se borraron archivos temporales y quedó libre Windows.old.")]
+    [InlineData("TRIM está apagado: activarlo cuida el SSD.")]
+    public void OrdinaryExplanations_Pass(string text)
+    {
+        Assert.Empty(AiReportValidator.CheckWords([text]));
+    }
+
+    [Fact]
+    public void TheCatalogAndRuleTexts_NeverTripTheBlacklist()
+    {
+        // The AI quotes these texts; a false positive here would push every report to the template.
+        var loc = optimizerDuck.Services.Configuration.Loc.Instance;
+        var texts = optimizerDuck
+            .Domain.Diagnostics.ActionCatalog.All.Values.Select(a => loc[a.TitleKey])
+            .Concat(
+                optimizerDuck.Domain.Diagnostics.Rules.DiagnosticRules.All.SelectMany(r =>
+                    new[]
+                    {
+                        loc[$"Diagnostic.Rule.{r.RuleId}.Title"],
+                        loc[$"Diagnostic.Rule.{r.RuleId}.Description"],
+                    }
+                )
+            )
+            .ToList();
+
+        Assert.All(texts, t => Assert.Empty(AiReportValidator.CheckWords([t])));
+    }
+
+    [Fact]
+    public void Plain_RemovesAccentsAndCase()
+    {
+        Assert.Equal("paginacion automatica", AiReportValidator.Plain("Paginación Automática"));
+    }
+}

@@ -1,3 +1,4 @@
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Net.Security;
@@ -58,6 +59,8 @@ public sealed class ClaudeClient : IDisposable
             {
                 // A proxy set on a client's PC could read the request: go direct.
                 UseProxy = false,
+                // A redirect would resend x-api-key to another host.
+                AllowAutoRedirect = false,
                 PooledConnectionLifetime = TimeSpan.FromMinutes(5),
                 SslOptions = new SslClientAuthenticationOptions
                 {
@@ -244,15 +247,24 @@ public sealed class ClaudeClient : IDisposable
         try
         {
             var report = JsonConvert.DeserializeObject<AiReport>(text);
-            return report is null
-                ? Failed(ClaudeFailure.MalformedResponse)
-                : new ClaudeResult(report, null, model, input, output, text);
+            return IsComplete(report)
+                ? new ClaudeResult(report, null, model, input, output, text)
+                : Failed(ClaudeFailure.MalformedResponse);
         }
         catch (JsonException)
         {
             return Failed(ClaudeFailure.MalformedResponse);
         }
     }
+
+    /// <summary>
+    ///     The schema says every field is required, but a null that slips through must not reach
+    ///     the validator or the PDF: it is a malformed answer, and the template takes over.
+    /// </summary>
+    internal static bool IsComplete([NotNullWhen(true)] AiReport? report) =>
+        report is { Summary: not null, Priorities: not null, Warnings: not null }
+        && report.Priorities.All(p => p is { ActionId: not null, Explanation: not null })
+        && report.Warnings.All(w => w is not null);
 
     private static ClaudeResult Fail(ClaudeFailure failure) =>
         new(null, failure, null, null, null, null);

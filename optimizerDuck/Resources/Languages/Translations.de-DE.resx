@@ -3370,7 +3370,7 @@ Aktualisiere jetzt, um die neuesten Funktionen, Verbesserungen und Fehlerbehebun
     <value>Report with AI</value>
   </data>
   <data name="Session.Ai.Help" xml:space="preserve">
-    <value>Paste the Claude API key to have the AI write the report in plain words. Only anonymous data is sent: no names, no serial numbers, no programs. Without a key, the report is written with the Zentra template.</value>
+    <value>Paste the Claude API key to have the AI write the report in plain words. Only anonymous data is sent: no names, no serial numbers, no programs. Pasting it empties the clipboard and its history (Win+V). Without a key, the report is written with the Zentra template.</value>
   </data>
   <data name="Session.Ai.Button.UseKey" xml:space="preserve">
     <value>Use key</value>

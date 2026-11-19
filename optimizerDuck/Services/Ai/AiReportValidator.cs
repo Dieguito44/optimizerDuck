@@ -1,4 +1,5 @@
 using System.Globalization;
+using System.Text;
 using System.Text.RegularExpressions;
 using Newtonsoft.Json;
 using optimizerDuck.Domain.Diagnostics;
@@ -81,35 +82,6 @@ public static partial class AiReportValidator
         32,
         64,
         100,
-    ];
-
-    /// <summary>Words of the plan's blacklist, and tools Zentra never recommends.</summary>
-    private static readonly string[] ForbiddenWords =
-    [
-        "activador",
-        "kms",
-        "crack",
-        "limpiador de registro",
-        "limpiadores de registro",
-        "liberador de ram",
-        "liberadores de ram",
-        "desactivar defender",
-        "desactiva defender",
-        "desactivar windows defender",
-        "desactivar windows update",
-        "desactiva windows update",
-        "desactivar el uac",
-        "bcdedit",
-        "archivo hosts",
-        "quitar edge",
-        "desinstalar edge",
-        "quitar el archivo de paginación",
-        "desactivar el archivo de paginación",
-        "ccleaner",
-        "advanced systemcare",
-        "iobit",
-        "driver booster",
-        "razer cortex",
     ];
 
     public static IReadOnlyList<string> Validate(AiReport? report, AiPayload payload)
@@ -220,22 +192,73 @@ public static partial class AiReportValidator
         return set;
     }
 
-    private static IEnumerable<string> CheckWords(IEnumerable<string> texts)
+    /// <summary>
+    ///     The blacklist (plan section 1) checked on plain text: lower case and without accents, so
+    ///     "paginación" and "paginacion" are the same. A sentence is rejected when it pairs a
+    ///     "turn off / remove" verb with something Zentra never turns off. It is a safety net, not
+    ///     a guarantee: the action ids are already a closed list.
+    /// </summary>
+    internal static IEnumerable<string> CheckWords(IEnumerable<string> texts)
     {
         foreach (var text in texts)
         {
-            var lower = text.ToLowerInvariant();
-            if (UrlOrEmail().IsMatch(lower))
+            var plain = Plain(text);
+            if (UrlOrEmail().IsMatch(plain))
                 yield return "No pongas enlaces, páginas web ni correos.";
-            foreach (var word in ForbiddenWords)
-                if (WordRegex(word).IsMatch(lower))
-                    yield return $"No menciones \"{word}\": está fuera de lo que ofrece el servicio.";
+            if (AlwaysForbidden().Match(plain) is { Success: true } m)
+                yield return $"No menciones \"{m.Value}\": está fuera de lo que ofrece el servicio.";
+
+            foreach (var sentence in SentenceBreak().Split(plain))
+            {
+                var verb = DisableVerb().Match(sentence);
+                if (!verb.Success)
+                    continue;
+                var target = Protected().Match(sentence);
+                if (!target.Success && RemovalVerb().IsMatch(sentence))
+                    target = ProtectedFromRemoval().Match(sentence);
+                if (target.Success)
+                    yield return $"No sugieras \"{verb.Value} … {target.Value}\": el servicio nunca apaga ni quita eso.";
+            }
         }
     }
 
-    private static Regex WordRegex(string word) =>
-        new($@"(?<!\p{{L}}){Regex.Escape(word)}(?!\p{{L}})", RegexOptions.CultureInvariant);
+    /// <summary>Lower case, no accents: the form every blacklist pattern is written in.</summary>
+    internal static string Plain(string text)
+    {
+        var decomposed = text.ToLowerInvariant().Normalize(NormalizationForm.FormD);
+        var builder = new StringBuilder(decomposed.Length);
+        foreach (var c in decomposed)
+            if (CharUnicodeInfo.GetUnicodeCategory(c) != UnicodeCategory.NonSpacingMark)
+                builder.Append(c);
+        return builder.ToString().Normalize(NormalizationForm.FormC);
+    }
 
-    [GeneratedRegex(@"https?://|www\.|\b[\w.-]+@[\w-]+\.\w+|\b[\w-]+\.(com|net|org|co|io|es)\b")]
+    [GeneratedRegex(
+        @"\b(hosts|bcdedit|kms|activador(es)?|cracks?|limpiador(es)? del? registro|(liberador|optimizador)(es)? de (la )?(ram|memoria)|ccleaner|advanced systemcare|iobit|driver booster|razer cortex)\b"
+    )]
+    private static partial Regex AlwaysForbidden();
+
+    [GeneratedRegex(@"\b(desactiv|deshabilit|apag|quit|elimin|desinstal|borr|inhabilit)\w*")]
+    private static partial Regex DisableVerb();
+
+    [GeneratedRegex(@"\b(quit|elimin|desinstal|borr)\w*")]
+    private static partial Regex RemovalVerb();
+
+    // "Ajuste automático de TCP" is not here: a finding legitimately says it "was turned off".
+    [GeneratedRegex(
+        @"\b(defender|antivirus|windows update|uac|control de cuentas|bitlocker|smart app control|paginacion|pagefile|auto-?tuning|autoajuste)\b"
+    )]
+    private static partial Regex Protected();
+
+    // Edge may be "turned off in the background" (a catalog action); only removing it is out.
+    [GeneratedRegex(@"\b(edge|webview2?)\b")]
+    private static partial Regex ProtectedFromRemoval();
+
+    [GeneratedRegex(@"[.;:!?\n]+")]
+    private static partial Regex SentenceBreak();
+
+    [GeneratedRegex(
+        @"https?://|www\.|\b[\w.-]+@[\w-]+\.\w+|\b[\w-]+\.[a-z]{2,}/|\b[\w-]+\.(com|net|org|co|io|es|xyz|ly|me|info|app|dev|ai|gg|tk|ru|cn|us|uk|de|mx|ar|cl|pe|biz|site|online|store|shop|link|top|club|click)\b"
+    )]
     private static partial Regex UrlOrEmail();
 }

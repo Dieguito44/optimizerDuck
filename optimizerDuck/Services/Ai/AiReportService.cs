@@ -22,6 +22,7 @@ public sealed class AiReportService(
 
         Reglas:
         - Usa solo los action_id que aparecen en los hallazgos. No agregues acciones, productos, programas ni páginas web.
+        - No escribas frases que hablen de apagar, quitar o desactivar Defender, el antivirus, Windows Update, el UAC, BitLocker, Smart App Control, el archivo de paginación o Edge, ni siquiera para decir que no se hizo: un programa rechaza esas frases.
         - Toda cifra que escribas debe estar en los datos, tal como viene (por ejemplo "41,0 s" o "6.100 MB"). No calcules porcentajes ni cifras nuevas: un programa revisa cada número y rechaza el informe si alguno no está en los datos.
         - Si un dato no se pudo medir, dilo así; no lo adivines.
         - Frases cortas, tuteo y español de Colombia. Evita los tecnicismos; si usas uno (BIOS, SSD, RAM), explícalo en pocas palabras.
