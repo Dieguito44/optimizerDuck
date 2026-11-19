@@ -33,6 +33,32 @@ public sealed class StartupManyRule : IDiagnosticRule
     }
 }
 
+/// <summary>R-BOOT-SLOW: the median of the last 3 boots is over 60 seconds.</summary>
+public sealed class BootSlowRule : IDiagnosticRule
+{
+    private const int MaxMs = 60_000;
+
+    public string RuleId => RuleIds.BootSlow;
+    public IReadOnlyList<string> PossibleActionIds { get; } = [ActionIds.StartupReview];
+
+    public RuleResult Evaluate(DiagnosticSnapshot snapshot, ReferenceTables refs)
+    {
+        if (!snapshot.BootMedianMs.TryGet(out var ms))
+            return RuleResult.NotMeasurable(RuleId, snapshot.BootMedianMs.Reason, "boot.median");
+
+        return ms > MaxMs
+            ? RuleResult.Found(
+                new Finding(
+                    RuleId,
+                    Severity.Medium,
+                    [new("boot.median_s", Math.Round(ms / 1000m, 1), Unit: "s")],
+                    [ActionIds.StartupReview]
+                )
+            )
+            : RuleResult.Pass(RuleId);
+    }
+}
+
 /// <summary>R-TCP-AUTOTUNE: TCP receive window auto-tuning disabled.</summary>
 public sealed class TcpAutoTuneRule : IDiagnosticRule
 {
@@ -298,6 +324,7 @@ public static class DiagnosticRules
         new UnstableRule(),
         new TrimOffRule(),
         new StartupManyRule(),
+        new BootSlowRule(),
         new TcpAutoTuneRule(),
         new PowerSaverRule(),
         new DriverGpuOldRule(),

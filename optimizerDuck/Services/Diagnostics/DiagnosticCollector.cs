@@ -78,8 +78,22 @@ public sealed class DiagnosticCollector(
             ct
         );
         var startupTask = CountStartupAppsAsync(ct);
+        var bootTask = Run(
+            "boot",
+            () => Measurements.BootTimeProbe.Read().MedianMs,
+            ProbeTimeout,
+            TimedOut<int>(),
+            ct
+        );
 
-        await Task.WhenAll(storageTask, stabilityTask, configTask, activationTask, startupTask)
+        await Task.WhenAll(
+                storageTask,
+                stabilityTask,
+                configTask,
+                activationTask,
+                startupTask,
+                bootTask
+            )
             .ConfigureAwait(false);
 
         var storage = await storageTask.ConfigureAwait(false);
@@ -118,7 +132,10 @@ public sealed class DiagnosticCollector(
             },
         };
 
-        var snapshot = DiagnosticSnapshotBuilder.Build(info, probes, now);
+        var snapshot = DiagnosticSnapshotBuilder.Build(info, probes, now) with
+        {
+            BootMedianMs = await bootTask.ConfigureAwait(false),
+        };
         logger.LogInformation(
             "Diagnostic snapshot collected: {Disks} disks, {Gpus} GPUs, {Modules} RAM modules",
             snapshot.Disks.Count,

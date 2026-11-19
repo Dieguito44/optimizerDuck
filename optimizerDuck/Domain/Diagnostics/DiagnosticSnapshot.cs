@@ -87,6 +87,9 @@ public sealed record DiagnosticSnapshot
     ///     Not measured when no GPU was read or one could not be classified.
     /// </summary>
     public Measured<bool> IntegratedGraphicsOnly { get; init; }
+
+    /// <summary>Median of the last 3 boots in milliseconds (see BootTimeProbe).</summary>
+    public Measured<int> BootMedianMs { get; init; }
 }
 
 public sealed record OsSnapshot
