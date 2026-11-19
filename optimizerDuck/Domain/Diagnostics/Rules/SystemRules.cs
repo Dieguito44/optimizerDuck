@@ -367,5 +367,9 @@ public static class DiagnosticRules
         new MonitorPortRule(),
         new GpuHybridRule(),
         new ThermalRule(),
+        new BatteryRule(),
+        new Net100MRule(),
+        new RamIdleHighRule(),
+        new BackupNoneRule(),
     ];
 }

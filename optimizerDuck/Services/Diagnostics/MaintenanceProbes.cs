@@ -97,4 +97,129 @@ public static partial class MaintenanceProbes
 
     [GeneratedRegex(@"\S {2,}(?=\S)")]
     private static partial Regex ColumnGap();
+
+    /// <summary>
+    ///     Full charge capacity over design capacity (root\wmi). Not applicable on a PC without
+    ///     a battery; not reported when the battery firmware gives no design capacity.
+    /// </summary>
+    public static Measured<int> ReadBatteryCapacityPercent()
+    {
+        const string Ns = @"root\wmi";
+        var full = WmiHelper.Query(
+            "SELECT FullChargedCapacity FROM BatteryFullChargedCapacity",
+            static items =>
+                items.Count > 0 ? (long?)WmiHelper.GetLong(items[0], "FullChargedCapacity") : null,
+            Ns
+        );
+        var design = WmiHelper.Query(
+            "SELECT DesignedCapacity FROM BatteryStaticData",
+            static items =>
+                items.Count > 0 ? (long?)WmiHelper.GetLong(items[0], "DesignedCapacity") : null,
+            Ns
+        );
+        if (full is null && design is null)
+            return Measured<int>.Missing(NotMeasuredReason.NotApplicable);
+        return full is > 0 && design is > 0
+            ? Measured<int>.Of((int)Math.Round(100.0 * full.Value / design.Value))
+            : Measured<int>.Missing(NotMeasuredReason.NotReported);
+    }
+
+    /// <summary>
+    ///     The connected physical Ethernet adapter: its link speed, and the highest speed its
+    ///     "Speed and Duplex" option offers (NDIS standard values: 4 = 100 Mb/s full, 5/6 = 1 Gb/s,
+    ///     7 = 10 Gb/s). Not applicable without a wired connection.
+    /// </summary>
+    public static (Measured<int> Link, Measured<int> Max) ReadWiredLink()
+    {
+        const string Ns = @"root\StandardCimv2";
+        var adapter = WmiHelper.Query(
+            "SELECT Name, Speed, MediaConnectState, NdisPhysicalMedium, HardwareInterface FROM MSFT_NetAdapter",
+            static items =>
+                items
+                    .Where(mo =>
+                        WmiHelper.GetInt(mo, "MediaConnectState") == 1
+                        && WmiHelper.GetInt(mo, "NdisPhysicalMedium") == 14 // 802.3
+                        && mo["HardwareInterface"] is true
+                    )
+                    .Select(mo =>
+                        (
+                            Name: WmiHelper.GetString(mo, "Name"),
+                            Speed: WmiHelper.GetLong(mo, "Speed")
+                        )
+                    )
+                    .FirstOrDefault(),
+            Ns
+        );
+        if (adapter.Name is null)
+            return (
+                Measured<int>.Missing(NotMeasuredReason.NotApplicable),
+                Measured<int>.Missing(NotMeasuredReason.NotApplicable)
+            );
+
+        var link = adapter.Speed is > 0
+            ? Measured<int>.Of((int)(adapter.Speed.Value / 1_000_000))
+            : Measured<int>.Missing(NotMeasuredReason.NotReported);
+        var values = WmiHelper.Query(
+            $"SELECT ValidRegistryValues FROM MSFT_NetAdapterAdvancedPropertySettingData WHERE Name = '{adapter.Name.Replace("'", "''")}' AND RegistryKeyword = '*SpeedDuplex'",
+            static items => items.Count > 0 ? items[0]["ValidRegistryValues"] as string[] : null,
+            Ns
+        );
+        int? max = values
+            ?.Select(v =>
+                v switch
+                {
+                    "1" or "2" => 10,
+                    "3" or "4" => 100,
+                    "5" or "6" => 1000,
+                    "7" => 10000,
+                    _ => 0,
+                }
+            )
+            .DefaultIfEmpty(0)
+            .Max();
+        return (
+            link,
+            max is > 0
+                ? Measured<int>.Of(max.Value)
+                : Measured<int>.Missing(NotMeasuredReason.NotReported)
+        );
+    }
+
+    public static Measured<int> CountRestorePoints()
+    {
+        // Without elevation the query fails and the service returns an empty list: that would look
+        // like "no restore points".
+        if (!Environment.IsPrivilegedProcess)
+            return Measured<int>.Missing(NotMeasuredReason.AccessDenied);
+        try
+        {
+            var points = new SystemRestoreService(
+                Microsoft.Extensions.Logging.Abstractions.NullLogger<SystemRestoreService>.Instance
+            ).ListRestorePoints();
+            return Measured<int>.Of(points.Count);
+        }
+        catch (Exception ex)
+            when (ex is UnauthorizedAccessException or global::System.Management.ManagementException
+            )
+        {
+            return Measured<int>.Missing(NotMeasuredReason.AccessDenied);
+        }
+    }
+
+    /// <summary>A OneDrive account with a local folder (HKCU\Software\Microsoft\OneDrive\Accounts\*\UserFolder).</summary>
+    public static Measured<bool> ReadOneDriveConfigured()
+    {
+        using var accounts = Microsoft.Win32.Registry.CurrentUser.OpenSubKey(
+            @"Software\Microsoft\OneDrive\Accounts"
+        );
+        if (accounts is null)
+            return Measured<bool>.Of(false);
+        foreach (var name in accounts.GetSubKeyNames())
+        {
+            using var account = accounts.OpenSubKey(name);
+            if (account?.GetValue("UserFolder") is string folder && folder.Length > 0)
+                return Measured<bool>.Of(true);
+        }
+        return Measured<bool>.Of(false);
+    }
 }

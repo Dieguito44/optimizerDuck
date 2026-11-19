@@ -269,10 +269,14 @@ public partial class SessionViewModel(
                 ClientLabel = ClientLabel,
             };
 
-            StatusText = Loc.Instance["Session.Step.Diagnosis"];
-            var report = await Task.Run(() => diagnosticService.RunAsync(_cts.Token));
+            // Measure first: the diagnosis uses the RAM at rest (R-RAM-IDLE-HIGH), and running the
+            // diagnosis first would load the PC during the rest measurement.
             var measurement = await Task.Run(() =>
                 measurementService.MeasureAsync(phase, progress, _cts.Token)
+            );
+            StatusText = Loc.Instance["Session.Step.Diagnosis"];
+            var report = await Task.Run(() =>
+                diagnosticService.RunAsync(measurement.IdleRamPercent, _cts.Token)
             );
 
             var summary = DiagnosisSummary.From(report);

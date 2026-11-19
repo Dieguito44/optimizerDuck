@@ -5629,4 +5629,46 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Software.PawnIo.Description" xml:space="preserve">
     <value>Driver de kernel para leer sensores del hardware.</value>
   </data>
+  <data name="Diagnostic.Rule.R-BATTERY.Title" xml:space="preserve">
+    <value>Batería gastada</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BATTERY.Description" xml:space="preserve">
+    <value>La batería guarda menos del 60 % de lo que guardaba nueva, así que dura mucho menos. Solo se arregla con una batería nueva.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-NET-100M.Title" xml:space="preserve">
+    <value>Red por cable a 100 Mb/s</value>
+  </data>
+  <data name="Diagnostic.Rule.R-NET-100M.Description" xml:space="preserve">
+    <value>La tarjeta de red puede ir a 1 Gb/s pero la conexión va a 100 Mb/s. Casi siempre es el cable (o uno de sus conectores).</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RAM-IDLE-HIGH.Title" xml:space="preserve">
+    <value>RAM casi llena en reposo</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RAM-IDLE-HIGH.Description" xml:space="preserve">
+    <value>Sin nada abierto, ya está en uso más del 80 % de la RAM. La ocupan programas que arrancan con Windows o quedan en segundo plano.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BACKUP-NONE.Title" xml:space="preserve">
+    <value>Sin copia de seguridad</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BACKUP-NONE.Description" xml:space="preserve">
+    <value>No hay puntos de restauración ni carpeta de OneDrive. Si algo se daña, no hay a dónde volver.</value>
+  </data>
+  <data name="Diagnostic.Evidence.battery.capacity" xml:space="preserve">
+    <value>Capacidad que le queda a la batería</value>
+  </data>
+  <data name="Diagnostic.Evidence.network.link" xml:space="preserve">
+    <value>Velocidad de la conexión</value>
+  </data>
+  <data name="Diagnostic.Evidence.network.max" xml:space="preserve">
+    <value>Máximo de la tarjeta de red</value>
+  </data>
+  <data name="Diagnostic.Evidence.ram.idle_percent" xml:space="preserve">
+    <value>RAM en uso en reposo</value>
+  </data>
+  <data name="Diagnostic.Evidence.backup.restore_points" xml:space="preserve">
+    <value>Puntos de restauración</value>
+  </data>
+  <data name="Diagnostic.Evidence.backup.onedrive" xml:space="preserve">
+    <value>Carpeta de OneDrive</value>
+  </data>
 </root>

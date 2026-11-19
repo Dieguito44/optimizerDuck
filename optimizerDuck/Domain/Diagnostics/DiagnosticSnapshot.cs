@@ -247,6 +247,24 @@ public sealed record MaintenanceSnapshot
 
     /// <summary>PUA blocking. Not applicable when Defender is not the active antivirus.</summary>
     public Measured<PuaMode> PuaProtection { get; init; }
+
+    /// <summary>Battery full charge as a percentage of its design capacity (laptops).</summary>
+    public Measured<int> BatteryCapacityPercent { get; init; }
+
+    /// <summary>Link speed of the connected wired adapter, Mb/s.</summary>
+    public Measured<int> WiredLinkMbps { get; init; }
+
+    /// <summary>Highest speed that adapter supports (from its speed and duplex options), Mb/s.</summary>
+    public Measured<int> WiredMaxMbps { get; init; }
+
+    /// <summary>RAM in use at rest, % (only from a session measurement, phase 3).</summary>
+    public Measured<double> IdleRamPercent { get; init; }
+
+    /// <summary>Restore points on the PC.</summary>
+    public Measured<int> RestorePoints { get; init; }
+
+    /// <summary>OneDrive signed in with a folder on this PC.</summary>
+    public Measured<bool> OneDriveConfigured { get; init; }
 }
 
 /// <summary>How a monitor is connected (DISPLAYCONFIG_VIDEO_OUTPUT_TECHNOLOGY, grouped).</summary>

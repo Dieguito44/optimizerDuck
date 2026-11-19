@@ -104,6 +104,34 @@ public sealed class DiagnosticCollector(
             ct
         );
         var temperatureTask = ReadTemperatureAsync(now, ct);
+        var batteryTask = Run(
+            "battery",
+            MaintenanceProbes.ReadBatteryCapacityPercent,
+            ProbeTimeout,
+            TimedOut<int>(),
+            ct
+        );
+        var wiredTask = Run(
+            "network",
+            MaintenanceProbes.ReadWiredLink,
+            ProbeTimeout,
+            (TimedOut<int>(), TimedOut<int>()),
+            ct
+        );
+        var restoreTask = Run(
+            "restore points",
+            MaintenanceProbes.CountRestorePoints,
+            ProbeTimeout,
+            TimedOut<int>(),
+            ct
+        );
+        var oneDriveTask = Run(
+            "onedrive",
+            MaintenanceProbes.ReadOneDriveConfigured,
+            ProbeTimeout,
+            TimedOut<bool>(),
+            ct
+        );
         var startupTask = CountStartupAppsAsync(ct);
         var imageTask = ReadImageHealthAsync(ct);
         var bootTask = Run(
@@ -126,7 +154,11 @@ public sealed class DiagnosticCollector(
                 puaTask,
                 displayTask,
                 throttleTask,
-                temperatureTask
+                temperatureTask,
+                batteryTask,
+                wiredTask,
+                restoreTask,
+                oneDriveTask
             )
             .ConfigureAwait(false);
 
@@ -184,6 +216,12 @@ public sealed class DiagnosticCollector(
             {
                 WingetUpgrades = await wingetTask.ConfigureAwait(false),
                 PuaProtection = await puaTask.ConfigureAwait(false),
+                BatteryCapacityPercent = await batteryTask.ConfigureAwait(false),
+                WiredLinkMbps = (await wiredTask.ConfigureAwait(false)).Item1,
+                WiredMaxMbps = (await wiredTask.ConfigureAwait(false)).Item2,
+                RestorePoints = await restoreTask.ConfigureAwait(false),
+                OneDriveConfigured = await oneDriveTask.ConfigureAwait(false),
+                IdleRamPercent = Measured<double>.Missing(NotMeasuredReason.NotReported),
             },
         };
         logger.LogInformation(
@@ -301,9 +339,23 @@ public sealed class DiagnosticService(
 {
     public DiagnosticReport? LastReport { get; private set; }
 
-    public async Task<DiagnosticReport> RunAsync(CancellationToken ct = default)
+    /// <param name="idleRamPercent">
+    ///     RAM in use at rest from a session measurement (R-RAM-IDLE-HIGH). The diagnosis alone
+    ///     cannot take it: it needs a 60 second average some minutes after logon.
+    /// </param>
+    public Task<DiagnosticReport> RunAsync(CancellationToken ct = default) => RunAsync(null, ct);
+
+    public async Task<DiagnosticReport> RunAsync(
+        Measured<double>? idleRamPercent,
+        CancellationToken ct = default
+    )
     {
         var snapshot = await collector.CollectAsync(ct).ConfigureAwait(false);
+        if (idleRamPercent is { } idle)
+            snapshot = snapshot with
+            {
+                Maintenance = snapshot.Maintenance with { IdleRamPercent = idle },
+            };
         var report = DiagnosticReport.Create(
             snapshot,
             ReferenceTableLoader.Embedded,

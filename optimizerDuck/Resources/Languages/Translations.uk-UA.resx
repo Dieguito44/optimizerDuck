@@ -3888,4 +3888,46 @@
   <data name="Software.PawnIo.Description" xml:space="preserve">
     <value>Kernel driver to read hardware sensors.</value>
   </data>
+  <data name="Diagnostic.Rule.R-BATTERY.Title" xml:space="preserve">
+    <value>Worn battery</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BATTERY.Description" xml:space="preserve">
+    <value>The battery holds less than 60 % of what it held when new, so it lasts much less. Only a new battery fixes it.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-NET-100M.Title" xml:space="preserve">
+    <value>Wired network at 100 Mb/s</value>
+  </data>
+  <data name="Diagnostic.Rule.R-NET-100M.Description" xml:space="preserve">
+    <value>The network card can do 1 Gb/s but the connection runs at 100 Mb/s. It is almost always the cable (or one of its connectors).</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RAM-IDLE-HIGH.Title" xml:space="preserve">
+    <value>RAM almost full at rest</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RAM-IDLE-HIGH.Description" xml:space="preserve">
+    <value>With nothing open, more than 80 % of the RAM is already in use. Programs that start with Windows or run in the background take it.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BACKUP-NONE.Title" xml:space="preserve">
+    <value>No backup</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BACKUP-NONE.Description" xml:space="preserve">
+    <value>There are no restore points and no OneDrive folder. If something breaks, there is nothing to go back to.</value>
+  </data>
+  <data name="Diagnostic.Evidence.battery.capacity" xml:space="preserve">
+    <value>Battery capacity left</value>
+  </data>
+  <data name="Diagnostic.Evidence.network.link" xml:space="preserve">
+    <value>Connection speed</value>
+  </data>
+  <data name="Diagnostic.Evidence.network.max" xml:space="preserve">
+    <value>Network card maximum</value>
+  </data>
+  <data name="Diagnostic.Evidence.ram.idle_percent" xml:space="preserve">
+    <value>RAM in use at rest</value>
+  </data>
+  <data name="Diagnostic.Evidence.backup.restore_points" xml:space="preserve">
+    <value>Restore points</value>
+  </data>
+  <data name="Diagnostic.Evidence.backup.onedrive" xml:space="preserve">
+    <value>OneDrive folder</value>
+  </data>
 </root>

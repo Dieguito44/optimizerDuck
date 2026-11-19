@@ -164,11 +164,7 @@ public static class ActionCatalog
     /// </summary>
     public static readonly FrozenSet<string> PendingRuleActions = new[]
     {
-        ActionIds.BrowserBackground,
         ActionIds.HeavyApps,
-        ActionIds.BackupSetup,
-        ActionIds.HardwareBattery,
-        ActionIds.HardwareNetCable,
     }.ToFrozenSet(StringComparer.Ordinal);
 
     public static bool Contains(string actionId) => All.ContainsKey(actionId);
@@ -204,4 +200,8 @@ public static class RuleIds
     public const string MonitorPort = "R-MON-PORT";
     public const string GpuHybrid = "R-GPU-HYBRID";
     public const string Thermal = "R-THERMAL";
+    public const string Battery = "R-BATTERY";
+    public const string Net100M = "R-NET-100M";
+    public const string RamIdleHigh = "R-RAM-IDLE-HIGH";
+    public const string BackupNone = "R-BACKUP-NONE";
 }

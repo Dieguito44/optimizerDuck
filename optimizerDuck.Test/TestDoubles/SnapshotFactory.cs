@@ -120,6 +120,15 @@ public static class SnapshotFactory
             {
                 WingetUpgrades = Measured<int>.Of(0),
                 PuaProtection = Measured<PuaMode>.Of(PuaMode.On),
+                // Read on Diego's PC (19/11/2026): desktop without battery, wired at 1 Gb/s on a
+                // 1 Gb/s adapter, a restore point from today, no OneDrive; RAM at rest from the
+                // phase 3 measurement.
+                BatteryCapacityPercent = Measured<int>.Missing(NotMeasuredReason.NotApplicable),
+                WiredLinkMbps = Measured<int>.Of(1000),
+                WiredMaxMbps = Measured<int>.Of(1000),
+                RestorePoints = Measured<int>.Of(1),
+                OneDriveConfigured = Measured<bool>.Of(false),
+                IdleRamPercent = Measured<double>.Of(39.6),
             },
             // What the display probe read on Diego's PC (one APU, an HDMI monitor at its maximum and a
             // phantom DisplayPort output without EDID).
