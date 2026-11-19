@@ -64,6 +64,75 @@ public class RegistryServiceTests : IDisposable
     private static OpCall NewCall() =>
         new() { Changes = new ChangeSet(), Logger = NullLogger.Instance };
 
+    /// <summary>
+    ///     Windows 11 25H2: administrators cannot set values on HKLM\SOFTWARE but can create keys
+    ///     under it. Creating HKLM\SOFTWARE\Policies\...\NewKey must not ask the ancestors for
+    ///     more than "read and create a child". Reproduced in HKCU with a deny-SetValue ancestor.
+    /// </summary>
+    [Fact]
+    public void Write_NewKeyUnderAnAncestorThatDeniesSetValue_CreatesItAndCleansUp()
+    {
+        const string guardedPath = @"Software\TestOptimizerDuck\NoSetValue";
+        const string leafPath = guardedPath + @"\Policies\Vendor\NewKey";
+        var identity = System.Security.Principal.WindowsIdentity.GetCurrent().Name;
+        var denySetValue = new RegistryAccessRule(
+            identity,
+            RegistryRights.SetValue,
+            InheritanceFlags.None, // only this key, like HKLM\SOFTWARE
+            PropagationFlags.None,
+            AccessControlType.Deny
+        );
+
+        using (var key = Registry.CurrentUser.CreateSubKey(guardedPath))
+        {
+            var acl = key.GetAccessControl();
+            acl.AddAccessRule(denySetValue);
+            key.SetAccessControl(acl);
+        }
+
+        try
+        {
+            var call = NewCall();
+            var result = RegistryService.Write(
+                call,
+                new RegistryItem($@"HKCU\{leafPath}", "Value", 1)
+            );
+
+            Assert.True(result.Ok, result.Error);
+            Assert.Equal(
+                1,
+                RegistryService.Read<int>(new RegistryItem($@"HKCU\{leafPath}", "Value"))
+            );
+
+            // The created keys come off again once empty (what a revert does).
+            using (var leaf = Registry.CurrentUser.OpenSubKey(leafPath, true))
+                leaf!.DeleteValue("Value");
+            RegistryService.CleanupEmptyKeys([
+                $@"HKEY_CURRENT_USER\{guardedPath}\Policies",
+                $@"HKEY_CURRENT_USER\{guardedPath}\Policies\Vendor",
+                $@"HKEY_CURRENT_USER\{leafPath}",
+            ]);
+            using var gone = Registry.CurrentUser.OpenSubKey(guardedPath + @"\Policies");
+            Assert.Null(gone);
+        }
+        finally
+        {
+            const RegistryRights repairRights =
+                RegistryRights.ReadKey | RegistryRights.ChangePermissions;
+            using var key = Registry.CurrentUser.OpenSubKey(
+                guardedPath,
+                RegistryKeyPermissionCheck.ReadWriteSubTree,
+                repairRights
+            );
+            if (key != null)
+            {
+                var acl = key.GetAccessControl();
+                acl.RemoveAccessRuleSpecific(denySetValue);
+                key.SetAccessControl(acl);
+            }
+        }
+    }
+
     [Fact]
     public void Write_KeyAllowsSetValueButNotCreateSubKey_WritesValue()
     {
