@@ -19,10 +19,15 @@
 
     <Grid RowDefinitions="Auto,Auto,Auto,*">
         <!--  Header  -->
-        <StackPanel Style="{StaticResource PageHeaderStyle}">
-            <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Diagnostic.Header.Title}" />
-            <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc Diagnostic.Header.Description}" />
-        </StackPanel>
+        <Grid ColumnDefinitions="Auto,*" Style="{StaticResource PageHeaderGridStyle}">
+            <Border Style="{StaticResource PageIconTileStyle}">
+                <ui:SymbolIcon Style="{StaticResource PageIconStyle}" Symbol="Stethoscope24" />
+            </Border>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Diagnostic.Header.Title}" />
+                <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc Diagnostic.Header.Description}" />
+            </StackPanel>
+        </Grid>
 
         <!--  Consent reminder (plan section 9, Law 1581 of 2012)  -->
         <ui:InfoBar
@@ -52,11 +57,11 @@
                 </StackPanel>
                 <ui:Button
                     Grid.Column="1"
-                    Command="{Binding ViewModel.GenerateReportCommand}"
-                    Content="{ext:Loc Diagnostic.Button.Report}"
-                    Icon="{ui:SymbolIcon DocumentSearch24}"
-                    ToolTip="{ext:Loc Diagnostic.Button.Report.Tooltip}"
-                    ToolTipService.ShowOnDisabled="True" />
+                    Command="{Binding ViewModel.GoToSessionCommand}"
+                    Content="{ext:Loc Diagnostic.Button.ToSession}"
+                    Cursor="Hand"
+                    Icon="{ui:SymbolIcon ArrowRight24}"
+                    ToolTip="{ext:Loc Diagnostic.Button.ToSession.Tooltip}" />
             </Grid>
         </Border>
 
@@ -111,15 +116,33 @@
 
                 <StackPanel Visibility="{Binding ViewModel.HasReport, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <!--  Score  -->
-                    <Border Style="{StaticResource CardSurfaceStyle}">
+                    <Border
+                        Margin="0,0,0,8"
+                        Padding="20,18"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource ZentraBrandGradientBrush}"
+                        BorderThickness="1.5"
+                        CornerRadius="{StaticResource CornerRadiusLarge}">
                         <Grid ColumnDefinitions="Auto,*">
-                            <TextBlock
-                                Margin="0,0,20,0"
-                                VerticalAlignment="Center"
-                                FontSize="56"
-                                FontWeight="SemiBold"
-                                Foreground="{Binding ViewModel.ScoreBrush}"
-                                Text="{Binding ViewModel.Score}" />
+                            <Grid
+                                Width="88"
+                                Height="88"
+                                Margin="0,0,20,0">
+                                <Ellipse Stroke="{DynamicResource ZentraStrokeBrush}" StrokeThickness="7" />
+                                <ui:ProgressRing
+                                    Width="88"
+                                    Height="88"
+                                    Foreground="{Binding ViewModel.ScoreBrush}"
+                                    IsIndeterminate="False"
+                                    Progress="{Binding ViewModel.Score}" />
+                                <TextBlock
+                                    HorizontalAlignment="Center"
+                                    VerticalAlignment="Center"
+                                    FontSize="28"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                    Text="{Binding ViewModel.Score}" />
+                            </Grid>
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
                                 <ui:TextBlock FontTypography="Subtitle" Text="{ext:Loc Diagnostic.Score.Title}" />
                                 <ui:TextBlock Style="{StaticResource CaptionTextStyle}" Text="{Binding ViewModel.CoverageText}" />
@@ -156,11 +179,14 @@
                                                     <Border
                                                         Margin="8,0,0,0"
                                                         Padding="8,2"
-                                                        Background="{Binding SeverityBrush}"
-                                                        CornerRadius="{StaticResource CornerRadiusSmall}">
+                                                        Background="{Binding SeverityTintBrush}"
+                                                        BorderBrush="{Binding SeverityBrush}"
+                                                        BorderThickness="1"
+                                                        CornerRadius="10">
                                                         <TextBlock
                                                             FontSize="12"
-                                                            Foreground="White"
+                                                            FontWeight="SemiBold"
+                                                            Foreground="{Binding SeverityBrush}"
                                                             Text="{Binding SeverityText}" />
                                                     </Border>
                                                     <ui:TextBlock

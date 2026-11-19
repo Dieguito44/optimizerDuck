@@ -4124,5 +4124,23 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="Dashboard.Health.Action" xml:space="preserve">
     <value>View diagnosis</value>
   </data>
+  <data name="Diagnostic.Button.ToSession" xml:space="preserve">
+    <value>Continue in Session</value>
+  </data>
+  <data name="Diagnostic.Button.ToSession.Tooltip" xml:space="preserve">
+    <value>The AI report and the client PDF are made on the Session page.</value>
+  </data>
+  <data name="Session.Step.Before" xml:space="preserve">
+    <value>Measure before</value>
+  </data>
+  <data name="Session.Step.Profile" xml:space="preserve">
+    <value>Standard service</value>
+  </data>
+  <data name="Session.Step.After" xml:space="preserve">
+    <value>Measure after</value>
+  </data>
+  <data name="Session.Step.Report" xml:space="preserve">
+    <value>Client report</value>
+  </data>
 </root>
 

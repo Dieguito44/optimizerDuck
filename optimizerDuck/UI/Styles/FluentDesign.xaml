@@ -24,6 +24,7 @@
     <SolidColorBrush x:Key="ZentraBlueBrush" Color="#FF60A5FA" />
     <SolidColorBrush x:Key="ZentraCriticalBrush" Color="#FFF87171" />
     <SolidColorBrush x:Key="ZentraWarningBrush" Color="#FFFBBF24" />
+    <SolidColorBrush x:Key="ZentraHighBrush" Color="#FFFB923C" />
     <SolidColorBrush x:Key="ZentraGoodBrush" Color="#FF34D399" />
     <SolidColorBrush x:Key="ZentraCardBrush" Color="#FF182129" />
     <SolidColorBrush x:Key="ZentraStrokeBrush" Color="#FF26323D" />
@@ -31,6 +32,49 @@
         <GradientStop Offset="0" Color="#FF2DD4BF" />
         <GradientStop Offset="1" Color="#FF60A5FA" />
     </LinearGradientBrush>
+
+    <!--  Page header of the Zentra pages: an icon tile in the brand color next to the title.  -->
+    <Style x:Key="PageHeaderGridStyle" TargetType="Grid">
+        <Setter Property="Margin" Value="{StaticResource SectionMargin}" />
+    </Style>
+
+    <Style x:Key="PageIconTileStyle" TargetType="Border">
+        <Setter Property="Width" Value="48" />
+        <Setter Property="Height" Value="48" />
+        <Setter Property="Margin" Value="0,0,16,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Background" Value="{DynamicResource ZentraBrandMutedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ZentraBrandGradientBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style x:Key="PageIconStyle" TargetType="ui:SymbolIcon">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="24" />
+        <Setter Property="Foreground" Value="{DynamicResource ZentraBrandBrush}" />
+    </Style>
+
+    <!--  Numbered step of the service (Session page): a round badge in the brand color.  -->
+    <Style x:Key="StepBadgeStyle" TargetType="Border">
+        <Setter Property="Width" Value="24" />
+        <Setter Property="Height" Value="24" />
+        <Setter Property="Margin" Value="0,0,10,0" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="CornerRadius" Value="12" />
+        <Setter Property="Background" Value="{DynamicResource ZentraBrandMutedBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource ZentraBrandBrush}" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+    <Style x:Key="StepBadgeTextStyle" TargetType="TextBlock">
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="FontSize" Value="12" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="Foreground" Value="{DynamicResource ZentraBrandBrush}" />
+    </Style>
 
     <Style x:Key="PageRootStyle" TargetType="Page">
         <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />

@@ -5881,4 +5881,22 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   <data name="Dashboard.Health.Action" xml:space="preserve">
     <value>Ver diagnóstico</value>
   </data>
+  <data name="Diagnostic.Button.ToSession" xml:space="preserve">
+    <value>Continuar en Sesión</value>
+  </data>
+  <data name="Diagnostic.Button.ToSession.Tooltip" xml:space="preserve">
+    <value>El informe con IA y el PDF del cliente se generan en la página Sesión.</value>
+  </data>
+  <data name="Session.Step.Before" xml:space="preserve">
+    <value>Medir antes</value>
+  </data>
+  <data name="Session.Step.Profile" xml:space="preserve">
+    <value>Servicio estándar</value>
+  </data>
+  <data name="Session.Step.After" xml:space="preserve">
+    <value>Medir después</value>
+  </data>
+  <data name="Session.Step.Report" xml:space="preserve">
+    <value>Informe del cliente</value>
+  </data>
 </root>

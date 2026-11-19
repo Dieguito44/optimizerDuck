@@ -17,10 +17,15 @@
     mc:Ignorable="d">
 
     <Grid RowDefinitions="Auto,*">
-        <StackPanel Style="{StaticResource PageHeaderStyle}">
-            <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Session.Header.Title}" />
-            <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc Session.Header.Description}" />
-        </StackPanel>
+        <Grid ColumnDefinitions="Auto,*" Style="{StaticResource PageHeaderGridStyle}">
+            <Border Style="{StaticResource PageIconTileStyle}">
+                <ui:SymbolIcon Style="{StaticResource PageIconStyle}" Symbol="ClipboardTaskListLtr24" />
+            </Border>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Session.Header.Title}" />
+                <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc Session.Header.Description}" />
+            </StackPanel>
+        </Grid>
 
         <ScrollViewer
             Grid.Row="1"
@@ -40,48 +45,116 @@
                     </StackPanel>
                 </Border>
 
-                <!--  Steps  -->
-                <Border Style="{StaticResource ToolbarSurfaceStyle}">
-                    <WrapPanel Orientation="Horizontal">
-                        <ui:Button
-                            Margin="0,2,8,2"
-                            Appearance="Primary"
-                            Command="{Binding ViewModel.MeasureBeforeCommand}"
-                            Content="{ext:Loc Session.Button.Before}"
-                            Cursor="Hand"
-                            Icon="{ui:SymbolIcon Timer24}" />
-                        <ui:Button
-                            Margin="0,2,8,2"
-                            Command="{Binding ViewModel.MeasureAfterCommand}"
-                            Content="{ext:Loc Session.Button.After}"
-                            Cursor="Hand"
-                            Icon="{ui:SymbolIcon CheckmarkCircle24}" />
-                        <ui:Button
-                            Margin="0,2,8,2"
-                            Command="{Binding ViewModel.GeneratePdfCommand}"
-                            Content="{ext:Loc Session.Button.Pdf}"
-                            Cursor="Hand"
-                            Icon="{ui:SymbolIcon DocumentPdf24}" />
-                        <ui:Button
-                            Margin="0,2,8,2"
-                            Command="{Binding ViewModel.OpenFolderCommand}"
-                            Content="{ext:Loc Session.Button.Folder}"
-                            Cursor="Hand"
-                            Icon="{ui:SymbolIcon FolderOpen24}" />
-                        <ui:Button
-                            Margin="0,2,8,2"
-                            Command="{Binding ViewModel.CancelCommand}"
-                            Content="{ext:Loc Session.Button.Cancel}"
-                            Cursor="Hand"
-                            Visibility="{Binding ViewModel.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        <ui:Button
-                            Margin="0,2,8,2"
-                            Command="{Binding ViewModel.NewSessionCommand}"
-                            Content="{ext:Loc Session.Button.New}"
-                            Cursor="Hand"
-                            Icon="{ui:SymbolIcon ArrowClockwise24}" />
-                    </WrapPanel>
-                </Border>
+                <!--  Steps: the order of the service, numbered. The profile card below shows step 2 in detail.  -->
+                <UniformGrid Margin="0,0,0,8" Columns="4">
+                    <Border Margin="0,0,8,0" Style="{StaticResource CardSurfaceStyle}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource StepBadgeStyle}">
+                                    <TextBlock Style="{StaticResource StepBadgeTextStyle}" Text="1" />
+                                </Border>
+                                <ui:TextBlock
+                                    VerticalAlignment="Center"
+                                    FontTypography="BodyStrong"
+                                    Text="{ext:Loc Session.Step.Before}" />
+                            </StackPanel>
+                            <ui:Button
+                                Margin="0,10,0,0"
+                                HorizontalAlignment="Stretch"
+                                Appearance="Primary"
+                                Command="{Binding ViewModel.MeasureBeforeCommand}"
+                                Content="{ext:Loc Session.Button.Before}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon Timer24}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Margin="0,0,8,0" Style="{StaticResource CardSurfaceStyle}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource StepBadgeStyle}">
+                                    <TextBlock Style="{StaticResource StepBadgeTextStyle}" Text="2" />
+                                </Border>
+                                <ui:TextBlock
+                                    VerticalAlignment="Center"
+                                    FontTypography="BodyStrong"
+                                    Text="{ext:Loc Session.Step.Profile}" />
+                            </StackPanel>
+                            <ui:Button
+                                Margin="0,10,0,0"
+                                HorizontalAlignment="Stretch"
+                                Command="{Binding ViewModel.Profile.ApplyCommand}"
+                                Content="{ext:Loc Profile.Button.Apply}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon WrenchScrewdriver24}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Margin="0,0,8,0" Style="{StaticResource CardSurfaceStyle}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource StepBadgeStyle}">
+                                    <TextBlock Style="{StaticResource StepBadgeTextStyle}" Text="3" />
+                                </Border>
+                                <ui:TextBlock
+                                    VerticalAlignment="Center"
+                                    FontTypography="BodyStrong"
+                                    Text="{ext:Loc Session.Step.After}" />
+                            </StackPanel>
+                            <ui:Button
+                                Margin="0,10,0,0"
+                                HorizontalAlignment="Stretch"
+                                Command="{Binding ViewModel.MeasureAfterCommand}"
+                                Content="{ext:Loc Session.Button.After}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon CheckmarkCircle24}" />
+                        </StackPanel>
+                    </Border>
+
+                    <Border Margin="0" Style="{StaticResource CardSurfaceStyle}">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <Border Style="{StaticResource StepBadgeStyle}">
+                                    <TextBlock Style="{StaticResource StepBadgeTextStyle}" Text="4" />
+                                </Border>
+                                <ui:TextBlock
+                                    VerticalAlignment="Center"
+                                    FontTypography="BodyStrong"
+                                    Text="{ext:Loc Session.Step.Report}" />
+                            </StackPanel>
+                            <ui:Button
+                                Margin="0,10,0,0"
+                                HorizontalAlignment="Stretch"
+                                Command="{Binding ViewModel.GeneratePdfCommand}"
+                                Content="{ext:Loc Session.Button.Pdf}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon DocumentPdf24}" />
+                        </StackPanel>
+                    </Border>
+                </UniformGrid>
+
+                <WrapPanel Margin="0,0,0,4" Orientation="Horizontal">
+                    <ui:Button
+                        Margin="0,2,8,2"
+                        Appearance="Transparent"
+                        Command="{Binding ViewModel.OpenFolderCommand}"
+                        Content="{ext:Loc Session.Button.Folder}"
+                        Cursor="Hand"
+                        Icon="{ui:SymbolIcon FolderOpen24}" />
+                    <ui:Button
+                        Margin="0,2,8,2"
+                        Appearance="Transparent"
+                        Command="{Binding ViewModel.NewSessionCommand}"
+                        Content="{ext:Loc Session.Button.New}"
+                        Cursor="Hand"
+                        Icon="{ui:SymbolIcon ArrowClockwise24}" />
+                    <ui:Button
+                        Margin="0,2,8,2"
+                        Command="{Binding ViewModel.CancelCommand}"
+                        Content="{ext:Loc Session.Button.Cancel}"
+                        Cursor="Hand"
+                        Visibility="{Binding ViewModel.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                </WrapPanel>
 
                 <ui:TextBlock
                     Margin="0,0,0,8"
@@ -91,20 +164,21 @@
                 <!--  "Servicio estándar" profile (phase 6): between the "before" and "after" measurements.  -->
                 <Border Style="{StaticResource CardSurfaceStyle}">
                     <StackPanel>
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Profile.Title}" />
+                        <StackPanel Orientation="Horizontal">
+                            <Border Style="{StaticResource StepBadgeStyle}">
+                                <TextBlock Style="{StaticResource StepBadgeTextStyle}" Text="2" />
+                            </Border>
+                            <ui:TextBlock
+                                VerticalAlignment="Center"
+                                FontTypography="BodyStrong"
+                                Text="{ext:Loc Profile.Title}" />
+                        </StackPanel>
                         <ui:TextBlock
-                            Margin="0,2,0,8"
+                            Margin="0,6,0,8"
                             Style="{StaticResource CaptionTextStyle}"
                             Text="{ext:Loc Profile.Help}"
                             TextWrapping="Wrap" />
                         <WrapPanel Orientation="Horizontal">
-                            <ui:Button
-                                Margin="0,2,8,2"
-                                Appearance="Primary"
-                                Command="{Binding ViewModel.Profile.ApplyCommand}"
-                                Content="{ext:Loc Profile.Button.Apply}"
-                                Cursor="Hand"
-                                Icon="{ui:SymbolIcon WrenchScrewdriver24}" />
                             <ui:Button
                                 Margin="0,2,8,2"
                                 Command="{Binding ViewModel.Profile.RevertCommand}"
@@ -124,13 +198,13 @@
                             Text="{Binding ViewModel.Profile.StatusText}"
                             TextWrapping="Wrap" />
                         <ui:TextBlock
-                            Foreground="#D13438"
+                            Foreground="{DynamicResource ZentraCriticalBrush}"
                             Text="{Binding ViewModel.Profile.ErrorText}"
                             TextWrapping="Wrap" />
                         <ItemsControl ItemsSource="{Binding ViewModel.Profile.Problems}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <ui:TextBlock Foreground="#C75000" Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap" />
+                                    <ui:TextBlock Foreground="{DynamicResource ZentraHighBrush}" Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap" />
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                         </ItemsControl>
@@ -140,7 +214,7 @@
                 <!--  "Modo juego avanzado" (phase 7): visible while Memory Integrity is off, with the way back.  -->
                 <Border Style="{StaticResource CardSurfaceStyle}" Visibility="{Binding ViewModel.GameMode.IsApplied, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <StackPanel>
-                        <ui:TextBlock FontTypography="BodyStrong" Foreground="#C75000" Text="{ext:Loc GameMode.Title}" />
+                        <ui:TextBlock FontTypography="BodyStrong" Foreground="{DynamicResource ZentraHighBrush}" Text="{ext:Loc GameMode.Title}" />
                         <ui:TextBlock
                             Margin="0,2,0,8"
                             Style="{StaticResource CaptionTextStyle}"
@@ -158,7 +232,7 @@
                             Text="{Binding ViewModel.GameMode.StatusText}"
                             TextWrapping="Wrap" />
                         <ui:TextBlock
-                            Foreground="#D13438"
+                            Foreground="{DynamicResource ZentraCriticalBrush}"
                             Text="{Binding ViewModel.GameMode.ErrorText}"
                             TextWrapping="Wrap" />
                     </StackPanel>
@@ -209,7 +283,7 @@
                             Visibility="{Binding ViewModel.CanRememberKey, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <ui:TextBlock Margin="0,6,0,0" Text="{Binding ViewModel.KeyStatusText}" />
                         <ui:TextBlock
-                            Foreground="#D13438"
+                            Foreground="{DynamicResource ZentraCriticalBrush}"
                             Text="{Binding ViewModel.KeyErrorText}"
                             TextWrapping="Wrap" />
                         <ui:Button
@@ -241,7 +315,7 @@
                             <ItemsControl ItemsSource="{Binding ViewModel.WrittenWarnings}">
                                 <ItemsControl.ItemTemplate>
                                     <DataTemplate>
-                                        <ui:TextBlock Margin="0,2" Foreground="#C75000" Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap" />
+                                        <ui:TextBlock Margin="0,2" Foreground="{DynamicResource ZentraHighBrush}" Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap" />
                                     </DataTemplate>
                                 </ItemsControl.ItemTemplate>
                             </ItemsControl>
@@ -260,7 +334,7 @@
                     TextWrapping="Wrap" />
                 <ui:TextBlock
                     Margin="0,0,0,12"
-                    Foreground="#D13438"
+                    Foreground="{DynamicResource ZentraCriticalBrush}"
                     Text="{Binding ViewModel.ErrorText}"
                     TextWrapping="Wrap" />
 
@@ -281,7 +355,7 @@
                                 <TextBlock
                                     FontSize="40"
                                     FontWeight="SemiBold"
-                                    Foreground="#0F7B8A"
+                                    Foreground="{DynamicResource ZentraBrandBrush}"
                                     Text="{Binding ViewModel.ScoreAfterText}" />
                             </StackPanel>
                         </StackPanel>

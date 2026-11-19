@@ -25,6 +25,7 @@ public static class ZentraTheme
         Color Brand,
         Color BrandBlue,
         Color Critical,
+        Color High,
         Color Warning,
         Color Good
     );
@@ -42,6 +43,7 @@ public static class ZentraTheme
         Brand: Rgb(0x2D, 0xD4, 0xBF),
         BrandBlue: Rgb(0x60, 0xA5, 0xFA),
         Critical: Rgb(0xF8, 0x71, 0x71),
+        High: Rgb(0xFB, 0x92, 0x3C),
         Warning: Rgb(0xFB, 0xBF, 0x24),
         Good: Rgb(0x34, 0xD3, 0x99)
     );
@@ -59,6 +61,7 @@ public static class ZentraTheme
         Brand: Rgb(0x0F, 0x76, 0x6E),
         BrandBlue: Rgb(0x1D, 0x4E, 0xD8),
         Critical: Rgb(0xB9, 0x1C, 0x1C),
+        High: Rgb(0xC2, 0x41, 0x0C),
         Warning: Rgb(0xB4, 0x53, 0x09),
         Good: Rgb(0x04, 0x78, 0x57)
     );
@@ -96,6 +99,7 @@ public static class ZentraTheme
         Set(resources, "ZentraCriticalBrush", p.Critical);
         Set(resources, "ZentraWarningBrush", p.Warning);
         Set(resources, "ZentraGoodBrush", p.Good);
+        Set(resources, "ZentraHighBrush", p.High);
         Set(resources, "ZentraCardBrush", p.Card);
         Set(resources, "ZentraStrokeBrush", p.Stroke);
         resources["ZentraBrandGradientBrush"] = Frozen(
