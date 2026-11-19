@@ -305,11 +305,18 @@ public class OptionalOptimizationTests
         Assert.Null(SecurityAndPrivacy.PauseWindowsUpdate7Days.ParseUtc(null));
     }
 
+    /// <summary>The owner category is what the registry assigns at startup (names, messages).</summary>
     public static TheoryData<IOptimization> ConsentGated =>
         [
-            new SecurityAndPrivacy.PauseWindowsUpdate7Days(),
-            new SecurityAndPrivacy.DefenderGameLibraryExclusion(),
-            new Performance.AdvancedGameMode(),
+            new SecurityAndPrivacy.PauseWindowsUpdate7Days
+            {
+                OwnerType = typeof(SecurityAndPrivacy),
+            },
+            new SecurityAndPrivacy.DefenderGameLibraryExclusion
+            {
+                OwnerType = typeof(SecurityAndPrivacy),
+            },
+            new Performance.AdvancedGameMode { OwnerType = typeof(Performance) },
         ];
 
     [Theory]
