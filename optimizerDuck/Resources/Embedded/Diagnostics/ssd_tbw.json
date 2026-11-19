@@ -1,0 +1,9 @@
+{
+  "schema": 1,
+  "updated": "2026-11-19",
+  "notes": "Rated endurance (TBW, terabytes written) by model. Only used once total host writes can be read (smartctl).",
+  "entries": [
+    { "match": "prefix", "pattern": "CT500P3PSSD8", "tbw_tb": 110, "source": "Plan v1.2: Crucial P3 500 GB = 110 TB" },
+    { "match": "prefix", "pattern": "KINGSTON SA400S37/480G", "tbw_tb": 160, "source": "Plan v1.2: Kingston A400 480 GB = 160 TB" }
+  ]
+}

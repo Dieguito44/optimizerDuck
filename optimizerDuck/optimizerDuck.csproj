@@ -79,6 +79,8 @@
     <ItemGroup>
         <EmbeddedResource Include="Resources\Embedded\Icons\blank.ico" />
         <EmbeddedResource Include="Resources\Embedded\PowerPlans\optimizerDuck.pow" />
+        <!-- Zentra diagnostic reference tables (ram_kits, ssd_tbw, bios_latest). -->
+        <EmbeddedResource Include="Resources\Embedded\Diagnostics\*.json" />
     </ItemGroup>
 
     <ItemGroup>
