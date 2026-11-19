@@ -721,12 +721,6 @@
   <data name="Optimizer.UserExperience.SpeedUpExplorerAndMenus.ShortDescription" xml:space="preserve">
     <value>تاخیرهای سیستمی هنگام باز شدن منوها و فایل اکسپلورر را صفر می‌کند تا منوها بلافاصله باز شوند.</value>
   </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>افزایش حداکثر زمان توقف آپدیت‌ها</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>امکان توقف موقت آپدیت‌های ویندوز را به حداکثر زمان ممکن افزایش می‌دهد.</value>
-  </data>
   <data name="Optimizer.UserExperience.DisableStartMenuWebSearch.Name" xml:space="preserve">
     <value>غیرفعال‌سازی جست‌وجوی وب در منوی استارت</value>
   </data>

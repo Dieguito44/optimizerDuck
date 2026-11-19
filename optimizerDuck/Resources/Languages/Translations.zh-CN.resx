@@ -632,12 +632,6 @@
   <data name="Optimizer.UserExperience.SpeedUpExplorerAndMenus.ShortDescription" xml:space="preserve">
     <value>将 StartupDelayInMSec 和 MenuShowDelay 均设为 0，以消除资源管理器启动延迟，并将菜单悬停延迟降至最低。</value>
   </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>更新暂停上限拉满</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>把 Windows 更新的可暂停天数抬到支持的最大值。仅在仍支持该设置的旧版 Windows 上生效，生效期间安全更新同样暂停。</value>
-  </data>
   <data name="Optimizer.UserExperience.DisableStartMenuWebSearch.Name" xml:space="preserve">
     <value>禁用开始菜单网络搜索</value>
   </data>

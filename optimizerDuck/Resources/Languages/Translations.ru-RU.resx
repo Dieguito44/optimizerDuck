@@ -1868,12 +1868,6 @@
   <data name="Optimizer.Performance.LiftWebDavFileSizeLimit.ShortDescription" xml:space="preserve">
     <value>Увеличивает ограничение размера файлов WebClient для WebDAV с 50 МБ до 4 ГБ, чтобы передача больших файлов по сети не завершалась ошибкой.</value>
   </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>Максимальный срок приостановки обновлений</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>Устанавливает максимальный поддерживаемый период приостановки Центра обновления Windows. Работает только в версиях Windows, поддерживающих этот параметр; обновления безопасности также приостанавливаются.</value>
-  </data>
   <data name="Customize.Gaming.DlssIndicator.Name" xml:space="preserve">
     <value>Оверлей-индикатор DLSS</value>
   </data>

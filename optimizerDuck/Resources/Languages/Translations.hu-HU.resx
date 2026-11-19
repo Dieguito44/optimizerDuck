@@ -721,12 +721,6 @@
   <data name="Optimizer.UserExperience.SpeedUpExplorerAndMenus.ShortDescription" xml:space="preserve">
     <value>A StartupDelayInMSec=0 és a MenuShowDelay=0 beállításával megszünteti az Intéző indítási késleltetését, és minimálisra csökkenti a menük fölé mozgatásának késleltetését.</value>
   </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>Frissítésszüneteltetési korlát maximalizálása</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>A Windows Update szüneteltetésének felső határát a legnagyobb támogatott értékre állítja. Csak azok a Windows-verziók veszik figyelembe, amelyek még támogatják ezt a beállítást; amíg aktív, a biztonsági frissítések szünetelnek.</value>
-  </data>
   <data name="Optimizer.UserExperience.DisableStartMenuWebSearch.Name" xml:space="preserve">
     <value>Start menü webes keresésének kikapcsolása</value>
   </data>

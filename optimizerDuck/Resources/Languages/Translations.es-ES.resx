@@ -3667,12 +3667,6 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Optimizer.Performance.LiftWebDavFileSizeLimit.ShortDescription" xml:space="preserve">
     <value>Aumenta el límite de tamaño de archivo de WebClient para montajes WebDAV de 50 MB a 4 GB para que los archivos grandes no fallen en ubicaciones de red.</value>
   </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>Maximizar límite de pausa de actualizaciones</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>Establece el límite máximo de pausa de Windows Update al valor más alto admitido. Solo se aplica en versiones de Windows compatibles; las actualizaciones de seguridad permanecerán pausadas mientras esté activo.</value>
-  </data>
   <data name="Customize.Gaming.DlssIndicator.Name" xml:space="preserve">
     <value>Indicador superpuesto de DLSS</value>
   </data>

@@ -1925,12 +1925,6 @@
   <data name="Optimizer.Performance.LiftWebDavFileSizeLimit.ShortDescription" xml:space="preserve">
     <value>מעלה את מגבלת גודל הקבצים של WebClient עבור כונני WebDAV מ-50 מגה-בייט ל-4 גיגה-בייט כדי למנוע כשלים בהעברת קבצים גדולים ברשת.</value>
   </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>מקסום הגבלת השהיית העדכונים</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>מגדיר את תקרת ההשהיה של Windows Update לערך המרבי הנתמך. תקף רק בגירסאות Windows שעדיין תומכות בהגדרה זו; עדכוני אבטחה יישארו מושהים בזמן שזה פעיל.</value>
-  </data>
   <data name="Customize.Gaming.DlssIndicator.Name" xml:space="preserve">
     <value>מחוון שכבת-על של DLSS</value>
   </data>

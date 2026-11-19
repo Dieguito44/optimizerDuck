@@ -1910,12 +1910,6 @@
   <data name="Optimizer.Performance.LiftWebDavFileSizeLimit.ShortDescription" xml:space="preserve">
     <value>يرفع حد حجم ملفات WebClient لوحدات تخزين WebDAV من 50 ميغابايت إلى 4 غيغابايت لتجنب فشل نقل الملفات الكبيرة عبر الشبكة.</value>
   </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>زيادة الحد الأقصى لإيقاف التحديثات مؤقتاً</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>يضبط سقف إيقاف Windows Update مؤقتاً على أكبر قيمة مدعومة. يعمل فقط في إصدارات Windows التي لا تزال تدعم هذا الإعداد؛ تظل تحديثات الأمان متوقفة مؤقتاً أثناء تفعيله.</value>
-  </data>
   <data name="Customize.Gaming.DlssIndicator.Name" xml:space="preserve">
     <value>مؤشر تراكب DLSS</value>
   </data>

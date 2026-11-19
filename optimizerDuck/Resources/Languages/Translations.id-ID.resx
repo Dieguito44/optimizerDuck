@@ -1925,12 +1925,6 @@ Perbarui sekarang untuk menikmati fitur terbaru, peningkatan, dan perbaikan bug.
   <data name="Optimizer.Performance.LiftWebDavFileSizeLimit.ShortDescription" xml:space="preserve">
     <value>Meningkatkan batas ukuran file WebClient untuk mount WebDAV dari 50 MB menjadi 4 GB agar transfer file besar di lokasi jaringan tidak gagal.</value>
   </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>Maksimalkan batas jeda pembaruan</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>Mengatur batas jeda Windows Update ke nilai maksimum yang didukung. Hanya berlaku pada versi Windows yang masih mendukung pengaturan ini; pembaruan keamanan tetap dijeda saat aktif.</value>
-  </data>
   <data name="Customize.Gaming.DlssIndicator.Name" xml:space="preserve">
     <value>Indikator overlay DLSS</value>
   </data>

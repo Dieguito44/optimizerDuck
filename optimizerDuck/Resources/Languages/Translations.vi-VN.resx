@@ -1860,12 +1860,6 @@ Cập nhật ngay để trải nghiệm các tính năng mới, cải tiến và
   <data name="Optimizer.Performance.LiftWebDavFileSizeLimit.ShortDescription" xml:space="preserve">
     <value>Tăng giới hạn dung lượng tệp của WebClient cho ổ đĩa WebDAV từ 50 MB lên 4 GB để các tệp lớn không bị lỗi truyền qua mạng.</value>
   </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>Tối đa hóa thời gian tạm dừng cập nhật</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>Đặt mức trần thời gian tạm dừng Windows Update lên giá trị lớn nhất được hỗ trợ. Chỉ có hiệu lực trên các phiên bản Windows còn hỗ trợ thiết lập này; cập nhật bảo mật cũng sẽ tạm dừng khi đang bật.</value>
-  </data>
   <data name="Customize.Gaming.DlssIndicator.Name" xml:space="preserve">
     <value>Lớp phủ hiển thị DLSS</value>
   </data>

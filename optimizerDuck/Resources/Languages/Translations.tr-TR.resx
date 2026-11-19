@@ -1859,12 +1859,6 @@ En son özelliklerden, iyileştirmelerden ve hata düzeltmelerinden yararlanmak 
   <data name="Optimizer.Performance.LiftWebDavFileSizeLimit.ShortDescription" xml:space="preserve">
     <value>Ağ konumlarındaki büyük dosyaların aktarımında hata oluşmaması için WebClient dosya boyutu sınırını 50 MB'tan 4 GB'a yükseltir.</value>
   </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>Güncelleme duraklatma sınırını en üst düzeye çıkar</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>Windows Update duraklatma tavanını desteklenen en büyük değere ayarlar. Yalnızca bu ayarı destekleyen Windows sürümlerinde geçerlidir; etkinken güvenlik güncellemeleri de duraklatılır.</value>
-  </data>
   <data name="Customize.Gaming.DlssIndicator.Name" xml:space="preserve">
     <value>DLSS yer paylaşımı göstergesi</value>
   </data>

@@ -1859,12 +1859,6 @@
   <data name="Optimizer.Performance.LiftWebDavFileSizeLimit.ShortDescription" xml:space="preserve">
     <value>WebDAV 마운트에 대한 WebClient 파일 크기 제한을 50MB에서 4GB로 늘려 네트워크 위치의 대용량 파일 전송 실패를 방지합니다.</value>
   </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>업데이트 일시 중지 한도 최대화</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>Windows 업데이트 일시 중지 상한을 지원되는 최대값으로 설정합니다. 이 설정을 계속 지원하는 Windows 버전에서만 적용되며, 활성화되어 있는 동안 보안 업데이트도 일시 중지됩니다.</value>
-  </data>
   <data name="Customize.Gaming.DlssIndicator.Name" xml:space="preserve">
     <value>DLSS 오버레이 표시기</value>
   </data>
