@@ -164,9 +164,6 @@ public static class ActionCatalog
     /// </summary>
     public static readonly FrozenSet<string> PendingRuleActions = new[]
     {
-        ActionIds.MonitorHz,
-        ActionIds.MonitorCable,
-        ActionIds.GpuPreference,
         ActionIds.BrowserBackground,
         ActionIds.HeavyApps,
         ActionIds.BackupSetup,
@@ -204,4 +201,7 @@ public static class RuleIds
     // Phase 6B
     public const string AppsOutdated = "R-APPS-OUTDATED";
     public const string PuaOff = "R-PUA-OFF";
+    public const string MonitorHz = "R-MON-HZ";
+    public const string MonitorPort = "R-MON-PORT";
+    public const string GpuHybrid = "R-GPU-HYBRID";
 }

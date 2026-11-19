@@ -89,6 +89,13 @@ public sealed class DiagnosticCollector(
             TimedOut<PuaMode>(),
             ct
         );
+        var displayTask = Run(
+            "display",
+            DisplayProbe.Read,
+            ProbeTimeout,
+            DisplayProbeResult.Failed(SectionStatus.TimedOut, NotMeasuredReason.TimedOut),
+            ct
+        );
         var startupTask = CountStartupAppsAsync(ct);
         var imageTask = ReadImageHealthAsync(ct);
         var bootTask = Run(
@@ -108,7 +115,8 @@ public sealed class DiagnosticCollector(
                 bootTask,
                 imageTask,
                 wingetTask,
-                puaTask
+                puaTask,
+                displayTask
             )
             .ConfigureAwait(false);
 
@@ -152,6 +160,11 @@ public sealed class DiagnosticCollector(
         {
             BootMedianMs = await bootTask.ConfigureAwait(false),
             ImageHealth = await imageTask.ConfigureAwait(false),
+            Display = DisplaySnapshotMapper.Map(
+                await displayTask.ConfigureAwait(false),
+                info.Cpu.Vendor,
+                info.Cpu.Name
+            ),
             Maintenance = new MaintenanceSnapshot
             {
                 WingetUpgrades = await wingetTask.ConfigureAwait(false),

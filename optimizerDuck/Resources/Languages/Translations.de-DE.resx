@@ -3750,4 +3750,46 @@ Aktualisiere jetzt, um die neuesten Funktionen, Verbesserungen und Fehlerbehebun
   <data name="Software.UpgradeAll.Confirm.Message" xml:space="preserve">
     <value>winget updates every program that has a newer version, silently. It cannot be undone from Zentra. Close open programs first; it can take several minutes.</value>
   </data>
+  <data name="Diagnostic.Rule.R-MON-HZ.Title" xml:space="preserve">
+    <value>Monitor below its refresh rate</value>
+  </data>
+  <data name="Diagnostic.Rule.R-MON-HZ.Description" xml:space="preserve">
+    <value>The monitor can show more images per second than it is set to. At its maximum, movement looks smoother.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-MON-PORT.Title" xml:space="preserve">
+    <value>Monitor plugged into the motherboard</value>
+  </data>
+  <data name="Diagnostic.Rule.R-MON-PORT.Description" xml:space="preserve">
+    <value>The PC has a graphics card, but the monitor is plugged into the motherboard. Games and video run on the weaker processor graphics. The cable must go to the graphics card port.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-GPU-HYBRID.Title" xml:space="preserve">
+    <value>Games without a GPU preference</value>
+  </data>
+  <data name="Diagnostic.Rule.R-GPU-HYBRID.Description" xml:space="preserve">
+    <value>This laptop has two graphics chips and some games have no GPU preference set, so Windows may run them on the weaker one.</value>
+  </data>
+  <data name="Diagnostic.Evidence.display.current_hz" xml:space="preserve">
+    <value>Current refresh rate</value>
+  </data>
+  <data name="Diagnostic.Evidence.display.max_hz" xml:space="preserve">
+    <value>Maximum at its native resolution</value>
+  </data>
+  <data name="Diagnostic.Evidence.display.monitors" xml:space="preserve">
+    <value>Monitors</value>
+  </data>
+  <data name="Diagnostic.Evidence.display.monitors_on_integrated" xml:space="preserve">
+    <value>Monitors on the motherboard</value>
+  </data>
+  <data name="Diagnostic.Evidence.gpu.dedicated" xml:space="preserve">
+    <value>Graphics card</value>
+  </data>
+  <data name="Diagnostic.Evidence.gpu.integrated" xml:space="preserve">
+    <value>Processor graphics</value>
+  </data>
+  <data name="Diagnostic.Evidence.gpu.preference" xml:space="preserve">
+    <value>GPU switching</value>
+  </data>
+  <data name="Diagnostic.Evidence.games.no_gpu_pref" xml:space="preserve">
+    <value>Games without a GPU preference</value>
+  </data>
 </root>

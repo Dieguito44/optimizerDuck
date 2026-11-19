@@ -363,5 +363,8 @@ public static class DiagnosticRules
         // Phase 6B
         new AppsOutdatedRule(),
         new PuaOffRule(),
+        new MonitorHzRule(),
+        new MonitorPortRule(),
+        new GpuHybridRule(),
     ];
 }

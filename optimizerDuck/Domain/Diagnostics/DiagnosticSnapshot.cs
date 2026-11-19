@@ -15,6 +15,7 @@ public enum DiagnosticSection
     Config,
     Stability,
     Maintenance,
+    Display,
 }
 
 /// <summary>How a section's collection went.</summary>
@@ -97,6 +98,9 @@ public sealed record DiagnosticSnapshot
 
     /// <summary>Software upkeep and protection (phase 6B). Defaults to not measured.</summary>
     public MaintenanceSnapshot Maintenance { get; init; } = new();
+
+    /// <summary>Monitors, display adapters and games (phase 6B). Defaults to not measured.</summary>
+    public DisplaySnapshot Display { get; init; } = new();
 }
 
 public sealed record OsSnapshot
@@ -239,4 +243,80 @@ public sealed record MaintenanceSnapshot
 
     /// <summary>PUA blocking. Not applicable when Defender is not the active antivirus.</summary>
     public Measured<PuaMode> PuaProtection { get; init; }
+}
+
+/// <summary>How a monitor is connected (DISPLAYCONFIG_VIDEO_OUTPUT_TECHNOLOGY, grouped).</summary>
+public enum DisplayConnector
+{
+    Unknown,
+    Internal,
+    Hdmi,
+    DisplayPort,
+    Dvi,
+    Vga,
+    Other,
+    Wireless,
+    IndirectWired,
+    Virtual,
+}
+
+/// <summary>
+///     Monitors and display adapters (phase 6B), from the Windows display configuration (CCD),
+///     GDI modes and the kernel adapter types (D3DKMT). Anonymous: no device paths, no
+///     \.\DISPLAYn names, no EDID serials, no file paths.
+/// </summary>
+public sealed record DisplaySnapshot
+{
+    public IReadOnlyList<DisplayAdapterSnapshot> Adapters { get; init; } = [];
+    public IReadOnlyList<MonitorSnapshot> Monitors { get; init; } = [];
+    public Measured<bool> RemoteDesktopSession { get; init; }
+    public Measured<bool> OnBattery { get; init; }
+
+    /// <summary>Whether "power saving" and "high performance" pick different hardware GPUs.</summary>
+    public Measured<bool> GpuPreferenceEffective { get; init; }
+
+    /// <summary>Games Windows has seen run (only counts; paths never leave the PC).</summary>
+    public Measured<int> GamesDetected { get; init; }
+
+    /// <summary>Of those, the ones with no GPU preference set.</summary>
+    public Measured<int> GamesWithoutGpuPreference { get; init; }
+}
+
+public sealed record DisplayAdapterSnapshot
+{
+    public int Index { get; init; }
+    public Measured<string> Model { get; init; }
+    public Measured<bool> IsIntegrated { get; init; }
+
+    /// <summary>Can drive a screen: display bit and at least one video source.</summary>
+    public Measured<bool> DisplayCapable { get; init; }
+    public bool IsDetachable { get; init; }
+}
+
+public sealed record MonitorSnapshot
+{
+    public int Index { get; init; }
+    public Measured<string> Model { get; init; }
+    public DisplayConnector Connector { get; init; }
+    public bool HasEdid { get; init; }
+    public bool IsCloned { get; init; }
+
+    /// <summary>Index into <see cref="DisplaySnapshot.Adapters" /> of the GPU driving it.</summary>
+    public Measured<int> AdapterIndex { get; init; }
+    public Measured<int> CurrentWidth { get; init; }
+    public Measured<int> CurrentHeight { get; init; }
+    public Measured<int> CurrentHz { get; init; }
+    public Measured<int> NativeWidth { get; init; }
+    public Measured<int> NativeHeight { get; init; }
+
+    /// <summary>Highest refresh at the native resolution and the current colour depth.</summary>
+    public Measured<int> MaxHzAtNative { get; init; }
+
+    public bool IsPhysical =>
+        Connector
+            is DisplayConnector.Internal
+                or DisplayConnector.Hdmi
+                or DisplayConnector.DisplayPort
+                or DisplayConnector.Dvi
+                or DisplayConnector.Vga;
 }
