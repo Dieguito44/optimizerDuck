@@ -193,6 +193,18 @@ public static class LocalGroupPolicyService
         uint value
     )
     {
+        if (call.Preview is { } plan)
+        {
+            using var current = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(key);
+            plan.Add(
+                PlannedChangeKind.Policy,
+                $@"{key}\{valueName}",
+                current?.GetValue(valueName)?.ToString(),
+                value.ToString(global::System.Globalization.CultureInfo.InvariantCulture)
+            );
+            await Task.CompletedTask.ConfigureAwait(false);
+            return OpResult.Success();
+        }
         var description = $@"HKLM\{key}:{valueName} = {value} (Group Policy)";
         try
         {

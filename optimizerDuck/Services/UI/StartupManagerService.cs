@@ -11,6 +11,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Win32;
 using optimizerDuck.Domain.Execution;
 using optimizerDuck.Domain.Optimizations.Models.StartupManager;
+using optimizerDuck.Services.System;
 using optimizerDuck.Services.System.Primitives;
 using StartupApp = optimizerDuck.Domain.Optimizations.Models.StartupManager.StartupApp;
 using StartupTask = optimizerDuck.Domain.Optimizations.Models.StartupManager.StartupTask;
@@ -31,9 +32,11 @@ public class StartupManagerService(ILogger<StartupManagerService> logger)
 
         await Task.Run(() =>
         {
-            // 1. Registry (default view)
+            // 1. Registry (default view). HKCU is the client's even when Zentra runs as another
+            // administrator (plan F2-05).
+            using var userRoot = InteractiveUser.CurrentUserRoot();
             ScanRegistryKey(
-                Registry.CurrentUser,
+                userRoot,
                 @"Software\Microsoft\Windows\CurrentVersion\Run",
                 StartupAppLocation.RegistryHKCURun,
                 apps
@@ -45,7 +48,7 @@ public class StartupManagerService(ILogger<StartupManagerService> logger)
                 apps
             );
             ScanRegistryKey(
-                Registry.CurrentUser,
+                userRoot,
                 @"Software\Microsoft\Windows\CurrentVersion\RunOnce",
                 StartupAppLocation.RegistryHKCURunOnce,
                 apps
@@ -77,7 +80,7 @@ public class StartupManagerService(ILogger<StartupManagerService> logger)
             );
 
             // 3. Startup Folders
-            var userStartup = Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+            var userStartup = InteractiveUser.StartupFolder();
             var commonStartup = Environment.GetFolderPath(Environment.SpecialFolder.CommonStartup);
 
             ScanDirectory(userStartup, StartupAppLocation.UserStartupFolder, apps);
@@ -227,7 +230,7 @@ public class StartupManagerService(ILogger<StartupManagerService> logger)
             var rootKey =
                 location == StartupAppLocation.CommonStartupFolder
                     ? Registry.LocalMachine
-                    : Registry.CurrentUser;
+                    : InteractiveUser.CurrentUserRoot();
 
             const string approvedSubKeyPath =
                 @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\StartupFolder";
@@ -290,7 +293,7 @@ public class StartupManagerService(ILogger<StartupManagerService> logger)
 
         try
         {
-            using var repository = Registry.CurrentUser.OpenSubKey(PackageRepositoryRoot);
+            using var repository = InteractiveUser.OpenCurrentUserKey(PackageRepositoryRoot);
             if (repository == null)
                 return entries;
 
@@ -357,7 +360,7 @@ public class StartupManagerService(ILogger<StartupManagerService> logger)
                             StringComparison.OrdinalIgnoreCase
                         );
 
-                        using var stateKey = Registry.CurrentUser.OpenSubKey(
+                        using var stateKey = InteractiveUser.OpenCurrentUserKey(
                             $"{SystemAppDataRoot}\\{familyName}\\{taskId}"
                         );
                         var state = stateKey?.GetValue("State") as int?;
@@ -804,7 +807,8 @@ public class StartupManagerService(ILogger<StartupManagerService> logger)
             );
 
         var subKeyPath = app.PathOrKey[(firstSlash + 1)..];
-        using var taskKey = Registry.CurrentUser.CreateSubKey(
+        using var userRoot = InteractiveUser.CurrentUserRoot();
+        using var taskKey = userRoot.CreateSubKey(
             $@"{subKeyPath}\{app.OriginalValueNameOrFileName}",
             true
         );
@@ -822,7 +826,7 @@ public class StartupManagerService(ILogger<StartupManagerService> logger)
         var rootKey =
             app.Location == StartupAppLocation.CommonStartupFolder
                 ? Registry.LocalMachine
-                : Registry.CurrentUser;
+                : InteractiveUser.CurrentUserRoot();
 
         const string approvedSubKeyPath =
             @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\StartupFolder";

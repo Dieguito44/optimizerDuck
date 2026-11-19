@@ -1,6 +1,8 @@
 using Microsoft.Extensions.Logging;
 using optimizerDuck.Domain.Abstractions;
 using optimizerDuck.Domain.Conditions;
+using optimizerDuck.Domain.Execution;
+using optimizerDuck.Domain.Optimizations.Models;
 using optimizerDuck.Domain.Optimizations.Models.Bloatware;
 using optimizerDuck.Domain.UI;
 using optimizerDuck.Services.Conditions;
@@ -49,6 +51,9 @@ public interface IProfileOperations
     Task<bool> RevertAsync(IOptimization optimization, IProgress<ProcessingProgress> progress);
     Task<IReadOnlyList<AppXPackage>> InstalledAppsAsync();
     Task<bool> RemoveAppAsync(AppXPackage app);
+
+    /// <summary>Runs the optimization as a dry run and returns what it would change (plan F2-03).</summary>
+    Task<IReadOnlyList<PlannedChange>> PreviewAsync(IOptimization optimization);
 }
 
 /// <summary>
@@ -71,6 +76,28 @@ public sealed class ServiceProfileRunner(
     }
 
     /// <summary>The installed apps the profile would remove.</summary>
+    /// <summary>
+    ///     What the profile would change on this PC, value by value (plan F2-03, "WhatIf"): the
+    ///     same settings, skipped the same way as <see cref="ApplyAsync" />, run as a dry run.
+    ///     Nothing is written and nothing is recorded.
+    /// </summary>
+    public async Task<IReadOnlyList<PlannedChange>> PreviewAsync(
+        CancellationToken cancellationToken
+    )
+    {
+        var plan = new List<PlannedChange>();
+        foreach (var optimization in await SettingsAsync())
+        {
+            cancellationToken.ThrowIfCancellationRequested();
+            if ((await operations.EvaluateConditionAsync(optimization)).IsBlocking)
+                continue;
+            if (await operations.IsAppliedAsync(optimization))
+                continue;
+            plan.AddRange(await operations.PreviewAsync(optimization));
+        }
+        return plan;
+    }
+
     public async Task<IReadOnlyList<AppXPackage>> AppsToRemoveAsync() =>
         (await operations.InstalledAppsAsync())
             .Where(a => StandardServiceProfile.IsProfileApp(a.Name))
@@ -213,6 +240,9 @@ public sealed class ProfileOperations(
     OptimizationService optimizationService,
     BloatwareService bloatwareService,
     System.SystemInfoService systemInfoService,
+    System.Primitives.ShellService shell,
+    System.StreamService stream,
+    System.PowerPlanService powerPlans,
     ILogger<ProfileOperations> logger
 ) : IProfileOperations
 {
@@ -261,4 +291,33 @@ public sealed class ProfileOperations(
 
     public async Task<bool> RemoveAppAsync(AppXPackage app) =>
         (await bloatwareService.RemoveAppXPackage(app)).Failures.Count == 0;
+
+    /// <summary>
+    ///     The optimization's own ApplyAsync with a <see cref="PreviewPlan" /> in its context:
+    ///     the registry, services, tasks, policy and shell primitives only describe their changes.
+    ///     Nothing goes through <see cref="OptimizationService" />, so nothing is recorded or saved
+    ///     for revert. A setting that fails while previewing just shows no changes.
+    /// </summary>
+    public async Task<IReadOnlyList<PlannedChange>> PreviewAsync(IOptimization optimization)
+    {
+        var plan = new PreviewPlan { CurrentSetting = optimization.Name };
+        var context = new OptimizationContext
+        {
+            Snapshot = await systemInfoService.EnsureSnapshotAsync(),
+            StreamService = stream,
+            Shell = shell,
+            PowerPlans = powerPlans,
+            Logger = logger,
+            Preview = plan,
+        };
+        try
+        {
+            await optimization.ApplyAsync(new Progress<ProcessingProgress>(), context);
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logger.LogWarning(ex, "Preview of {Setting} failed", optimization.Name);
+        }
+        return plan.Items;
+    }
 }

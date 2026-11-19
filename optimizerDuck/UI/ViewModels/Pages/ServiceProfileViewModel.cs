@@ -47,8 +47,15 @@ public partial class ServiceProfileViewModel(
         Problems.Clear();
         try
         {
+            // Preview first (plan F2-03): a dry run that changes nothing. Busy meanwhile, so the
+            // button cannot start a second run.
+            IsBusy = true;
+            StatusText = Loc.Instance["Profile.Preview.Running"];
             var settings = await runner.SettingsAsync();
             var apps = await runner.AppsToRemoveAsync();
+            var preview = await runner.PreviewAsync(CancellationToken.None);
+            IsBusy = false;
+            StatusText = null;
             var appNames =
                 apps.Count == 0
                     ? Loc.Instance["Profile.Confirm.NoApps"]
@@ -58,12 +65,15 @@ public partial class ServiceProfileViewModel(
                 new SimpleContentDialogCreateOptions
                 {
                     Title = Loc.Instance["Profile.Confirm.Title"],
-                    Content = Loc.Instance[
-                        "Profile.Confirm.Message",
-                        settings.Count,
-                        apps.Count,
-                        appNames
-                    ],
+                    Content = PreviewContent(
+                        Loc.Instance[
+                            "Profile.Confirm.Message",
+                            settings.Count,
+                            apps.Count,
+                            appNames
+                        ],
+                        preview
+                    ),
                     PrimaryButtonText = Loc.Instance["Profile.Confirm.Apply"],
                     CloseButtonText = Loc.Instance["Button.Cancel"],
                 }
@@ -132,6 +142,76 @@ public partial class ServiceProfileViewModel(
                 app.HasPendingChanges = true;
         }
     }
+
+    /// <summary>
+    ///     The confirmation text plus the preview: every value the profile would change on this
+    ///     PC, grouped by setting, with what is there now and what it becomes (plan F2-03).
+    /// </summary>
+    private static object PreviewContent(
+        string message,
+        IReadOnlyList<Domain.Execution.PlannedChange> preview
+    )
+    {
+        var changes = preview.Where(c => !c.IsAlreadyThere).ToList();
+        var panel = new global::System.Windows.Controls.StackPanel { MaxWidth = 640 };
+        panel.Children.Add(
+            new global::System.Windows.Controls.TextBlock
+            {
+                Text = message,
+                TextWrapping = TextWrapping.Wrap,
+            }
+        );
+        panel.Children.Add(
+            new global::System.Windows.Controls.TextBlock
+            {
+                Margin = new Thickness(0, 12, 0, 4),
+                FontWeight = FontWeights.SemiBold,
+                Text =
+                    changes.Count == 0
+                        ? Loc.Instance["Profile.Preview.None"]
+                        : Loc.Instance[
+                            "Profile.Preview.Header",
+                            changes.Count,
+                            changes.Select(c => c.Setting).Distinct().Count()
+                        ],
+                TextWrapping = TextWrapping.Wrap,
+            }
+        );
+        if (changes.Count == 0)
+            return panel;
+
+        var lines = new global::System.Text.StringBuilder();
+        foreach (var group in changes.GroupBy(c => c.Setting))
+        {
+            lines.AppendLine(group.Key);
+            foreach (var change in group)
+                lines.AppendLine(PreviewLine(change));
+        }
+        panel.Children.Add(
+            new global::System.Windows.Controls.ScrollViewer
+            {
+                MaxHeight = 280,
+                VerticalScrollBarVisibility = global::System
+                    .Windows
+                    .Controls
+                    .ScrollBarVisibility
+                    .Auto,
+                Content = new global::System.Windows.Controls.TextBlock
+                {
+                    Text = lines.ToString().TrimEnd(),
+                    FontFamily = new global::System.Windows.Media.FontFamily("Consolas"),
+                    FontSize = 12,
+                    TextWrapping = TextWrapping.Wrap,
+                },
+            }
+        );
+        return panel;
+    }
+
+    /// <summary>"   Registro · HKCU\...\Value: 1 → 0" (missing values say so).</summary>
+    internal static string PreviewLine(Domain.Execution.PlannedChange change) =>
+        $"   {Loc.Instance[$"Profile.Preview.Kind.{change.Kind}"]} · {change.Target}: "
+        + $"{change.Current ?? Loc.Instance["Profile.Preview.Missing"]} → {change.Next}";
 
     /// <summary>
     ///     No restore point, no changes. Windows makes one point per 24 hours: when it skips, the

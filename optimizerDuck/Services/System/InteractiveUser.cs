@@ -60,6 +60,29 @@ public static partial class InteractiveUser
         }
     }
 
+    /// <summary>
+    ///     The root of the client's HKCU, writable: HKEY_USERS\&lt;SID&gt; when redirected, the
+    ///     process HKCU otherwise. The caller disposes it (disposing HKCU itself is harmless).
+    /// </summary>
+    public static RegistryKey CurrentUserRoot() =>
+        RedirectSid is { } sid
+            ? Registry.Users.OpenSubKey(sid, writable: true) ?? Registry.CurrentUser
+            : Registry.CurrentUser;
+
+    /// <summary>
+    ///     The client's Startup folder. When redirected it comes from the client's own
+    ///     "Shell Folders" key (already expanded), never from the administrator's profile.
+    /// </summary>
+    public static string StartupFolder()
+    {
+        if (RedirectSid is not { } sid)
+            return Environment.GetFolderPath(Environment.SpecialFolder.Startup);
+        using var folders = Registry.Users.OpenSubKey(
+            $@"{sid}\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders"
+        );
+        return folders?.GetValue("Startup") as string ?? string.Empty;
+    }
+
     /// <summary>Opens a key of the client's HKCU (or the process HKCU in the normal case).</summary>
     public static RegistryKey? OpenCurrentUserKey(string subPath, bool writable = false) =>
         RedirectSid is { } sid

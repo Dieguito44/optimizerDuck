@@ -95,6 +95,16 @@ public static class ScheduledTaskService
     /// <returns>The outcome of the disable request.</returns>
     public static OpResult DisableTask(OpCall call, string fullPath)
     {
+        if (call.Preview is { } plan)
+        {
+            plan.Add(
+                PlannedChangeKind.Task,
+                fullPath,
+                GetTaskEnabledState(fullPath).ToString(),
+                IsProtectedTask(fullPath) ? "(protected: unchanged)" : "Disabled"
+            );
+            return OpResult.Success();
+        }
         ArgumentNullException.ThrowIfNull(call);
         if (IsProtectedTask(fullPath))
             return RefuseProtected(call, fullPath);
@@ -214,6 +224,16 @@ public static class ScheduledTaskService
     /// <returns>The outcome of the enable request.</returns>
     public static OpResult EnableTask(OpCall call, string fullPath)
     {
+        if (call.Preview is { } plan)
+        {
+            plan.Add(
+                PlannedChangeKind.Task,
+                fullPath,
+                GetTaskEnabledState(fullPath).ToString(),
+                "Enabled"
+            );
+            return OpResult.Success();
+        }
         ArgumentNullException.ThrowIfNull(call);
 
         var description = ServiceStrings.Format(
@@ -384,6 +404,11 @@ public static class ScheduledTaskService
     /// </returns>
     public static OpResult RunTask(OpCall? call, string fullPath)
     {
+        if (call?.Preview is { } plan)
+        {
+            plan.Add(PlannedChangeKind.Task, fullPath, null, "(run)");
+            return OpResult.Success();
+        }
         var description = ServiceStrings.Format("Run scheduled task: {0}", fullPath);
 
         try
@@ -426,6 +451,11 @@ public static class ScheduledTaskService
     /// </returns>
     public static OpResult StopTask(OpCall? call, string fullPath)
     {
+        if (call?.Preview is { } plan)
+        {
+            plan.Add(PlannedChangeKind.Task, fullPath, null, "(stop)");
+            return OpResult.Success();
+        }
         var description = ServiceStrings.Format("Stop scheduled task: {0}", fullPath);
 
         try
@@ -488,6 +518,16 @@ public static class ScheduledTaskService
     /// <returns>The outcome of the delete request. No revert step.</returns>
     public static OpResult DeleteTask(OpCall? call, string fullPath)
     {
+        if (call?.Preview is { } plan)
+        {
+            plan.Add(
+                PlannedChangeKind.Task,
+                fullPath,
+                GetTaskEnabledState(fullPath).ToString(),
+                IsProtectedTask(fullPath) ? "(protected: unchanged)" : "(delete)"
+            );
+            return OpResult.Success();
+        }
         if (IsProtectedTask(fullPath))
             return RefuseProtected(call, fullPath);
 
@@ -539,6 +579,16 @@ public static class ScheduledTaskService
     /// <returns>The outcome of the registration. No revert step.</returns>
     public static OpResult RegisterTask(OpCall? call, string folderPath, ScheduledTaskModel model)
     {
+        if (call?.Preview is { } plan)
+        {
+            plan.Add(
+                PlannedChangeKind.Task,
+                $"{folderPath.TrimEnd('\\')}\\{model.Name}",
+                null,
+                "(create)"
+            );
+            return OpResult.Success();
+        }
         var displayPath =
             string.IsNullOrWhiteSpace(folderPath) || folderPath == "\\"
                 ? $"\\{model.Name}"

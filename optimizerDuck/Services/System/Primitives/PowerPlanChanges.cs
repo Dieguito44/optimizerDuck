@@ -17,6 +17,16 @@ public static class PowerPlanChanges
         Guid? installedSchemeId = null
     )
     {
+        if (call.Preview is { } plan)
+        {
+            plan.Add(
+                PlannedChangeKind.Command,
+                $"powercfg /setactive {schemeId}",
+                null,
+                "(activate)"
+            );
+            return OpResult.Success();
+        }
         ArgumentNullException.ThrowIfNull(call);
         ArgumentNullException.ThrowIfNull(plans);
 
@@ -143,6 +153,16 @@ public static class PowerPlanChanges
         uint? dcValue
     )
     {
+        if (call.Preview is { } plan)
+        {
+            plan.Add(
+                PlannedChangeKind.Command,
+                $"powercfg {schemeId} {subgroupId} {settingId}",
+                null,
+                $"AC {acValue?.ToString() ?? "-"} / DC {dcValue?.ToString() ?? "-"}"
+            );
+            return OpResult.Success();
+        }
         ArgumentNullException.ThrowIfNull(call);
         ArgumentNullException.ThrowIfNull(plans);
 

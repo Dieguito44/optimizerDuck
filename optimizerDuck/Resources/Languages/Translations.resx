@@ -4236,4 +4236,31 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="Session.UserRedirect" xml:space="preserve">
     <value>Zentra is running with another administrator account than the person at this PC. User settings and apps are changed in the account of the person signed in at the PC, not in the administrator account.</value>
   </data>
+  <data name="Profile.Preview.Running" xml:space="preserve">
+    <value>Checking what the profile would change on this PC (nothing is changed yet)...</value>
+  </data>
+  <data name="Profile.Preview.Header" xml:space="preserve">
+    <value>What will change: {0} values in {1} settings (now → after)</value>
+  </data>
+  <data name="Profile.Preview.None" xml:space="preserve">
+    <value>This PC already has every setting of the profile; only the apps would be removed.</value>
+  </data>
+  <data name="Profile.Preview.Missing" xml:space="preserve">
+    <value>(does not exist)</value>
+  </data>
+  <data name="Profile.Preview.Kind.Registry" xml:space="preserve">
+    <value>Registry</value>
+  </data>
+  <data name="Profile.Preview.Kind.Service" xml:space="preserve">
+    <value>Service</value>
+  </data>
+  <data name="Profile.Preview.Kind.Task" xml:space="preserve">
+    <value>Task</value>
+  </data>
+  <data name="Profile.Preview.Kind.Policy" xml:space="preserve">
+    <value>Policy</value>
+  </data>
+  <data name="Profile.Preview.Kind.Command" xml:space="preserve">
+    <value>Command</value>
+  </data>
 </root>
