@@ -4,6 +4,41 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 2D: pruebas y datos (19/11/2026, PR 12, sobre el PR 11)
+
+Cierra la Fase 2 del plan de mejoras.
+
+- **Aplicar y revertir de verdad en el CI (F2-01):** `ProfileApplyRevertCiTests` corre solo en el runner de GitHub, que es desechable y elevado. Hace cuatro cosas con cada ajuste del Servicio estándar:
+  - lo previsualiza;
+  - lo aplica;
+  - comprueba que quedó como pide el perfil;
+  - lo revierte, y exige que el registro, los servicios, las tareas y las directivas vuelvan al valor de antes.
+  
+  Pasó en el CI. En el PC de desarrollo se omite.
+- **Banco de pruebas (F2-02):** `docs/BANCO-DE-PRUEBAS.md` documenta:
+  - cinco niveles: tests, CI, Windows Sandbox, máquina virtual y PCs reales;
+  - la matriz de PCs que faltan;
+  - un checklist por PR;
+  - la regla de que Zentra lo abre Diego, por la virtualización MSIX.
+  
+  Además, `tools/publicar-prueba.ps1` publica una versión de prueba y `tools/zentra-prueba.wsb` la abre en Windows Sandbox, sin red y en solo lectura.
+- **Tabla de TBW (F2-10):** 27 modelos con su resistencia oficial (Kingston A400 y NV2, Samsung 870 EVO, Crucial MX500, BX500 y P3 Plus). Cada valor cita la hoja de datos del fabricante.
+  - Quedan fuera a propósito el Crucial P3 (sin tabla oficial clara) y el P3 Plus de 4 TB (las fuentes no coinciden).
+  - El BX500 de 480 GB es de 120 TBW, no 160.
+- **Desgaste SATA con smartctl (F2-09):** Zentra trae `smartctl.exe` de smartmontools 7.5 (GPL-2.0), sin modificar.
+  - **Procedencia:** se verificó la firma OpenPGP del instalador oficial. El instalador no se ejecutó: el exe se extrajo de sus datos y su SHA-256 coincide con la lista firmada.
+  - **Seguridad:** Zentra comprueba el hash antes de cada uso, y lo ejecuta con el archivo bloqueado contra escritura. `smartctl -j -x` solo lee.
+  - **Qué lee:** el total escrito por el host, en este orden:
+    - NVMe: Data Units Written.
+    - ATA: Device Statistics.
+    - Atributos cuyo nombre en la base de smartctl dice la unidad.
+    
+    Nunca las escrituras NAND.
+  - **Resultado:** R-SSD-WEAR compara ese total con la tabla de TBW. Un SATA de la tabla deja de ser "no medible"; uno que no está en la tabla sigue siéndolo. Sin elevación, queda "acceso denegado".
+  - **Pendiente legal (Fase 1):** toda release que incluya `smartctl.exe` debe llevar también su código fuente (GPL-2.0, sección 3). Está en `Tools\smartctl.SOURCE.txt`.
+- **Sin probar en el PC real:** la lectura de smartctl del Kingston A400 de Diego. Necesita Zentra elevado y abierto por Diego.
+- **Sin cambios:** la tabla de BIOS sigue con una placa.
+
 ### Mejoras, Fase 2C: aplicar con más cuidado (19/11/2026, PR 11, sobre el PR 10)
 
 - **Vista previa del perfil (F2-03):** antes de aplicar el Servicio estándar, el diálogo muestra cada valor que cambiaría en el PC (ahora → después), agrupado por ajuste. Es un ensayo:
