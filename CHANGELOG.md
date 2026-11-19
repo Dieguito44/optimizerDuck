@@ -58,7 +58,7 @@ Se apoyó en la rama de la Fase 6B (PR 6).
 - Escaneo completo y sin conexión de Defender (Reparar Windows), "Actualizar todos" (Programas), programas que más ocupan (PDF local).
 - Temperatura: LibreHardwareMonitorLib 0.9.6 (MPL-2.0) con el driver PawnIO, que Zentra instala con winget solo para medir, con consentimiento, y desinstala enseguida.
 
-**Estado:** los tests pasan en GitHub. La prueba en el PC de Diego no se pudo hacer: Smart App Control empezó a bloquear Zentra.exe sin firmar. Queda pendiente de la firma de código (Fase 8). La rama `fase-6b-diagnostico-ampliado` (PR 6) sigue sin fusionar.
+**Estado:** PR 6 fusionado el 19/11/2026 sin la prueba en el PC. Con Smart App Control ya apagado en el PC de Diego, la prueba se puede hacer.
 
 ### Fase 6: perfil del servicio, privacidad e instalador (19/11/2026)
 
