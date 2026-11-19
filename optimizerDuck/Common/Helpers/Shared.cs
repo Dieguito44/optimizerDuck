@@ -10,24 +10,28 @@ public static class Shared
 {
     /// <summary>The ASCII-art logo shown in the startup log banner.</summary>
     public const string RawLogo = """
-                      _   _           _              _____             _
-                     | | (_)         (_)            |  __ \           | |
-           ___  _ __ | |_ _ _ __ ___  _ _______ _ __| |  | |_   _  ___| | __
-          / _ \| '_ \| __| | '_ ` _ \| |_  / _ \ '__| |  | | | | |/ __| |/ /
-         | (_) | |_) | |_| | | | | | | |/ /  __/ |  | |__| | |_| | (__|   <
-          \___/| .__/ \__|_|_| |_| |_|_/___\___|_|  |_____/ \__,_|\___|_|\_\
-               | |
-               |_|
+          _____           _
+         |__  /___ _ __ | |_ _ __ __ _
+           / // _ \ '_ \| __| '__/ _` |
+          / /|  __/ | | | |_| | | (_| |
+         /____\___|_| |_|\__|_|  \__,_|
+         Based on optimizerDuck by fatDuck (GPL v3)
         """;
 
-    /// <summary>The invite link to the project's Discord server.</summary>
+    /// <summary>The product name shown in the window title, logs and restore points.</summary>
+    public const string AppName = "Zentra";
+
+    /// <summary>The upstream project Zentra is forked from. Kept for GPL v3 attribution.</summary>
+    public const string UpstreamRepoURL = "https://github.com/itsfatduck/optimizerDuck";
+
+    /// <summary>The invite link to the upstream project's Discord server.</summary>
     public const string DiscordInviteURL = "https://discord.gg/tDUBDCYw9Q";
 
-    /// <summary>The project documentation site.</summary>
+    /// <summary>The upstream project documentation site (technical base of Zentra).</summary>
     public const string WebsiteURL = "https://optimizerduck.vercel.app/";
 
-    /// <summary>The project's GitHub repository.</summary>
-    public const string GitHubRepoURL = "https://github.com/itsfatduck/optimizerDuck";
+    /// <summary>The project's GitHub repository (the Zentra fork).</summary>
+    public const string GitHubRepoURL = "https://github.com/Dieguito44/optimizerDuck";
 
     /// <summary>The community page on the documentation site.</summary>
     public const string CommunityURL = "https://optimizerduck.vercel.app/docs/community";
@@ -37,10 +41,10 @@ public static class Shared
 
     /// <summary>The third-party notices file on GitHub.</summary>
     public const string AcknowledgementsURL =
-        "https://github.com/itsfatduck/optimizerDuck/blob/master/THIRD-PARTY-NOTICES.md";
+        "https://github.com/Dieguito44/optimizerDuck/blob/master/THIRD-PARTY-NOTICES.md";
 
     /// <summary>The name given to the restore point created before an apply.</summary>
-    public const string RestorePointName = "optimizerDuck Restore Point";
+    public const string RestorePointName = "Zentra Restore Point";
 
     /// <summary>The GUID the bundled power plan is installed under.</summary>
     public const string PowerPlanGUID = "8ae61178-2c55-43f2-afb2-f83725823657";
@@ -256,7 +260,7 @@ public static class Shared
     public static string RootDirectory =>
         Path.Combine(
             Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
-            "optimizerDuck"
+            AppName
         );
 
     /// <summary>The directory that holds downloaded and bundled resources.</summary>

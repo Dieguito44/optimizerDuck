@@ -13,15 +13,19 @@
         <Nullable>enable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
         <UseWPF>true</UseWPF>
-        <Authors>fatDuck</Authors>
+        <!-- Zentra is a fork of optimizerDuck (GPL v3). The executable is Zentra.exe; the C#
+             namespaces stay optimizerDuck.* so upstream fixes can still be merged. -->
+        <AssemblyName>Zentra</AssemblyName>
+        <RootNamespace>optimizerDuck</RootNamespace>
+        <Authors>Dieguito44; fatDuck (optimizerDuck)</Authors>
         <ApplicationIcon>Logo.ico</ApplicationIcon>
-        <Company>fatDuck</Company>
+        <Company>Dieguito44</Company>
         <FileVersion>2.29.0</FileVersion>
         <Version>2.29.0</Version>
-        <Product>optimizerDuck</Product>
-        <Copyright>Copyright fatDuck 2026</Copyright>
-        <AssemblyTitle>optimizerDuck</AssemblyTitle>
-        <AssemblyDescription>Free, open-source Windows optimization tool for performance, privacy, and simplicity.</AssemblyDescription>
+        <Product>Zentra</Product>
+        <Copyright>Copyright (C) 2026 Dieguito44. Based on optimizerDuck, Copyright (C) 2025-2026 fatDuck. GPL v3.</Copyright>
+        <AssemblyTitle>Zentra</AssemblyTitle>
+        <AssemblyDescription>Windows PC diagnosis, repair and optimization. Based on optimizerDuck.</AssemblyDescription>
         <NeutralLanguage>en-US</NeutralLanguage>
         <ApplicationManifest>app.manifest</ApplicationManifest>
         <!-- The gate: a warning fails the build, and the promoted style rules run inside it. -->
@@ -79,6 +83,7 @@
 
     <ItemGroup>
         <Resource Include="Resources\Images\Duck.png" />
+        <Resource Include="Resources\Images\Zentra.png" />
         <Resource Include="Resources\Images\GitHubLogoBlack.png" />
         <Resource Include="Resources\Images\GitHubLogoWhite.png" />
         <Resource Include="Resources\Images\DiscordLogo.png" />
