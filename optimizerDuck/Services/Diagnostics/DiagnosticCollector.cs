@@ -81,6 +81,57 @@ public sealed class DiagnosticCollector(
             TimedOut<bool>(),
             ct
         );
+        var wingetTask = MaintenanceProbes.CountWingetUpgradesAsync(logger, ct);
+        var puaTask = Run(
+            "pua",
+            MaintenanceProbes.ReadPuaProtection,
+            ProbeTimeout,
+            TimedOut<PuaMode>(),
+            ct
+        );
+        var displayTask = Run(
+            "display",
+            DisplayProbe.Read,
+            ProbeTimeout,
+            DisplayProbeResult.Failed(SectionStatus.TimedOut, NotMeasuredReason.TimedOut),
+            ct
+        );
+        var throttleTask = Run(
+            "throttling",
+            () => ThermalService.CountFirmwareThrottling(7, now),
+            ProbeTimeout,
+            TimedOut<int>(),
+            ct
+        );
+        var temperatureTask = ReadTemperatureAsync(now, ct);
+        var batteryTask = Run(
+            "battery",
+            MaintenanceProbes.ReadBatteryCapacityPercent,
+            ProbeTimeout,
+            TimedOut<int>(),
+            ct
+        );
+        var wiredTask = Run(
+            "network",
+            MaintenanceProbes.ReadWiredLink,
+            ProbeTimeout,
+            (TimedOut<int>(), TimedOut<int>()),
+            ct
+        );
+        var restoreTask = Run(
+            "restore points",
+            MaintenanceProbes.CountRestorePoints,
+            ProbeTimeout,
+            TimedOut<int>(),
+            ct
+        );
+        var oneDriveTask = Run(
+            "onedrive",
+            MaintenanceProbes.ReadOneDriveConfigured,
+            ProbeTimeout,
+            TimedOut<bool>(),
+            ct
+        );
         var startupTask = CountStartupAppsAsync(ct);
         var imageTask = ReadImageHealthAsync(ct);
         var bootTask = Run(
@@ -98,7 +149,16 @@ public sealed class DiagnosticCollector(
                 activationTask,
                 startupTask,
                 bootTask,
-                imageTask
+                imageTask,
+                wingetTask,
+                puaTask,
+                displayTask,
+                throttleTask,
+                temperatureTask,
+                batteryTask,
+                wiredTask,
+                restoreTask,
+                oneDriveTask
             )
             .ConfigureAwait(false);
 
@@ -142,6 +202,27 @@ public sealed class DiagnosticCollector(
         {
             BootMedianMs = await bootTask.ConfigureAwait(false),
             ImageHealth = await imageTask.ConfigureAwait(false),
+            Display = DisplaySnapshotMapper.Map(
+                await displayTask.ConfigureAwait(false),
+                info.Cpu.Vendor,
+                info.Cpu.Name
+            ),
+            Thermal = new ThermalSnapshot
+            {
+                CpuTemperatureC = await temperatureTask.ConfigureAwait(false),
+                FirmwareThrottling7d = await throttleTask.ConfigureAwait(false),
+            },
+            Maintenance = new MaintenanceSnapshot
+            {
+                WingetUpgrades = await wingetTask.ConfigureAwait(false),
+                PuaProtection = await puaTask.ConfigureAwait(false),
+                BatteryCapacityPercent = await batteryTask.ConfigureAwait(false),
+                WiredLinkMbps = (await wiredTask.ConfigureAwait(false)).Item1,
+                WiredMaxMbps = (await wiredTask.ConfigureAwait(false)).Item2,
+                RestorePoints = await restoreTask.ConfigureAwait(false),
+                OneDriveConfigured = await oneDriveTask.ConfigureAwait(false),
+                IdleRamPercent = Measured<double>.Missing(NotMeasuredReason.NotReported),
+            },
         };
         logger.LogInformation(
             "Diagnostic snapshot collected: {Disks} disks, {Gpus} GPUs, {Modules} RAM modules",
@@ -179,6 +260,30 @@ public sealed class DiagnosticCollector(
         {
             return Measured<Repair.WindowsImageHealth>.Missing(NotMeasuredReason.TimedOut);
         }
+    }
+
+    /// <summary>
+    ///     The CPU temperature: a recent reading from "Measure temperature", or a short one now
+    ///     when PawnIO is already installed. Zentra never installs PawnIO during a diagnosis.
+    /// </summary>
+    private async Task<Measured<double>> ReadTemperatureAsync(
+        DateTimeOffset now,
+        CancellationToken ct
+    )
+    {
+        if (
+            ThermalService.LastReading is { } last
+            && now - last.TakenAtUtc < ThermalService.ReadingValidFor
+        )
+            return Measured<double>.Of(last.Celsius);
+        if (!ThermalService.IsPawnIoInstalled())
+            return Measured<double>.Missing(NotMeasuredReason.RequiresExternalTool);
+        var reading = await ThermalService
+            .MeasureAsync(TimeSpan.FromSeconds(5), logger, ct)
+            .ConfigureAwait(false);
+        return reading is { } r
+            ? Measured<double>.Of(r.Celsius)
+            : Measured<double>.Missing(NotMeasuredReason.QueryFailed);
     }
 
     private async Task<Measured<int>> CountStartupAppsAsync(CancellationToken ct)
@@ -234,9 +339,23 @@ public sealed class DiagnosticService(
 {
     public DiagnosticReport? LastReport { get; private set; }
 
-    public async Task<DiagnosticReport> RunAsync(CancellationToken ct = default)
+    /// <param name="idleRamPercent">
+    ///     RAM in use at rest from a session measurement (R-RAM-IDLE-HIGH). The diagnosis alone
+    ///     cannot take it: it needs a 60 second average some minutes after logon.
+    /// </param>
+    public Task<DiagnosticReport> RunAsync(CancellationToken ct = default) => RunAsync(null, ct);
+
+    public async Task<DiagnosticReport> RunAsync(
+        Measured<double>? idleRamPercent,
+        CancellationToken ct = default
+    )
     {
         var snapshot = await collector.CollectAsync(ct).ConfigureAwait(false);
+        if (idleRamPercent is { } idle)
+            snapshot = snapshot with
+            {
+                Maintenance = snapshot.Maintenance with { IdleRamPercent = idle },
+            };
         var report = DiagnosticReport.Create(
             snapshot,
             ReferenceTableLoader.Embedded,

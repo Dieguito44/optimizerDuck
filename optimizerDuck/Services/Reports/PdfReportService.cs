@@ -70,7 +70,10 @@ public sealed class PdfReportService(
             id => names.TryGetValue(id, out var name) ? name : null,
             timeProvider.GetUtcNow(),
             Loc.CurrentCulture
-        );
+        ) with
+        {
+            HeavyApps = InstalledAppsReader.TopBySize(10),
+        };
     }
 
     private IEnumerable<ChangeRecord> ReadHistory()
@@ -126,7 +129,7 @@ public sealed class PdfReportService(
                 {
                     column.Item().Text(model.Title).FontSize(18).Bold().FontColor(Accent);
                     if (model.ClientLabel is { } client)
-                        column.Item().Text(Loc.Instance["Report.Client", client]);
+                        column.Item().Text(Loc.Instance["Report.Client", Printable(client)]);
                     column.Item().Text(model.Date).FontColor(Colors.Grey.Darken1);
                 });
             row.ConstantItem(170)
@@ -294,7 +297,30 @@ public sealed class PdfReportService(
         {
             Section(column, "Report.Section.BootCulprits");
             foreach (var culprit in model.BootCulprits)
-                column.Item().Text($"• {culprit.Name} (+{culprit.DelayMs / 1000.0:0.0} s)");
+                column
+                    .Item()
+                    .Text($"• {Printable(culprit.Name)} (+{culprit.DelayMs / 1000.0:0.0} s)");
+        }
+
+        if (model.HeavyApps.Count > 0)
+        {
+            Section(column, "Report.Section.HeavyApps");
+            foreach (var app in model.HeavyApps)
+                column
+                    .Item()
+                    .Text(
+                        Loc.Instance[
+                            "Report.HeavyApp",
+                            Printable(app.Name),
+                            (app.SizeKb / 1024.0 / 1024.0).ToString("0.0", Loc.CurrentCulture),
+                            app.InstalledOn?.ToString("d", Loc.CurrentCulture) ?? "—"
+                        ]
+                    );
+            column
+                .Item()
+                .Text(Loc.Instance["Report.HeavyApps.Note"])
+                .FontSize(8)
+                .FontColor(Colors.Grey.Darken1);
         }
 
         if (model.NotMeasured.Count > 0)
@@ -308,6 +334,13 @@ public sealed class PdfReportService(
         foreach (var note in model.Notes)
             column.Item().Text(note).FontSize(9);
     }
+
+    /// <summary>
+    ///     Program names come from the PC and may carry characters the bundled font lacks (CJK,
+    ///     emoji, symbols); QuestPDF refuses to draw those, so they become "?".
+    /// </summary>
+    internal static string Printable(string text) =>
+        new(text.Select(c => Ai.AiReportValidator.IsPrintable(c) ? c : '?').ToArray());
 
     private static void Section(ColumnDescriptor column, string key)
     {

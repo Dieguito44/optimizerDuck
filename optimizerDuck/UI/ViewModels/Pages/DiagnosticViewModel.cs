@@ -30,10 +30,14 @@ public sealed record FindingItem(FindingView View, Brush SeverityBrush)
 /// </summary>
 public partial class DiagnosticViewModel(
     DiagnosticService diagnosticService,
+    TemperatureViewModel temperature,
     ILogger<DiagnosticViewModel> logger
 ) : ViewModel
 {
     private CancellationTokenSource? _cts;
+
+    /// <summary>The "Measure temperature" card (phase 6B).</summary>
+    public TemperatureViewModel Temperature { get; } = temperature;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanRun))]

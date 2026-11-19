@@ -3705,4 +3705,298 @@ Aktualisiere jetzt, um die neuesten Funktionen, Verbesserungen und Fehlerbehebun
   <data name="Optimizer.Details.Provider.GroupPolicy" xml:space="preserve">
     <value>Group Policy</value>
   </data>
+  <data name="Diagnostic.Rule.R-APPS-OUTDATED.Title" xml:space="preserve">
+    <value>Outdated programs</value>
+  </data>
+  <data name="Diagnostic.Rule.R-APPS-OUTDATED.Description" xml:space="preserve">
+    <value>Several programs have a newer version. Updates fix security holes and bugs.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-PUA-OFF.Title" xml:space="preserve">
+    <value>Unwanted app blocking is off</value>
+  </data>
+  <data name="Diagnostic.Rule.R-PUA-OFF.Description" xml:space="preserve">
+    <value>Windows Security does not block potentially unwanted apps (adware, toolbars, bundled installers). In audit mode it only logs them.</value>
+  </data>
+  <data name="Diagnostic.Evidence.apps.outdated" xml:space="preserve">
+    <value>Programs with a newer version</value>
+  </data>
+  <data name="Diagnostic.Evidence.defender.pua" xml:space="preserve">
+    <value>Unwanted app blocking</value>
+  </data>
+  <data name="Diagnostic.Value.audit" xml:space="preserve">
+    <value>audit only</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.EnablePuaProtection.Name" xml:space="preserve">
+    <value>Block potentially unwanted apps</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.EnablePuaProtection.ShortDescription" xml:space="preserve">
+    <value>Windows Security blocks adware, toolbars and installers that bundle extra programs. Reverting leaves it in audit mode (logs only), never off.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.EnablePuaProtection.Error.ReadFailed" xml:space="preserve">
+    <value>Could not read the current setting of Windows Security.</value>
+  </data>
+  <data name="Software.Button.UpgradeAll" xml:space="preserve">
+    <value>Update all</value>
+  </data>
+  <data name="Software.UpgradeAll.Name" xml:space="preserve">
+    <value>all programs</value>
+  </data>
+  <data name="Software.Run.UpgradeAll" xml:space="preserve">
+    <value>Update every program (winget)</value>
+  </data>
+  <data name="Software.UpgradeAll.Confirm.Title" xml:space="preserve">
+    <value>Update every program?</value>
+  </data>
+  <data name="Software.UpgradeAll.Confirm.Message" xml:space="preserve">
+    <value>winget updates every program that has a newer version, silently. It cannot be undone from Zentra. Close open programs first; it can take several minutes.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-MON-HZ.Title" xml:space="preserve">
+    <value>Monitor below its refresh rate</value>
+  </data>
+  <data name="Diagnostic.Rule.R-MON-HZ.Description" xml:space="preserve">
+    <value>The monitor can show more images per second than it is set to. At its maximum, movement looks smoother.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-MON-PORT.Title" xml:space="preserve">
+    <value>Monitor plugged into the motherboard</value>
+  </data>
+  <data name="Diagnostic.Rule.R-MON-PORT.Description" xml:space="preserve">
+    <value>The PC has a graphics card, but the monitor is plugged into the motherboard. Games and video run on the weaker processor graphics. The cable must go to the graphics card port.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-GPU-HYBRID.Title" xml:space="preserve">
+    <value>Games without a GPU preference</value>
+  </data>
+  <data name="Diagnostic.Rule.R-GPU-HYBRID.Description" xml:space="preserve">
+    <value>This laptop has two graphics chips and some games have no GPU preference set, so Windows may run them on the weaker one.</value>
+  </data>
+  <data name="Diagnostic.Evidence.display.current_hz" xml:space="preserve">
+    <value>Current refresh rate</value>
+  </data>
+  <data name="Diagnostic.Evidence.display.max_hz" xml:space="preserve">
+    <value>Maximum at its native resolution</value>
+  </data>
+  <data name="Diagnostic.Evidence.display.monitors" xml:space="preserve">
+    <value>Monitors</value>
+  </data>
+  <data name="Diagnostic.Evidence.display.monitors_on_integrated" xml:space="preserve">
+    <value>Monitors on the motherboard</value>
+  </data>
+  <data name="Diagnostic.Evidence.gpu.dedicated" xml:space="preserve">
+    <value>Graphics card</value>
+  </data>
+  <data name="Diagnostic.Evidence.gpu.integrated" xml:space="preserve">
+    <value>Processor graphics</value>
+  </data>
+  <data name="Diagnostic.Evidence.gpu.preference" xml:space="preserve">
+    <value>GPU switching</value>
+  </data>
+  <data name="Diagnostic.Evidence.games.no_gpu_pref" xml:space="preserve">
+    <value>Games without a GPU preference</value>
+  </data>
+  <data name="Optimizer.Gpu.SetMonitorsToMaxRefresh.Name" xml:space="preserve">
+    <value>Monitors at their maximum refresh rate</value>
+  </data>
+  <data name="Optimizer.Gpu.SetMonitorsToMaxRefresh.ShortDescription" xml:space="preserve">
+    <value>Raises each monitor to its highest refresh rate at its native resolution. A window asks the person at the PC to confirm they see the picture; without an answer in 15 seconds it goes back by itself.</value>
+  </data>
+  <data name="Optimizer.Gpu.SetGamesToHighPerformanceGpu.Name" xml:space="preserve">
+    <value>Games on the high performance GPU</value>
+  </data>
+  <data name="Optimizer.Gpu.SetGamesToHighPerformanceGpu.ShortDescription" xml:space="preserve">
+    <value>For laptops with two graphics chips: games Windows has seen run, with no preference, are set to &quot;High performance&quot;. A preference you already chose is not changed.</value>
+  </data>
+  <data name="Optimizer.Gpu.SetGamesToHighPerformanceGpu.Error.OtherUser" xml:space="preserve">
+    <value>Zentra runs with another account than the signed-in user, so the preference would not reach their games.</value>
+  </data>
+  <data name="Optimizer.Gpu.SetGamesToHighPerformanceGpu.Error.NothingToSet" xml:space="preserve">
+    <value>No game without a preference ({0} games found).</value>
+  </data>
+  <data name="DisplayConfirm.Title" xml:space="preserve">
+    <value>Zentra: new refresh rate</value>
+  </data>
+  <data name="DisplayConfirm.Message" xml:space="preserve">
+    <value>The refresh rate of {0} has changed. Do you see the picture well on that monitor?</value>
+  </data>
+  <data name="DisplayConfirm.Countdown" xml:space="preserve">
+    <value>It goes back by itself in {0} s.</value>
+  </data>
+  <data name="DisplayConfirm.Keep" xml:space="preserve">
+    <value>Yes, keep it</value>
+  </data>
+  <data name="DisplayConfirm.Back" xml:space="preserve">
+    <value>Go back</value>
+  </data>
+  <data name="Revert.DisplayMode.Description" xml:space="preserve">
+    <value>Put {0} back to {1} Hz</value>
+  </data>
+  <data name="Optimizer.Details.Provider.Display" xml:space="preserve">
+    <value>Display</value>
+  </data>
+  <data name="Diagnostic.Rule.R-THERMAL.Title" xml:space="preserve">
+    <value>CPU too hot or slowed down by heat</value>
+  </data>
+  <data name="Diagnostic.Rule.R-THERMAL.Description" xml:space="preserve">
+    <value>The processor reaches 90 °C or more, or Windows recorded the firmware lowering its speed. Usually dust, dry thermal paste or a weak fan: it needs a physical cleaning.</value>
+  </data>
+  <data name="Diagnostic.Evidence.cpu.temperature" xml:space="preserve">
+    <value>CPU temperature</value>
+  </data>
+  <data name="Diagnostic.Evidence.cpu.throttling" xml:space="preserve">
+    <value>Speed limited by firmware (7 days)</value>
+  </data>
+  <data name="Temperature.Title" xml:space="preserve">
+    <value>CPU temperature</value>
+  </data>
+  <data name="Temperature.Help" xml:space="preserve">
+    <value>Reading the CPU sensors needs the PawnIO driver. Zentra installs it with winget only for the measurement (20 seconds) and uninstalls it right after. If it was already installed, it is left as it is.</value>
+  </data>
+  <data name="Temperature.Button" xml:space="preserve">
+    <value>Measure temperature</value>
+  </data>
+  <data name="Temperature.Confirm.Title" xml:space="preserve">
+    <value>Install PawnIO for the measurement?</value>
+  </data>
+  <data name="Temperature.Confirm.Message" xml:space="preserve">
+    <value>PawnIO is a signed kernel driver (namazso.PawnIO in winget) that lets Zentra read the CPU sensors. It is installed now, used for 20 seconds and uninstalled right after. Ask the client before accepting.</value>
+  </data>
+  <data name="Temperature.Confirm.Measure" xml:space="preserve">
+    <value>Install, measure and uninstall</value>
+  </data>
+  <data name="Temperature.Measuring" xml:space="preserve">
+    <value>Measuring for {0} seconds...</value>
+  </data>
+  <data name="Temperature.Result" xml:space="preserve">
+    <value>CPU at {0} °C (median at rest). The next diagnosis includes it.</value>
+  </data>
+  <data name="Temperature.NoSensor" xml:space="preserve">
+    <value>No CPU temperature sensor could be read on this PC.</value>
+  </data>
+  <data name="Temperature.InstallFailed" xml:space="preserve">
+    <value>PawnIO could not be installed, so nothing was measured.</value>
+  </data>
+  <data name="Temperature.UninstallFailed" xml:space="preserve">
+    <value>Warning: PawnIO could not be uninstalled; remove it from the Programs page or from Windows settings.</value>
+  </data>
+  <data name="Software.PawnIo.Name" xml:space="preserve">
+    <value>PawnIO driver</value>
+  </data>
+  <data name="Software.PawnIo.Description" xml:space="preserve">
+    <value>Kernel driver to read hardware sensors.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BATTERY.Title" xml:space="preserve">
+    <value>Worn battery</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BATTERY.Description" xml:space="preserve">
+    <value>The battery holds less than 60 % of what it held when new, so it lasts much less. Only a new battery fixes it.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-NET-100M.Title" xml:space="preserve">
+    <value>Wired network at 100 Mb/s</value>
+  </data>
+  <data name="Diagnostic.Rule.R-NET-100M.Description" xml:space="preserve">
+    <value>The network card can do 1 Gb/s but the connection runs at 100 Mb/s. It is almost always the cable (or one of its connectors).</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RAM-IDLE-HIGH.Title" xml:space="preserve">
+    <value>RAM almost full at rest</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RAM-IDLE-HIGH.Description" xml:space="preserve">
+    <value>With nothing open, more than 80 % of the RAM is already in use. Programs that start with Windows or run in the background take it.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BACKUP-NONE.Title" xml:space="preserve">
+    <value>No backup</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BACKUP-NONE.Description" xml:space="preserve">
+    <value>There are no restore points and no OneDrive folder. If something breaks, there is nothing to go back to.</value>
+  </data>
+  <data name="Diagnostic.Evidence.battery.capacity" xml:space="preserve">
+    <value>Battery capacity left</value>
+  </data>
+  <data name="Diagnostic.Evidence.network.link" xml:space="preserve">
+    <value>Connection speed</value>
+  </data>
+  <data name="Diagnostic.Evidence.network.max" xml:space="preserve">
+    <value>Network card maximum</value>
+  </data>
+  <data name="Diagnostic.Evidence.ram.idle_percent" xml:space="preserve">
+    <value>RAM in use at rest</value>
+  </data>
+  <data name="Diagnostic.Evidence.backup.restore_points" xml:space="preserve">
+    <value>Restore points</value>
+  </data>
+  <data name="Diagnostic.Evidence.backup.onedrive" xml:space="preserve">
+    <value>OneDrive folder</value>
+  </data>
+  <data name="Optimizer.Performance.DisableBrowserBackground.Name" xml:space="preserve">
+    <value>Browsers without background mode</value>
+  </data>
+  <data name="Optimizer.Performance.DisableBrowserBackground.ShortDescription" xml:space="preserve">
+    <value>Edge and Chrome stop running after you close them, and Edge stops preloading at sign-in. Frees RAM. The browsers will show &quot;Managed by your organization&quot;: that is this setting.</value>
+  </data>
+  <data name="Optimizer.Performance.DisableNicPowerSaving.Name" xml:space="preserve">
+    <value>Network card without power saving</value>
+  </data>
+  <data name="Optimizer.Performance.DisableNicPowerSaving.ShortDescription" xml:space="preserve">
+    <value>Windows stops turning off the network card to save power, which can drop the connection. It applies after the next restart, so a remote session is not cut.</value>
+  </data>
+  <data name="Optimizer.Performance.DisableNicPowerSaving.Error.NoAdapter" xml:space="preserve">
+    <value>No connected network card has power saving options.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Name" xml:space="preserve">
+    <value>Large folders out of the search index</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.ShortDescription" xml:space="preserve">
+    <value>Downloads and game library folders leave the Windows Search index, so the indexer stops working through huge folders. Files there can still be opened; search will not list them.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Error.OtherUser" xml:space="preserve">
+    <value>Zentra runs with another account than the signed-in user, so it would exclude the wrong folders.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Error.NotExcluded" xml:space="preserve">
+    <value>Windows Search still indexes the folder.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Error.SearchUnavailable" xml:space="preserve">
+    <value>Windows Search is not available.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Error.NoFolders" xml:space="preserve">
+    <value>No Downloads or game folders were found.</value>
+  </data>
+  <data name="Optimizer.Storage.WeeklyRestorePoints.Name" xml:space="preserve">
+    <value>Weekly restore points</value>
+  </data>
+  <data name="Optimizer.Storage.WeeklyRestorePoints.ShortDescription" xml:space="preserve">
+    <value>Turns on system protection for the Windows drive and creates a weekly task (Sunday 12:00) that makes a restore point. Reverting removes the task; protection stays on, because turning it off deletes every restore point.</value>
+  </data>
+  <data name="Revert.IndexExclusion.Description" xml:space="preserve">
+    <value>Index {0} again</value>
+  </data>
+  <data name="Defender.Title" xml:space="preserve">
+    <value>Virus scan (Microsoft Defender)</value>
+  </data>
+  <data name="Defender.Help" xml:space="preserve">
+    <value>Full scan: checks every file, can take an hour or more. Offline scan: restarts the PC and scans before Windows starts (about 15 minutes); the remote session is cut.</value>
+  </data>
+  <data name="Defender.Full.Title" xml:space="preserve">
+    <value>Full scan</value>
+  </data>
+  <data name="Defender.Offline.Title" xml:space="preserve">
+    <value>Offline scan</value>
+  </data>
+  <data name="Defender.Offline.Warning" xml:space="preserve">
+    <value>The PC restarts in a few minutes and Defender scans before Windows starts, for about 15 minutes. The remote session will be cut: agree with the client first and save open work.</value>
+  </data>
+  <data name="Defender.Offline.Confirm" xml:space="preserve">
+    <value>Restart and scan</value>
+  </data>
+  <data name="Defender.TimedOut" xml:space="preserve">
+    <value>The scan took longer than expected and was stopped.</value>
+  </data>
+  <data name="Defender.Failed" xml:space="preserve">
+    <value>Defender ended with code {0}.</value>
+  </data>
+  <data name="Report.Section.HeavyApps" xml:space="preserve">
+    <value>Programs that take the most space</value>
+  </data>
+  <data name="Report.HeavyApp" xml:space="preserve">
+    <value>• {0}: {1} GB (installed {2})</value>
+  </data>
+  <data name="Report.HeavyApps.Note" xml:space="preserve">
+    <value>Sizes as the installers declare them. When each program was last used cannot be measured reliably.</value>
+  </data>
 </root>

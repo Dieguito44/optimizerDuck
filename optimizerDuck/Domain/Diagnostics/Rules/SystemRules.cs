@@ -360,5 +360,16 @@ public static class DiagnosticRules
         new BiosOldRule(),
         new VbsOnRule(),
         new NotActivatedRule(),
+        // Phase 6B
+        new AppsOutdatedRule(),
+        new PuaOffRule(),
+        new MonitorHzRule(),
+        new MonitorPortRule(),
+        new GpuHybridRule(),
+        new ThermalRule(),
+        new BatteryRule(),
+        new Net100MRule(),
+        new RamIdleHighRule(),
+        new BackupNoneRule(),
     ];
 }

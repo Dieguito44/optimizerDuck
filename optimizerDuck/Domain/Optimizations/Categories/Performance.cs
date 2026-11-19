@@ -346,4 +346,154 @@ public class Performance : LocalizedObject, IOptimizationCategory
         internal static string RevertCommand(string netshLevel) =>
             $"netsh int tcp set global autotuninglevel={netshLevel}";
     }
+
+    /// <summary>
+    ///     Zentra ACT-BROWSER-BG (plan section 1.1 and phase 6B): Edge and Chrome stop running in
+    ///     the background after they are closed, and Edge stops preloading at sign-in. Frees real
+    ///     RAM without touching WebView2. The browsers then show "managed by your organization":
+    ///     tell the client it is this setting.
+    /// </summary>
+    [Optimization(
+        Id = "D5A8E3C1-7B42-4F96-9E0D-28C6B1F4A753",
+        Risk = OptimizationRisk.Safe,
+        Tags = OptimizationTags.Ram | OptimizationTags.Performance
+    )]
+    public class DisableBrowserBackground : BaseOptimization
+    {
+        public override Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            RegistryService.Write(
+                context,
+                new RegistryItem(
+                    @"HKLM\SOFTWARE\Policies\Microsoft\Edge",
+                    "StartupBoostEnabled",
+                    0
+                ),
+                new RegistryItem(
+                    @"HKLM\SOFTWARE\Policies\Microsoft\Edge",
+                    "BackgroundModeEnabled",
+                    0
+                ),
+                new RegistryItem(
+                    @"HKLM\SOFTWARE\Policies\Google\Chrome",
+                    "BackgroundModeEnabled",
+                    0
+                )
+            );
+            context.Logger.LogInformation("Browsers no longer run in the background");
+            return Task.FromResult(context.Changes.ToApplyResult());
+        }
+    }
+
+    /// <summary>
+    ///     Zentra ACT-NIC-POWER (plan phase 6B): connected physical network adapters stop saving
+    ///     power, which can drop the connection. -NoRestart keeps the adapter up, so a RustDesk
+    ///     session is not cut; the change takes effect on the next restart of the adapter or PC.
+    /// </summary>
+    [Optimization(
+        Id = "E2B94C68-1D7F-4A53-B8E6-90C3F5A21D47",
+        Risk = OptimizationRisk.Safe,
+        Tags = OptimizationTags.Network
+    )]
+    public class DisableNicPowerSaving : BaseOptimization
+    {
+        public override async Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            var query = await context.Shell.QueryPowerShellAsync(
+                // Only adapters whose driver exposes power management; others have nothing to change.
+                "Get-NetAdapter -Physical | Where-Object Status -eq 'Up' | Where-Object { Get-NetAdapterPowerManagement -Name $_.Name -ErrorAction SilentlyContinue } | ForEach-Object { $_.Name }",
+                context.Logger,
+                ct: context.CancellationToken
+            );
+            var adapters = (query.Stdout ?? string.Empty)
+                .Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
+                .Select(a => a.Trim())
+                .Where(a => a.Length > 0)
+                .ToList();
+
+            if (adapters.Count == 0)
+            {
+                context.Changes.AddNotApplicable(Name, Loc.Instance[$"{ErrorPrefix}.NoAdapter"]);
+                return context.Changes.ToApplyResult();
+            }
+
+            foreach (var adapter in adapters)
+            {
+                var name = adapter.Replace("'", "''");
+                await context.Shell.PowerShellAsync(
+                    $"Disable-NetAdapterPowerManagement -Name '{name}' -NoRestart",
+                    context,
+                    $"Enable-NetAdapterPowerManagement -Name '{name}' -NoRestart"
+                );
+            }
+            return context.Changes.ToApplyResult();
+        }
+    }
+
+    /// <summary>
+    ///     Zentra ACT-INDEX-EXCLUDE (plan phase 6B): Downloads and game library folders leave the
+    ///     Windows Search index, so the indexer stops churning through huge folders nobody
+    ///     searches by name. Done through Windows Search's own interface (as Indexing Options
+    ///     does) and undone by removing each exclusion.
+    /// </summary>
+    [Optimization(
+        Id = "F8C35A2E-9B47-4D16-A3E0-6D2B8F1C74E9",
+        Risk = OptimizationRisk.Safe,
+        Tags = OptimizationTags.Disk | OptimizationTags.Performance
+    )]
+    public class ExcludeLargeFoldersFromIndex : BaseOptimization
+    {
+        public override Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            if (!Services.Diagnostics.ConsoleUser.IsCurrentProcessUser())
+            {
+                // The folders come from HKCU: another account's Downloads would be excluded.
+                context.Changes.AddRefused(Name, Loc.Instance[$"{ErrorPrefix}.OtherUser"]);
+                return Task.FromResult(context.Changes.ToApplyResult());
+            }
+
+            foreach (var folder in SearchIndexService.LargeFolders())
+            {
+                try
+                {
+                    if (!SearchIndexService.IsIndexed(folder))
+                    {
+                        context.Changes.AddSkip(Name, folder);
+                        continue;
+                    }
+                    var ok = SearchIndexService.Exclude(folder);
+                    context.Changes.Add(
+                        Name,
+                        folder,
+                        ok,
+                        ok ? new Revert.Steps.IndexExclusionRevertStep { Folder = folder } : null,
+                        error: ok ? null : Loc.Instance[$"{ErrorPrefix}.NotExcluded"]
+                    );
+                }
+                catch (global::System.Runtime.InteropServices.COMException ex)
+                {
+                    context.Changes.Add(
+                        Name,
+                        folder,
+                        false,
+                        error: Loc.Instance[$"{ErrorPrefix}.SearchUnavailable"],
+                        errorDetail: ex.Message
+                    );
+                }
+            }
+
+            if (context.Changes.Changes.Count == 0)
+                context.Changes.AddNotApplicable(Name, Loc.Instance[$"{ErrorPrefix}.NoFolders"]);
+            return Task.FromResult(context.Changes.ToApplyResult());
+        }
+    }
 }

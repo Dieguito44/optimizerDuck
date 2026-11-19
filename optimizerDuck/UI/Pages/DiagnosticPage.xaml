@@ -72,6 +72,35 @@
             HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="0,0,0,24">
+                <!--  CPU temperature (phase 6B): PawnIO is installed only for the measurement  -->
+                <Border Style="{StaticResource CardSurfaceStyle}">
+                    <StackPanel>
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Temperature.Title}" />
+                        <ui:TextBlock
+                            Margin="0,2,0,8"
+                            Style="{StaticResource CaptionTextStyle}"
+                            Text="{ext:Loc Temperature.Help}"
+                            TextWrapping="Wrap" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:Button
+                                Command="{Binding ViewModel.Temperature.MeasureCommand}"
+                                Content="{ext:Loc Temperature.Button}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon Temperature24}" />
+                            <ui:ProgressRing
+                                Width="20"
+                                Height="20"
+                                Margin="12,0,0,0"
+                                IsIndeterminate="True"
+                                Visibility="{Binding ViewModel.Temperature.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </StackPanel>
+                        <ui:TextBlock
+                            Margin="0,6,0,0"
+                            Text="{Binding ViewModel.Temperature.StatusText}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
                 <!--  Error  -->
                 <ui:InfoBar
                     Margin="0,0,0,12"

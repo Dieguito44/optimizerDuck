@@ -96,6 +96,9 @@ public sealed record SessionReportModel
     public IReadOnlyList<BootCulprit> BootCulprits { get; init; } = [];
     public WrittenReport? Written { get; init; }
 
+    /// <summary>The heaviest installed programs (ACT-HEAVY-APPS). Local report only.</summary>
+    public IReadOnlyList<InstalledApp> HeavyApps { get; init; } = [];
+
     public static SessionReportModel Build(
         ServiceSession session,
         IEnumerable<ChangeRecord> history,
