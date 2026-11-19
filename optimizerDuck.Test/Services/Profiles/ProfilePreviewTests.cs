@@ -1,7 +1,9 @@
 using System.IO;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Win32;
+using optimizerDuck.Domain.Attributes;
 using optimizerDuck.Domain.Execution;
 using optimizerDuck.Domain.Optimizations.Categories;
 using optimizerDuck.Domain.Optimizations.Models;
@@ -143,6 +145,70 @@ public class ProfilePreviewTests
             var body = next.Success ? text.Substring(start, next.Index + 1) : text[start..];
             foreach (Match m in forbidden.Matches(body))
                 offenders.Add($"{type.Name}: {m.Value}");
+        }
+
+        Assert.True(offenders.Count == 0, string.Join(Environment.NewLine, offenders));
+    }
+
+    /// <summary>
+    ///     Since presets (plan F3-01) any optimization can be previewed, not only the profile's.
+    ///     Every class that does something outside the guarded primitives (a direct write, a
+    ///     process, the consent window) must handle the preview itself, QueryCMDAsync (no dry
+    ///     run) must go through PreviewOnly, and QueryPowerShellAsync may only read (Get-...).
+    /// </summary>
+    [Fact]
+    public void EveryOptimization_IsSafeToPreview()
+    {
+        var source = SourceDirectory();
+        var direct = new Regex(
+            @"\.SetValue\(|\bFile\.(Write|Delete|Move|Copy|Create)|\bDirectory\.(Delete|Move)"
+                + @"|\bProcess\.Start\b|\bnew\s+ProcessStartInfo\b|\bServiceController\b"
+                + @"|\bClientConsent\b"
+        );
+        var psQuery = new Regex(
+            @"QueryPowerShellAsync\(\s*(?://[^\n]*\n\s*)*\$?""(?<cmd>[^""]*)"""
+        );
+
+        var offenders = new List<string>();
+        var types = typeof(BaseOptimization)
+            .Assembly.GetTypes()
+            .Where(t =>
+                !t.IsAbstract
+                && typeof(BaseOptimization).IsAssignableFrom(t)
+                && t.GetCustomAttribute<OptimizationAttribute>() is not null
+                && t.DeclaringType is not null
+            );
+        foreach (var type in types)
+        {
+            var file = Path.Combine(
+                source,
+                "Domain",
+                "Optimizations",
+                "Categories",
+                $"{type.DeclaringType!.Name}.cs"
+            );
+            var text = File.ReadAllText(file);
+            var start = Regex.Match(text, $@"class {type.Name}\b").Index;
+            var next = Regex.Match(
+                text[(start + 1)..],
+                @"\n    (\[Optimization|public (sealed )?class )"
+            );
+            var body = next.Success ? text.Substring(start, next.Index + 1) : text[start..];
+
+            var handlesPreview = body.Contains("context.Preview") || body.Contains("PreviewOnly(");
+            if (!handlesPreview)
+                foreach (Match m in direct.Matches(body))
+                    offenders.Add($"{type.Name}: {m.Value} without a preview guard");
+            if (body.Contains("QueryCMDAsync(") && !body.Contains("PreviewOnly("))
+                offenders.Add($"{type.Name}: QueryCMDAsync without PreviewOnly");
+            foreach (Match m in psQuery.Matches(body))
+            {
+                var cmd = m.Groups["cmd"].Value.TrimStart('(', '[', 'b', 'o', 'l', ']');
+                if (!cmd.StartsWith("Get-", StringComparison.Ordinal))
+                    offenders.Add(
+                        $"{type.Name}: QueryPowerShellAsync that may write: {m.Groups["cmd"].Value}"
+                    );
+            }
         }
 
         Assert.True(offenders.Count == 0, string.Join(Environment.NewLine, offenders));

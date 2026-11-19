@@ -541,8 +541,10 @@ public class Performance : LocalizedObject, IOptimizationCategory
                 return context.Changes.ToApplyResult();
             }
 
+            // A preview shows the changes; the client is asked only when they are applied.
             if (
-                !await Services.System.ClientConsent.RequestAsync(
+                context.Preview is null
+                && !await Services.System.ClientConsent.RequestAsync(
                     Name,
                     Loc.Instance[$"{ErrorPrefix}.Consent"],
                     context.Logger

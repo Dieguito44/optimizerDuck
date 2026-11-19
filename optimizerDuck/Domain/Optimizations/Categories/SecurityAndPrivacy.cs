@@ -851,8 +851,10 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
             }
 
             var until = now.AddDays(MaxDays);
+            // A preview shows the changes; the client is asked only when they are applied.
             if (
-                !await ClientConsent.RequestAsync(
+                context.Preview is null
+                && !await ClientConsent.RequestAsync(
                     Name,
                     Loc.Instance[
                         $"{ErrorPrefix}.Consent",
@@ -870,7 +872,7 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
                 .Select(v => new RegistryItem(Key, v.Name, v.Value))
                 .ToArray();
             RegistryService.Write(context, items);
-            if (context.Changes.HasSuccessfulSteps)
+            if (context.Preview is null && context.Changes.HasSuccessfulSteps)
                 RememberZentraPause(until);
             context.Logger.LogInformation("Windows Update paused until {Until:u}", until);
             return context.Changes.ToApplyResult();
@@ -1016,8 +1018,10 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
                 return context.Changes.ToApplyResult();
             }
 
+            // A preview shows the changes; the client is asked only when they are applied.
             if (
-                !await ClientConsent.RequestAsync(
+                context.Preview is null
+                && !await ClientConsent.RequestAsync(
                     Name,
                     Loc.Instance[
                         $"{ErrorPrefix}.Consent",
