@@ -57,6 +57,15 @@ public sealed class SecurityAndPrivacyOptimizerPage : OptimizationPage
     }
 }
 
+public sealed class StorageOptimizerPage : OptimizationPage
+{
+    public StorageOptimizerPage(OptimizationCategoryViewModel viewModel)
+        : base(viewModel)
+    {
+        InitializeComponent();
+    }
+}
+
 public sealed class AIOptimizerPage : OptimizationPage
 {
     public AIOptimizerPage(OptimizationCategoryViewModel viewModel)

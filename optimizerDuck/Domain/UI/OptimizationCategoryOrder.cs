@@ -18,4 +18,7 @@ public enum OptimizationCategoryOrder
     UserExperience,
 
     AI,
+
+    /// <summary>Zentra: component store, Storage Sense, TRIM, Compact OS.</summary>
+    Storage,
 }

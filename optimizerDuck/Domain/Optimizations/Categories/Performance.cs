@@ -279,4 +279,71 @@ public class Performance : LocalizedObject, IOptimizationCategory
             return Task.FromResult(context.Changes.ToApplyResult());
         }
     }
+
+    /// <summary>
+    ///     Zentra ACT-TCP-NORMAL (plan phase 4): sets TCP receive window auto-tuning back to
+    ///     normal when something disabled or restricted it. The previous level is read in a
+    ///     language-independent way and restored on revert.
+    /// </summary>
+    [Optimization(
+        Id = "5D8A2F17-B6C3-4E91-8A04-E3F71C2B9D56",
+        Risk = OptimizationRisk.Safe,
+        Tags = OptimizationTags.Network | OptimizationTags.Performance
+    )]
+    public class TcpAutoTuningNormal : BaseOptimization
+    {
+        public override async Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            var query = await context.Shell.QueryPowerShellAsync(
+                "(Get-NetTCPSetting -SettingName Internet).AutoTuningLevelLocal",
+                context.Logger,
+                ct: context.CancellationToken
+            );
+            var current = NetshLevel(query.Stdout);
+
+            if (current is null)
+            {
+                context.Changes.Add(
+                    ServiceStrings.ShellName,
+                    "Get-NetTCPSetting",
+                    false,
+                    error: Loc.Instance[$"{ErrorPrefix}.ReadFailed"],
+                    errorDetail: query.Stdout + query.Stderr
+                );
+                return context.Changes.ToApplyResult();
+            }
+
+            if (current == "normal")
+            {
+                context.Changes.AddSkip(Name, "autotuninglevel: normal");
+                return context.Changes.ToApplyResult();
+            }
+
+            await context.Shell.CMDAsync(
+                "netsh int tcp set global autotuninglevel=normal",
+                context,
+                RevertCommand(current)
+            );
+            return context.Changes.ToApplyResult();
+        }
+
+        /// <summary>Maps Get-NetTCPSetting's level name to the netsh keyword, or null if unknown.</summary>
+        internal static string? NetshLevel(string? powerShellLevel) =>
+            powerShellLevel?.Trim() switch
+            {
+                "Normal" => "normal",
+                "Disabled" => "disabled",
+                "Restricted" => "restricted",
+                "HighlyRestricted" => "highlyrestricted",
+                "Experimental" => "experimental",
+                _ => null,
+            };
+
+        /// <summary>The command that puts the previous level back.</summary>
+        internal static string RevertCommand(string netshLevel) =>
+            $"netsh int tcp set global autotuninglevel={netshLevel}";
+    }
 }
