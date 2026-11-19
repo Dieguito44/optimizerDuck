@@ -326,6 +326,13 @@ public sealed class DiagnosticCollector(
             logger.LogWarning("Diagnostic probe {Probe} timed out after {Timeout}", name, timeout);
             return onTimeout;
         }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            // One broken probe must not sink the whole diagnosis (audit Z-23). Its section
+            // comes back "not measured" (the same values as a time-out); the log has the cause.
+            logger.LogError(ex, "Diagnostic probe {Probe} failed", name);
+            return onTimeout;
+        }
     }
 
     private static Measured<T> TimedOut<T>() => Measured<T>.Missing(NotMeasuredReason.TimedOut);

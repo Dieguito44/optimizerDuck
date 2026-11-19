@@ -143,16 +143,14 @@ public sealed class RepairService(ShellService shell, ILogger<RepairService> log
             );
         }
 
-        // 3. System File Checker.
+        // 3. System File Checker. Its exit code is 0 whether it repaired files or found none,
+        // so the outcome comes from what it wrote to CBS.log during this run (audit Z-24).
+        var sfcStarted = DateTime.Now.AddSeconds(-5);
         var sfc = await RunToolAsync(RepairStep.Sfc, "sfc.exe", "/scannow", progress, ct);
         Record(
             context,
             results,
-            Result(
-                RepairStep.Sfc,
-                sfc.ExitCode == 0 ? RepairOutcome.Repaired : RepairOutcome.Failed,
-                sfc
-            ),
+            Result(RepairStep.Sfc, SfcOutcome(sfc.ExitCode, ReadCbsSince(sfcStarted)), sfc),
             "sfc /scannow"
         );
 
@@ -246,6 +244,74 @@ public sealed class RepairService(ShellService shell, ILogger<RepairService> log
             "NonRepairable" => WindowsImageHealth.NonRepairable,
             _ => null,
         };
+
+    /// <summary>
+    ///     sfc's result from the "[SR]" lines it wrote to CBS.log (always in English, whatever
+    ///     the Windows language): "Cannot repair" is a problem, "Repairing"/"Repaired" a repair,
+    ///     anything else clean. A non-zero exit code is a failure.
+    /// </summary>
+    internal static RepairOutcome SfcOutcome(int exitCode, IReadOnlyList<string> cbsLines)
+    {
+        if (exitCode != 0)
+            return RepairOutcome.Failed;
+        var sr = cbsLines.Where(l => l.Contains("[SR]", StringComparison.Ordinal)).ToList();
+        if (sr.Any(l => l.Contains("Cannot repair", StringComparison.OrdinalIgnoreCase)))
+            return RepairOutcome.Problem;
+        if (
+            sr.Any(l =>
+                l.Contains("Repairing corrupted file", StringComparison.OrdinalIgnoreCase)
+                || l.Contains("Repaired file", StringComparison.OrdinalIgnoreCase)
+            )
+        )
+            return RepairOutcome.Repaired;
+        return RepairOutcome.Ok;
+    }
+
+    /// <summary>
+    ///     CBS.log lines written since <paramref name="since" /> (local time, the log's format
+    ///     "yyyy-MM-dd HH:mm:ss, ..."). Reads only the end of the file; empty when unreadable.
+    /// </summary>
+    internal static IReadOnlyList<string> ReadCbsSince(DateTime since)
+    {
+        const long Tail = 8 * 1024 * 1024;
+        try
+        {
+            var path = global::System.IO.Path.Combine(
+                Environment.GetFolderPath(Environment.SpecialFolder.Windows),
+                @"Logs\CBS\CBS.log"
+            );
+            using var stream = new global::System.IO.FileStream(
+                path,
+                global::System.IO.FileMode.Open,
+                global::System.IO.FileAccess.Read,
+                global::System.IO.FileShare.ReadWrite | global::System.IO.FileShare.Delete
+            );
+            if (stream.Length > Tail)
+                stream.Seek(-Tail, global::System.IO.SeekOrigin.End);
+            using var reader = new global::System.IO.StreamReader(stream);
+            return LinesSince(reader.ReadToEnd().Split('\n'), since);
+        }
+        catch (Exception ex)
+            when (ex is global::System.IO.IOException or UnauthorizedAccessException)
+        {
+            return [];
+        }
+    }
+
+    internal static IReadOnlyList<string> LinesSince(IEnumerable<string> lines, DateTime since) =>
+        lines
+            .Where(l =>
+                l.Length >= 19
+                && DateTime.TryParseExact(
+                    l[..19],
+                    "yyyy-MM-dd HH:mm:ss",
+                    global::System.Globalization.CultureInfo.InvariantCulture,
+                    global::System.Globalization.DateTimeStyles.None,
+                    out var time
+                )
+                && time >= since
+            )
+            .ToList();
 
     /// <summary>chkdsk exit codes: 0 clean, 1 fixed, 2 cleanup done, 3 needs an offline repair.</summary>
     internal static RepairOutcome ChkdskOutcome(int exitCode, bool timedOut) =>

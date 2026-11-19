@@ -166,7 +166,9 @@ public static class DiagnosticSnapshotBuilder
             {
                 Slot = Slot(m),
                 CapacityBytes = m.CapacityBytes,
-                ConfiguredMTps = Measured.FromNullable(m.ConfiguredSpeedMTps ?? m.SpeedMTps),
+                // Only the configured speed counts: the module's own speed is not what the PC
+                // runs at, so falling back to it could hide XMP being off (audit Z-27).
+                ConfiguredMTps = Measured.FromNullable(m.ConfiguredSpeedMTps),
                 ReportedMTps = Measured.FromNullable(m.RatedSpeedMTps),
                 PartNumber = Text(m.PartNumber),
             })
