@@ -26,6 +26,7 @@ public partial class SessionViewModel(
     AiReportService aiReportService,
     ApiKeyStore apiKeyStore,
     ServiceProfileViewModel profile,
+    GameModeViewModel gameMode,
     TimeProvider timeProvider,
     ILogger<SessionViewModel> logger
 ) : ViewModel
@@ -35,6 +36,11 @@ public partial class SessionViewModel(
 
     /// <summary>The "Servicio estándar" card (phase 6).</summary>
     public ServiceProfileViewModel Profile { get; } = profile;
+
+    /// <summary>The "Modo juego avanzado" card (phase 7), visible only while it is applied.</summary>
+    public GameModeViewModel GameMode { get; } = gameMode;
+
+    public override void OnNavigatedTo() => _ = GameMode.RefreshAsync();
 
     [ObservableProperty]
     private string _clientLabel = string.Empty;

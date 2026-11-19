@@ -1,8 +1,5 @@
 using System.IO;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
-using Microsoft.Win32;
-using Newtonsoft.Json.Linq;
 
 namespace optimizerDuck.Services.System.Primitives;
 
@@ -11,7 +8,7 @@ namespace optimizerDuck.Services.System.Primitives;
 ///     Indexing Options excludes a folder (plan phase 6B, ACT-INDEX-EXCLUDE). Interface layouts
 ///     follow Microsoft.Search.Interop (Windows SDK searchapi.h); unused slots are placeholders.
 /// </summary>
-public static partial class SearchIndexService
+public static class SearchIndexService
 {
     [ComImport, Guid("7D096C5F-AC08-4F1F-BEB7-5C22C517CE39")]
     private class CSearchManager;
@@ -133,63 +130,11 @@ public static partial class SearchIndexService
     }
 
     /// <summary>
-    ///     Folders that are big and rarely searched by name: the user's Downloads, Steam library
-    ///     game folders and Epic Games install folders. Only existing folders.
+    ///     Folders that are big and rarely searched by name: the user's Downloads and the game
+    ///     library folders. Only existing folders.
     /// </summary>
-    public static IReadOnlyList<string> LargeFolders()
-    {
-        var folders = new List<string>();
-
-        using (
-            var shell = Registry.CurrentUser.OpenSubKey(
-                @"Software\Microsoft\Windows\CurrentVersion\Explorer\User Shell Folders"
-            )
-        )
-            if (shell?.GetValue("{374DE290-123F-4565-9164-39C4925E467B}") is string downloads)
-                folders.Add(Environment.ExpandEnvironmentVariables(downloads));
-
-        using (var steam = Registry.CurrentUser.OpenSubKey(@"Software\Valve\Steam"))
-            if (steam?.GetValue("SteamPath") is string steamPath)
-            {
-                var vdf = Path.Combine(
-                    steamPath.Replace('/', '\\'),
-                    "steamapps",
-                    "libraryfolders.vdf"
-                );
-                if (File.Exists(vdf))
-                    foreach (Match m in VdfPath().Matches(File.ReadAllText(vdf)))
-                        folders.Add(
-                            Path.Combine(
-                                m.Groups[1].Value.Replace(@"\\", @"\"),
-                                "steamapps",
-                                "common"
-                            )
-                        );
-            }
-
-        var epic = Path.Combine(
-            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
-            @"Epic\EpicGamesLauncher\Data\Manifests"
+    public static IReadOnlyList<string> LargeFolders() =>
+        GameLibraries.Normalize(
+            new[] { GameLibraries.Downloads() }.OfType<string>().Concat(GameLibraries.Folders())
         );
-        if (Directory.Exists(epic))
-            foreach (var item in Directory.EnumerateFiles(epic, "*.item"))
-                try
-                {
-                    if (
-                        JObject.Parse(File.ReadAllText(item)).Value<string>("InstallLocation") is
-                        { Length: > 0 } dir
-                    )
-                        folders.Add(dir);
-                }
-                catch (Exception ex) when (ex is IOException or Newtonsoft.Json.JsonException) { }
-
-        return folders
-            .Where(Directory.Exists)
-            .Select(f => Path.GetFullPath(f).TrimEnd('\\'))
-            .Distinct(StringComparer.OrdinalIgnoreCase)
-            .ToList();
-    }
-
-    [GeneratedRegex("\"path\"\\s+\"([^\"]+)\"")]
-    private static partial Regex VdfPath();
 }

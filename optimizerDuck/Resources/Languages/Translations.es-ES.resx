@@ -5746,4 +5746,94 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Report.HeavyApps.Note" xml:space="preserve">
     <value>Tamaños según lo que declara cada instalador. La última vez que se usó cada programa no se puede medir con confianza.</value>
   </data>
+  <data name="Consent.Checkbox" xml:space="preserve">
+    <value>El cliente aceptó por escrito este cambio</value>
+  </data>
+  <data name="Consent.Apply" xml:space="preserve">
+    <value>Aplicar</value>
+  </data>
+  <data name="Consent.NotGiven" xml:space="preserve">
+    <value>No se aplicó: el cliente no dio su consentimiento por escrito.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.PauseWindowsUpdate7Days.Name" xml:space="preserve">
+    <value>Pausar Windows Update 7 días</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.PauseWindowsUpdate7Days.ShortDescription" xml:space="preserve">
+    <value>Opcional, con consentimiento escrito. Pausa las actualizaciones 7 días (nunca más), por ejemplo en época de exámenes o un torneo. Se reanudan solas en la fecha final; al revertir se reanudan ya.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.PauseWindowsUpdate7Days.Error.Consent" xml:space="preserve">
+    <value>Qué cambia: Windows Update deja de descargar e instalar actualizaciones hasta el {0}.
+
+Riesgo: durante esos 7 días no llegan parches de seguridad. En esa fecha las actualizaciones se reanudan solas; esta app nunca pausa más de 7 días.
+
+Cómo se deshace: revertir este ajuste en Zentra, o en Configuración &gt; Windows Update pulsar Reanudar actualizaciones.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DefenderGameLibraryExclusion.Name" xml:space="preserve">
+    <value>Excluir bibliotecas de juegos de Defender</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DefenderGameLibraryExclusion.ShortDescription" xml:space="preserve">
+    <value>Opcional, con consentimiento escrito. El análisis en tiempo real deja de revisar las carpetas de juegos de Steam y Epic, lo que acorta las cargas. Nunca Descargas, Temp, el Escritorio ni carpetas de usuario. Al revertir se quita cada exclusión.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DefenderGameLibraryExclusion.Error.OtherUser" xml:space="preserve">
+    <value>Zentra corre con un usuario distinto al de la sesión, así que las carpetas de juegos encontradas no serían las del cliente. Ábrelo desde la sesión del cliente.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DefenderGameLibraryExclusion.Error.NoFolders" xml:space="preserve">
+    <value>No se encontró ninguna biblioteca de juegos de Steam o Epic en una carpeta segura para excluir.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DefenderGameLibraryExclusion.Error.Consent" xml:space="preserve">
+    <value>Qué cambia: Microsoft Defender deja de analizar en tiempo real estas carpetas:
+{0}
+
+Riesgo: un archivo malicioso que se ponga dentro no se detectaría al ejecutarse. Instala ahí solo juegos de Steam o Epic.
+
+Cómo se deshace: revertir este ajuste en Zentra, o quitar las exclusiones en Seguridad de Windows &gt; Protección contra virus y amenazas &gt; Exclusiones.</value>
+  </data>
+  <data name="Optimizer.Performance.AdvancedGameMode.Name" xml:space="preserve">
+    <value>Modo juego avanzado</value>
+  </data>
+  <data name="Optimizer.Performance.AdvancedGameMode.ShortDescription" xml:space="preserve">
+    <value>Opcional, riesgoso, con consentimiento escrito y solo para clientes que juegan. Apaga la Integridad de memoria y la Plataforma de máquina virtual, que restan FPS en algunos juegos. Requiere reiniciar. La página Sesión muestra un botón para volver a activar la protección.</value>
+  </data>
+  <data name="Optimizer.Performance.AdvancedGameMode.Error.Consent" xml:space="preserve">
+    <value>Qué cambia: se apagan la Integridad de memoria (aislamiento del núcleo) y la Plataforma de máquina virtual. Se aplica al reiniciar.
+
+Riesgo: el PC queda menos protegido contra ataques a los controladores y al núcleo de Windows. WSL 2, las apps de Android y algunos emuladores dejan de funcionar mientras esté apagado.
+
+Antes de dejarlo: mide el mismo juego con la misma escena antes y después (prueba A/B). Si los FPS no mejoran, reviértelo.
+
+Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y reinicia, o revierte este ajuste en Zentra.</value>
+  </data>
+  <data name="GameMode.Title" xml:space="preserve">
+    <value>Modo juego avanzado activo: la Integridad de memoria está apagada</value>
+  </data>
+  <data name="GameMode.Help" xml:space="preserve">
+    <value>Déjalo solo si la prueba A/B con el mismo juego mostró más FPS. Volver a activar la protección revierte el cambio; vuelve tras reiniciar.</value>
+  </data>
+  <data name="GameMode.Button.Revert" xml:space="preserve">
+    <value>Volver a activar la protección</value>
+  </data>
+  <data name="GameMode.Revert.Title" xml:space="preserve">
+    <value>Volver a activar la protección</value>
+  </data>
+  <data name="GameMode.Revert.Message" xml:space="preserve">
+    <value>La Integridad de memoria y la Plataforma de máquina virtual vuelven a como estaban antes del modo juego avanzado. Reinicia el PC después.</value>
+  </data>
+  <data name="GameMode.Revert.Confirm" xml:space="preserve">
+    <value>Volver a activar</value>
+  </data>
+  <data name="GameMode.Revert.Done" xml:space="preserve">
+    <value>Listo. Reinicia el PC para que la protección vuelva a estar activa.</value>
+  </data>
+  <data name="GameMode.Revert.Failed" xml:space="preserve">
+    <value>No se pudo revertir: {0}</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.PauseWindowsUpdate7Days.Error.RecentPause" xml:space="preserve">
+    <value>No se aplicó: Windows Update estuvo pausado hace poco. Para no dejar el PC semanas sin parches de seguridad, se puede volver a pausar desde el {0}.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DefenderGameLibraryExclusion.Error.ReadFailed" xml:space="preserve">
+    <value>No se aplicó: no se pudieron leer las exclusiones actuales de Seguridad de Windows.</value>
+  </data>
+  <data name="Optimizer.Performance.AdvancedGameMode.Error.Locked" xml:space="preserve">
+    <value>La Integridad de memoria está bloqueada por el firmware (UEFI) o la administra una directiva en este PC; no se puede apagar desde aquí.</value>
+  </data>
 </root>

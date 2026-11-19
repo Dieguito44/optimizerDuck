@@ -137,6 +137,33 @@
                     </StackPanel>
                 </Border>
 
+                <!--  "Modo juego avanzado" (phase 7): visible while Memory Integrity is off, with the way back.  -->
+                <Border Style="{StaticResource CardSurfaceStyle}" Visibility="{Binding ViewModel.GameMode.IsApplied, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <StackPanel>
+                        <ui:TextBlock FontTypography="BodyStrong" Foreground="#C75000" Text="{ext:Loc GameMode.Title}" />
+                        <ui:TextBlock
+                            Margin="0,2,0,8"
+                            Style="{StaticResource CaptionTextStyle}"
+                            Text="{ext:Loc GameMode.Help}"
+                            TextWrapping="Wrap" />
+                        <ui:Button
+                            Margin="0,2,8,2"
+                            Appearance="Primary"
+                            Command="{Binding ViewModel.GameMode.TurnProtectionOnCommand}"
+                            Content="{ext:Loc GameMode.Button.Revert}"
+                            Cursor="Hand"
+                            Icon="{ui:SymbolIcon ShieldCheckmark24}" />
+                        <ui:TextBlock
+                            Margin="0,6,0,0"
+                            Text="{Binding ViewModel.GameMode.StatusText}"
+                            TextWrapping="Wrap" />
+                        <ui:TextBlock
+                            Foreground="#D13438"
+                            Text="{Binding ViewModel.GameMode.ErrorText}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
                 <!--  Report with AI (phase 5). The key is read from a plain WPF PasswordBox, never bound.  -->
                 <Border Style="{StaticResource CardSurfaceStyle}">
                     <StackPanel>

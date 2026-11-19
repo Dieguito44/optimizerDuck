@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using Microsoft.Extensions.Logging;
 using optimizerDuck.Common.Extensions;
+using optimizerDuck.Common.Helpers;
 using optimizerDuck.Domain.Abstractions;
 using optimizerDuck.Domain.Attributes;
 using optimizerDuck.Domain.Conditions;
@@ -10,6 +12,7 @@ using optimizerDuck.Domain.Optimizations.Models.ScheduledTask;
 using optimizerDuck.Domain.Optimizations.Models.Services;
 using optimizerDuck.Domain.UI;
 using optimizerDuck.Services.Configuration;
+using optimizerDuck.Services.System;
 using optimizerDuck.Services.System.Primitives;
 using optimizerDuck.UI.Pages.Optimize.Categories;
 
@@ -809,6 +812,256 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
                 RevertCommand
             );
             context.Logger.LogInformation("PUA protection enabled (was {Previous})", current);
+            return context.Changes.ToApplyResult();
+        }
+    }
+
+    /// <summary>
+    ///     Zentra ACT-WU-PAUSE7 (plan section 1.1, phase 7): the native Windows Update pause,
+    ///     the same values Settings writes, for 7 days at most. It ends by itself; reverting
+    ///     resumes updates now. Only when the client asks (a tournament, a deadline), with written
+    ///     consent. The change records the end date.
+    /// </summary>
+    [Optimization(
+        Id = "7B3E9D25-A1C8-4F64-B2D0-5E8C3A71F946",
+        Risk = OptimizationRisk.Moderate,
+        Tags = OptimizationTags.System
+    )]
+    public class PauseWindowsUpdate7Days : BaseOptimization
+    {
+        public const int MaxDays = 7;
+        private const string Key = @"HKLM\SOFTWARE\Microsoft\WindowsUpdate\UX\Settings";
+
+        public override async Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            var now = DateTime.UtcNow;
+            if (BlockedUntil(now, ReadExpiry(), ReadLastZentraPause()) is { } blocked)
+            {
+                context.Changes.AddRefused(
+                    Name,
+                    Loc.Instance[
+                        $"{ErrorPrefix}.RecentPause",
+                        blocked.ToLocalTime().ToString("f", Loc.CurrentCulture)
+                    ]
+                );
+                return context.Changes.ToApplyResult();
+            }
+
+            var until = now.AddDays(MaxDays);
+            if (
+                !await ClientConsent.RequestAsync(
+                    Name,
+                    Loc.Instance[
+                        $"{ErrorPrefix}.Consent",
+                        until.ToLocalTime().ToString("f", Loc.CurrentCulture)
+                    ],
+                    context.Logger
+                )
+            )
+            {
+                context.Changes.AddRefused(Name, Loc.Instance["Consent.NotGiven"]);
+                return context.Changes.ToApplyResult();
+            }
+
+            var items = PauseValues(DateTime.UtcNow, until)
+                .Select(v => new RegistryItem(Key, v.Name, v.Value))
+                .ToArray();
+            RegistryService.Write(context, items);
+            if (context.Changes.HasSuccessfulSteps)
+                RememberZentraPause(until);
+            context.Logger.LogInformation("Windows Update paused until {Until:u}", until);
+            return context.Changes.ToApplyResult();
+        }
+
+        /// <summary>
+        ///     Days that must pass after a pause ends before Zentra pauses again, so pauses cannot
+        ///     be chained (apply, revert, apply) into weeks without security patches.
+        /// </summary>
+        public const int CooldownDays = 7;
+
+        private const string Format = "yyyy-MM-ddTHH:mm:ssZ";
+
+        private static string LastPauseFile =>
+            Path.Combine(Shared.RootDirectory, "wu-pause-last.txt");
+
+        /// <summary>
+        ///     Until when a new pause is refused: a pause still running, or one that ended less
+        ///     than <see cref="CooldownDays" /> ago, whether Windows (the registry) or Zentra (its
+        ///     own note, which survives a revert) knows about it. Null when a pause is allowed.
+        /// </summary>
+        internal static DateTime? BlockedUntil(
+            DateTime nowUtc,
+            DateTime? registryExpiryUtc,
+            DateTime? lastZentraEndUtc
+        )
+        {
+            var latest = new[] { registryExpiryUtc, lastZentraEndUtc }.Max();
+            if (latest is null)
+                return null;
+            var free = latest.Value.AddDays(CooldownDays);
+            return free > nowUtc ? free : null;
+        }
+
+        internal static DateTime? ParseUtc(string? value) =>
+            DateTime.TryParseExact(
+                value?.Trim(),
+                Format,
+                global::System.Globalization.CultureInfo.InvariantCulture,
+                global::System.Globalization.DateTimeStyles.AdjustToUniversal
+                    | global::System.Globalization.DateTimeStyles.AssumeUniversal,
+                out var parsed
+            )
+                ? parsed
+                : null;
+
+        private static DateTime? ReadExpiry()
+        {
+            using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(
+                @"SOFTWARE\Microsoft\WindowsUpdate\UX\Settings"
+            );
+            return ParseUtc(key?.GetValue("PauseUpdatesExpiryTime") as string);
+        }
+
+        private static DateTime? ReadLastZentraPause()
+        {
+            try
+            {
+                return File.Exists(LastPauseFile)
+                    ? ParseUtc(File.ReadAllText(LastPauseFile))
+                    : null;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                return null;
+            }
+        }
+
+        private static void RememberZentraPause(DateTime untilUtc)
+        {
+            try
+            {
+                Directory.CreateDirectory(Shared.RootDirectory);
+                File.WriteAllText(
+                    LastPauseFile,
+                    untilUtc.ToString(
+                        Format,
+                        global::System.Globalization.CultureInfo.InvariantCulture
+                    )
+                );
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
+        }
+
+        /// <summary>The native pause values (ISO 8601, UTC), as Settings writes them.</summary>
+        internal static IReadOnlyList<(string Name, string Value)> PauseValues(
+            DateTime startUtc,
+            DateTime endUtc
+        )
+        {
+            var start = startUtc.ToString(
+                "yyyy-MM-ddTHH:mm:ssZ",
+                global::System.Globalization.CultureInfo.InvariantCulture
+            );
+            var end = endUtc.ToString(
+                "yyyy-MM-ddTHH:mm:ssZ",
+                global::System.Globalization.CultureInfo.InvariantCulture
+            );
+            return
+            [
+                ("PauseUpdatesStartTime", start),
+                ("PauseUpdatesExpiryTime", end),
+                ("PauseFeatureUpdatesStartTime", start),
+                ("PauseFeatureUpdatesEndTime", end),
+                ("PauseQualityUpdatesStartTime", start),
+                ("PauseQualityUpdatesEndTime", end),
+            ];
+        }
+    }
+
+    /// <summary>
+    ///     Zentra ACT-DEFENDER-EXCL (plan section 1.1, phase 7): Defender stops scanning the game
+    ///     library folders only (Steam, Epic); it keeps protecting everything else. Never a drive,
+    ///     Windows, Downloads, Temp, the Desktop or user folders. With written consent. Reverting
+    ///     removes each exclusion.
+    /// </summary>
+    [Optimization(
+        Id = "C5F1A8D3-6E29-4B07-9A4C-2D8B7E3F1C65",
+        Risk = OptimizationRisk.Moderate,
+        Tags = OptimizationTags.Security | OptimizationTags.Performance
+    )]
+    public class DefenderGameLibraryExclusion : BaseOptimization
+    {
+        /// <summary>The folders to exclude; replaced in tests.</summary>
+        internal static Func<IReadOnlyList<string>> FolderSource { get; set; } =
+            () => GameLibraries.Folders().Where(GameLibraries.IsSafeToExclude).ToList();
+
+        public override async Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            if (!Services.Diagnostics.ConsoleUser.IsCurrentProcessUser())
+            {
+                context.Changes.AddRefused(Name, Loc.Instance[$"{ErrorPrefix}.OtherUser"]);
+                return context.Changes.ToApplyResult();
+            }
+
+            var folders = FolderSource();
+            if (folders.Count == 0)
+            {
+                context.Changes.AddNotApplicable(Name, Loc.Instance[$"{ErrorPrefix}.NoFolders"]);
+                return context.Changes.ToApplyResult();
+            }
+
+            if (
+                !await ClientConsent.RequestAsync(
+                    Name,
+                    Loc.Instance[
+                        $"{ErrorPrefix}.Consent",
+                        string.Join(Environment.NewLine, folders)
+                    ],
+                    context.Logger
+                )
+            )
+            {
+                context.Changes.AddRefused(Name, Loc.Instance["Consent.NotGiven"]);
+                return context.Changes.ToApplyResult();
+            }
+
+            var current = await context.Shell.QueryPowerShellAsync(
+                "(Get-MpPreference).ExclusionPath",
+                context.Logger,
+                ct: context.CancellationToken
+            );
+            if (current.ExitCode != 0)
+            {
+                // Without the current list an exclusion the client already had would be added
+                // again, and its revert would remove it.
+                context.Changes.AddRefused(Name, Loc.Instance[$"{ErrorPrefix}.ReadFailed"]);
+                return context.Changes.ToApplyResult();
+            }
+            var existing = (current.Stdout ?? string.Empty)
+                .Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
+                .Select(l => l.Trim().TrimEnd('\\'))
+                .ToHashSet(StringComparer.OrdinalIgnoreCase);
+
+            foreach (var folder in folders)
+            {
+                if (existing.Contains(folder))
+                {
+                    context.Changes.AddSkip(Name, folder);
+                    continue;
+                }
+                var quoted = PowerShellText.Quote(folder);
+                await context.Shell.PowerShellAsync(
+                    $"Add-MpPreference -ExclusionPath {quoted}",
+                    context,
+                    $"Remove-MpPreference -ExclusionPath {quoted}"
+                );
+            }
             return context.Changes.ToApplyResult();
         }
     }

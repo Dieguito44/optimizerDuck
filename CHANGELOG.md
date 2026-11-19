@@ -4,6 +4,24 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Fase 7: opciones con consentimiento escrito (19/11/2026, abierta: falta la prueba en el PC)
+
+Se apoya en la rama de la Fase 6B (PR 6), que debe fusionarse antes.
+
+- **Ventana de consentimiento:** cada opción pide marcar "El cliente aceptó por escrito este cambio". El texto dice qué cambia, el riesgo, si hace falta reiniciar y cómo se deshace. Sin ventana (tests, sin interfaz) la respuesta es siempre "no".
+- **Pausar Windows Update 7 días** (ACT-WU-PAUSE7, Moderate): los valores nativos de pausa que escribe Configuración, nunca más de 7 días. Se reanuda sola; revertir la reanuda ya.
+- **Excluir bibliotecas de juegos de Defender** (ACT-DEFENDER-EXCL, Moderate): solo carpetas de Steam y Epic. Nunca una unidad, Windows, Program Files, ProgramData, el perfil, el Escritorio, Documentos, AppData, Temp ni Descargas. Revertir quita cada exclusión.
+- **Modo juego avanzado** (ACT-GAMEMODE-ADV, Risky): apaga la Integridad de memoria (HVCI) y la Plataforma de máquina virtual. Pide prueba A/B con el mismo juego y reiniciar. Mientras está aplicado, la página Sesión muestra una tarjeta con el botón "Volver a activar la protección".
+- Ninguna de las tres está en el perfil "Servicio estándar".
+
+**Revisión de seguridad de Fable** (bloqueó el merge hasta corregir dos hallazgos altos):
+- Inyección de PowerShell con comillas tipográficas (‘ ’ ‚ ‛) en la ruta de la exclusión: `PowerShellText` escapa las cinco comillas; también se aplicó a Bloatware y a la tarjeta de red.
+- Filtro de carpetas demasiado permisivo (las rutas vienen de HKCU y de manifiestos de Epic que cualquier usuario escribe): ahora exige ruta local ya normalizada, disco fijo, sin junctions ni symlinks, fuera de todos los perfiles y con marcas reales de biblioteca (manifiestos de Steam, `.egstore` de Epic). En Program Files solo `steamapps\common` o `Epic Games\<juego>`.
+- Además: la pausa no se puede encadenar (7 días de espera tras cada pausa), el consentimiento queda en el log, no se aplica nada si no se pueden leer las exclusiones actuales, y el modo juego avanzado no aplica si la Integridad de memoria está bloqueada por UEFI o por directiva.
+- Fable re-verificó los arreglos: nada bloquea el merge.
+
+**Estado:** los tests corren en GitHub; en local Smart App Control ya bloquea también la DLL de tests. La prueba en el PC de Diego queda para cuando haya firma (Fase 8). PR 7 abierto.
+
 ### Fase 6B: diagnóstico ampliado y mantenimiento (19/11/2026, abierta: falta la prueba en el PC)
 
 **Diagnósticos nuevos**
