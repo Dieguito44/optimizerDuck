@@ -15,9 +15,6 @@ public static class StandardServiceProfile
     ///     the diagnosis picks them), the process priority and multimedia scheduler tweaks (no
     ///     measurable gain), keyboard repeat and visual effects (they change how the PC feels),
     ///     the WebDAV limit (rarely used), and every Moderate or Risky setting.
-    ///     "News and interests" is out too: on current Windows 11 the User Choice Protection
-    ///     Driver (UCPD) blocks both its policy and its taskbar value, so it always fails (Diego's
-    ///     PC, 25H2, 19/11/2026). Getting around UCPD would be tampering with a Windows protection.
     /// </summary>
     public static readonly IReadOnlyList<Type> Settings =
     [
@@ -35,6 +32,7 @@ public static class StandardServiceProfile
         // Privacy (ACT-PRIVACY-STD). Location and Find My Device are in by Diego's decision
         // (19/11/2026), as plain Safe settings that can be reverted.
         typeof(SecurityAndPrivacy.DisableAdvertisingAndSuggestions),
+        typeof(SecurityAndPrivacy.DisableNewsAndInterests),
         typeof(SecurityAndPrivacy.HideMeetNowButton),
         typeof(SecurityAndPrivacy.DisableActivityHistory),
         typeof(SecurityAndPrivacy.DisableLocationAndSensors),

@@ -38,7 +38,6 @@ public class StandardServiceProfileTests
     [InlineData(typeof(Storage.DismResetBase))] // irreversible, Risky
     [InlineData(typeof(PowerManagement.DisableHibernateAndFastStartup))] // plan section 11
     [InlineData(typeof(AI.DisableRecall))] // Moderate
-    [InlineData(typeof(SecurityAndPrivacy.DisableNewsAndInterests))] // blocked by UCPD
     public void TheProfile_LeavesOut(Type excluded)
     {
         Assert.DoesNotContain(excluded, StandardServiceProfile.Settings);
