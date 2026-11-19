@@ -158,7 +158,7 @@ public class RuleEngineAndScoreTests
 public class DiegoPcGoldenTests
 {
     [Fact]
-    public void DiegoPc_FindsUmaDiskErrorsInstabilityAndVbs_Score51()
+    public void DiegoPc_FindsUmaDiskErrorsInstabilityAndVbs_Score70()
     {
         var report = DiagnosticReport.Create(DiegoPc(), Refs, DiagnosticRules.All);
 
@@ -166,10 +166,12 @@ public class DiegoPcGoldenTests
             [RuleIds.ApuUma, RuleIds.SsdHealth, RuleIds.Unstable, RuleIds.VbsOn],
             report.Findings.Select(f => f.RuleId).Order()
         );
-        Assert.Equal(51, report.Score.Score);
+        // Plan F2-07: one lifetime disk error is High (not Critical) and shutdowns without blue
+        // screens are Medium (could be power cuts).
+        Assert.Equal(70, report.Score.Score);
         Assert.Equal(0, report.Score.RulesNotMeasurable);
         Assert.Equal(
-            [("R-APU-UMA", 12), ("R-SSD-HEALTH", 25), ("R-UNSTABLE", 12), ("R-VBS-ON", 0)],
+            [("R-APU-UMA", 12), ("R-SSD-HEALTH", 12), ("R-UNSTABLE", 6), ("R-VBS-ON", 0)],
             report.Score.Deductions.Select(d => (d.RuleId, d.Points)).OrderBy(d => d.RuleId)
         );
     }
@@ -192,7 +194,7 @@ public class DiegoPcGoldenTests
 
         var report = DiagnosticReport.Create(slow, Refs, DiagnosticRules.All);
         Assert.Contains(report.Findings, f => f.RuleId == RuleIds.RamXmp);
-        Assert.Equal(39, report.Score.Score);
+        Assert.Equal(58, report.Score.Score); // 70 minus XMP from the kit table (High, 12)
     }
 }
 

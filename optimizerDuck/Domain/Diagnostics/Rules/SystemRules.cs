@@ -278,11 +278,16 @@ public sealed class UnstableRule : IDiagnosticRule
             return RuleResult.Pass(RuleId);
 
         var evidence = new List<EvidenceFact> { new("stability.unexpected_shutdowns", unexpected) };
-        if (stability.BugChecks30d.TryGet(out var bugChecks))
+        var hasBugChecks = stability.BugChecks30d.TryGet(out var bugChecks);
+        if (hasBugChecks)
             evidence.Add(new("stability.bugchecks", bugChecks));
 
+        // Power cuts also log Kernel-Power 41. Without blue screens behind them the shutdowns
+        // may be the electricity, not the PC: Medium. With blue screens it is the PC: High
+        // (plan F2-07, audit Z-19).
+        var severity = hasBugChecks && bugChecks > 0 ? Severity.High : Severity.Medium;
         return RuleResult.Found(
-            new Finding(RuleId, Severity.High, evidence, [ActionIds.BiosXmp, ActionIds.Backup])
+            new Finding(RuleId, severity, evidence, [ActionIds.BiosXmp, ActionIds.Backup])
         );
     }
 }
