@@ -7,7 +7,9 @@ using optimizerDuck.Domain.Configuration;
 using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Customize;
 using optimizerDuck.Services.Diagnostics;
+using optimizerDuck.Services.Measurements;
 using optimizerDuck.Services.Optimization;
+using optimizerDuck.Services.Reports;
 using optimizerDuck.Services.Revert;
 using optimizerDuck.Services.System;
 using optimizerDuck.Services.System.Primitives;
@@ -63,6 +65,8 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<DashboardPage>();
         services.AddSingleton<DiagnosticViewModel>();
         services.AddSingleton<DiagnosticPage>();
+        services.AddSingleton<SessionViewModel>();
+        services.AddSingleton<SessionPage>();
         services.AddSingleton<OptimizeViewModel>();
         services.AddSingleton<OptimizePage>();
         services.AddSingleton<SettingsViewModel>();
@@ -110,6 +114,12 @@ public static class ApplicationServiceCollectionExtensions
         // Zentra diagnosis (read-only).
         services.AddSingleton<IDiagnosticCollector, DiagnosticCollector>();
         services.AddSingleton<DiagnosticService>();
+
+        // Zentra measurement and client report (phase 3).
+        services.AddSingleton<DiskBenchmark>();
+        services.AddSingleton<MeasurementService>();
+        services.AddSingleton<SessionStore>();
+        services.AddSingleton<PdfReportService>();
 
         return services;
     }

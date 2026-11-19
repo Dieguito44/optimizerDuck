@@ -1,0 +1,154 @@
+<Page
+    x:Class="optimizerDuck.UI.Pages.SessionPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="clr-namespace:optimizerDuck.Common.Extensions"
+    xmlns:local="clr-namespace:optimizerDuck.UI.Pages"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="SessionPage"
+    d:DataContext="{d:DesignInstance local:SessionPage}"
+    d:DesignHeight="900"
+    d:DesignWidth="800"
+    ui:Design.Background="Black"
+    ui:Design.Foreground="White"
+    Style="{StaticResource PageRootStyle}"
+    mc:Ignorable="d">
+
+    <Grid RowDefinitions="Auto,*">
+        <StackPanel Style="{StaticResource PageHeaderStyle}">
+            <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Session.Header.Title}" />
+            <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc Session.Header.Description}" />
+        </StackPanel>
+
+        <ScrollViewer
+            Grid.Row="1"
+            HorizontalScrollBarVisibility="Disabled"
+            VerticalScrollBarVisibility="Auto">
+            <StackPanel Margin="0,0,0,24">
+                <!--  Client label (local only)  -->
+                <Border Style="{StaticResource CardSurfaceStyle}">
+                    <StackPanel>
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Session.Client.Title}" />
+                        <ui:TextBox
+                            Margin="0,6,0,4"
+                            IsEnabled="{Binding ViewModel.IsIdle}"
+                            PlaceholderText="{ext:Loc Session.Client.Placeholder}"
+                            Text="{Binding ViewModel.ClientLabel, UpdateSourceTrigger=PropertyChanged}" />
+                        <ui:TextBlock Style="{StaticResource CaptionTextStyle}" Text="{ext:Loc Session.Client.Help}" />
+                    </StackPanel>
+                </Border>
+
+                <!--  Steps  -->
+                <Border Style="{StaticResource ToolbarSurfaceStyle}">
+                    <WrapPanel Orientation="Horizontal">
+                        <ui:Button
+                            Margin="0,2,8,2"
+                            Appearance="Primary"
+                            Command="{Binding ViewModel.MeasureBeforeCommand}"
+                            Content="{ext:Loc Session.Button.Before}"
+                            Cursor="Hand"
+                            Icon="{ui:SymbolIcon Timer24}" />
+                        <ui:Button
+                            Margin="0,2,8,2"
+                            Command="{Binding ViewModel.MeasureAfterCommand}"
+                            Content="{ext:Loc Session.Button.After}"
+                            Cursor="Hand"
+                            Icon="{ui:SymbolIcon CheckmarkCircle24}" />
+                        <ui:Button
+                            Margin="0,2,8,2"
+                            Command="{Binding ViewModel.GeneratePdfCommand}"
+                            Content="{ext:Loc Session.Button.Pdf}"
+                            Cursor="Hand"
+                            Icon="{ui:SymbolIcon DocumentPdf24}" />
+                        <ui:Button
+                            Margin="0,2,8,2"
+                            Command="{Binding ViewModel.OpenFolderCommand}"
+                            Content="{ext:Loc Session.Button.Folder}"
+                            Cursor="Hand"
+                            Icon="{ui:SymbolIcon FolderOpen24}" />
+                        <ui:Button
+                            Margin="0,2,8,2"
+                            Command="{Binding ViewModel.CancelCommand}"
+                            Content="{ext:Loc Session.Button.Cancel}"
+                            Cursor="Hand"
+                            Visibility="{Binding ViewModel.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <ui:Button
+                            Margin="0,2,8,2"
+                            Command="{Binding ViewModel.NewSessionCommand}"
+                            Content="{ext:Loc Session.Button.New}"
+                            Cursor="Hand"
+                            Icon="{ui:SymbolIcon ArrowClockwise24}" />
+                    </WrapPanel>
+                </Border>
+
+                <ui:TextBlock
+                    Margin="0,0,0,8"
+                    Style="{StaticResource CaptionTextStyle}"
+                    Text="{ext:Loc Session.Steps.Help}" />
+
+                <!--  Progress  -->
+                <StackPanel Margin="0,0,0,12" Visibility="{Binding ViewModel.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ui:ProgressRing Width="28" Height="28" HorizontalAlignment="Left" IsIndeterminate="True" />
+                </StackPanel>
+                <ui:TextBlock
+                    Margin="0,0,0,12"
+                    Text="{Binding ViewModel.StatusText}"
+                    TextWrapping="Wrap" />
+                <ui:TextBlock
+                    Margin="0,0,0,12"
+                    Foreground="#D13438"
+                    Text="{Binding ViewModel.ErrorText}"
+                    TextWrapping="Wrap" />
+
+                <!--  Scores and metrics  -->
+                <StackPanel Visibility="{Binding ViewModel.HasMetrics, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border Style="{StaticResource CardSurfaceStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Margin="0,0,32,0">
+                                <ui:TextBlock Style="{StaticResource CaptionTextStyle}" Text="{ext:Loc Session.Score.Before}" />
+                                <TextBlock
+                                    FontSize="40"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                    Text="{Binding ViewModel.ScoreBeforeText}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <ui:TextBlock Style="{StaticResource CaptionTextStyle}" Text="{ext:Loc Session.Score.After}" />
+                                <TextBlock
+                                    FontSize="40"
+                                    FontWeight="SemiBold"
+                                    Foreground="#0F7B8A"
+                                    Text="{Binding ViewModel.ScoreAfterText}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource CardSurfaceStyle}">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,6" ColumnDefinitions="3*,2*,2*,2*">
+                                <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Report.Col.Metric}" />
+                                <ui:TextBlock Grid.Column="1" FontTypography="BodyStrong" Text="{ext:Loc Report.Col.Before}" />
+                                <ui:TextBlock Grid.Column="2" FontTypography="BodyStrong" Text="{ext:Loc Report.Col.After}" />
+                                <ui:TextBlock Grid.Column="3" FontTypography="BodyStrong" Text="{ext:Loc Report.Col.Change}" />
+                            </Grid>
+                            <ItemsControl ItemsSource="{Binding ViewModel.Metrics}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,3" ColumnDefinitions="3*,2*,2*,2*">
+                                            <ui:TextBlock Text="{Binding Name}" />
+                                            <ui:TextBlock Grid.Column="1" Text="{Binding Before}" />
+                                            <ui:TextBlock Grid.Column="2" Text="{Binding After}" />
+                                            <ui:TextBlock Grid.Column="3" Text="{Binding Difference}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+        </ScrollViewer>
+    </Grid>
+</Page>
