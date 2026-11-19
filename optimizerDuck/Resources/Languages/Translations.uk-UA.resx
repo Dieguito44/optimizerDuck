@@ -3097,7 +3097,7 @@
     <value>Score</value>
   </data>
   <data name="Report.ScoreLegend" xml:space="preserve">
-    <value>before → after (0 to 100)</value>
+    <value>before / after (0 to 100)</value>
   </data>
   <data name="Report.Footer" xml:space="preserve">
     <value>Generated with Zentra, based on optimizerDuck (GPL v3).</value>

@@ -51,7 +51,18 @@ public sealed class PdfReportService(
             folder,
             $"Informe_Zentra_{timeProvider.GetLocalNow():yyyy-MM-dd_HHmm}.pdf"
         );
-        await Task.Run(() => Render(model, path), ct).ConfigureAwait(false);
+        // Render to a temporary file first: a failed render must not leave an empty PDF behind.
+        var temp = path + ".tmp";
+        try
+        {
+            await Task.Run(() => Render(model, temp), ct).ConfigureAwait(false);
+            File.Move(temp, path, overwrite: true);
+        }
+        finally
+        {
+            if (File.Exists(temp))
+                File.Delete(temp);
+        }
         logger.LogInformation("Report PDF written to {Path}", path);
         return path;
     }
@@ -77,7 +88,9 @@ public sealed class PdfReportService(
                 {
                     page.Size(PageSizes.Letter);
                     page.Margin(40);
-                    page.DefaultTextStyle(t => t.FontSize(10).FontFamily("Segoe UI"));
+                    // Lato ships with QuestPDF (OFL). Since 2026.9 system fonts are not used, so
+                    // the PDF looks the same on every PC.
+                    page.DefaultTextStyle(t => t.FontSize(10).FontFamily("Lato"));
 
                     page.Header().Element(c => Header(c, model));
                     page.Content().PaddingVertical(12).Column(column => Content(column, model));
@@ -121,7 +134,7 @@ public sealed class PdfReportService(
                         .Text(text =>
                         {
                             text.Span(model.ScoreBefore?.ToString() ?? "—").FontSize(26).Bold();
-                            text.Span("  →  ").FontSize(16).FontColor(Colors.Grey.Medium);
+                            text.Span("  »  ").FontSize(16).FontColor(Colors.Grey.Medium);
                             text.Span(model.ScoreAfter?.ToString() ?? "—")
                                 .FontSize(26)
                                 .Bold()
@@ -224,7 +237,7 @@ public sealed class PdfReportService(
                             text.Span(finding.Title).Bold();
                             text.Span($"   {finding.Severity}").FontColor(Colors.Grey.Darken1);
                             if (finding.Points > 0)
-                                text.Span($"   −{finding.Points}").FontColor(Colors.Red.Darken2);
+                                text.Span($"   -{finding.Points}").FontColor(Colors.Red.Darken2);
                         });
                     f.Item().Text(finding.Description);
                     foreach (var line in finding.Evidence)

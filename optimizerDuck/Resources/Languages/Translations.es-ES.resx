@@ -4838,7 +4838,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
     <value>Puntaje</value>
   </data>
   <data name="Report.ScoreLegend" xml:space="preserve">
-    <value>antes → después (de 0 a 100)</value>
+    <value>antes / después (de 0 a 100)</value>
   </data>
   <data name="Report.Footer" xml:space="preserve">
     <value>Generado con Zentra, basado en optimizerDuck (GPL v3).</value>

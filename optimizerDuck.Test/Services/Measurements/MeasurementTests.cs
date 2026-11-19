@@ -236,21 +236,29 @@ public class SessionPersistenceTests
         var session = new ServiceSession
         {
             CreatedAtUtc = Now,
-            ClientLabel = "Prueba",
+            ClientLabel = "Prueba Ñandú",
             Before = Before(),
             DiagnosisBefore = DiagnosisSummary.From(report),
         };
-        var model = SessionReportModel.Build(
-            session,
-            [],
-            _ => null,
-            Now,
-            CultureInfo.InvariantCulture
-        );
         var path = Path.Combine(Path.GetTempPath(), $"zentra-test-{Guid.NewGuid():N}.pdf");
+        var previous = optimizerDuck.Services.Configuration.Loc.CurrentCulture;
+        var checkGlyphs = QuestPDF.Settings.CheckIfAllTextGlyphsAreAvailable;
 
         try
         {
+            // Spanish text, dashes, bullets and accents must all exist in the bundled font.
+            optimizerDuck.Services.Configuration.Loc.Instance.ChangeCulture(
+                new CultureInfo("es-ES")
+            );
+            QuestPDF.Settings.CheckIfAllTextGlyphsAreAvailable = true;
+            var model = SessionReportModel.Build(
+                session,
+                [],
+                _ => null,
+                Now,
+                new CultureInfo("es-CO")
+            );
+
             PdfReportService.Render(model, path);
 
             var head = new byte[4];
@@ -260,6 +268,8 @@ public class SessionPersistenceTests
         }
         finally
         {
+            QuestPDF.Settings.CheckIfAllTextGlyphsAreAvailable = checkGlyphs;
+            optimizerDuck.Services.Configuration.Loc.Instance.ChangeCulture(previous);
             File.Delete(path);
         }
     }
