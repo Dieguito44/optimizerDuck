@@ -9,6 +9,7 @@ using optimizerDuck.Services.Customize;
 using optimizerDuck.Services.Diagnostics;
 using optimizerDuck.Services.Measurements;
 using optimizerDuck.Services.Optimization;
+using optimizerDuck.Services.Repair;
 using optimizerDuck.Services.Reports;
 using optimizerDuck.Services.Revert;
 using optimizerDuck.Services.System;
@@ -67,6 +68,8 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<DiagnosticPage>();
         services.AddSingleton<SessionViewModel>();
         services.AddSingleton<SessionPage>();
+        services.AddSingleton<RepairViewModel>();
+        services.AddSingleton<RepairPage>();
         services.AddSingleton<OptimizeViewModel>();
         services.AddSingleton<OptimizePage>();
         services.AddSingleton<SettingsViewModel>();
@@ -120,6 +123,9 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<MeasurementService>();
         services.AddSingleton<SessionStore>();
         services.AddSingleton<PdfReportService>();
+
+        // Zentra Windows repair (phase 4).
+        services.AddSingleton<RepairService>();
 
         return services;
     }
