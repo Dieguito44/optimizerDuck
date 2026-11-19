@@ -5836,4 +5836,49 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   <data name="Optimizer.Performance.AdvancedGameMode.Error.Locked" xml:space="preserve">
     <value>La Integridad de memoria está bloqueada por el firmware (UEFI) o la administra una directiva en este PC; no se puede apagar desde aquí.</value>
   </data>
+  <data name="Dashboard.Header.Subtitle" xml:space="preserve">
+    <value>Servicio de optimización para {0}</value>
+  </data>
+  <data name="Dashboard.Steps.Diagnostic.Title" xml:space="preserve">
+    <value>1. Diagnóstico</value>
+  </data>
+  <data name="Dashboard.Steps.Diagnostic.Description" xml:space="preserve">
+    <value>Encuentra lo que frena el PC, con evidencia.</value>
+  </data>
+  <data name="Dashboard.Steps.Session.Title" xml:space="preserve">
+    <value>2. Sesión</value>
+  </data>
+  <data name="Dashboard.Steps.Session.Description" xml:space="preserve">
+    <value>Medir antes, aplicar el perfil, medir después y generar el PDF.</value>
+  </data>
+  <data name="Dashboard.Steps.Repair.Title" xml:space="preserve">
+    <value>3. Reparar</value>
+  </data>
+  <data name="Dashboard.Steps.Repair.Description" xml:space="preserve">
+    <value>Reparar Windows y liberar espacio si el diagnóstico lo pide.</value>
+  </data>
+  <data name="Dashboard.Health.None.Title" xml:space="preserve">
+    <value>Aún no hay diagnóstico</value>
+  </data>
+  <data name="Dashboard.Health.None.Detail" xml:space="preserve">
+    <value>Empieza el servicio con un diagnóstico: lee el PC sin cambiar nada.</value>
+  </data>
+  <data name="Dashboard.Health.None.Action" xml:space="preserve">
+    <value>Empezar servicio</value>
+  </data>
+  <data name="Dashboard.Health.Good" xml:space="preserve">
+    <value>Salud del PC: buena</value>
+  </data>
+  <data name="Dashboard.Health.Fair" xml:space="preserve">
+    <value>Salud del PC: regular</value>
+  </data>
+  <data name="Dashboard.Health.Poor" xml:space="preserve">
+    <value>Salud del PC: mala</value>
+  </data>
+  <data name="Dashboard.Health.Detail" xml:space="preserve">
+    <value>{0} hallazgos, {1} críticos. Diagnóstico de las {2}.</value>
+  </data>
+  <data name="Dashboard.Health.Action" xml:space="preserve">
+    <value>Ver diagnóstico</value>
+  </data>
 </root>

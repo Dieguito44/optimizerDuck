@@ -45,12 +45,10 @@ public partial class MainWindow : IWindow
         _configManager = configManager;
         InitializeComponent();
 
-        // Mica needs Windows 11; on older systems WPF-UI leaves a full-window
-        // glass frame that renders white on virtualized display stacks (#71).
-        if (Shared.IsWindows11OrGreater)
-        {
-            WindowBackdropType = WindowBackdropType.Mica;
-        }
+        // Zentra paints its own slate background (ZentraTheme) instead of Mica, so the
+        // window looks the same on every PC and wallpaper.
+        WindowBackdropType = WindowBackdropType.None;
+        SetResourceReference(BackgroundProperty, "ApplicationBackgroundBrush");
 
         DataContext = viewModel;
 

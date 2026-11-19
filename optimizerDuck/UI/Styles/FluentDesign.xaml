@@ -18,9 +18,19 @@
     <Thickness x:Key="ControlGap">0,0,8,0</Thickness>
     <Thickness x:Key="RowGap">0,0,0,8</Thickness>
 
-    <Color x:Key="AccentYellowColor">#FFFFD114</Color>
-    <SolidColorBrush x:Key="AccentYellowBrush" Color="{StaticResource AccentYellowColor}" />
-    <SolidColorBrush x:Key="AccentYellowMutedBrush" Color="#33FFD114" />
+    <!--  Zentra brand defaults (dark). ZentraTheme replaces them for the active theme at runtime.  -->
+    <SolidColorBrush x:Key="ZentraBrandBrush" Color="#FF2DD4BF" />
+    <SolidColorBrush x:Key="ZentraBrandMutedBrush" Color="#242DD4BF" />
+    <SolidColorBrush x:Key="ZentraBlueBrush" Color="#FF60A5FA" />
+    <SolidColorBrush x:Key="ZentraCriticalBrush" Color="#FFF87171" />
+    <SolidColorBrush x:Key="ZentraWarningBrush" Color="#FFFBBF24" />
+    <SolidColorBrush x:Key="ZentraGoodBrush" Color="#FF34D399" />
+    <SolidColorBrush x:Key="ZentraCardBrush" Color="#FF182129" />
+    <SolidColorBrush x:Key="ZentraStrokeBrush" Color="#FF26323D" />
+    <LinearGradientBrush x:Key="ZentraBrandGradientBrush" StartPoint="0,0" EndPoint="1,1">
+        <GradientStop Offset="0" Color="#FF2DD4BF" />
+        <GradientStop Offset="1" Color="#FF60A5FA" />
+    </LinearGradientBrush>
 
     <Style x:Key="PageRootStyle" TargetType="Page">
         <Setter Property="Foreground" Value="{DynamicResource TextFillColorPrimaryBrush}" />
@@ -172,7 +182,7 @@
     <Style x:Key="DialogIconStyle" TargetType="ui:SymbolIcon">
         <Setter Property="Margin" Value="0,0,6,0" />
         <Setter Property="FontSize" Value="44" />
-        <Setter Property="Foreground" Value="{DynamicResource AccentYellowBrush}" />
+        <Setter Property="Foreground" Value="{DynamicResource ZentraBrandBrush}" />
     </Style>
 
     <Style x:Key="ContentPresenterGridItemStyle" TargetType="ContentPresenter">

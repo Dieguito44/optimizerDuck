@@ -4089,4 +4089,49 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="Optimizer.Performance.AdvancedGameMode.Error.Locked" xml:space="preserve">
     <value>Memory Integrity is locked by the firmware (UEFI) or managed by a policy on this PC; it cannot be turned off from here.</value>
   </data>
+  <data name="Dashboard.Header.Subtitle" xml:space="preserve">
+    <value>Optimization service for {0}</value>
+  </data>
+  <data name="Dashboard.Steps.Diagnostic.Title" xml:space="preserve">
+    <value>1. Diagnose</value>
+  </data>
+  <data name="Dashboard.Steps.Diagnostic.Description" xml:space="preserve">
+    <value>Find what slows the PC down, with evidence.</value>
+  </data>
+  <data name="Dashboard.Steps.Session.Title" xml:space="preserve">
+    <value>2. Session</value>
+  </data>
+  <data name="Dashboard.Steps.Session.Description" xml:space="preserve">
+    <value>Measure before, apply the profile, measure after and write the PDF.</value>
+  </data>
+  <data name="Dashboard.Steps.Repair.Title" xml:space="preserve">
+    <value>3. Repair</value>
+  </data>
+  <data name="Dashboard.Steps.Repair.Description" xml:space="preserve">
+    <value>Repair Windows and free up space if the diagnosis asks for it.</value>
+  </data>
+  <data name="Dashboard.Health.None.Title" xml:space="preserve">
+    <value>No diagnosis yet</value>
+  </data>
+  <data name="Dashboard.Health.None.Detail" xml:space="preserve">
+    <value>Start the service with a diagnosis: it reads the PC without changing anything.</value>
+  </data>
+  <data name="Dashboard.Health.None.Action" xml:space="preserve">
+    <value>Start service</value>
+  </data>
+  <data name="Dashboard.Health.Good" xml:space="preserve">
+    <value>PC health: good</value>
+  </data>
+  <data name="Dashboard.Health.Fair" xml:space="preserve">
+    <value>PC health: fair</value>
+  </data>
+  <data name="Dashboard.Health.Poor" xml:space="preserve">
+    <value>PC health: poor</value>
+  </data>
+  <data name="Dashboard.Health.Detail" xml:space="preserve">
+    <value>{0} findings, {1} critical. Diagnosed at {2}.</value>
+  </data>
+  <data name="Dashboard.Health.Action" xml:space="preserve">
+    <value>View diagnosis</value>
+  </data>
 </root>
