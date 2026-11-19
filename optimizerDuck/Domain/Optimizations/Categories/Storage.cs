@@ -50,6 +50,10 @@ public class Storage : LocalizedObject, IOptimizationCategory
             OptimizationContext context
         )
         {
+            // QueryCMDAsync has no dry run: a preview (preset or CLI) must not start DISM.
+            if (PreviewOnly(context, "dism /Online /Cleanup-Image /StartComponentCleanup"))
+                return context.Changes.ToApplyResult();
+
             var shell = LongRunningShell(context.Logger);
 
             progress.Report(
@@ -216,6 +220,14 @@ public class Storage : LocalizedObject, IOptimizationCategory
             OptimizationContext context
         )
         {
+            if (
+                PreviewOnly(
+                    context,
+                    "dism /Online /Cleanup-Image /StartComponentCleanup /ResetBase"
+                )
+            )
+                return context.Changes.ToApplyResult();
+
             progress.Report(
                 new ProcessingProgress
                 {
@@ -313,6 +325,18 @@ public class Storage : LocalizedObject, IOptimizationCategory
     ///     Records a command that cannot be undone: irreversible on success, a failed step with
     ///     its output otherwise.
     /// </summary>
+    /// <summary>
+    ///     In a preview, records the command instead of running it and returns true. For the
+    ///     operations that run through QueryCMDAsync, which records nothing and has no dry run.
+    /// </summary>
+    internal static bool PreviewOnly(OpCall call, string command)
+    {
+        if (call.Preview is not { } plan)
+            return false;
+        plan.Add(PlannedChangeKind.Command, command, null, "(run, irreversible)");
+        return true;
+    }
+
     internal static void RecordIrreversible(OpCall call, string command, ShellResult result)
     {
         if (result.ExitCode == 0)
