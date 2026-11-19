@@ -1,3 +1,4 @@
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Logging;
@@ -85,6 +86,13 @@ public class UpdaterService : IDisposable
                 $"https://api.github.com/repos/{Owner}/{Repo}/releases/latest",
                 ct
             );
+            if (responseMessage.StatusCode == HttpStatusCode.NotFound)
+            {
+                // The fork has no published release yet: nothing to update to.
+                _logger.LogInformation("No release published yet in {Owner}/{Repo}", Owner, Repo);
+                return null;
+            }
+
             responseMessage.EnsureSuccessStatusCode();
             var response = await responseMessage.Content.ReadAsStringAsync(ct);
             var latestRelease = JsonConvert.DeserializeObject<GitHubRelease>(response);
