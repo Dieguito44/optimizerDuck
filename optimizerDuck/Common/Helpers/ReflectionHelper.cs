@@ -23,6 +23,12 @@ public static class ReflectionHelper
         }
     }
 
+    /// <summary>
+    ///     Assembly name prefixes scanned for implementations. The app assembly is named Zentra
+    ///     (the fork's executable), while the test assembly keeps the optimizerDuck prefix.
+    /// </summary>
+    private static readonly string[] _assemblyPrefixes = ["Zentra", nameof(optimizerDuck)];
+
     private static readonly Dictionary<Type, List<Type>> _implementationCache = new();
     private static readonly Lock _cacheLock = new();
 
@@ -41,10 +47,10 @@ public static class ReflectionHelper
             var types = AppDomain
                 .CurrentDomain.GetAssemblies()
                 .Where(a =>
-                    a.FullName != null
-                    && a.FullName.StartsWith(
-                        nameof(optimizerDuck),
-                        StringComparison.OrdinalIgnoreCase
+                    a.GetName().Name is { } name
+                    && _assemblyPrefixes.Any(prefix =>
+                        name.Equals(prefix, StringComparison.OrdinalIgnoreCase)
+                        || name.StartsWith(prefix + ".", StringComparison.OrdinalIgnoreCase)
                     )
                 )
                 .SelectMany(SafeGetTypes)

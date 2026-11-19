@@ -263,10 +263,10 @@
     <value>Nem sikerült felismerni az aktuális aktív energiatervet.</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ImportFailed" xml:space="preserve">
-    <value>Nem sikerült importálni az optimizerDuck energiatervét.</value>
+    <value>Nem sikerült importálni az Zentra energiatervét.</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ActivateFailed" xml:space="preserve">
-    <value>Nem sikerült aktiválni az optimizerDuck energiatervét.</value>
+    <value>Nem sikerült aktiválni az Zentra energiatervét.</value>
   </data>
   <data name="Optimizer.UI.Tags.System" xml:space="preserve">
     <value>Rendszer</value>
@@ -352,7 +352,7 @@
     <value>Nem sikerült visszaállítani az előző energiatervet: {0}.</value>
   </data>
   <data name="Revert.PowerPlan.Error.DeleteFailed" xml:space="preserve">
-    <value>Nem sikerült törölni az optimizerDuck energiatervét: {0}</value>
+    <value>Nem sikerült törölni az Zentra energiatervét: {0}</value>
   </data>
   <data name="Revert.PowerPlan.Error.NothingToDo" xml:space="preserve">
     <value>Semmi visszaállítanivaló: nincs rögzített előző vagy telepített energiaterv.</value>
@@ -696,15 +696,6 @@
   <data name="Optimizer.BloatwareAndServices.DisablePreinstalledApps.ShortDescription" xml:space="preserve">
     <value>Megakadályozza, hogy a Windows automatikusan újratelepítse a nem kívánt harmadik féltől származó alkalmazásokat és reklámozott szoftvereket.</value>
   </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Name" xml:space="preserve">
-    <value>Rendszerszolgáltatások optimalizálása</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.ShortDescription" xml:space="preserve">
-    <value>A nem létfontosságú háttérszolgáltatásokat állítja be úgy, hogy erőforrásokat szabadítson fel, miközben minden szükséges Windows-funkció megmarad.</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Progress.ChangeServiceStartupType" xml:space="preserve">
-    <value>A(z) {0} indítási típusának beállítása erre: {1}...</value>
-  </data>
   <data name="Optimizer.UI.Tags.Display" xml:space="preserve">
     <value>Megjelenítés</value>
   </data>
@@ -729,12 +720,6 @@
   </data>
   <data name="Optimizer.UserExperience.SpeedUpExplorerAndMenus.ShortDescription" xml:space="preserve">
     <value>A StartupDelayInMSec=0 és a MenuShowDelay=0 beállításával megszünteti az Intéző indítási késleltetését, és minimálisra csökkenti a menük fölé mozgatásának késleltetését.</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>Frissítésszüneteltetési korlát maximalizálása</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>A Windows Update szüneteltetésének felső határát a legnagyobb támogatott értékre állítja. Csak azok a Windows-verziók veszik figyelembe, amelyek még támogatják ezt a beállítást; amíg aktív, a biztonsági frissítések szünetelnek.</value>
   </data>
   <data name="Optimizer.UserExperience.DisableStartMenuWebSearch.Name" xml:space="preserve">
     <value>Start menü webes keresésének kikapcsolása</value>
@@ -1041,7 +1026,7 @@
     <value>Köszönetnyilvánítás</value>
   </data>
   <data name="Settings.About.Acknowledgements.Description" xml:space="preserve">
-    <value>Az optimizerDuck az alábbi nyílt forráskódú szoftverek és erőforrások nélkül nem jöhetett volna létre.</value>
+    <value>Az Zentra az alábbi nyílt forráskódú szoftverek és erőforrások nélkül nem jöhetett volna létre.</value>
   </data>
   <data name="RestorePoint.Title" xml:space="preserve">
     <value>Rendszer-visszaállítás</value>
@@ -1051,7 +1036,7 @@
 Ez egy biztonsági intézkedés, amely a módosítások alkalmazása előtt védi a Windows-t.</value>
   </data>
   <data name="RestorePointDialog.Help" xml:space="preserve">
-    <value>Az alkalmazás automatikusan engedélyezi a Rendszer-visszaállítást, és létrehoz egy "optimizerDuck..." nevű ellenőrzőpontot.
+    <value>Az alkalmazás automatikusan engedélyezi a Rendszer-visszaállítást, és létrehoz egy "Zentra..." nevű ellenőrzőpontot.
 Így bármi hiba esetén mindig visszatérhetsz.</value>
   </data>
   <data name="RestorePoint.Snackbar.Error.Title" xml:space="preserve">
@@ -1109,7 +1094,7 @@ Ez egy biztonsági intézkedés, amely a módosítások alkalmazása előtt véd
     <value>Nem találhatók felesleges alkalmazások ¯\_(ツ)_/¯</value>
   </data>
   <data name="Bloatware.Empty.Description" xml:space="preserve">
-    <value>Az optimizerDuck nem talált eltávolítható AppX-csomagot. Olyan üres, mint a semmi...</value>
+    <value>Az Zentra nem talált eltávolítható AppX-csomagot. Olyan üres, mint a semmi...</value>
   </data>
   <data name="Bloatware.Loading" xml:space="preserve">
     <value>Eltávolítható alkalmazások keresése...</value>
@@ -1148,7 +1133,7 @@ Ez egy biztonsági intézkedés, amely a módosítások alkalmazása előtt véd
     <value>A telepített AppX-csomagok eltávolításakor a megfelelő provisioned csomagokat is eltávolítja, hogy az új felhasználóknál ne települjenek újra automatikusan.</value>
   </data>
   <data name="Dashboard.UpdateInfoBar.Message" xml:space="preserve">
-    <value>Elérhető az optimizerDuck (v{0})!
+    <value>Elérhető az Zentra (v{0})!
 Frissíts most, hogy élvezhesd a legújabb funkciókat, javításokat és hibajavításokat.</value>
   </data>
   <data name="Common.Search.Placeholder" xml:space="preserve">
@@ -1810,7 +1795,7 @@ Frissíts most, hogy élvezhesd a legújabb funkciókat, javításokat és hibaj
     <value>Jogi feltételek</value>
   </data>
   <data name="LegalDialog.Intro.Title" xml:space="preserve">
-    <value>Üdv az optimizerDuckban!</value>
+    <value>Üdv az Zentraban!</value>
   </data>
   <data name="LegalDialog.Intro.Description" xml:space="preserve">
     <value>Válaszd ki a nyelvet és a témát, szánj egy percet a Feltételek, az Adatvédelmi irányelvek és a Jogi nyilatkozat átnézésére, és máris kezdheted.</value>
@@ -2010,7 +1995,7 @@ Frissíts most, hogy élvezhesd a legújabb funkciókat, javításokat és hibaj
     <value>A kompatibilitás ellenőrzése sikertelen</value>
   </data>
   <data name="Condition.Error.Description" xml:space="preserve">
-    <value>Az optimizerDuck nem tudta megállapítani, hogy ez az elem támogatott-e a rendszereden.</value>
+    <value>Az Zentra nem tudta megállapítani, hogy ez az elem támogatott-e a rendszereden.</value>
   </data>
   <data name="Condition.Windows11.Title" xml:space="preserve">
     <value>Windows 11 szükséges</value>
@@ -2499,7 +2484,7 @@ Frissíts most, hogy élvezhesd a legújabb funkciókat, javításokat és hibaj
     <value>A rekordfájl megjelenítése</value>
   </data>
   <data name="OptimizationDetailsDialog.Other.OpenRecordFile.Description" xml:space="preserve">
-    <value>Megmutatja azt a fájlt, amelybe az optimizerDuck feljegyezte, hogy mit tett ez az optimalizálás. Visszaállítás után is megmarad, így az előzmények továbbra is megtekinthetők.</value>
+    <value>Megmutatja azt a fájlt, amelybe az Zentra feljegyezte, hogy mit tett ez az optimalizálás. Visszaállítás után is megmarad, így az előzmények továbbra is megtekinthetők.</value>
   </data>
   <data name="Optimizer.Details.Provider.Registry" xml:space="preserve">
     <value>Registry</value>
@@ -2575,5 +2560,17 @@ Frissíts most, hogy élvezhesd a legújabb funkciókat, javításokat és hibaj
   </data>
   <data name="Error.Unhandled.LogHint" xml:space="preserve">
     <value>A részletek a naplófájlban találhatók.</value>
+  </data>
+  <data name="Settings.About.BasedOn" xml:space="preserve">
+    <value>Based on optimizerDuck by fatDuck. Free software under the GPL v3 license.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Name" xml:space="preserve">
+    <value>Set Rarely Used Services to Manual</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.ShortDescription" xml:space="preserve">
+    <value>Sets Fax, offline Maps, Retail Demo, Windows Insider and Windows Media Player network sharing to Manual. They are never disabled: Windows starts them when something needs them. Services missing on this PC are skipped.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Progress.ChangeServiceStartupType" xml:space="preserve">
+    <value>Setting startup type for {0} to {1}...</value>
   </data>
 </root>

@@ -263,10 +263,10 @@
     <value>Не вдалося визначити поточну схему живлення.</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ImportFailed" xml:space="preserve">
-    <value>Не вдалося імпортувати схему живлення optimizerDuck.</value>
+    <value>Не вдалося імпортувати схему живлення Zentra.</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ActivateFailed" xml:space="preserve">
-    <value>Не вдалося активувати схему живлення optimizerDuck.</value>
+    <value>Не вдалося активувати схему живлення Zentra.</value>
   </data>
   <data name="Optimizer.UI.Tags.System" xml:space="preserve">
     <value>Система</value>
@@ -352,7 +352,7 @@
     <value>Не вдалося відновити попередню схему живлення: {0}.</value>
   </data>
   <data name="Revert.PowerPlan.Error.DeleteFailed" xml:space="preserve">
-    <value>Не вдалося видалити схему живлення optimizerDuck: {0}</value>
+    <value>Не вдалося видалити схему живлення Zentra: {0}</value>
   </data>
   <data name="Revert.PowerPlan.Error.NothingToDo" xml:space="preserve">
     <value>Немає дій для відкату: попередня або встановлена схема живлення не зафіксована.</value>
@@ -696,15 +696,6 @@
   <data name="Optimizer.BloatwareAndServices.DisablePreinstalledApps.ShortDescription" xml:space="preserve">
     <value>Забороняє Windows автоматично встановлювати партнерські програми та рекламовані додатки після оновлень.</value>
   </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Name" xml:space="preserve">
-    <value>Оптимізація системних служб</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.ShortDescription" xml:space="preserve">
-    <value>Налаштовує понад 200 служб Windows: переводить рідко використовувані та застарілі служби в ручний режим або вимикає їх.</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Progress.ChangeServiceStartupType" xml:space="preserve">
-    <value>Встановлення типу запуску для {0} на {1}...</value>
-  </data>
   <data name="Optimizer.UI.Tags.Display" xml:space="preserve">
     <value>Дисплей</value>
   </data>
@@ -729,12 +720,6 @@
   </data>
   <data name="Optimizer.UserExperience.SpeedUpExplorerAndMenus.ShortDescription" xml:space="preserve">
     <value>Встановлює StartupDelayInMSec=0 та MenuShowDelay=0 для миттєвого відкриття контекстних меню без затримок анімації.</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>Максимальний термін призупинення оновлень</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>Збільшує максимальний ліміт призупинення оновлень Windows Update до гранично підтримуваного значення.</value>
   </data>
   <data name="Optimizer.UserExperience.DisableStartMenuWebSearch.Name" xml:space="preserve">
     <value>Вимкнути інтернет-пошук у "Пуск"</value>
@@ -1041,7 +1026,7 @@
     <value>Подяки</value>
   </data>
   <data name="Settings.About.Acknowledgements.Description" xml:space="preserve">
-    <value>optimizerDuck створено завдяки таким відкритим бібліотекам та ресурсам.</value>
+    <value>Zentra створено завдяки таким відкритим бібліотекам та ресурсам.</value>
   </data>
   <data name="RestorePoint.Title" xml:space="preserve">
     <value>Відновлення системи</value>
@@ -1051,7 +1036,7 @@
 Це захід безпеки перед застосуванням оптимізацій Windows.</value>
   </data>
   <data name="RestorePointDialog.Help" xml:space="preserve">
-    <value>Програма автоматично увімкне захист системи та створить контрольну точку з назвою "optimizerDuck...".
+    <value>Програма автоматично увімкне захист системи та створить контрольну точку з назвою "Zentra...".
 Це гарантує можливість повернення у разі виникнення проблем.</value>
   </data>
   <data name="RestorePoint.Snackbar.Error.Title" xml:space="preserve">
@@ -1109,7 +1094,7 @@
     <value>Непотрібних додатків не знайдено ¯\_(ツ)_/¯</value>
   </data>
   <data name="Bloatware.Empty.Description" xml:space="preserve">
-    <value>optimizerDuck не знайшов додатків AppX, доступних для видалення. Тут порожньо...</value>
+    <value>Zentra не знайшов додатків AppX, доступних для видалення. Тут порожньо...</value>
   </data>
   <data name="Bloatware.Loading" xml:space="preserve">
     <value>Пошук встановлених додатків...</value>
@@ -1148,7 +1133,7 @@
     <value>Під час видалення AppX-пакетів також видаляти відповідні образи, щоб уникнути їх повторного встановлення для нових користувачів.</value>
   </data>
   <data name="Dashboard.UpdateInfoBar.Message" xml:space="preserve">
-    <value>Доступна нова версія optimizerDuck (v{0})!
+    <value>Доступна нова версія Zentra (v{0})!
 Оновіться, щоб отримати найновіші функції, покращення та виправлення помилок.</value>
   </data>
   <data name="Common.Search.Placeholder" xml:space="preserve">
@@ -1811,7 +1796,7 @@
     <value>Угода користувача</value>
   </data>
   <data name="LegalDialog.Intro.Title" xml:space="preserve">
-    <value>Ласкаво просимо до optimizerDuck!</value>
+    <value>Ласкаво просимо до Zentra!</value>
   </data>
   <data name="LegalDialog.Intro.Description" xml:space="preserve">
     <value>Оберіть мову та тему, ознайомтеся з Умовами використання, Політикою конфіденційності та Відмовою від відповідальності, після чого ви зможете почати роботу.</value>
@@ -2011,7 +1996,7 @@
     <value>Перевірка сумісності не вдалася</value>
   </data>
   <data name="Condition.Error.Description" xml:space="preserve">
-    <value>optimizerDuck не зміг визначити, чи підтримується цей елемент у вашій системі.</value>
+    <value>Zentra не зміг визначити, чи підтримується цей елемент у вашій системі.</value>
   </data>
   <data name="Condition.Windows11.Title" xml:space="preserve">
     <value>Потрібна Windows 11</value>
@@ -2576,5 +2561,17 @@
   </data>
   <data name="Error.Unhandled.LogHint" xml:space="preserve">
     <value>Подробиці дивіться у файлі журналу.</value>
+  </data>
+  <data name="Settings.About.BasedOn" xml:space="preserve">
+    <value>Based on optimizerDuck by fatDuck. Free software under the GPL v3 license.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Name" xml:space="preserve">
+    <value>Set Rarely Used Services to Manual</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.ShortDescription" xml:space="preserve">
+    <value>Sets Fax, offline Maps, Retail Demo, Windows Insider and Windows Media Player network sharing to Manual. They are never disabled: Windows starts them when something needs them. Services missing on this PC are skipped.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Progress.ChangeServiceStartupType" xml:space="preserve">
+    <value>Setting startup type for {0} to {1}...</value>
   </data>
 </root>

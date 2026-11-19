@@ -85,6 +85,11 @@ public class BloatwareService(
 
             var apps = ParsePackages(result.Stdout);
 
+            // Hard block: protected packages (Edge, WebView2, Store...) are never offered.
+            var hidden = apps.RemoveAll(app => Shared.IsProtectedApp(app.Name));
+            if (hidden > 0)
+                logger.LogInformation("Hid {Count} protected AppX packages from the list", hidden);
+
             if (apps.Count == 0)
             {
                 logger.LogInformation("No removable AppX packages found");
@@ -252,6 +257,21 @@ public class BloatwareService(
                     appXPackage.Name
                 );
                 return new AppXRemovalResult([]);
+            }
+
+            // Second line of defense: refuse protected packages even if one reaches this call.
+            if (
+                Shared.IsProtectedApp(appXPackage.Name)
+                || Shared.IsProtectedApp(appXPackage.PackageFullName)
+            )
+            {
+                logger.LogWarning(
+                    "Refused to remove protected AppX package {Name}",
+                    appXPackage.Name
+                );
+                return new AppXRemovalResult([
+                    $"{appXPackage.Name}: protected package, never removed",
+                ]);
             }
 
             var safeName = EscapeForPowerShellLiteral(appXPackage.Name ?? string.Empty);

@@ -11,7 +11,7 @@
     xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
     xmlns:viewmodels="clr-namespace:optimizerDuck.UI.ViewModels.Windows"
     xmlns:windows="clr-namespace:optimizerDuck.UI.Windows"
-    Title="optimizerDuck"
+    Title="Zentra"
     Width="1350"
     Height="800"
     MinWidth="900"
@@ -117,13 +117,13 @@
                         Height="25"
                         Margin="8,0,6,0"
                         VerticalAlignment="Center"
-                        Source="pack://application:,,,/Resources/Images/Duck.png" />
+                        Source="pack://application:,,,/Resources/Images/Zentra.png" />
                     <ui:TextBlock
                         x:Name="AppTitleText"
                         Margin="0,0,6,0"
                         VerticalAlignment="Center"
                         FontTypography="Body"
-                        Text="optimizerDuck" />
+                        Text="Zentra" />
                     <ui:TextBlock
                         VerticalAlignment="Center"
                         FontTypography="Body"

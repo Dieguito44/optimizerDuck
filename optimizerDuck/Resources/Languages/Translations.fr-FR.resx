@@ -215,10 +215,10 @@
     <value>Impossible de détecter le plan d'alimentation actif.</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ImportFailed" xml:space="preserve">
-    <value>Impossible d'importer le plan d'alimentation d'optimizerDuck.</value>
+    <value>Impossible d'importer le plan d'alimentation d'Zentra.</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ActivateFailed" xml:space="preserve">
-    <value>Impossible d'activer le plan d'alimentation d'optimizerDuck.</value>
+    <value>Impossible d'activer le plan d'alimentation d'Zentra.</value>
   </data>
   <data name="Optimizer.UI.Tags.System" xml:space="preserve">
     <value>Système</value>
@@ -602,15 +602,6 @@
   <data name="Optimizer.BloatwareAndServices.DisablePreinstalledApps.ShortDescription" xml:space="preserve">
     <value>Empêche Windows de réinstaller automatiquement des applications tierces non désirées et des logiciels mis en avant.</value>
   </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Name" xml:space="preserve">
-    <value>Optimiser les services système</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.ShortDescription" xml:space="preserve">
-    <value>Ajuste les services d'arrière-plan non essentiels pour libérer des ressources, sans toucher aux fonctionnalités nécessaires de Windows.</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Progress.ChangeServiceStartupType" xml:space="preserve">
-    <value>Passage du type de démarrage de {0} à {1}...</value>
-  </data>
   <data name="Optimizer.UI.Tags.Display" xml:space="preserve">
     <value>Affichage</value>
   </data>
@@ -890,7 +881,7 @@
     <value>Remerciements</value>
   </data>
   <data name="Settings.About.Acknowledgements.Description" xml:space="preserve">
-    <value>optimizerDuck existe grâce aux logiciels et ressources open source suivants.</value>
+    <value>Zentra existe grâce aux logiciels et ressources open source suivants.</value>
   </data>
   <data name="RestorePoint.Title" xml:space="preserve">
     <value>Restauration du système</value>
@@ -900,7 +891,7 @@
 C'est une sécurité pour protéger Windows avant d'appliquer des modifications.</value>
   </data>
   <data name="RestorePointDialog.Help" xml:space="preserve">
-    <value>L'application activera automatiquement la Restauration du système et créera un point de restauration nommé « optimizerDuck... ».
+    <value>L'application activera automatiquement la Restauration du système et créera un point de restauration nommé « Zentra... ».
 Vous pourrez ainsi toujours revenir en arrière en cas de problème.</value>
   </data>
   <data name="RestorePoint.Snackbar.Error.Title" xml:space="preserve">
@@ -958,7 +949,7 @@ Vous pourrez ainsi toujours revenir en arrière en cas de problème.</value>
     <value>Aucune application inutile trouvée ¯\_(ツ)_/¯</value>
   </data>
   <data name="Bloatware.Empty.Description" xml:space="preserve">
-    <value>optimizerDuck n'a trouvé aucun package AppX à supprimer. C'est le vide intersidéral...</value>
+    <value>Zentra n'a trouvé aucun package AppX à supprimer. C'est le vide intersidéral...</value>
   </data>
   <data name="Bloatware.Loading" xml:space="preserve">
     <value>Recherche des applications supprimables...</value>
@@ -988,7 +979,7 @@ Vous pourrez ainsi toujours revenir en arrière en cas de problème.</value>
     <value>Lors de la suppression des packages AppX installés, supprime aussi les packages provisionnés correspondants pour qu'ils ne se réinstallent pas chez les nouveaux utilisateurs.</value>
   </data>
   <data name="Dashboard.UpdateInfoBar.Message" xml:space="preserve">
-    <value>optimizerDuck v{0} est disponible !
+    <value>Zentra v{0} est disponible !
 Mettez à jour pour profiter des dernières fonctionnalités, améliorations et corrections de bugs.</value>
   </data>
   <data name="Common.Search.Placeholder" xml:space="preserve">
@@ -1527,7 +1518,7 @@ Mettez à jour pour profiter des dernières fonctionnalités, améliorations et 
     <value>Conditions légales</value>
   </data>
   <data name="LegalDialog.Intro.Title" xml:space="preserve">
-    <value>Bienvenue sur optimizerDuck !</value>
+    <value>Bienvenue sur Zentra !</value>
   </data>
   <data name="LegalDialog.Intro.Description" xml:space="preserve">
     <value>Choisissez votre langue et votre thème, prenez un moment pour lire nos Conditions d'utilisation, notre Politique de confidentialité et notre Clause de non-responsabilité, et c'est parti.</value>
@@ -1785,7 +1776,7 @@ Mettez à jour pour profiter des dernières fonctionnalités, améliorations et 
     <value>Échec de la vérification de compatibilité</value>
   </data>
   <data name="Condition.Error.Description" xml:space="preserve">
-    <value>optimizerDuck n'a pas pu déterminer si cet élément est pris en charge sur votre système.</value>
+    <value>Zentra n'a pas pu déterminer si cet élément est pris en charge sur votre système.</value>
   </data>
   <data name="Condition.Windows11.Title" xml:space="preserve">
     <value>Windows 11 requis</value>
@@ -1876,12 +1867,6 @@ Mettez à jour pour profiter des dernières fonctionnalités, améliorations et 
   </data>
   <data name="Optimizer.Performance.LiftWebDavFileSizeLimit.ShortDescription" xml:space="preserve">
     <value>Relève la limite de taille des fichiers de WebClient pour les lecteurs WebDAV de 50 Mo à 4 Go, pour que les transferts de gros fichiers n'échouent plus sur les emplacements réseau.</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>Allonger au maximum la suspension des mises à jour</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>Règle la durée maximale de suspension de Windows Update sur la plus grande valeur prise en charge. Seules les versions de Windows qui gèrent encore ce réglage en tiennent compte ; les mises à jour de sécurité restent suspendues tant que la suspension est active.</value>
   </data>
   <data name="Customize.Gaming.DlssIndicator.Name" xml:space="preserve">
     <value>Indicateur en surimpression DLSS</value>
@@ -1992,7 +1977,7 @@ Mettez à jour pour profiter des dernières fonctionnalités, améliorations et 
     <value>Échec de la restauration du plan d'alimentation précédent : {0}.</value>
   </data>
   <data name="Revert.PowerPlan.Error.DeleteFailed" xml:space="preserve">
-    <value>Échec de la suppression du plan d'alimentation d'optimizerDuck : {0}</value>
+    <value>Échec de la suppression du plan d'alimentation d'Zentra : {0}</value>
   </data>
   <data name="Revert.PowerPlan.Error.NothingToDo" xml:space="preserve">
     <value>Rien à restaurer : aucun plan d'alimentation précédent ou installé enregistré.</value>
@@ -2442,7 +2427,7 @@ Mettez à jour pour profiter des dernières fonctionnalités, améliorations et 
     <value>Afficher le fichier d'historique</value>
   </data>
   <data name="OptimizationDetailsDialog.Other.OpenRecordFile.Description" xml:space="preserve">
-    <value>Ouvre le fichier dans lequel optimizerDuck consigne ce que cette optimisation a fait. Il est conservé après une restauration, l'historique reste donc disponible.</value>
+    <value>Ouvre le fichier dans lequel Zentra consigne ce que cette optimisation a fait. Il est conservé après une restauration, l'historique reste donc disponible.</value>
   </data>
   <data name="Optimizer.Details.Provider.Registry" xml:space="preserve">
     <value>Registre</value>
@@ -2518,5 +2503,17 @@ Mettez à jour pour profiter des dernières fonctionnalités, améliorations et 
   </data>
   <data name="Error.Unhandled.LogHint" xml:space="preserve">
     <value>Les détails se trouvent dans le fichier journal.</value>
+  </data>
+  <data name="Settings.About.BasedOn" xml:space="preserve">
+    <value>Based on optimizerDuck by fatDuck. Free software under the GPL v3 license.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Name" xml:space="preserve">
+    <value>Set Rarely Used Services to Manual</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.ShortDescription" xml:space="preserve">
+    <value>Sets Fax, offline Maps, Retail Demo, Windows Insider and Windows Media Player network sharing to Manual. They are never disabled: Windows starts them when something needs them. Services missing on this PC are skipped.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Progress.ChangeServiceStartupType" xml:space="preserve">
+    <value>Setting startup type for {0} to {1}...</value>
   </data>
 </root>

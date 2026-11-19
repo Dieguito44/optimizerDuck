@@ -4,6 +4,14 @@
 
 # Third-Party Software Notices
 
+## Zentra
+
+**Zentra** is a fork of **[optimizerDuck](https://github.com/itsfatduck/optimizerDuck)**, Copyright (C) 2025-2026 fatDuck (itsfatduck), licensed under the [GNU General Public License v3.0](./LICENSE). Zentra keeps that license and this attribution. Zentra changes: Copyright (C) 2026 Dieguito44, also under GPL v3.
+
+The notices below come from optimizerDuck and still apply to Zentra. Components added by Zentra are listed in their own section as they are added.
+
+---
+
 **optimizerDuck** is built upon the shoulders of the amazing open-source community. To deliver the best experience, I rely on several third-party libraries and resources. Please note that while these components are integrated into the software, they remain the property of their respective owners and are governed by their own specific licenses.
 
 > [!TIP]

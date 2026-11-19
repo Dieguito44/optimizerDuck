@@ -213,10 +213,10 @@
     <value>Mevcut aktif güç planı algılanamadı.</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ImportFailed" xml:space="preserve">
-    <value>optimizerDuck güç planı içe aktarılamadı.</value>
+    <value>Zentra güç planı içe aktarılamadı.</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ActivateFailed" xml:space="preserve">
-    <value>optimizerDuck güç planı etkinleştirilemedi.</value>
+    <value>Zentra güç planı etkinleştirilemedi.</value>
   </data>
   <data name="Optimizer.UI.Tags.System" xml:space="preserve">
     <value>Sistem</value>
@@ -600,15 +600,6 @@
   <data name="Optimizer.BloatwareAndServices.DisablePreinstalledApps.ShortDescription" xml:space="preserve">
     <value>Windows'un istenmeyen üçüncü taraf uygulamaları ve tanıtılan yazılımları otomatik olarak yeniden yüklemesini önler.</value>
   </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Name" xml:space="preserve">
-    <value>Sistem Servislerini Optimize Et</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.ShortDescription" xml:space="preserve">
-    <value>Tüm gerekli Windows işlevselliğini korurken kaynakları boşaltmak için temel olmayan arka plan servislerini ayarlar.</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Progress.ChangeServiceStartupType" xml:space="preserve">
-    <value>{0} için başlangıç türü {1} olarak ayarlanıyor...</value>
-  </data>
   <data name="Optimizer.UI.Tags.Display" xml:space="preserve">
     <value>Ekran</value>
   </data>
@@ -894,7 +885,7 @@
     <value>Teşekkürler</value>
   </data>
   <data name="Settings.About.Acknowledgements.Description" xml:space="preserve">
-    <value>optimizerDuck, aşağıdaki açık kaynaklı yazılım ve kaynaklar sayesinde mümkün olmuştur.</value>
+    <value>Zentra, aşağıdaki açık kaynaklı yazılım ve kaynaklar sayesinde mümkün olmuştur.</value>
   </data>
   <data name="RestorePoint.Title" xml:space="preserve">
     <value>Sistem Geri Yükleme</value>
@@ -904,7 +895,7 @@
 Değişiklikleri uygulamadan önce Windows'unuzu korumak için bir güvenlik önlemidir.</value>
   </data>
   <data name="RestorePointDialog.Help" xml:space="preserve">
-    <value>Uygulama, Sistem Geri Yükleme'yi otomatik olarak etkinleştirecek ve "optimizerDuck..." adlı bir kontrol noktası oluşturacaktır.
+    <value>Uygulama, Sistem Geri Yükleme'yi otomatik olarak etkinleştirecek ve "Zentra..." adlı bir kontrol noktası oluşturacaktır.
 Bu, bir şeyler ters giderse her zaman geri dönebilmenizi sağlar.</value>
   </data>
   <data name="RestorePoint.Snackbar.Error.Title" xml:space="preserve">
@@ -962,7 +953,7 @@ Bu, bir şeyler ters giderse her zaman geri dönebilmenizi sağlar.</value>
     <value>Gereksiz uygulama bulunamadı ¯\_(ツ)_/¯</value>
   </data>
   <data name="Bloatware.Empty.Description" xml:space="preserve">
-    <value>optimizerDuck kaldırılabilir AppX paketi bulamadı. Boş bir uzay gibi...</value>
+    <value>Zentra kaldırılabilir AppX paketi bulamadı. Boş bir uzay gibi...</value>
   </data>
   <data name="Bloatware.Loading" xml:space="preserve">
     <value>Kaldırılabilir uygulamalar aranıyor...</value>
@@ -992,7 +983,7 @@ Bu, bir şeyler ters giderse her zaman geri dönebilmenizi sağlar.</value>
     <value>Yüklü AppX paketleri kaldırılırken, yeni kullanıcılar için otomatik yeniden yüklemeyi önlemek amacıyla ilgili Sağlanan paketleri de kaldır.</value>
   </data>
   <data name="Dashboard.UpdateInfoBar.Message" xml:space="preserve">
-    <value>optimizerDuck (v{0}) mevcut!
+    <value>Zentra (v{0}) mevcut!
 En son özelliklerden, iyileştirmelerden ve hata düzeltmelerinden yararlanmak için şimdi güncelleyin.</value>
   </data>
   <data name="Common.Search.Placeholder" xml:space="preserve">
@@ -1524,7 +1515,7 @@ En son özelliklerden, iyileştirmelerden ve hata düzeltmelerinden yararlanmak 
     <value>Hukuki Sözleşme</value>
   </data>
   <data name="LegalDialog.Intro.Title" xml:space="preserve">
-    <value>optimizerDuck'a hoş geldiniz!</value>
+    <value>Zentra'a hoş geldiniz!</value>
   </data>
   <data name="LegalDialog.Intro.Description" xml:space="preserve">
     <value>Dilinizi ve temanızı seçin, Hizmet Şartlarımızı, Gizlilik Politikamızı ve Sorumluluk Reddimizi gözden geçirmek için bir dakikanızı ayırın, ardından hazırsınız.</value>
@@ -1776,7 +1767,7 @@ En son özelliklerden, iyileştirmelerden ve hata düzeltmelerinden yararlanmak 
     <value>Uyumluluk denetimi başarısız oldu</value>
   </data>
   <data name="Condition.Error.Description" xml:space="preserve">
-    <value>optimizerDuck, bu öğenin sisteminizde desteklenip desteklenmediğini belirleyemedi.</value>
+    <value>Zentra, bu öğenin sisteminizde desteklenip desteklenmediğini belirleyemedi.</value>
   </data>
   <data name="Condition.Windows11.Title" xml:space="preserve">
     <value>Windows 11 gerekli</value>
@@ -1867,12 +1858,6 @@ En son özelliklerden, iyileştirmelerden ve hata düzeltmelerinden yararlanmak 
   </data>
   <data name="Optimizer.Performance.LiftWebDavFileSizeLimit.ShortDescription" xml:space="preserve">
     <value>Ağ konumlarındaki büyük dosyaların aktarımında hata oluşmaması için WebClient dosya boyutu sınırını 50 MB'tan 4 GB'a yükseltir.</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.Name" xml:space="preserve">
-    <value>Güncelleme duraklatma sınırını en üst düzeye çıkar</value>
-  </data>
-  <data name="Optimizer.UserExperience.MaximizeUpdatePauseLimit.ShortDescription" xml:space="preserve">
-    <value>Windows Update duraklatma tavanını desteklenen en büyük değere ayarlar. Yalnızca bu ayarı destekleyen Windows sürümlerinde geçerlidir; etkinken güvenlik güncellemeleri de duraklatılır.</value>
   </data>
   <data name="Customize.Gaming.DlssIndicator.Name" xml:space="preserve">
     <value>DLSS yer paylaşımı göstergesi</value>
@@ -1983,7 +1968,7 @@ En son özelliklerden, iyileştirmelerden ve hata düzeltmelerinden yararlanmak 
     <value>Önceki güç planı geri yüklenemedi: {0}.</value>
   </data>
   <data name="Revert.PowerPlan.Error.DeleteFailed" xml:space="preserve">
-    <value>optimizerDuck güç planı silinemedi: {0}</value>
+    <value>Zentra güç planı silinemedi: {0}</value>
   </data>
   <data name="Revert.PowerPlan.Error.NothingToDo" xml:space="preserve">
     <value>Geri alınacak bir şey yok: kaydedilmiş önceki veya yüklü güç planı yok.</value>
@@ -2433,7 +2418,7 @@ En son özelliklerden, iyileştirmelerden ve hata düzeltmelerinden yararlanmak 
     <value>Kayıt dosyasını göster</value>
   </data>
   <data name="OptimizationDetailsDialog.Other.OpenRecordFile.Description" xml:space="preserve">
-    <value>Bu iyileştirmenin ne yaptığını optimizerDuck'ın yazdığı dosyayı açar. Geri aldıktan sonra da kalır, sonradan bakabilirsiniz.</value>
+    <value>Bu iyileştirmenin ne yaptığını Zentra'ın yazdığı dosyayı açar. Geri aldıktan sonra da kalır, sonradan bakabilirsiniz.</value>
   </data>
   <data name="Optimizer.Details.Provider.Registry" xml:space="preserve">
     <value>Kayıt defteri</value>
@@ -2509,5 +2494,17 @@ En son özelliklerden, iyileştirmelerden ve hata düzeltmelerinden yararlanmak 
   </data>
   <data name="Error.Unhandled.LogHint" xml:space="preserve">
     <value>Ayrıntılar günlük dosyasında.</value>
+  </data>
+  <data name="Settings.About.BasedOn" xml:space="preserve">
+    <value>Based on optimizerDuck by fatDuck. Free software under the GPL v3 license.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Name" xml:space="preserve">
+    <value>Set Rarely Used Services to Manual</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.ShortDescription" xml:space="preserve">
+    <value>Sets Fax, offline Maps, Retail Demo, Windows Insider and Windows Media Player network sharing to Manual. They are never disabled: Windows starts them when something needs them. Services missing on this PC are skipped.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Progress.ChangeServiceStartupType" xml:space="preserve">
+    <value>Setting startup type for {0} to {1}...</value>
   </data>
 </root>
