@@ -5212,4 +5212,34 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Report.Written.Source.Template" xml:space="preserve">
     <value>Texto redactado por Zentra a partir de los datos medidos.</value>
   </data>
+  <data name="Optimizer.AI.SetAiServiceToManual.Name" xml:space="preserve">
+    <value>Servicio de IA de Windows solo cuando se necesite</value>
+  </data>
+  <data name="Optimizer.AI.SetAiServiceToManual.ShortDescription" xml:space="preserve">
+    <value>Pone el servicio de IA de Windows (WSAIFabricSvc) en Manual: ya no arranca con Windows, pero lo que lo necesite lo puede iniciar. Tomado de Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.AI.DisableEdgeAiFeatures.Name" xml:space="preserve">
+    <value>Desactivar la IA en Edge</value>
+  </data>
+  <data name="Optimizer.AI.DisableEdgeAiFeatures.ShortDescription" xml:space="preserve">
+    <value>Apaga Copilot, la barra lateral y las funciones de IA generativa de Edge con políticas del navegador. Edge sigue funcionando igual. Tomado de Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.AI.DisablePaintAiFeatures.Name" xml:space="preserve">
+    <value>Desactivar la IA en Paint</value>
+  </data>
+  <data name="Optimizer.AI.DisablePaintAiFeatures.ShortDescription" xml:space="preserve">
+    <value>Apaga Cocreator, el relleno y el borrado generativos, Image Creator y quitar el fondo en Paint. Tomado de Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.AI.DisableNotepadAiFeatures.Name" xml:space="preserve">
+    <value>Desactivar la IA en el Bloc de notas</value>
+  </data>
+  <data name="Optimizer.AI.DisableNotepadAiFeatures.ShortDescription" xml:space="preserve">
+    <value>Apaga las funciones de IA (reescribir, resumir) del Bloc de notas. Tomado de Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.PreventDeviceAppAutoDownload.Name" xml:space="preserve">
+    <value>No descargar apps de dispositivos automáticamente</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.PreventDeviceAppAutoDownload.ShortDescription" xml:space="preserve">
+    <value>Al conectar un dispositivo, Windows ya no descarga sola la app del fabricante. Los drivers se siguen instalando. Tomado de Win11Debloat.</value>
+  </data>
 </root>

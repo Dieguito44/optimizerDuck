@@ -3470,4 +3470,34 @@
   <data name="Report.Written.Source.Template" xml:space="preserve">
     <value>Text written by Zentra from the measured data.</value>
   </data>
+  <data name="Optimizer.AI.SetAiServiceToManual.Name" xml:space="preserve">
+    <value>Windows AI service on demand</value>
+  </data>
+  <data name="Optimizer.AI.SetAiServiceToManual.ShortDescription" xml:space="preserve">
+    <value>Sets the Windows AI service (WSAIFabricSvc) to Manual: it no longer starts with Windows, but anything that needs it can still start it. From Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.AI.DisableEdgeAiFeatures.Name" xml:space="preserve">
+    <value>Turn off AI in Edge</value>
+  </data>
+  <data name="Optimizer.AI.DisableEdgeAiFeatures.ShortDescription" xml:space="preserve">
+    <value>Turns off Copilot, the sidebar and the generative AI features in Edge with browser policies. Edge keeps working as usual. From Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.AI.DisablePaintAiFeatures.Name" xml:space="preserve">
+    <value>Turn off AI in Paint</value>
+  </data>
+  <data name="Optimizer.AI.DisablePaintAiFeatures.ShortDescription" xml:space="preserve">
+    <value>Turns off Cocreator, generative fill and erase, Image Creator and background removal in Paint. From Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.AI.DisableNotepadAiFeatures.Name" xml:space="preserve">
+    <value>Turn off AI in Notepad</value>
+  </data>
+  <data name="Optimizer.AI.DisableNotepadAiFeatures.ShortDescription" xml:space="preserve">
+    <value>Turns off the AI features (rewrite, summarize) in Notepad. From Win11Debloat.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.PreventDeviceAppAutoDownload.Name" xml:space="preserve">
+    <value>Do not download device apps automatically</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.PreventDeviceAppAutoDownload.ShortDescription" xml:space="preserve">
+    <value>When a device is plugged in, Windows no longer downloads the maker&apos;s companion app by itself. Drivers still install. From Win11Debloat.</value>
+  </data>
 </root>
