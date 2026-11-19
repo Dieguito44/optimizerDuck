@@ -375,6 +375,9 @@ public partial class App : Application
         optimizerDuck.Services.Diagnostics.DisplayModeService.Confirm =
             DisplayConfirmWindow.AskAsync;
 
+        // Phase 7 options need the client's written consent.
+        ClientConsent.Ask = ConsentWindow.AskAsync;
+
         var config = _host.Services.GetRequiredService<ConfigManager>();
         await config.InitializeAsync();
         await config.EnsureDefaultsAsync();
