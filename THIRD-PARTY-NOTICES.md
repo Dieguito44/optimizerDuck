@@ -8,7 +8,12 @@
 
 **Zentra** is a fork of **[optimizerDuck](https://github.com/itsfatduck/optimizerDuck)**, Copyright (C) 2025-2026 fatDuck (itsfatduck), licensed under the [GNU General Public License v3.0](./LICENSE). Zentra keeps that license and this attribution. Zentra changes: Copyright (C) 2026 Dieguito44, also under GPL v3.
 
-The notices below come from optimizerDuck and still apply to Zentra. Components added by Zentra are listed in their own section as they are added.
+The notices below come from optimizerDuck and still apply to Zentra. Components added by Zentra are listed here:
+
+| Component | License | Use in Zentra |
+|---|---|---|
+| [DiskSpd](https://github.com/microsoft/diskspd) | MIT, Copyright (c) 2014 Microsoft | Read-only disk benchmark. `Tools\diskspd.exe` is built by Zentra from the MIT source (commit 5e7025b, DISKSPD 2.3); see `optimizerDuck/Resources/Tools/DiskSpd/`. The Microsoft-signed release binary is not shipped (it carries a non-redistributable EULA). |
+| [QuestPDF](https://www.questpdf.com/) | QuestPDF Community License (source-available, not OSI). Free for individuals and companies under USD 1M annual gross revenue | Client PDF report. Its license terms must be reviewed before Zentra is published (see the project plan, section 11). |
 
 ---
 
