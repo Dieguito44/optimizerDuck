@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "updated": "2026-11-19",
+  "notes": "Latest stable BIOS per board, maintained by hand. Beta versions are never listed.",
+  "entries": [
+    { "manufacturer": "ASRock", "product": "B450M-HDV R4.0", "version": "P10.10", "date": "2024-01-24", "source": "Plan v1.2: asrock.com, ultima estable a noviembre de 2026 (las posteriores son beta)", "checked": "2026-11-18" }
+  ]
+}

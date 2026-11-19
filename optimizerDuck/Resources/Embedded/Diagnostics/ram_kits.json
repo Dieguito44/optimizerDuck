@@ -1,0 +1,17 @@
+{
+  "schema": 1,
+  "updated": "2026-11-19",
+  "notes": "Rated speed of RAM kits by part number. regex entries read the speed from the part number (group 1 x multiplier). No entry = not in reference table, never a guess.",
+  "entries": [
+    { "match": "prefix", "pattern": "VAM4UX36C18", "rated_mts": 3600, "multiplier": 1, "source": "Plan v1.2: kit 2x8 GB DDR4 3600 del PC de Diego" },
+    { "match": "regex", "pattern": "^KF4(\\d{2})C\\d+", "multiplier": 100, "source": "Kingston FURY DDR4 part number decoder (KF4 + speed/100 + C + CL)" },
+    { "match": "regex", "pattern": "^KF5(\\d{2})C\\d+", "multiplier": 100, "source": "Kingston FURY DDR5 part number decoder (KF5 + speed/100 + C + CL)" },
+    { "match": "regex", "pattern": "^KVR(\\d{2})[NS]\\d+", "multiplier": 100, "source": "Kingston ValueRAM part number decoder (KVR + speed/100, JEDEC)" },
+    { "match": "regex", "pattern": "^F4-(\\d{4})C\\d+", "multiplier": 1, "source": "G.Skill DDR4 part number format (F4-speed C CL)" },
+    { "match": "regex", "pattern": "^F5-(\\d{4})[A-Z]\\d+", "multiplier": 1, "source": "G.Skill DDR5 part number format (F5-speed + CL code)" },
+    { "match": "regex", "pattern": "^CM[A-Z]{1,2}\\d+GX4M\\d[A-Z](\\d{4})C\\d+", "multiplier": 1, "source": "Corsair DDR4 part number format (CMx..GX4M + kit + speed + C + CL)" },
+    { "match": "regex", "pattern": "^CM[A-Z]{1,2}\\d+GX5M\\d[A-Z](\\d{4})C\\d+", "multiplier": 1, "source": "Corsair DDR5 part number format (CMx..GX5M + kit + speed + C + CL)" },
+    { "match": "regex", "pattern": "^BL\\d+G(\\d{2})C\\d+", "multiplier": 100, "source": "Crucial Ballistix part number format (BL + size + G + speed/100 + C + CL)" },
+    { "match": "regex", "pattern": "^AX4U(\\d{4})\\d+G", "multiplier": 1, "source": "ADATA XPG DDR4 part number format (AX4U + speed + size + G)" }
+  ]
+}

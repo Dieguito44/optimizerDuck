@@ -4315,4 +4315,439 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Progress.ChangeServiceStartupType" xml:space="preserve">
     <value>Configurando el tipo de inicio de {0} en {1}...</value>
   </data>
+  <data name="Sidebar.Diagnostic" xml:space="preserve">
+    <value>DiagnÃ³stico</value>
+  </data>
+  <data name="Diagnostic.Header.Title" xml:space="preserve">
+    <value>DiagnÃ³stico</value>
+  </data>
+  <data name="Diagnostic.Header.Description" xml:space="preserve">
+    <value>Revisa el PC sin cambiar nada y muestra lo que afecta su velocidad y su salud.</value>
+  </data>
+  <data name="Diagnostic.Consent" xml:space="preserve">
+    <value>Antes de escanear, el cliente debe autorizarlo (Ley 1581 de 2012). Solo se leen datos tÃ©cnicos: ni archivos, ni nombres, ni contraseÃ±as.</value>
+  </data>
+  <data name="Diagnostic.Button.Run" xml:space="preserve">
+    <value>Iniciar diagnÃ³stico</value>
+  </data>
+  <data name="Diagnostic.Button.Cancel" xml:space="preserve">
+    <value>Cancelar</value>
+  </data>
+  <data name="Diagnostic.Button.Report" xml:space="preserve">
+    <value>Generar informe</value>
+  </data>
+  <data name="Diagnostic.Button.Report.Tooltip" xml:space="preserve">
+    <value>El informe con IA y el PDF llegan en una prÃ³xima versiÃ³n.</value>
+  </data>
+  <data name="Diagnostic.Running" xml:space="preserve">
+    <value>Revisando el PC...</value>
+  </data>
+  <data name="Diagnostic.Running.Subtitle" xml:space="preserve">
+    <value>Leyendo hardware, discos, configuraciÃ³n y el registro de eventos. No se cambia nada.</value>
+  </data>
+  <data name="Diagnostic.Score.Title" xml:space="preserve">
+    <value>Puntaje</value>
+  </data>
+  <data name="Diagnostic.Score.Coverage" xml:space="preserve">
+    <value>{0} revisiones medidas, {1} no medibles</value>
+  </data>
+  <data name="Diagnostic.Captured" xml:space="preserve">
+    <value>Revisado el {0}</value>
+  </data>
+  <data name="Diagnostic.Findings.Header" xml:space="preserve">
+    <value>Hallazgos</value>
+  </data>
+  <data name="Diagnostic.Findings.None" xml:space="preserve">
+    <value>No se encontraron problemas en lo que se pudo medir.</value>
+  </data>
+  <data name="Diagnostic.NotMeasurable.Header" xml:space="preserve">
+    <value>No medible</value>
+  </data>
+  <data name="Diagnostic.NotMeasurable.Description" xml:space="preserve">
+    <value>Estas revisiones no se pudieron medir. No restan puntos y nunca se inventan.</value>
+  </data>
+  <data name="Diagnostic.Actions" xml:space="preserve">
+    <value>Se recomienda:</value>
+  </data>
+  <data name="Diagnostic.Error" xml:space="preserve">
+    <value>El diagnÃ³stico fallÃ³: {0}</value>
+  </data>
+  <data name="Diagnostic.Finding.Points" xml:space="preserve">
+    <value>-{0} puntos</value>
+  </data>
+  <data name="Diagnostic.Severity.Info" xml:space="preserve">
+    <value>Informativo</value>
+  </data>
+  <data name="Diagnostic.Severity.Low" xml:space="preserve">
+    <value>Baja</value>
+  </data>
+  <data name="Diagnostic.Severity.Medium" xml:space="preserve">
+    <value>Media</value>
+  </data>
+  <data name="Diagnostic.Severity.High" xml:space="preserve">
+    <value>Alta</value>
+  </data>
+  <data name="Diagnostic.Severity.Critical" xml:space="preserve">
+    <value>CrÃ­tica</value>
+  </data>
+  <data name="Diagnostic.Reason.NotReported" xml:space="preserve">
+    <value>Windows no lo reporta</value>
+  </data>
+  <data name="Diagnostic.Reason.AccessDenied" xml:space="preserve">
+    <value>Requiere permisos de administrador</value>
+  </data>
+  <data name="Diagnostic.Reason.TimedOut" xml:space="preserve">
+    <value>TardÃ³ demasiado</value>
+  </data>
+  <data name="Diagnostic.Reason.QueryFailed" xml:space="preserve">
+    <value>La consulta fallÃ³</value>
+  </data>
+  <data name="Diagnostic.Reason.NotApplicable" xml:space="preserve">
+    <value>No aplica a este PC</value>
+  </data>
+  <data name="Diagnostic.Reason.NotInReferenceTable" xml:space="preserve">
+    <value>AÃºn no estÃ¡ en la tabla de referencia de Zentra</value>
+  </data>
+  <data name="Diagnostic.Reason.RequiresExternalTool" xml:space="preserve">
+    <value>Requiere una herramienta que Zentra aÃºn no incluye</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RAM-XMP.Title" xml:space="preserve">
+    <value>La RAM funciona por debajo de su velocidad</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RAM-XMP.Description" xml:space="preserve">
+    <value>El kit de memoria estÃ¡ hecho para ir mÃ¡s rÃ¡pido de lo que va. Al activar XMP/EXPO en la BIOS funciona a la velocidad para la que fue fabricado.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RAM-SINGLE.Title" xml:space="preserve">
+    <value>Un solo mÃ³dulo de RAM</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RAM-SINGLE.Description" xml:space="preserve">
+    <value>Con un solo mÃ³dulo la memoria trabaja en un canal y pierde cerca de la mitad de su ancho de banda. La grÃ¡fica integrada es la que mÃ¡s lo sufre.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RAM-LOW.Title" xml:space="preserve">
+    <value>Menos de 8 GB de RAM</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RAM-LOW.Description" xml:space="preserve">
+    <value>Windows y un navegador llenan esta cantidad rÃ¡pido, y entonces el PC usa el disco como memoria.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-APU-UMA.Title" xml:space="preserve">
+    <value>Poca memoria reservada para la grÃ¡fica integrada</value>
+  </data>
+  <data name="Diagnostic.Rule.R-APU-UMA.Description" xml:space="preserve">
+    <value>La grÃ¡fica integrada tiene 512 MB o menos y el PC tiene 16 GB o mÃ¡s. Subirla a 2 GB en la BIOS ayuda en juegos y video.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DISK-FREE.Title" xml:space="preserve">
+    <value>Poco espacio libre en C:</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DISK-FREE.Description" xml:space="preserve">
+    <value>Con poco espacio libre Windows se vuelve lento y las actualizaciones pueden fallar.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-SSD-HEALTH.Title" xml:space="preserve">
+    <value>Un disco reporta problemas</value>
+  </data>
+  <data name="Diagnostic.Rule.R-SSD-HEALTH.Description" xml:space="preserve">
+    <value>Windows reporta el disco como no sano o con errores sin corregir. Se pueden perder datos: primero hay que hacer copia de seguridad.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-SSD-WEAR.Title" xml:space="preserve">
+    <value>Disco SSD cerca del final de su vida Ãºtil</value>
+  </data>
+  <data name="Diagnostic.Rule.R-SSD-WEAR.Description" xml:space="preserve">
+    <value>El disco ya gastÃ³ el 80 % o mÃ¡s de su vida Ãºtil. Hay que hacer copia de seguridad y planear el cambio.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-HDD-SYSTEM.Title" xml:space="preserve">
+    <value>Windows en un disco mecÃ¡nico</value>
+  </data>
+  <data name="Diagnostic.Rule.R-HDD-SYSTEM.Description" xml:space="preserve">
+    <value>Un disco mecÃ¡nico hace que el arranque y los programas sean mucho mÃ¡s lentos que con un SSD.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-TRIM-OFF.Title" xml:space="preserve">
+    <value>TRIM estÃ¡ apagado</value>
+  </data>
+  <data name="Diagnostic.Rule.R-TRIM-OFF.Description" xml:space="preserve">
+    <value>Sin TRIM el SSD se vuelve mÃ¡s lento con el tiempo.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-STARTUP-MANY.Title" xml:space="preserve">
+    <value>Muchas apps arrancan con Windows</value>
+  </data>
+  <data name="Diagnostic.Rule.R-STARTUP-MANY.Description" xml:space="preserve">
+    <value>MÃ¡s de 8 apps arrancan con Windows. Hacen lento el arranque y usan memoria todo el dÃ­a.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-TCP-AUTOTUNE.Title" xml:space="preserve">
+    <value>Ajuste de red de Internet apagado</value>
+  </data>
+  <data name="Diagnostic.Rule.R-TCP-AUTOTUNE.Description" xml:space="preserve">
+    <value>El ajuste automÃ¡tico de TCP estÃ¡ desactivado y limita la velocidad de descarga.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-POWER-SAVER.Title" xml:space="preserve">
+    <value>Plan de ahorro de energÃ­a en un escritorio</value>
+  </data>
+  <data name="Diagnostic.Rule.R-POWER-SAVER.Description" xml:space="preserve">
+    <value>Un PC de escritorio no tiene baterÃ­a que cuidar: este plan frena el procesador.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DRIVER-GPU-OLD.Title" xml:space="preserve">
+    <value>Driver de video desactualizado</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DRIVER-GPU-OLD.Description" xml:space="preserve">
+    <value>El driver de video tiene mÃ¡s de 12 meses. Las versiones nuevas corrigen fallas y mejoran los juegos.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BIOS-OLD.Title" xml:space="preserve">
+    <value>Hay una BIOS mÃ¡s nueva</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BIOS-OLD.Description" xml:space="preserve">
+    <value>Hay una BIOS estable mÃ¡s nueva para esta placa. Se actualiza de forma presencial.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-UNSTABLE.Title" xml:space="preserve">
+    <value>Apagados inesperados</value>
+  </data>
+  <data name="Diagnostic.Rule.R-UNSTABLE.Description" xml:space="preserve">
+    <value>El PC se apagÃ³ sin avisar mÃ¡s de 2 veces en 30 dÃ­as. Puede ser un corte de luz, un ajuste inestable o hardware con fallas.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-VBS-ON.Title" xml:space="preserve">
+    <value>La seguridad por virtualizaciÃ³n de Windows estÃ¡ activa</value>
+  </data>
+  <data name="Diagnostic.Rule.R-VBS-ON.Description" xml:space="preserve">
+    <value>Protege a Windows, pero puede bajar un poco el rendimiento en juegos. Solo informativo.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-NOT-ACTIVATED.Title" xml:space="preserve">
+    <value>Windows no estÃ¡ activado</value>
+  </data>
+  <data name="Diagnostic.Rule.R-NOT-ACTIVATED.Description" xml:space="preserve">
+    <value>Zentra no activa Windows. El cliente debe comprar una licencia.</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-STARTUP-REVIEW" xml:space="preserve">
+    <value>Revisar las apps de inicio</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DISM-CLEANUP" xml:space="preserve">
+    <value>Limpiar el almacÃ©n de componentes de Windows</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DISKCLEANUP" xml:space="preserve">
+    <value>Limpieza de disco</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-STORAGESENSE" xml:space="preserve">
+    <value>Activar el Sensor de almacenamiento</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-TRIM" xml:space="preserve">
+    <value>Activar TRIM</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-TCP-NORMAL" xml:space="preserve">
+    <value>Poner el ajuste automÃ¡tico de TCP en normal</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-REPAIR-WIN" xml:space="preserve">
+    <value>Reparar Windows (DISM y SFC)</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-POWER-PLAN" xml:space="preserve">
+    <value>Usar el plan Equilibrado o Alto rendimiento</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-PRIVACY-STD" xml:space="preserve">
+    <value>Ajustes de privacidad estÃ¡ndar</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-BLOAT-STD" xml:space="preserve">
+    <value>Quitar apps preinstaladas</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DRIVER-GPU" xml:space="preserve">
+    <value>Actualizar el driver de video</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DRIVER-CHIPSET" xml:space="preserve">
+    <value>Actualizar el driver del chipset</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-BIOS-XMP" xml:space="preserve">
+    <value>Activar XMP/EXPO en la BIOS</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-BIOS-UMA2G" xml:space="preserve">
+    <value>Subir la memoria de la grÃ¡fica integrada a 2 GB en la BIOS</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-BIOS-UPDATE" xml:space="preserve">
+    <value>Actualizar la BIOS (presencial)</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-HW-REPLACE-SSD" xml:space="preserve">
+    <value>Cambiar el disco</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-HW-RAM-DUAL" xml:space="preserve">
+    <value>Agregar un segundo mÃ³dulo de RAM</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-HW-STORAGE" xml:space="preserve">
+    <value>Agregar un SSD para Windows</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-BACKUP" xml:space="preserve">
+    <value>Hacer copia de seguridad urgente</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-COMPACTOS" xml:space="preserve">
+    <value>Comprimir Windows (Compact OS)</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DISM-RESETBASE" xml:space="preserve">
+    <value>Borrar respaldos de actualizaciones (ResetBase)</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-GAMEMODE-ADV" xml:space="preserve">
+    <value>Modo juego avanzado (apagar la integridad de memoria)</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-MON-HZ" xml:space="preserve">
+    <value>Poner el monitor en sus Hz mÃ¡ximos</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-MON-CABLE" xml:space="preserve">
+    <value>Conectar el monitor a la tarjeta grÃ¡fica</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-GPU-PREF" xml:space="preserve">
+    <value>Usar la grÃ¡fica dedicada en los juegos</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-WINGET-UPGRADE" xml:space="preserve">
+    <value>Actualizar todos los programas</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DEFENDER-FULL" xml:space="preserve">
+    <value>Escaneo completo de virus</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DEFENDER-OFFLINE" xml:space="preserve">
+    <value>Escaneo de virus sin conexiÃ³n</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-PUA-ON" xml:space="preserve">
+    <value>Bloquear aplicaciones no deseadas</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-BROWSER-BG" xml:space="preserve">
+    <value>Navegadores sin segundo plano</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-HEAVY-APPS" xml:space="preserve">
+    <value>Informe de programas pesados</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-BACKUP-SETUP" xml:space="preserve">
+    <value>Puntos de restauraciÃ³n semanales</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-NIC-POWER" xml:space="preserve">
+    <value>Tarjeta de red sin ahorro de energÃ­a</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-INDEX-EXCLUDE" xml:space="preserve">
+    <value>Sacar carpetas grandes del indexador</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-HW-BATTERY" xml:space="preserve">
+    <value>Cambiar la baterÃ­a</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-HW-CLEAN" xml:space="preserve">
+    <value>Limpieza fÃ­sica y pasta tÃ©rmica</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-HW-NETCABLE" xml:space="preserve">
+    <value>Cambiar el cable de red</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-WU-PAUSE7" xml:space="preserve">
+    <value>Pausar Windows Update mÃ¡ximo 7 dÃ­as</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DEFENDER-EXCL" xml:space="preserve">
+    <value>ExclusiÃ³n de Defender solo para la carpeta de juegos</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-SERVICES-MANUAL" xml:space="preserve">
+    <value>Servicios poco usados en Manual</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-FASTSTARTUP-TOGGLE" xml:space="preserve">
+    <value>Apagar el inicio rÃ¡pido</value>
+  </data>
+  <data name="Diagnostic.Evidence.ram.configured_mts" xml:space="preserve">
+    <value>Velocidad actual</value>
+  </data>
+  <data name="Diagnostic.Evidence.ram.rated_mts" xml:space="preserve">
+    <value>Velocidad del kit</value>
+  </data>
+  <data name="Diagnostic.Evidence.ram.module_count" xml:space="preserve">
+    <value>MÃ³dulos</value>
+  </data>
+  <data name="Diagnostic.Evidence.gpu.integrated_only" xml:space="preserve">
+    <value>Solo grÃ¡fica integrada</value>
+  </data>
+  <data name="Diagnostic.Evidence.ram.installed_gb" xml:space="preserve">
+    <value>RAM instalada</value>
+  </data>
+  <data name="Diagnostic.Evidence.gpu.dedicated_mb" xml:space="preserve">
+    <value>Memoria de la grÃ¡fica</value>
+  </data>
+  <data name="Diagnostic.Evidence.disk.free_percent" xml:space="preserve">
+    <value>Espacio libre</value>
+  </data>
+  <data name="Diagnostic.Evidence.disk.free_gb" xml:space="preserve">
+    <value>Libre</value>
+  </data>
+  <data name="Diagnostic.Evidence.disk.health" xml:space="preserve">
+    <value>Estado</value>
+  </data>
+  <data name="Diagnostic.Evidence.disk.uncorrected_errors" xml:space="preserve">
+    <value>Errores sin corregir</value>
+  </data>
+  <data name="Diagnostic.Evidence.disk.wear_percent" xml:space="preserve">
+    <value>Vida Ãºtil gastada</value>
+  </data>
+  <data name="Diagnostic.Evidence.disk.kind" xml:space="preserve">
+    <value>Tipo de disco</value>
+  </data>
+  <data name="Diagnostic.Evidence.config.trim" xml:space="preserve">
+    <value>TRIM</value>
+  </data>
+  <data name="Diagnostic.Evidence.config.startup_apps" xml:space="preserve">
+    <value>Apps de inicio</value>
+  </data>
+  <data name="Diagnostic.Evidence.config.tcp_autotuning" xml:space="preserve">
+    <value>Ajuste automÃ¡tico de TCP</value>
+  </data>
+  <data name="Diagnostic.Evidence.config.power_plan" xml:space="preserve">
+    <value>Plan de energÃ­a</value>
+  </data>
+  <data name="Diagnostic.Evidence.gpu.driver_age_months" xml:space="preserve">
+    <value>AntigÃ¼edad del driver</value>
+  </data>
+  <data name="Diagnostic.Evidence.gpu.driver_date" xml:space="preserve">
+    <value>Fecha del driver</value>
+  </data>
+  <data name="Diagnostic.Evidence.bios.installed" xml:space="preserve">
+    <value>BIOS instalada</value>
+  </data>
+  <data name="Diagnostic.Evidence.bios.latest" xml:space="preserve">
+    <value>Ãšltima BIOS estable</value>
+  </data>
+  <data name="Diagnostic.Evidence.stability.unexpected_shutdowns" xml:space="preserve">
+    <value>Apagados inesperados (30 dÃ­as)</value>
+  </data>
+  <data name="Diagnostic.Evidence.stability.bugchecks" xml:space="preserve">
+    <value>Pantallazos azules (30 dÃ­as)</value>
+  </data>
+  <data name="Diagnostic.Evidence.os.vbs" xml:space="preserve">
+    <value>VBS</value>
+  </data>
+  <data name="Diagnostic.Evidence.os.hvci" xml:space="preserve">
+    <value>Integridad de memoria</value>
+  </data>
+  <data name="Diagnostic.Evidence.os.activated" xml:space="preserve">
+    <value>Activado</value>
+  </data>
+  <data name="Diagnostic.Unit.months" xml:space="preserve">
+    <value>meses</value>
+  </data>
+  <data name="Diagnostic.Value.table" xml:space="preserve">
+    <value>tabla de referencia</value>
+  </data>
+  <data name="Diagnostic.Value.smbios" xml:space="preserve">
+    <value>firmware</value>
+  </data>
+  <data name="Diagnostic.Value.yes" xml:space="preserve">
+    <value>sÃ­</value>
+  </data>
+  <data name="Diagnostic.Value.no" xml:space="preserve">
+    <value>no</value>
+  </data>
+  <data name="Diagnostic.Value.on" xml:space="preserve">
+    <value>activo</value>
+  </data>
+  <data name="Diagnostic.Value.off" xml:space="preserve">
+    <value>apagado</value>
+  </data>
+  <data name="Diagnostic.Value.unknown" xml:space="preserve">
+    <value>desconocido</value>
+  </data>
+  <data name="Diagnostic.Value.HDD" xml:space="preserve">
+    <value>disco mecÃ¡nico</value>
+  </data>
+  <data name="Diagnostic.Value.Warning" xml:space="preserve">
+    <value>con advertencia</value>
+  </data>
+  <data name="Diagnostic.Value.Unhealthy" xml:space="preserve">
+    <value>con fallas</value>
+  </data>
+  <data name="Diagnostic.Value.Disabled" xml:space="preserve">
+    <value>desactivado</value>
+  </data>
+  <data name="Diagnostic.Value.PowerSaver" xml:space="preserve">
+    <value>Ahorro de energÃ­a</value>
+  </data>
 </root>

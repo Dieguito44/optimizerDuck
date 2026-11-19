@@ -166,6 +166,12 @@ public sealed record GpuInfo
     public GpuVendor Vendor { get; init; } = GpuVendor.Unknown;
     public int? VramMB { get; init; }
 
+    /// <summary>
+    ///     DXGI dedicated memory only (the UMA carve-out on an APU). Null on the WMI fallback path,
+    ///     where it cannot be told apart from shared memory.
+    /// </summary>
+    public int? DedicatedVramMB { get; init; }
+
     /// <summary>Driver version exactly as Windows reports it, e.g. NVIDIA <c>32.0.15.8195</c>.</summary>
     public string? DriverVersion { get; init; }
 
@@ -197,6 +203,19 @@ public sealed record MemoryModuleInfo
     public string? Manufacturer { get; init; }
     public string? PartNumber { get; init; }
     public string? Slot { get; init; }
+
+    /// <summary>SMBIOS bank, e.g. "P0 CHANNEL A". Tells sticks apart when Slot repeats.</summary>
+    public string? BankLabel { get; init; }
+
+    /// <summary>
+    ///     Win32_PhysicalMemory.Speed. Some boards report the configured speed here, so it is
+    ///     not the kit's rated speed: only a value above <see cref="ConfiguredSpeedMTps" /> means
+    ///     something.
+    /// </summary>
+    public int? RatedSpeedMTps { get; init; }
+
+    /// <summary>Win32_PhysicalMemory.ConfiguredClockSpeed: the speed the RAM runs at now.</summary>
+    public int? ConfiguredSpeedMTps { get; init; }
 }
 
 /// <summary>Memory facts. Totals from GlobalMemoryStatusEx (Task Manager accuracy).</summary>
@@ -234,6 +253,12 @@ public sealed record FirmwareInfo
     public DateTime? BiosReleaseDate { get; init; }
     public string? SmbiosVersion { get; init; }
     public string? Motherboard { get; init; }
+
+    /// <summary>BIOS release date as the firmware wrote it, without a time-zone shift.</summary>
+    public DateOnly? BiosReleaseDateOnly { get; init; }
+
+    public string? BoardManufacturer { get; init; }
+    public string? BoardProduct { get; init; }
 }
 
 /// <summary>Security states. Unknown = could not read; Unavailable = not applicable.</summary>

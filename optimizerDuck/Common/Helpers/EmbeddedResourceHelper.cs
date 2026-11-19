@@ -95,6 +95,26 @@ public static class EmbeddedResourceHelper
         return ResourceExists(Assembly.GetExecutingAssembly(), fullResourceName);
     }
 
+    /// <summary>Reads a UTF-8 text resource, e.g. "Diagnostics/ram_kits.json".</summary>
+    /// <returns>The text, or <see langword="null" /> when the resource does not exist.</returns>
+    public static string? ReadText(string relativePath)
+    {
+        if (string.IsNullOrWhiteSpace(relativePath))
+            return null;
+
+        var normalizedPath = relativePath.Replace('/', '.').Replace('\\', '.');
+        var fullResourceName = $"{ResourceNamespace}.{normalizedPath}";
+        var assembly = Assembly.GetExecutingAssembly();
+        if (!ResourceExists(assembly, fullResourceName))
+            return null;
+
+        using var stream = assembly.GetManifestResourceStream(fullResourceName);
+        if (stream is null)
+            return null;
+        using var reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+        return reader.ReadToEnd();
+    }
+
     /// <summary>
     /// Gets all available embedded resources in the optimizerDuck.Resources.Embedded namespace.
     /// </summary>

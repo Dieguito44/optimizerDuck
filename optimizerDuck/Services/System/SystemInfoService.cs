@@ -216,6 +216,30 @@ internal static class WmiHelper
         }
     }
 
+    /// <summary>
+    ///     The calendar date of a CIM datetime ("yyyyMMddHHmmss.ffffff+zzz") exactly as written,
+    ///     without converting to local time (which shifts firmware dates by a day west of UTC).
+    /// </summary>
+    public static DateOnly? GetWmiDateOnly(ManagementObject mo, string property)
+    {
+        return ParseCimDateOnly(GetString(mo, property));
+    }
+
+    internal static DateOnly? ParseCimDateOnly(string? raw)
+    {
+        if (string.IsNullOrEmpty(raw) || raw.Length < 8)
+            return null;
+        return DateOnly.TryParseExact(
+            raw[..8],
+            "yyyyMMdd",
+            CultureInfo.InvariantCulture,
+            DateTimeStyles.None,
+            out var date
+        )
+            ? date
+            : null;
+    }
+
     public static DateTime? GetWmiDate(ManagementObject mo, string property)
     {
         var raw = GetString(mo, property);
@@ -507,7 +531,7 @@ internal static class MemoryProvider
         // Null = WMI failed: throw so the Lazy retries on next access.
         // Empty = soldered-in RAM with no rows: valid, cached as-is.
         return WmiHelper.Query(
-                "SELECT Capacity, Speed, ConfiguredClockSpeed, SMBIOSMemoryType, Manufacturer, PartNumber, DeviceLocator FROM Win32_PhysicalMemory",
+                "SELECT Capacity, Speed, ConfiguredClockSpeed, SMBIOSMemoryType, Manufacturer, PartNumber, DeviceLocator, BankLabel FROM Win32_PhysicalMemory",
                 static items =>
                 {
                     var list = new List<MemoryModuleInfo>(items.Count);
@@ -535,6 +559,9 @@ internal static class MemoryProvider
                                 Manufacturer = WmiHelper.GetString(mem, "Manufacturer"),
                                 PartNumber = WmiHelper.GetString(mem, "PartNumber"),
                                 Slot = WmiHelper.GetString(mem, "DeviceLocator"),
+                                BankLabel = WmiHelper.GetString(mem, "BankLabel"),
+                                RatedSpeedMTps = speed is > 0 ? speed : null,
+                                ConfiguredSpeedMTps = configured is > 0 ? configured : null,
                             }
                         );
                     }
@@ -1289,6 +1316,7 @@ internal static class GpuProvider
                             Name = name,
                             Vendor = vendor,
                             VramMB = memoryMB > 0 ? memoryMB : null,
+                            DedicatedVramMB = dedicatedMB,
                             DriverVersion = match?.DriverVersion,
                             DriverDisplayVersion = BrandDriverVersion(vendor, match?.DriverVersion),
                             DriverDate = match?.DriverDate,
@@ -1742,6 +1770,7 @@ internal static class FirmwareProvider
                     Version = WmiHelper.GetString(mo, "BIOSVersion"),
                     Smbios = WmiHelper.GetString(mo, "SMBIOSBIOSVersion"),
                     Date = WmiHelper.GetWmiDate(mo, "ReleaseDate"),
+                    DateOnly = WmiHelper.GetWmiDateOnly(mo, "ReleaseDate"),
                 }
             );
             var board = WmiHelper.QueryFirst(
@@ -1777,6 +1806,9 @@ internal static class FirmwareProvider
                 BiosReleaseDate = bios?.Date,
                 SmbiosVersion = bios?.Smbios,
                 Motherboard = motherboard,
+                BiosReleaseDateOnly = bios?.DateOnly,
+                BoardManufacturer = board?.Manufacturer?.Trim() is { Length: > 0 } bm ? bm : null,
+                BoardProduct = board?.Product?.Trim() is { Length: > 0 } bp ? bp : null,
             };
         }
         catch
