@@ -1,0 +1,9 @@
+﻿diskspd.exe built by Zentra from Microsoft's MIT-licensed source code.
+
+Source: https://github.com/microsoft/diskspd (MIT, see LICENSE.txt)
+Commit: 5e7025b (DISKSPD 2.3)
+Build:  MSBuild, Release x64, MSVC toolset v145 (Visual Studio 2026), 2026-11-19
+SHA256: 9BDD3446FBE05E1C651FFE79D7181BB1097F44D1EB3AD6027F1CC52C48425810
+
+The Microsoft-signed DiskSpd release binary is NOT used: it ships under a Microsoft EULA
+that does not allow redistribution.
