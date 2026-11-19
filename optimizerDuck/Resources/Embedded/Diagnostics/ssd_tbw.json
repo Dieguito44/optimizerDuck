@@ -1,9 +1,38 @@
 {
   "schema": 1,
   "updated": "2026-11-19",
-  "notes": "Rated endurance (TBW, terabytes written) by model. Only used once total host writes can be read (smartctl).",
+  "notes": "Rated endurance (TBW, terabytes written) by model, as Windows reports the model. Every value comes from the manufacturer's datasheet or flyer (URL in source, checked 2026-11-19). Not listed = not measurable, never a guess. Left out on purpose: Crucial P3 (no clear official table) and P3 Plus 4TB (the flyer and other sources disagree). Used once total host writes can be read (smartctl).",
   "entries": [
-    { "match": "prefix", "pattern": "CT500P3PSSD8", "tbw_tb": 110, "source": "Plan v1.2: Crucial P3 500 GB = 110 TB" },
-    { "match": "prefix", "pattern": "KINGSTON SA400S37/480G", "tbw_tb": 160, "source": "Plan v1.2: Kingston A400 480 GB = 160 TB" }
+    { "match": "regex", "pattern": "^KINGSTON SA400S37/?120G", "tbw_tb": 40, "source": "Kingston A400 datasheet, https://www.kingston.com/datasheets/SA400S37_us.pdf" },
+    { "match": "regex", "pattern": "^KINGSTON SA400S37/?240G", "tbw_tb": 80, "source": "Kingston A400 datasheet, https://www.kingston.com/datasheets/SA400S37_us.pdf" },
+    { "match": "regex", "pattern": "^KINGSTON SA400S37/?480G", "tbw_tb": 160, "source": "Kingston A400 datasheet, https://www.kingston.com/datasheets/SA400S37_us.pdf" },
+    { "match": "regex", "pattern": "^KINGSTON SA400S37/?960G", "tbw_tb": 300, "source": "Kingston A400 datasheet, https://www.kingston.com/datasheets/SA400S37_us.pdf" },
+
+    { "match": "regex", "pattern": "^KINGSTON SNV2S250G", "tbw_tb": 80, "source": "Kingston NV2 datasheet, https://www.kingston.com/datasheets/SNV2S_us.pdf" },
+    { "match": "regex", "pattern": "^KINGSTON SNV2S500G", "tbw_tb": 160, "source": "Kingston NV2 datasheet, https://www.kingston.com/datasheets/SNV2S_us.pdf" },
+    { "match": "regex", "pattern": "^KINGSTON SNV2S1000G", "tbw_tb": 320, "source": "Kingston NV2 datasheet, https://www.kingston.com/datasheets/SNV2S_us.pdf" },
+    { "match": "regex", "pattern": "^KINGSTON SNV2S2000G", "tbw_tb": 640, "source": "Kingston NV2 datasheet, https://www.kingston.com/datasheets/SNV2S_us.pdf" },
+    { "match": "regex", "pattern": "^KINGSTON SNV2S4000G", "tbw_tb": 1280, "source": "Kingston NV2 datasheet, https://www.kingston.com/datasheets/SNV2S_us.pdf" },
+
+    { "match": "regex", "pattern": "^SAMSUNG SSD 870 EVO 250GB", "tbw_tb": 150, "source": "Samsung 870 EVO data sheet Rev 1.1, https://download.semiconductor.samsung.com/resources/data-sheet/Samsung_SSD_870_EVO_Data_Sheet_Rev1.1_230509_10129500053000.pdf" },
+    { "match": "regex", "pattern": "^SAMSUNG SSD 870 EVO 500GB", "tbw_tb": 300, "source": "Samsung 870 EVO data sheet Rev 1.1, https://download.semiconductor.samsung.com/resources/data-sheet/Samsung_SSD_870_EVO_Data_Sheet_Rev1.1_230509_10129500053000.pdf" },
+    { "match": "regex", "pattern": "^SAMSUNG SSD 870 EVO 1TB", "tbw_tb": 600, "source": "Samsung 870 EVO data sheet Rev 1.1, https://download.semiconductor.samsung.com/resources/data-sheet/Samsung_SSD_870_EVO_Data_Sheet_Rev1.1_230509_10129500053000.pdf" },
+    { "match": "regex", "pattern": "^SAMSUNG SSD 870 EVO 2TB", "tbw_tb": 1200, "source": "Samsung 870 EVO data sheet Rev 1.1, https://download.semiconductor.samsung.com/resources/data-sheet/Samsung_SSD_870_EVO_Data_Sheet_Rev1.1_230509_10129500053000.pdf" },
+    { "match": "regex", "pattern": "^SAMSUNG SSD 870 EVO 4TB", "tbw_tb": 2400, "source": "Samsung 870 EVO data sheet Rev 1.1, https://download.semiconductor.samsung.com/resources/data-sheet/Samsung_SSD_870_EVO_Data_Sheet_Rev1.1_230509_10129500053000.pdf" },
+
+    { "match": "prefix", "pattern": "CT250MX500SSD", "tbw_tb": 100, "source": "Crucial MX500 product flyer, https://content.crucial.com/content/dam/crucial/ssd-products/mx500/flyer/crucial-mx500-ssd-productflyer-en.pdf" },
+    { "match": "prefix", "pattern": "CT500MX500SSD", "tbw_tb": 180, "source": "Crucial MX500 product flyer, https://content.crucial.com/content/dam/crucial/ssd-products/mx500/flyer/crucial-mx500-ssd-productflyer-en.pdf" },
+    { "match": "prefix", "pattern": "CT1000MX500SSD", "tbw_tb": 360, "source": "Crucial MX500 product flyer, https://content.crucial.com/content/dam/crucial/ssd-products/mx500/flyer/crucial-mx500-ssd-productflyer-en.pdf" },
+    { "match": "prefix", "pattern": "CT2000MX500SSD", "tbw_tb": 700, "source": "Crucial MX500 product flyer, https://content.crucial.com/content/dam/crucial/ssd-products/mx500/flyer/crucial-mx500-ssd-productflyer-en.pdf" },
+    { "match": "prefix", "pattern": "CT4000MX500SSD", "tbw_tb": 1000, "source": "Crucial MX500 product flyer, https://content.crucial.com/content/dam/crucial/ssd-products/mx500/flyer/crucial-mx500-ssd-productflyer-en.pdf" },
+
+    { "match": "prefix", "pattern": "CT240BX500SSD", "tbw_tb": 80, "source": "Crucial BX500 product flyer, https://www.crucial.com/products/ssd/crucial-bx500-ssd" },
+    { "match": "prefix", "pattern": "CT480BX500SSD", "tbw_tb": 120, "source": "Crucial BX500 product flyer, https://www.crucial.com/products/ssd/crucial-bx500-ssd" },
+    { "match": "prefix", "pattern": "CT1000BX500SSD", "tbw_tb": 360, "source": "Crucial BX500 product flyer, https://www.crucial.com/products/ssd/crucial-bx500-ssd" },
+    { "match": "prefix", "pattern": "CT2000BX500SSD", "tbw_tb": 720, "source": "Crucial BX500 product flyer, https://www.crucial.com/products/ssd/crucial-bx500-ssd" },
+
+    { "match": "prefix", "pattern": "CT500P3PSSD", "tbw_tb": 110, "source": "Crucial P3 Plus product flyer, https://www.crucial.com/content/dam/crucial/ssd-products/p3-plus/flyers/b2c/crucial-p3plus-productflyer-consumer.pdf" },
+    { "match": "prefix", "pattern": "CT1000P3PSSD", "tbw_tb": 220, "source": "Crucial P3 Plus product flyer, https://www.crucial.com/content/dam/crucial/ssd-products/p3-plus/flyers/b2c/crucial-p3plus-productflyer-consumer.pdf" },
+    { "match": "prefix", "pattern": "CT2000P3PSSD", "tbw_tb": 440, "source": "Crucial P3 Plus product flyer, https://www.crucial.com/content/dam/crucial/ssd-products/p3-plus/flyers/b2c/crucial-p3plus-productflyer-consumer.pdf" }
   ]
 }
