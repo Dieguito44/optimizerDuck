@@ -89,8 +89,15 @@ public sealed class LocalGroupPolicyServiceTests : IDisposable
         LocalGroupPolicyService.RefreshPolicy;
     private readonly Func<string, string, object?> _previousRead =
         LocalGroupPolicyService.ReadApplied;
-    private object? _applied;
+    private List<PolicyEntry> _appliedEntries = [];
     private int _refreshes;
+
+    /// <summary>The fake registry: the Dsh value the last refresh applied, if any.</summary>
+    private object? AppliedDsh =>
+        _appliedEntries
+            .Where(e => e.Matches(@"Software\Policies\Microsoft\Dsh", "AllowNewsAndInterests"))
+            .Select(e => (object?)BitConverter.ToInt32(e.Data))
+            .FirstOrDefault();
 
     public LocalGroupPolicyServiceTests()
     {
@@ -100,15 +107,14 @@ public sealed class LocalGroupPolicyServiceTests : IDisposable
             _refreshes++;
             // What the Group Policy service does: apply the file to the registry.
             var pol = Path.Combine(_dir.FullName, "Machine", "Registry.pol");
-            _applied = File.Exists(pol)
-                ? PolicyFile
-                    .Read(File.ReadAllBytes(pol))
-                    .Select(e => (object?)BitConverter.ToInt32(e.Data))
-                    .FirstOrDefault()
-                : null;
+            _appliedEntries = File.Exists(pol) ? PolicyFile.Read(File.ReadAllBytes(pol)) : [];
             return Task.FromResult(true);
         };
-        LocalGroupPolicyService.ReadApplied = (_, _) => _applied;
+        LocalGroupPolicyService.ReadApplied = (key, value) =>
+            _appliedEntries
+                .Where(e => e.Matches(key, value))
+                .Select(e => (object?)BitConverter.ToInt32(e.Data))
+                .FirstOrDefault();
     }
 
     public void Dispose()
@@ -138,7 +144,7 @@ public sealed class LocalGroupPolicyServiceTests : IDisposable
         );
 
         Assert.True(result.Ok, result.Error);
-        Assert.Equal(0, _applied);
+        Assert.Equal(0, AppliedDsh);
         var step = Assert.IsType<GroupPolicyRevertStep>(result.Revert);
         Assert.True(step.CreatedPolicyFile);
         Assert.True(step.CreatedGptIni);
@@ -149,7 +155,7 @@ public sealed class LocalGroupPolicyServiceTests : IDisposable
 
         Assert.False(File.Exists(Pol));
         Assert.False(File.Exists(Ini));
-        Assert.Null(_applied);
+        Assert.Null(AppliedDsh);
     }
 
     [Fact]
