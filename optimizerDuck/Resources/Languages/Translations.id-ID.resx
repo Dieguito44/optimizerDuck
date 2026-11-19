@@ -3008,4 +3008,184 @@ Perbarui sekarang untuk menikmati fitur terbaru, peningkatan, dan perbaikan bug.
   <data name="Diagnostic.Value.PowerSaver" xml:space="preserve">
     <value>Power saver</value>
   </data>
+  <data name="Sidebar.Session" xml:space="preserve">
+    <value>Session</value>
+  </data>
+  <data name="Session.Header.Title" xml:space="preserve">
+    <value>Service session</value>
+  </data>
+  <data name="Session.Header.Description" xml:space="preserve">
+    <value>Measure the PC before and after the service and create the PDF for the client.</value>
+  </data>
+  <data name="Session.Client.Title" xml:space="preserve">
+    <value>Client</value>
+  </data>
+  <data name="Session.Client.Placeholder" xml:space="preserve">
+    <value>Client name or reference (optional)</value>
+  </data>
+  <data name="Session.Client.Help" xml:space="preserve">
+    <value>Only saved on this PC and printed on the PDF. It is never sent to the AI.</value>
+  </data>
+  <data name="Session.Button.Before" xml:space="preserve">
+    <value>1. Measure before</value>
+  </data>
+  <data name="Session.Button.After" xml:space="preserve">
+    <value>2. Measure after</value>
+  </data>
+  <data name="Session.Button.Pdf" xml:space="preserve">
+    <value>3. Create PDF</value>
+  </data>
+  <data name="Session.Button.Folder" xml:space="preserve">
+    <value>Open folder</value>
+  </data>
+  <data name="Session.Button.Cancel" xml:space="preserve">
+    <value>Cancel</value>
+  </data>
+  <data name="Session.Button.New" xml:space="preserve">
+    <value>New session</value>
+  </data>
+  <data name="Session.Steps.Help" xml:space="preserve">
+    <value>Each measurement runs the diagnosis and takes about 2 minutes (more right after logon). Apply the optimizations between step 1 and step 2, and restart the PC before measuring after.</value>
+  </data>
+  <data name="Session.Step.Diagnosis" xml:space="preserve">
+    <value>Running the diagnosis...</value>
+  </data>
+  <data name="Session.Step.Boot" xml:space="preserve">
+    <value>Reading boot times...</value>
+  </data>
+  <data name="Session.Step.WaitingForIdle" xml:space="preserve">
+    <value>Waiting for the PC to settle: {0} s left (RAM at rest is measured 5 minutes after logon).</value>
+  </data>
+  <data name="Session.Step.IdleRam" xml:space="preserve">
+    <value>Measuring RAM at rest: {0} s left.</value>
+  </data>
+  <data name="Session.Step.Counts" xml:space="preserve">
+    <value>Counting startup apps, processes and services...</value>
+  </data>
+  <data name="Session.Step.DiskBenchmark" xml:space="preserve">
+    <value>Testing disk speed (read only, about {0} s)...</value>
+  </data>
+  <data name="Session.Step.Done" xml:space="preserve">
+    <value>Measurement saved.</value>
+  </data>
+  <data name="Session.Step.Pdf" xml:space="preserve">
+    <value>Creating the PDF...</value>
+  </data>
+  <data name="Session.Pdf.Saved" xml:space="preserve">
+    <value>PDF saved: {0}</value>
+  </data>
+  <data name="Session.Cancelled" xml:space="preserve">
+    <value>Cancelled. Nothing was changed.</value>
+  </data>
+  <data name="Session.Error" xml:space="preserve">
+    <value>It failed: {0}</value>
+  </data>
+  <data name="Session.Score.Before" xml:space="preserve">
+    <value>Score before</value>
+  </data>
+  <data name="Session.Score.After" xml:space="preserve">
+    <value>Score after</value>
+  </data>
+  <data name="Report.Title" xml:space="preserve">
+    <value>PC optimization report</value>
+  </data>
+  <data name="Report.Client" xml:space="preserve">
+    <value>Client: {0}</value>
+  </data>
+  <data name="Report.Score" xml:space="preserve">
+    <value>Score</value>
+  </data>
+  <data name="Report.ScoreLegend" xml:space="preserve">
+    <value>before → after (0 to 100)</value>
+  </data>
+  <data name="Report.Footer" xml:space="preserve">
+    <value>Generated with Zentra, based on optimizerDuck (GPL v3).</value>
+  </data>
+  <data name="Report.Section.Metrics" xml:space="preserve">
+    <value>Before and after</value>
+  </data>
+  <data name="Report.Section.Findings" xml:space="preserve">
+    <value>What we found</value>
+  </data>
+  <data name="Report.Section.Applied" xml:space="preserve">
+    <value>What we did</value>
+  </data>
+  <data name="Report.Section.Pending" xml:space="preserve">
+    <value>Pending for you</value>
+  </data>
+  <data name="Report.Section.BootCulprits" xml:space="preserve">
+    <value>What slows down startup</value>
+  </data>
+  <data name="Report.Section.NotMeasured" xml:space="preserve">
+    <value>What could not be measured</value>
+  </data>
+  <data name="Report.Section.Notes" xml:space="preserve">
+    <value>Notes</value>
+  </data>
+  <data name="Report.Col.Metric" xml:space="preserve">
+    <value>Measure</value>
+  </data>
+  <data name="Report.Col.Before" xml:space="preserve">
+    <value>Before</value>
+  </data>
+  <data name="Report.Col.After" xml:space="preserve">
+    <value>After</value>
+  </data>
+  <data name="Report.Col.Change" xml:space="preserve">
+    <value>Change</value>
+  </data>
+  <data name="Report.NoFindings" xml:space="preserve">
+    <value>No problems found in what could be measured.</value>
+  </data>
+  <data name="Report.NoApplied" xml:space="preserve">
+    <value>No changes were applied in this session.</value>
+  </data>
+  <data name="Report.NotMeasured" xml:space="preserve">
+    <value>not measurable</value>
+  </data>
+  <data name="Report.Metric.Boot" xml:space="preserve">
+    <value>Boot time</value>
+  </data>
+  <data name="Report.Metric.IdleRam" xml:space="preserve">
+    <value>RAM in use at rest</value>
+  </data>
+  <data name="Report.Metric.FreeSpace" xml:space="preserve">
+    <value>Free space on C:</value>
+  </data>
+  <data name="Report.Metric.StartupApps" xml:space="preserve">
+    <value>Startup apps</value>
+  </data>
+  <data name="Report.Metric.Processes" xml:space="preserve">
+    <value>Running processes</value>
+  </data>
+  <data name="Report.Metric.Services" xml:space="preserve">
+    <value>Running services</value>
+  </data>
+  <data name="Report.Metric.SequentialRead" xml:space="preserve">
+    <value>Disk reading (sequential)</value>
+  </data>
+  <data name="Report.Metric.RandomRead" xml:space="preserve">
+    <value>Disk reading (small files)</value>
+  </data>
+  <data name="Report.Note.Reversible" xml:space="preserve">
+    <value>Settings changed by Zentra can be reverted from the app. File cleanup and removed apps cannot: that is why a restore point was created before starting.</value>
+  </data>
+  <data name="Report.Note.FastStartupChanged" xml:space="preserve">
+    <value>Fast Startup changed between the two measurements, so the boot times are not directly comparable.</value>
+  </data>
+  <data name="Report.Note.BootKernelToLogon" xml:space="preserve">
+    <value>Boot time is measured from the start of Windows to the user logon. It does not include the BIOS time.</value>
+  </data>
+  <data name="Report.Note.NotMeasured" xml:space="preserve">
+    <value>When a value could not be measured, the report says so. Nothing is estimated.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BOOT-SLOW.Title" xml:space="preserve">
+    <value>Slow startup</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BOOT-SLOW.Description" xml:space="preserve">
+    <value>The PC takes more than a minute to start. Startup apps are usually the cause.</value>
+  </data>
+  <data name="Diagnostic.Evidence.boot.median_s" xml:space="preserve">
+    <value>Boot time (median of the last 3)</value>
+  </data>
 </root>
