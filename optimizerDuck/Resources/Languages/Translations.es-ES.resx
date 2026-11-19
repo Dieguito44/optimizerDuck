@@ -5902,4 +5902,76 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   <data name="ScheduledTasks.Protected" xml:space="preserve">
     <value>No se cambió: {0} mantiene Windows actualizado, protegido o recuperable (Windows Update, Defender, puntos de restauración o BitLocker). Zentra nunca la deshabilita, borra ni reemplaza.</value>
   </data>
+  <data name="Diagnostic.Rule.R-SECURE-PLATFORM.Title" xml:space="preserve">
+    <value>Arranque seguro o TPM ausente</value>
+  </data>
+  <data name="Diagnostic.Rule.R-SECURE-PLATFORM.Description" xml:space="preserve">
+    <value>El arranque seguro impide que software malicioso cargue antes que Windows; el chip TPM 2.0 guarda las claves de BitLocker y Windows Hello y Windows 11 lo exige. Ambos se activan en la BIOS.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-UEFI-CA2023.Title" xml:space="preserve">
+    <value>Certificado de arranque seguro 2023 sin aplicar</value>
+  </data>
+  <data name="Diagnostic.Rule.R-UEFI-CA2023.Description" xml:space="preserve">
+    <value>Los certificados de arranque seguro de 2011 vencen en 2026. Windows Update instala solo el nuevo &quot;Windows UEFI CA 2023&quot;; este PC todavía no lo tiene. Zentra no toca el firmware: mantén Windows actualizado y revisa la guía de Microsoft.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-WU-HEALTH.Title" xml:space="preserve">
+    <value>Windows Update no está funcionando bien</value>
+  </data>
+  <data name="Diagnostic.Rule.R-WU-HEALTH.Description" xml:space="preserve">
+    <value>El PC no está recibiendo los parches de seguridad de Windows: un servicio de Windows Update está deshabilitado, una actualización falla una y otra vez, o lleva semanas sin actualizaciones de Windows. No se cuentan las apps de la Microsoft Store ni las firmas de Defender.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RESTORE-OFF.Title" xml:space="preserve">
+    <value>La protección del sistema está apagada</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RESTORE-OFF.Description" xml:space="preserve">
+    <value>Sin protección del sistema Windows no puede crear puntos de restauración: un driver o una actualización que falle no se puede deshacer y el servicio no puede empezar con una red de seguridad.</value>
+  </data>
+  <data name="Diagnostic.Evidence.platform.secure_boot" xml:space="preserve">
+    <value>Arranque seguro</value>
+  </data>
+  <data name="Diagnostic.Evidence.platform.tpm" xml:space="preserve">
+    <value>TPM</value>
+  </data>
+  <data name="Diagnostic.Evidence.platform.uefi_ca2023" xml:space="preserve">
+    <value>Certificado Windows UEFI CA 2023</value>
+  </data>
+  <data name="Diagnostic.Evidence.update.disabled_services" xml:space="preserve">
+    <value>Servicios de actualización deshabilitados</value>
+  </data>
+  <data name="Diagnostic.Evidence.update.stuck" xml:space="preserve">
+    <value>Actualizaciones que fallan una y otra vez (30 días)</value>
+  </data>
+  <data name="Diagnostic.Evidence.update.days_since_success" xml:space="preserve">
+    <value>Última actualización de Windows instalada hace</value>
+  </data>
+  <data name="Diagnostic.Evidence.backup.system_protection" xml:space="preserve">
+    <value>Protección del sistema</value>
+  </data>
+  <data name="Diagnostic.Evidence.battery.cycles" xml:space="preserve">
+    <value>Ciclos de carga</value>
+  </data>
+  <data name="Diagnostic.Value.none" xml:space="preserve">
+    <value>no tiene</value>
+  </data>
+  <data name="Diagnostic.Value.missing" xml:space="preserve">
+    <value>sin aplicar</value>
+  </data>
+  <data name="Diagnostic.Unit.d" xml:space="preserve">
+    <value>días</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-BIOS-SECUREBOOT" xml:space="preserve">
+    <value>Activar el arranque seguro y el TPM (fTPM / PTT) en la BIOS</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-SECUREBOOT-CERT" xml:space="preserve">
+    <value>Instalar las actualizaciones pendientes de Windows y revisar la guía de Microsoft sobre los certificados de arranque seguro</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-WU-RESTORE" xml:space="preserve">
+    <value>Devolver los servicios de Windows Update a su inicio por defecto y ejecutar Windows Update</value>
+  </data>
+  <data name="Optimizer.Storage.WeeklyRestorePoints.Protection" xml:space="preserve">
+    <value>Activar la protección del sistema en {0}</value>
+  </data>
+  <data name="Optimizer.Storage.WeeklyRestorePoints.ProtectionFailed" xml:space="preserve">
+    <value>Windows no activó la protección del sistema.</value>
+  </data>
 </root>

@@ -129,6 +129,24 @@ public static class SnapshotFactory
                 RestorePoints = Measured<int>.Of(1),
                 OneDriveConfigured = Measured<bool>.Of(false),
                 IdleRamPercent = Measured<double>.Of(39.6),
+                // Read on Diego's PC on 19/11/2026: System Restore on, desktop without battery.
+                SystemProtectionOn = Measured<bool>.Of(true),
+                BatteryCycles = Measured<int>.Missing(NotMeasuredReason.NotApplicable),
+            },
+            // TPM 2.0 (Tbsi_GetDeviceInfo) and the 2023 certificate already applied
+            // (WindowsUEFICA2023Capable = 2), read on Diego's PC on 19/11/2026.
+            Platform = new PlatformSnapshot
+            {
+                TpmVersion = Measured<int>.Of(2),
+                UefiCa2023 = Measured<int>.Of(2),
+            },
+            // Last Windows (KB) update 8 days before; the 23 failures of that month were all
+            // Microsoft Store apps, which do not count (PlatformProbes on Diego's PC, 19/11/2026).
+            Updates = new UpdateHealthSnapshot
+            {
+                DaysSinceSuccess = Measured<int>.Of(8),
+                StuckUpdates = Measured<int>.Of(0),
+                DisabledServices = Measured<IReadOnlyList<string>>.Of([]),
             },
             // What the display probe read on Diego's PC (one APU, an HDMI monitor at its maximum and a
             // phantom DisplayPort output without EDID).

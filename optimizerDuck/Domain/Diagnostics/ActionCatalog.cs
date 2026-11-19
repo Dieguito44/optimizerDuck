@@ -47,6 +47,11 @@ public static class ActionIds
     public const string DefenderExclusion = "ACT-DEFENDER-EXCL";
     public const string ServicesManual = "ACT-SERVICES-MANUAL";
     public const string FastStartupToggle = "ACT-FASTSTARTUP-TOGGLE";
+
+    // Plan of improvements, block 2B: steps the technician takes by hand.
+    public const string BiosSecureBoot = "ACT-BIOS-SECUREBOOT";
+    public const string SecureBootCertificate = "ACT-SECUREBOOT-CERT";
+    public const string WindowsUpdateRestore = "ACT-WU-RESTORE";
 }
 
 /// <summary>Who carries out an action.</summary>
@@ -156,6 +161,9 @@ public static class ActionCatalog
         new(ActionIds.DefenderExclusion, ActionKind.Software, Moderate, Rev, Profile),
         new(ActionIds.ServicesManual, ActionKind.Software, Moderate, Rev, Profile),
         new(ActionIds.FastStartupToggle, ActionKind.Software, Moderate, Rev, Profile),
+        new(ActionIds.BiosSecureBoot, ActionKind.ManualBios, null, None, Rule),
+        new(ActionIds.SecureBootCertificate, ActionKind.Manual, null, None, Rule),
+        new(ActionIds.WindowsUpdateRestore, ActionKind.Manual, null, None, Rule),
     }.ToFrozenDictionary(a => a.Id, StringComparer.Ordinal);
 
     /// <summary>
@@ -204,4 +212,10 @@ public static class RuleIds
     public const string Net100M = "R-NET-100M";
     public const string RamIdleHigh = "R-RAM-IDLE-HIGH";
     public const string BackupNone = "R-BACKUP-NONE";
+
+    // Plan of improvements, block 2B (read-only diagnostics).
+    public const string SecurePlatform = "R-SECURE-PLATFORM";
+    public const string UefiCa2023 = "R-UEFI-CA2023";
+    public const string UpdateHealth = "R-WU-HEALTH";
+    public const string RestoreOff = "R-RESTORE-OFF";
 }
