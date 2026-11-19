@@ -4,6 +4,19 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 2B: diagnósticos nuevos de solo lectura (19/11/2026, PR 10, sobre el PR 9)
+
+- **Reglas nuevas:**
+  - R-SECURE-PLATFORM: arranque seguro apagado (Media) o sin TPM 2.0 (Baja).
+  - R-UEFI-CA2023: sin el certificado "Windows UEFI CA 2023" (Baja). Solo informa; no se toca el firmware.
+  - R-WU-HEALTH: servicio de Windows Update deshabilitado (Alta), actualización atascada o 45 días sin actualizar Windows (Media). Solo cuentan las actualizaciones con KB, no las apps de la Store ni las firmas de Defender.
+  - R-RESTORE-OFF: protección del sistema apagada (Media).
+- **Batería:** suma los ciclos de carga del informe de `powercfg`, que también es el respaldo de la capacidad. El número de serie no sale de la sonda.
+- **Puntos de restauración semanales (auditoría Z-08):** la acción por fin aparece en Almacenamiento y registra cuándo enciende la protección.
+- **Arranque (F2-08):** ya existía (evento 100 y causantes 101–110).
+- **Catálogo:** 3 pasos manuales nuevos (44 acciones) y 4 reglas nuevas (33 reglas).
+- **Verificado en el PC de Diego:** las sondas leen datos reales sin elevación (TPM 2.0, certificado aplicado, última KB hace 8 días, protección activa).
+
 ### Mejoras, Fase 2A: protecciones y diagnóstico honesto (19/11/2026, PR 9, sobre el PR 8)
 
 Primer bloque del plan de mejoras posterior a la auditoría. La Fase 1 del plan (bloqueantes de seguridad y legales) queda de última por decisión de Diego; hasta cerrarla no se atiende a clientes.
