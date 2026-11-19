@@ -4028,4 +4028,13 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="GameMode.Revert.Failed" xml:space="preserve">
     <value>Could not revert: {0}</value>
   </data>
+  <data name="Optimizer.SecurityAndPrivacy.PauseWindowsUpdate7Days.Error.RecentPause" xml:space="preserve">
+    <value>Not applied: Windows Update was paused recently. To avoid weeks without security patches, a new pause is possible from {0}.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DefenderGameLibraryExclusion.Error.ReadFailed" xml:space="preserve">
+    <value>Not applied: the current Windows Security exclusions could not be read.</value>
+  </data>
+  <data name="Optimizer.Performance.AdvancedGameMode.Error.Locked" xml:space="preserve">
+    <value>Memory Integrity is locked by the firmware (UEFI) or managed by a policy on this PC; it cannot be turned off from here.</value>
+  </data>
 </root>

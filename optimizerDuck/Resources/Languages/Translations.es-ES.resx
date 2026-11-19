@@ -5827,4 +5827,13 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   <data name="GameMode.Revert.Failed" xml:space="preserve">
     <value>No se pudo revertir: {0}</value>
   </data>
+  <data name="Optimizer.SecurityAndPrivacy.PauseWindowsUpdate7Days.Error.RecentPause" xml:space="preserve">
+    <value>No se aplicó: Windows Update estuvo pausado hace poco. Para no dejar el PC semanas sin parches de seguridad, se puede volver a pausar desde el {0}.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DefenderGameLibraryExclusion.Error.ReadFailed" xml:space="preserve">
+    <value>No se aplicó: no se pudieron leer las exclusiones actuales de Seguridad de Windows.</value>
+  </data>
+  <data name="Optimizer.Performance.AdvancedGameMode.Error.Locked" xml:space="preserve">
+    <value>La Integridad de memoria está bloqueada por el firmware (UEFI) o la administra una directiva en este PC; no se puede apagar desde aquí.</value>
+  </data>
 </root>

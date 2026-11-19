@@ -426,7 +426,7 @@ public class Performance : LocalizedObject, IOptimizationCategory
 
             foreach (var adapter in adapters)
             {
-                var name = adapter.Replace("'", "''");
+                var name = optimizerDuck.Common.Helpers.PowerShellText.EscapeSingleQuoted(adapter);
                 await context.Shell.PowerShellAsync(
                     $"Disable-NetAdapterPowerManagement -Name '{name}' -NoRestart",
                     context,
@@ -515,15 +515,37 @@ public class Performance : LocalizedObject, IOptimizationCategory
         public const string HvciKey =
             @"HKLM\SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity";
 
+        private static bool IsLockedOrManaged()
+        {
+            using var scenario = Registry.LocalMachine.OpenSubKey(
+                @"SYSTEM\CurrentControlSet\Control\DeviceGuard\Scenarios\HypervisorEnforcedCodeIntegrity"
+            );
+            if (scenario?.GetValue("Locked") is int locked && locked != 0)
+                return true;
+            using var policy = Registry.LocalMachine.OpenSubKey(
+                @"SOFTWARE\Policies\Microsoft\Windows\DeviceGuard"
+            );
+            return policy?.GetValue("HypervisorEnforcedCodeIntegrity") is not null;
+        }
+
         public override async Task<ApplyResult> ApplyAsync(
             IProgress<ProcessingProgress> progress,
             OptimizationContext context
         )
         {
+            // With a UEFI lock or a Device Guard policy the registry value changes nothing, and
+            // the Session card would wrongly say the protection is off.
+            if (IsLockedOrManaged())
+            {
+                context.Changes.AddNotApplicable(Name, Loc.Instance[$"{ErrorPrefix}.Locked"]);
+                return context.Changes.ToApplyResult();
+            }
+
             if (
-                !await Services.System.ClientConsent.Ask(
+                !await Services.System.ClientConsent.RequestAsync(
                     Name,
-                    Loc.Instance[$"{ErrorPrefix}.Consent"]
+                    Loc.Instance[$"{ErrorPrefix}.Consent"],
+                    context.Logger
                 )
             )
             {

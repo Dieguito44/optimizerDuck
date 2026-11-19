@@ -1,6 +1,8 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using Microsoft.Extensions.Logging;
 using optimizerDuck.Common.Extensions;
+using optimizerDuck.Common.Helpers;
 using optimizerDuck.Domain.Abstractions;
 using optimizerDuck.Domain.Attributes;
 using optimizerDuck.Domain.Conditions;
@@ -835,14 +837,28 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
             OptimizationContext context
         )
         {
-            var until = DateTime.UtcNow.AddDays(MaxDays);
+            var now = DateTime.UtcNow;
+            if (BlockedUntil(now, ReadExpiry(), ReadLastZentraPause()) is { } blocked)
+            {
+                context.Changes.AddRefused(
+                    Name,
+                    Loc.Instance[
+                        $"{ErrorPrefix}.RecentPause",
+                        blocked.ToLocalTime().ToString("f", Loc.CurrentCulture)
+                    ]
+                );
+                return context.Changes.ToApplyResult();
+            }
+
+            var until = now.AddDays(MaxDays);
             if (
-                !await ClientConsent.Ask(
+                !await ClientConsent.RequestAsync(
                     Name,
                     Loc.Instance[
                         $"{ErrorPrefix}.Consent",
                         until.ToLocalTime().ToString("f", Loc.CurrentCulture)
-                    ]
+                    ],
+                    context.Logger
                 )
             )
             {
@@ -854,8 +870,89 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
                 .Select(v => new RegistryItem(Key, v.Name, v.Value))
                 .ToArray();
             RegistryService.Write(context, items);
+            if (context.Changes.HasSuccessfulSteps)
+                RememberZentraPause(until);
             context.Logger.LogInformation("Windows Update paused until {Until:u}", until);
             return context.Changes.ToApplyResult();
+        }
+
+        /// <summary>
+        ///     Days that must pass after a pause ends before Zentra pauses again, so pauses cannot
+        ///     be chained (apply, revert, apply) into weeks without security patches.
+        /// </summary>
+        public const int CooldownDays = 7;
+
+        private const string Format = "yyyy-MM-ddTHH:mm:ssZ";
+
+        private static string LastPauseFile =>
+            Path.Combine(Shared.RootDirectory, "wu-pause-last.txt");
+
+        /// <summary>
+        ///     Until when a new pause is refused: a pause still running, or one that ended less
+        ///     than <see cref="CooldownDays" /> ago, whether Windows (the registry) or Zentra (its
+        ///     own note, which survives a revert) knows about it. Null when a pause is allowed.
+        /// </summary>
+        internal static DateTime? BlockedUntil(
+            DateTime nowUtc,
+            DateTime? registryExpiryUtc,
+            DateTime? lastZentraEndUtc
+        )
+        {
+            var latest = new[] { registryExpiryUtc, lastZentraEndUtc }.Max();
+            if (latest is null)
+                return null;
+            var free = latest.Value.AddDays(CooldownDays);
+            return free > nowUtc ? free : null;
+        }
+
+        internal static DateTime? ParseUtc(string? value) =>
+            DateTime.TryParseExact(
+                value?.Trim(),
+                Format,
+                global::System.Globalization.CultureInfo.InvariantCulture,
+                global::System.Globalization.DateTimeStyles.AdjustToUniversal
+                    | global::System.Globalization.DateTimeStyles.AssumeUniversal,
+                out var parsed
+            )
+                ? parsed
+                : null;
+
+        private static DateTime? ReadExpiry()
+        {
+            using var key = Microsoft.Win32.Registry.LocalMachine.OpenSubKey(
+                @"SOFTWARE\Microsoft\WindowsUpdate\UX\Settings"
+            );
+            return ParseUtc(key?.GetValue("PauseUpdatesExpiryTime") as string);
+        }
+
+        private static DateTime? ReadLastZentraPause()
+        {
+            try
+            {
+                return File.Exists(LastPauseFile)
+                    ? ParseUtc(File.ReadAllText(LastPauseFile))
+                    : null;
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+            {
+                return null;
+            }
+        }
+
+        private static void RememberZentraPause(DateTime untilUtc)
+        {
+            try
+            {
+                Directory.CreateDirectory(Shared.RootDirectory);
+                File.WriteAllText(
+                    LastPauseFile,
+                    untilUtc.ToString(
+                        Format,
+                        global::System.Globalization.CultureInfo.InvariantCulture
+                    )
+                );
+            }
+            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException) { }
         }
 
         /// <summary>The native pause values (ISO 8601, UTC), as Settings writes them.</summary>
@@ -897,6 +994,10 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
     )]
     public class DefenderGameLibraryExclusion : BaseOptimization
     {
+        /// <summary>The folders to exclude; replaced in tests.</summary>
+        internal static Func<IReadOnlyList<string>> FolderSource { get; set; } =
+            () => GameLibraries.Folders().Where(GameLibraries.IsSafeToExclude).ToList();
+
         public override async Task<ApplyResult> ApplyAsync(
             IProgress<ProcessingProgress> progress,
             OptimizationContext context
@@ -908,7 +1009,7 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
                 return context.Changes.ToApplyResult();
             }
 
-            var folders = GameLibraries.Folders().Where(GameLibraries.IsSafeToExclude).ToList();
+            var folders = FolderSource();
             if (folders.Count == 0)
             {
                 context.Changes.AddNotApplicable(Name, Loc.Instance[$"{ErrorPrefix}.NoFolders"]);
@@ -916,12 +1017,13 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
             }
 
             if (
-                !await ClientConsent.Ask(
+                !await ClientConsent.RequestAsync(
                     Name,
                     Loc.Instance[
                         $"{ErrorPrefix}.Consent",
                         string.Join(Environment.NewLine, folders)
-                    ]
+                    ],
+                    context.Logger
                 )
             )
             {
@@ -934,6 +1036,13 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
                 context.Logger,
                 ct: context.CancellationToken
             );
+            if (current.ExitCode != 0)
+            {
+                // Without the current list an exclusion the client already had would be added
+                // again, and its revert would remove it.
+                context.Changes.AddRefused(Name, Loc.Instance[$"{ErrorPrefix}.ReadFailed"]);
+                return context.Changes.ToApplyResult();
+            }
             var existing = (current.Stdout ?? string.Empty)
                 .Split(['\r', '\n'], StringSplitOptions.RemoveEmptyEntries)
                 .Select(l => l.Trim().TrimEnd('\\'))
@@ -946,11 +1055,11 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
                     context.Changes.AddSkip(Name, folder);
                     continue;
                 }
-                var quoted = folder.Replace("'", "''");
+                var quoted = PowerShellText.Quote(folder);
                 await context.Shell.PowerShellAsync(
-                    $"Add-MpPreference -ExclusionPath '{quoted}'",
+                    $"Add-MpPreference -ExclusionPath {quoted}",
                     context,
-                    $"Remove-MpPreference -ExclusionPath '{quoted}'"
+                    $"Remove-MpPreference -ExclusionPath {quoted}"
                 );
             }
             return context.Changes.ToApplyResult();
