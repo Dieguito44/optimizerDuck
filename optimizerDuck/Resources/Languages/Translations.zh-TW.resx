@@ -4269,23 +4269,6 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="Preset.Problem.Empty" xml:space="preserve">
     <value>The preset has no settings and no apps.</value>
   </data>
-  <data name="Cli.Help" xml:space="preserve">
-    <value>Zentra from the command line (as administrator):
-  Zentra.exe --diagnose [--report &lt;folder&gt;] [--client &lt;name&gt;]
-  Zentra.exe --preset &lt;file.json|estandar&gt; [--diagnose] [--report &lt;folder&gt;] [--client &lt;name&gt;] [--silent] [--keep-apps] [--allow-risky]
-
-  --diagnose     Measure and diagnose. With --preset: before and after.
-  --preset       Apply a preset. Always previewed, always after a restore point.
-  --report       Copy session.json, the PDF and zentra-cli.txt to that folder.
-  --client       Client name for the report.
-  --silent       Do not ask for confirmation.
-  --keep-apps    Do not remove the preset&apos;s apps.
-  --allow-risky  Allow Expert settings, if the preset allows them too.
-
-Exit codes: 0 done, 1 arguments, 2 invalid preset, 3 not administrator,
-4 no restore point, 5 done with failures, 6 cancelled, 10 unexpected error.
-In PowerShell, to wait for it: Start-Process Zentra.exe -ArgumentList &apos;--diagnose&apos; -Wait -PassThru</value>
-  </data>
   <data name="Cli.BadArguments" xml:space="preserve">
     <value>Invalid arguments: {0}</value>
   </data>
@@ -4342,5 +4325,106 @@ In PowerShell, to wait for it: Start-Process Zentra.exe -ArgumentList &apos;--di
   </data>
   <data name="Cli.Confirm.More" xml:space="preserve">
     <value>... and {0} more (the full list is in the output).</value>
+  </data>
+  <data name="Report.Note.DiskVaries" xml:space="preserve">
+    <value>Disk reads change a little from one test to the next: differences under {0} % are not marked as better or worse.</value>
+  </data>
+  <data name="Report.Preset" xml:space="preserve">
+    <value>Preset applied: {0}</value>
+  </data>
+  <data name="Report.SessionHash" xml:space="preserve">
+    <value>SHA-256 fingerprint of the session.json this report comes from: {0}</value>
+  </data>
+  <data name="Report.Integrity.Hint" xml:space="preserve">
+    <value>PDF SHA-256 fingerprint: {0}. Give it to the client apart from the PDF (for example, by message): it proves the report did not change.</value>
+  </data>
+  <data name="Cli.Inventory" xml:space="preserve">
+    <value>Writing the software inventory...</value>
+  </data>
+  <data name="Cli.Verify.NoManifest" xml:space="preserve">
+    <value>There is no ZENTRA-SHA256.txt in {0}.</value>
+  </data>
+  <data name="Cli.Verify.Ok" xml:space="preserve">
+    <value>OK        {0}</value>
+  </data>
+  <data name="Cli.Verify.Altered" xml:space="preserve">
+    <value>CHANGED   {0}</value>
+  </data>
+  <data name="Cli.Verify.Missing" xml:space="preserve">
+    <value>MISSING   {0}</value>
+  </data>
+  <data name="Cli.Verify.AllOk" xml:space="preserve">
+    <value>Every file matches its fingerprint.</value>
+  </data>
+  <data name="Cli.Verify.Failed" xml:space="preserve">
+    <value>Some files were changed or are missing.</value>
+  </data>
+  <data name="Inventory.Button" xml:space="preserve">
+    <value>Export inventory</value>
+  </data>
+  <data name="Inventory.Running" xml:space="preserve">
+    <value>Reading the installed programs...</value>
+  </data>
+  <data name="Inventory.Done" xml:space="preserve">
+    <value>Inventory saved in {0} (inventario.csv and winget-export.json).</value>
+  </data>
+  <data name="Inventory.DoneNoWinget" xml:space="preserve">
+    <value>Inventory saved in {0} (inventario.csv). winget could not export its list.</value>
+  </data>
+  <data name="Inventory.Col.Name" xml:space="preserve">
+    <value>Program</value>
+  </data>
+  <data name="Inventory.Col.Version" xml:space="preserve">
+    <value>Version</value>
+  </data>
+  <data name="Inventory.Col.Publisher" xml:space="preserve">
+    <value>Publisher</value>
+  </data>
+  <data name="Inventory.Col.Installed" xml:space="preserve">
+    <value>Installed</value>
+  </data>
+  <data name="Inventory.Col.SizeMb" xml:space="preserve">
+    <value>Size (MB)</value>
+  </data>
+  <data name="Inventory.Col.Scope" xml:space="preserve">
+    <value>Installed for</value>
+  </data>
+  <data name="Inventory.Windows.Activated" xml:space="preserve">
+    <value>Activated</value>
+  </data>
+  <data name="Inventory.Windows.NotActivated" xml:space="preserve">
+    <value>Not activated</value>
+  </data>
+  <data name="Inventory.Windows.Unknown" xml:space="preserve">
+    <value>Activation not measurable</value>
+  </data>
+  <data name="Inventory.Scope.Machine64" xml:space="preserve">
+    <value>Everyone (64-bit)</value>
+  </data>
+  <data name="Inventory.Scope.Machine32" xml:space="preserve">
+    <value>Everyone (32-bit)</value>
+  </data>
+  <data name="Inventory.Scope.User" xml:space="preserve">
+    <value>This user</value>
+  </data>
+  <data name="Cli.Help" xml:space="preserve">
+    <value>Zentra from the command line (as administrator):
+  Zentra.exe --diagnose [--inventory] [--report &lt;folder&gt;] [--client &lt;name&gt;]
+  Zentra.exe --preset &lt;file.json|estandar&gt; [--diagnose] [--inventory] [--report &lt;folder&gt;] [--client &lt;name&gt;] [--silent] [--keep-apps] [--allow-risky]
+  Zentra.exe --verify &lt;report folder&gt;
+
+  --diagnose     Measure and diagnose. With --preset: before and after.
+  --preset       Apply a preset. Always previewed, always after a restore point.
+  --inventory    Also write the installed programs and the Windows activation (read only).
+  --report       Copy session.json, the PDF, ZENTRA-SHA256.txt, the inventory and zentra-cli.txt to that folder.
+  --client       Client name for the report.
+  --silent       Do not ask for confirmation.
+  --keep-apps    Do not remove the preset&apos;s apps.
+  --allow-risky  Allow Expert settings, if the preset allows them too.
+  --verify       Check the report files against ZENTRA-SHA256.txt. Changes nothing.
+
+Exit codes: 0 done, 1 arguments, 2 invalid preset, 3 not administrator,
+4 no restore point, 5 done with failures, 6 cancelled, 7 report changed or missing, 10 unexpected error.
+In PowerShell, to wait for it: Start-Process Zentra.exe -ArgumentList &apos;--diagnose&apos; -Wait -PassThru</value>
   </data>
 </root>

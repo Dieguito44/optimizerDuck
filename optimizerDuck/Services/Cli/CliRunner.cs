@@ -35,11 +35,18 @@ public interface ICliHost
         CancellationToken ct
     );
 
-    /// <summary>Saves session.json (and the PDF when there is a "before"); copies them and the transcript to the folder.</summary>
+    /// <summary>Writes the software inventory into the session folder (plan F3-06).</summary>
+    Task<IReadOnlyList<string>> WriteInventoryAsync(ServiceSession session, CancellationToken ct);
+
+    /// <summary>
+    ///     Saves session.json (and the PDF when there is a "before"); copies them, the extra files
+    ///     and the transcript to the folder.
+    /// </summary>
     Task<IReadOnlyList<string>> WriteReportAsync(
         ServiceSession session,
         string? reportDirectory,
         string transcript,
+        IReadOnlyList<string> extraFiles,
         CancellationToken ct
     );
 }
@@ -84,6 +91,8 @@ public sealed class CliRunner(
             Say(Loc.Instance["Cli.Help"]);
             return CliExitCode.Ok;
         }
+        if (options.VerifyPath is { } verify)
+            return Verify(verify);
         if (!host.IsElevated)
         {
             Say(Loc.Instance["Cli.NotElevated"]);
@@ -175,20 +184,51 @@ public sealed class CliRunner(
                 session = await MeasureAsync(session, MeasurementPhase.After, ct);
         }
 
+        IReadOnlyList<string> inventory = [];
+        if (options.Inventory)
+        {
+            Say(Loc.Instance["Cli.Inventory"]);
+            inventory = await host.WriteInventoryAsync(session, ct);
+        }
+
         var files = await host.WriteReportAsync(
             session,
             options.ReportDirectory,
             _transcript.ToString(),
+            inventory,
             ct
         );
         foreach (var file in files)
             Say(Loc.Instance["Cli.File", file]);
+        // Plan F3-04: the PDF fingerprint, to hand over apart from the PDF.
+        foreach (
+            var pdf in files.Where(f =>
+                f.EndsWith(".pdf", StringComparison.OrdinalIgnoreCase) && File.Exists(f)
+            )
+        )
+            Say(Loc.Instance["Report.Integrity.Hint", Reports.ReportIntegrity.Sha256Of(pdf)]);
 
         var partial =
             result is not null
             && (result.Count(ProfileStepOutcome.Failed) > 0 || result.AppsFailed.Count > 0);
         Say(partial ? Loc.Instance["Cli.DonePartial"] : Loc.Instance["Cli.Done"]);
         return partial ? CliExitCode.Partial : CliExitCode.Ok;
+    }
+
+    /// <summary>--verify: every file of ZENTRA-SHA256.txt against its fingerprint. Changes nothing.</summary>
+    private CliExitCode Verify(string path)
+    {
+        var checks = Reports.ReportIntegrity.Verify(path);
+        if (checks is null || checks.Count == 0)
+        {
+            Say(Loc.Instance["Cli.Verify.NoManifest", path]);
+            return CliExitCode.VerificationFailed;
+        }
+        foreach (var check in checks)
+            Say(Loc.Instance[$"Cli.Verify.{check.Status}", check.File]);
+        var ok = checks.All(c => c.Status == Reports.IntegrityStatus.Ok);
+        Say(Loc.Instance[ok ? "Cli.Verify.AllOk" : "Cli.Verify.Failed"]);
+        return ok ? CliExitCode.Ok : CliExitCode.VerificationFailed;
     }
 
     private async Task<ServicePreset?> LoadPresetAsync(CliOptions options)

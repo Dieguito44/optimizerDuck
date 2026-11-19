@@ -53,6 +53,7 @@ public partial class SessionViewModel(
     [NotifyCanExecuteChangedFor(nameof(WriteReportCommand))]
     [NotifyCanExecuteChangedFor(nameof(CancelCommand))]
     [NotifyCanExecuteChangedFor(nameof(NewSessionCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ExportInventoryCommand))]
     private bool _isBusy;
 
     [ObservableProperty]
@@ -237,7 +238,11 @@ public partial class SessionViewModel(
             StatusText = Loc.Instance["Session.Step.Pdf"];
             sessionStore.Save(_session);
             LastPdfPath = await pdfReportService.GenerateAsync(_session);
-            StatusText = Loc.Instance["Session.Pdf.Saved", LastPdfPath];
+            // Plan F3-04: the fingerprint to hand over separately, so the client can check the PDF.
+            StatusText =
+                Loc.Instance["Session.Pdf.Saved", LastPdfPath]
+                + " "
+                + Loc.Instance["Report.Integrity.Hint", ReportIntegrity.Sha256Of(LastPdfPath)];
             UnelevatedShell.Open(LastPdfPath);
         }
         catch (Exception ex)
@@ -263,6 +268,42 @@ public partial class SessionViewModel(
             UnelevatedShell.Open(SessionStore.SessionsDirectory);
         else
             StatusText = Loc.Instance["Session.Folder.NotYet"];
+    }
+
+    /// <summary>
+    ///     Plan F3-06: installed programs and Windows activation, into this session's folder (or a
+    ///     dated one under Sessions when there is no session yet). Read-only.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(IsIdle))]
+    private async Task ExportInventoryAsync()
+    {
+        IsBusy = true;
+        ErrorText = null;
+        StatusText = Loc.Instance["Inventory.Running"];
+        try
+        {
+            var folder = _session is null
+                ? Path.Combine(
+                    SessionStore.SessionsDirectory,
+                    $"Inventario_{timeProvider.GetLocalNow():yyyy-MM-dd_HHmm}"
+                )
+                : SessionStore.FolderFor(_session);
+            var files = await SoftwareInventory.WriteAsync(folder, logger, CancellationToken.None);
+            StatusText = Loc.Instance[
+                files.Count > 1 ? "Inventory.Done" : "Inventory.DoneNoWinget",
+                folder
+            ];
+            UnelevatedShell.Open(folder);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Inventory export failed");
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
+        }
+        finally
+        {
+            IsBusy = false;
+        }
     }
 
     private async Task MeasureAsync(MeasurementPhase phase)

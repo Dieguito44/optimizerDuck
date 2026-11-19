@@ -34,6 +34,13 @@ public sealed class AiReportService(
     private readonly Func<ClaudeClient> _clientFactory =
         clientFactory ?? (() => new ClaudeClient());
 
+    /// <summary>
+    ///     The template report, without calling the AI. The CLI uses it (plan F3-02): nothing about
+    ///     the client leaves the PC without the technician at the screen.
+    /// </summary>
+    public static AiReportRecord WriteTemplate(ServiceSession session, SessionReportModel model) =>
+        Template(AiPayloadBuilder.Build(session, model), TemplateReason.NoKey, 0, null, null, null);
+
     public async Task<AiReportRecord> WriteAsync(
         ServiceSession session,
         SessionReportModel model,

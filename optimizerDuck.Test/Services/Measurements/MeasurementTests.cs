@@ -343,3 +343,76 @@ public class SpanishTextEncodingTests
         Assert.True(broken.Count == 0, "Broken accents: " + string.Join(", ", broken));
     }
 }
+
+/// <summary>Plan of improvements F3-03: the before/after part of the report.</summary>
+public class ReportBeforeAfterTests
+{
+    // ---- Plan of improvements F3-03: a disk benchmark varies between runs -------------------
+
+    [Theory]
+    [InlineData(3200.0, null)] // -8 %: within the noise, not "worse"
+    [InlineData(3700.0, null)] // +6 %: not "better" either
+    [InlineData(4000.0, true)] // +15 %: a real change
+    [InlineData(2800.0, false)] // -20 %
+    public void DiskDifferences_UnderTenPercent_AreNotCalledBetterOrWorse(
+        double afterMiBps,
+        bool? improved
+    )
+    {
+        var after = SessionPersistenceTests.Before() with
+        {
+            Phase = MeasurementPhase.After,
+            SequentialReadMiBps = Measured<double>.Of(afterMiBps),
+        };
+        var sequential = SessionReportModel.BuildMetrics(
+            SessionPersistenceTests.Before(),
+            after,
+            CultureInfo.InvariantCulture
+        )[6];
+        Assert.Equal(improved, sequential.Improved);
+        Assert.NotEqual("—", sequential.Difference); // the number is still shown
+    }
+
+    [Fact]
+    public void Report_NamesThePreset_AndWarnsThatDiskReadsVary()
+    {
+        var session = new ServiceSession
+        {
+            CreatedAtUtc = Now,
+            Before = SessionPersistenceTests.Before(),
+            After = SessionPersistenceTests.Before() with { Phase = MeasurementPhase.After },
+            PresetName = "Servicio estándar",
+        };
+
+        var model = SessionReportModel.Build(
+            session,
+            [],
+            _ => null,
+            Now,
+            CultureInfo.InvariantCulture
+        );
+
+        Assert.Equal("Servicio estándar", model.PresetName);
+        Assert.Contains(
+            optimizerDuck.Services.Configuration.Loc.Instance["Report.Note.DiskVaries", 10],
+            model.Notes
+        );
+
+        var beforeOnly = SessionReportModel.Build(
+            session with
+            {
+                After = null,
+                PresetName = null,
+            },
+            [],
+            _ => null,
+            Now,
+            CultureInfo.InvariantCulture
+        );
+        Assert.Null(beforeOnly.PresetName);
+        Assert.DoesNotContain(
+            optimizerDuck.Services.Configuration.Loc.Instance["Report.Note.DiskVaries", 10],
+            beforeOnly.Notes
+        );
+    }
+}

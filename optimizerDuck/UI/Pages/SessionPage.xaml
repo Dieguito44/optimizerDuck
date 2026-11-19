@@ -149,6 +149,14 @@
                         Content="{ext:Loc Session.Button.Folder}"
                         Cursor="Hand"
                         Icon="{ui:SymbolIcon FolderOpen24}" />
+                    <!--  Plan of improvements F3-06: installed programs and Windows activation, read only.  -->
+                    <ui:Button
+                        Margin="0,2,8,2"
+                        Appearance="Transparent"
+                        Command="{Binding ViewModel.ExportInventoryCommand}"
+                        Content="{ext:Loc Inventory.Button}"
+                        Cursor="Hand"
+                        Icon="{ui:SymbolIcon AppsList24}" />
                     <ui:Button
                         Margin="0,2,8,2"
                         Appearance="Transparent"

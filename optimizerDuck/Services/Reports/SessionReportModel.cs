@@ -99,6 +99,18 @@ public sealed record SessionReportModel
     /// <summary>The heaviest installed programs (ACT-HEAVY-APPS). Local report only.</summary>
     public IReadOnlyList<InstalledApp> HeavyApps { get; init; } = [];
 
+    /// <summary>The preset applied in the session, when there was one (plan F3-01).</summary>
+    public string? PresetName { get; init; }
+
+    /// <summary>SHA-256 of the session.json the PDF was made from (plan F3-04).</summary>
+    public string? SessionSha256 { get; init; }
+
+    /// <summary>
+    ///     A disk benchmark changes from one run to the next. Below this fraction of the "before"
+    ///     value a difference is shown but not called better or worse (plan F3-03).
+    /// </summary>
+    public const double DiskNoise = 0.10;
+
     public static SessionReportModel Build(
         ServiceSession session,
         IEnumerable<ChangeRecord> history,
@@ -170,6 +182,11 @@ public sealed record SessionReportModel
                 is { HasValue: true, ValueOrDefault: BootTimeSource.KernelToLogon }
         )
             notes.Add(Loc.Instance["Report.Note.BootKernelToLogon"]);
+        if (
+            session.Before?.SequentialReadMiBps.HasValue == true
+            && session.After?.SequentialReadMiBps.HasValue == true
+        )
+            notes.Add(Loc.Instance["Report.Note.DiskVaries", (int)(DiskNoise * 100)]);
         notes.Add(Loc.Instance["Report.Note.NotMeasured"]);
 
         return new SessionReportModel
@@ -197,6 +214,9 @@ public sealed record SessionReportModel
             Notes = notes,
             BootCulprits = (session.After ?? session.Before)?.BootCulprits ?? [],
             Written = WrittenReport.From(session.Report),
+            PresetName = string.IsNullOrWhiteSpace(session.PresetName)
+                ? null
+                : session.PresetName.Trim(),
         };
     }
 
@@ -279,7 +299,8 @@ public sealed record SessionReportModel
                 "#,##0",
                 " MB/s",
                 Better.Higher,
-                culture
+                culture,
+                DiskNoise
             ),
             Row(
                 "Report.Metric.RandomRead",
@@ -289,7 +310,8 @@ public sealed record SessionReportModel
                 "#,##0",
                 " IOPS",
                 Better.Higher,
-                culture
+                culture,
+                DiskNoise
             ),
         ];
     }
@@ -302,7 +324,8 @@ public sealed record SessionReportModel
         string format,
         string unit,
         Better better,
-        CultureInfo culture
+        CultureInfo culture,
+        double noise = 0
     )
     {
         double? b = before is { HasValue: true } mb ? toDisplay(mb.ValueOrDefault!) : null;
@@ -320,7 +343,8 @@ public sealed record SessionReportModel
             var delta = av - bv;
             var rounded = Math.Round(delta, format.Contains('.') ? 1 : 0);
             difference = (rounded > 0 ? "+" : "") + rounded.ToString(format, culture) + unit;
-            if (rounded != 0)
+            var withinNoise = noise > 0 && bv > 0 && Math.Abs(delta) < bv * noise;
+            if (rounded != 0 && !withinNoise)
                 improved = better == Better.Lower ? rounded < 0 : rounded > 0;
         }
 
