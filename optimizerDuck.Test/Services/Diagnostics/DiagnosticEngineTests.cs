@@ -591,3 +591,36 @@ public class DiagnosticProbesLiveTests
         Assert.Equal(expected, DiagnosticProbes.IsPowerButton(xml));
     }
 }
+
+/// <summary>Every rule, action, reason and severity has Spanish text: no raw keys on screen.</summary>
+public class DiagnosticTranslationTests
+{
+    private static readonly System.Globalization.CultureInfo Spanish = new("es-ES");
+
+    private static string? Es(string key) =>
+        optimizerDuck.Resources.Languages.Translations.ResourceManager.GetString(key, Spanish);
+
+    public static TheoryData<string> Keys()
+    {
+        var keys = new TheoryData<string>();
+        foreach (var rule in DiagnosticRules.All)
+        {
+            keys.Add($"Diagnostic.Rule.{rule.RuleId}.Title");
+            keys.Add($"Diagnostic.Rule.{rule.RuleId}.Description");
+        }
+        foreach (var action in ActionCatalog.All.Values)
+            keys.Add(action.TitleKey);
+        foreach (var reason in Enum.GetValues<NotMeasuredReason>())
+            keys.Add($"Diagnostic.Reason.{reason}");
+        foreach (var severity in Enum.GetValues<Severity>())
+            keys.Add($"Diagnostic.Severity.{severity}");
+        return keys;
+    }
+
+    [Theory]
+    [MemberData(nameof(Keys))]
+    public void Key_HasSpanishText(string key)
+    {
+        Assert.False(string.IsNullOrWhiteSpace(Es(key)), key);
+    }
+}
