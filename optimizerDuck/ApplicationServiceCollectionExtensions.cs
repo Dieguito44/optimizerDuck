@@ -122,6 +122,8 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<DiskBenchmark>();
         services.AddSingleton<MeasurementService>();
         services.AddSingleton<SessionStore>();
+        services.AddSingleton<optimizerDuck.Services.Ai.ApiKeyStore>();
+        services.AddSingleton<optimizerDuck.Services.Ai.AiReportService>();
         services.AddSingleton<PdfReportService>();
 
         // Zentra Windows repair (phase 4).
