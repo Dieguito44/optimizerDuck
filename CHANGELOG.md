@@ -4,6 +4,35 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Fase 3: medición antes/después y PDF (19/11/2026)
+
+**Qué hace**
+- Página **Sesión** (debajo de Diagnóstico) con tres pasos: medir antes, medir después y generar el PDF para el cliente. El nombre del cliente es opcional, se guarda solo en el PC del técnico y nunca va a la IA.
+- Cada medición corre el diagnóstico completo y mide:
+  - **Arranque:** mediana de los últimos 3. Usa el evento 100 de Diagnostics-Performance y, si Windows no lo registra, el plan B: del arranque del kernel (evento 12) al inicio de sesión (Winlogon 7001). También lee los culpables de los eventos 101 a 110 cuando existen.
+  - **RAM en reposo:** promedio de 60 s, tomado al menos 5 minutos después de que arrancó el escritorio.
+  - Espacio libre en C:, apps de inicio activas, procesos y servicios activos.
+  - **Disco con DiskSpd:** lectura secuencial y aleatoria de 15 s cada una, sin caché y solo lectura. Crea un archivo de prueba de 1 GB y lo borra.
+  - Si el inicio rápido está activo, para comparar siempre en el mismo modo.
+- Las sesiones se guardan en `%LocalAppData%\Zentra\Sessions\<fecha>_<id>\` (`session.json` y el PDF).
+- **PDF (QuestPDF, fuente Lato incluida):**
+  - Puntaje antes y después, y tabla de métricas con el cambio en verde o rojo.
+  - Lo que encontramos, lo que hicimos (desde el historial de optimizaciones), lo pendiente para el cliente (BIOS, hardware y manual), lo que hace lento el arranque, lo que no se pudo medir y notas.
+  - Si falla, no deja un PDF a medias.
+- **Regla nueva R-BOOT-SLOW:** arranque de más de 60 s (Media), con la acción ACT-STARTUP-REVIEW.
+- **Apagados inesperados:** el pendiente dice "Revisar la estabilidad del perfil XMP/EXPO", no "Activar XMP", porque el plan lo pide como revisión.
+
+**DiskSpd**
+- El binario oficial de Microsoft tiene un EULA que no permite redistribuirlo. Zentra lo compila desde el código MIT (commit 5e7025b, DISKSPD 2.3) y lo incluye en `Tools\diskspd.exe` (ver `Resources/Tools/DiskSpd/BUILD.txt`).
+
+**Arreglos**
+- 65 textos en español tenían las tildes corruptas ("DiagnÃ³stico") por los scripts de traducción de las fases 1 y 2. Están reparados y hay un test que lo evita.
+
+**Resultado en el PC de Diego** (19/11/2026)
+- Arranque 5,6 s (del kernel al inicio de sesión: el evento 100 no se registra en esta build), RAM en reposo 11,0 GB (69,9 %, con apps de trabajo abiertas), 2 apps de inicio, 243 procesos, 113 servicios.
+- Crucial P3: lectura secuencial 3.517 MB/s y aleatoria 4K 178.720 IOPS.
+- PDF generado: puntaje 51 con los 4 hallazgos de la Fase 2.
+
 ### Fase 2: diagnóstico (19/11/2026)
 
 **Qué hace**
