@@ -164,7 +164,6 @@ public static class ActionCatalog
     /// </summary>
     public static readonly FrozenSet<string> PendingRuleActions = new[]
     {
-        ActionIds.RepairWindows,
         ActionIds.MonitorHz,
         ActionIds.MonitorCable,
         ActionIds.GpuPreference,
@@ -196,6 +195,7 @@ public static class RuleIds
     public const string TrimOff = "R-TRIM-OFF";
     public const string StartupMany = "R-STARTUP-MANY";
     public const string BootSlow = "R-BOOT-SLOW";
+    public const string WinCorrupt = "R-WIN-CORRUPT";
     public const string TcpAutoTune = "R-TCP-AUTOTUNE";
     public const string PowerSaver = "R-POWER-SAVER";
     public const string DriverGpuOld = "R-DRIVER-GPU-OLD";

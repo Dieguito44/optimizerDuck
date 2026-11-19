@@ -90,6 +90,9 @@ public sealed record DiagnosticSnapshot
 
     /// <summary>Median of the last 3 boots in milliseconds (see BootTimeProbe).</summary>
     public Measured<int> BootMedianMs { get; init; }
+
+    /// <summary>Component store state (DISM CheckHealth, read-only and fast).</summary>
+    public Measured<Services.Repair.WindowsImageHealth> ImageHealth { get; init; }
 }
 
 public sealed record OsSnapshot
