@@ -130,7 +130,7 @@ public class DiskBenchmarkTests
 
 public class SessionPersistenceTests
 {
-    private static Measurement Before() =>
+    internal static Measurement Before() =>
         new()
         {
             Phase = MeasurementPhase.Before,
@@ -281,6 +281,23 @@ public class SessionPersistenceTests
                 new CultureInfo("es-ES")
             );
             QuestPDF.Settings.ThrowOnMissingTextGlyphs = true;
+            // The written report (phase 5) goes in too, with the characters the AI may use.
+            var payload = optimizerDuck.Services.Ai.AiPayloadBuilder.Build(
+                session,
+                SessionReportModel.Build(session, [], _ => null, Now, new CultureInfo("es-CO"))
+            );
+            session = session with
+            {
+                Report = new optimizerDuck.Services.Ai.AiReportRecord
+                {
+                    Source = optimizerDuck.Services.Ai.ReportSource.Ai,
+                    Payload = payload,
+                    Report = optimizerDuck.Services.Ai.TemplateReportWriter.Write(payload) with
+                    {
+                        Warnings = ["¿Tildes? Sí: canción, “comillas”, ‘simples’ —guion— y… €."],
+                    },
+                },
+            };
             var model = SessionReportModel.Build(
                 session,
                 [],

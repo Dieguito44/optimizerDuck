@@ -40,6 +40,14 @@ public class ScopeBlockTextFormatter : ITextFormatter
 {
     public void Format(LogEvent logEvent, TextWriter output)
     {
+        // Render first, then redact: no log line may carry an API key, whatever wrote it.
+        using var buffer = new StringWriter();
+        FormatCore(logEvent, buffer);
+        output.Write(SecretRedactor.Redact(buffer.ToString()));
+    }
+
+    private static void FormatCore(LogEvent logEvent, TextWriter output)
+    {
         var timestamp = $"{logEvent.Timestamp:yyyy-MM-dd HH:mm:ss}";
         var ctx = logEvent.Properties.TryGetValue("SourceContext", out var sourceContext)
             ? sourceContext is ScalarValue { Value: string s }
@@ -293,24 +301,39 @@ public partial class App : Application
                 crashDir,
                 $"crash_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.log"
             );
-            File.WriteAllText(
-                crashFile,
-                $"""
-                [{category}] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}
-                Type: {ex.GetType().FullName}
-                Message: {ex.Message}
-                StackTrace:
-                {ex.StackTrace}
-
-                {(ex.InnerException is not null ? $"Inner: {ex.InnerException}" : "")}
-                """
-            );
+            File.WriteAllText(crashFile, CrashText(category, ex));
         }
         catch
         {
             // cannot do anything if crash logging itself fails
         }
     }
+
+    /// <summary>The crash file text, redacted so an exception can never write an API key to disk.</summary>
+    internal static string CrashText(string category, Exception ex) =>
+        SecretRedactor.Redact(
+            $"""
+            [{category}] {DateTime.Now:yyyy-MM-dd HH:mm:ss.fff}
+            Type: {ex.GetType().FullName}
+            Message: {ex.Message}
+            StackTrace:
+            {ex.StackTrace}
+
+            {(ex.InnerException is not null ? $"Inner: {ex.InnerException}" : "")}
+            """
+        );
+
+    /// <summary>The app's log configuration. Shared with the key-leak test so it checks the real one.</summary>
+    internal static LoggerConfiguration BuildLoggerConfiguration(string logPath) =>
+        new LoggerConfiguration()
+            .MinimumLevel.Verbose()
+            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+            .Enrich.FromLogContext()
+            .WriteTo.File(
+                new ScopeBlockTextFormatter(),
+                logPath,
+                rollingInterval: RollingInterval.Infinite
+            );
 
     private async Task OnStartupAsync(StartupEventArgs e)
     {
@@ -322,16 +345,7 @@ public partial class App : Application
         Directory.CreateDirectory(Shared.HistoryDirectory);
 
         var logPath = Path.Combine(Shared.RootDirectory, $"{Shared.AppName}.log");
-        Log.Logger = new LoggerConfiguration()
-            .MinimumLevel.Verbose()
-            .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
-            .Enrich.FromLogContext()
-            .WriteTo.File(
-                new ScopeBlockTextFormatter(),
-                logPath,
-                rollingInterval: RollingInterval.Infinite
-            )
-            .CreateLogger();
+        Log.Logger = BuildLoggerConfiguration(logPath).CreateLogger();
 
         _host = Microsoft
             .Extensions.Hosting.Host.CreateDefaultBuilder()
@@ -422,6 +436,8 @@ public partial class App : Application
         {
             if (_host != null)
             {
+                // The key lives only in memory; drop it before anything else on exit.
+                _host.Services.GetService<optimizerDuck.Services.Ai.ApiKeyStore>()?.Clear();
                 try
                 {
                     _host.StopAsync().Wait(TimeSpan.FromSeconds(2));

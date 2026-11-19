@@ -88,6 +88,92 @@
                     Style="{StaticResource CaptionTextStyle}"
                     Text="{ext:Loc Session.Steps.Help}" />
 
+                <!--  Report with AI (phase 5). The key is read from a plain WPF PasswordBox, never bound.  -->
+                <Border Style="{StaticResource CardSurfaceStyle}">
+                    <StackPanel>
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Session.Ai.Title}" />
+                        <ui:TextBlock
+                            Margin="0,2,0,8"
+                            Style="{StaticResource CaptionTextStyle}"
+                            Text="{ext:Loc Session.Ai.Help}"
+                            TextWrapping="Wrap" />
+                        <Grid ColumnDefinitions="*,Auto,Auto">
+                            <PasswordBox
+                                x:Name="KeyBox"
+                                MinHeight="32"
+                                VerticalContentAlignment="Center"
+                                IsEnabled="{Binding ViewModel.IsIdle}" />
+                            <ui:Button
+                                Grid.Column="1"
+                                Margin="8,0,0,0"
+                                Command="{Binding ViewModel.UseKeyCommand}"
+                                CommandParameter="{Binding ElementName=KeyBox}"
+                                Content="{ext:Loc Session.Ai.Button.UseKey}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon Key24}" />
+                            <ui:Button
+                                Grid.Column="2"
+                                Margin="8,0,0,0"
+                                Command="{Binding ViewModel.ForgetKeyCommand}"
+                                Content="{ext:Loc Session.Ai.Button.Forget}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon Delete24}"
+                                Visibility="{Binding ViewModel.HasKey, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        </Grid>
+                        <CheckBox
+                            Margin="0,6,0,0"
+                            Content="{ext:Loc Session.Ai.Remember}"
+                            IsChecked="{Binding ViewModel.RememberKey}"
+                            Visibility="{Binding ViewModel.CanRememberKey, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <ui:TextBlock
+                            Margin="0,4,0,0"
+                            Style="{StaticResource CaptionTextStyle}"
+                            Text="{ext:Loc Session.Ai.RememberWarning}"
+                            TextWrapping="Wrap"
+                            Visibility="{Binding ViewModel.CanRememberKey, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <ui:TextBlock Margin="0,6,0,0" Text="{Binding ViewModel.KeyStatusText}" />
+                        <ui:TextBlock
+                            Foreground="#D13438"
+                            Text="{Binding ViewModel.KeyErrorText}"
+                            TextWrapping="Wrap" />
+                        <ui:Button
+                            Margin="0,10,0,0"
+                            Appearance="Primary"
+                            Command="{Binding ViewModel.WriteReportCommand}"
+                            Content="{ext:Loc Session.Ai.Button.Write}"
+                            Cursor="Hand"
+                            Icon="{ui:SymbolIcon Sparkle24}" />
+
+                        <!--  Preview of the written report  -->
+                        <StackPanel Margin="0,12,0,0" Visibility="{Binding ViewModel.HasWritten, Converter={StaticResource BooleanToVisibilityConverter}}">
+                            <ui:TextBlock Text="{Binding ViewModel.WrittenSummary}" TextWrapping="Wrap" />
+                            <ItemsControl Margin="0,8,0,0" ItemsSource="{Binding ViewModel.WrittenPriorities}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <StackPanel Margin="0,4">
+                                            <TextBlock
+                                                FontWeight="SemiBold"
+                                                Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                                TextWrapping="Wrap">
+                                                <Run Text="{Binding Number, Mode=OneWay}" /><Run Text=". " /><Run Text="{Binding Title, Mode=OneWay}" /><Run Text="   " /><Run Foreground="{DynamicResource TextFillColorSecondaryBrush}" Text="{Binding Who, Mode=OneWay}" />
+                                            </TextBlock>
+                                            <ui:TextBlock Margin="14,0,0,0" Text="{Binding Explanation}" TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ItemsControl ItemsSource="{Binding ViewModel.WrittenWarnings}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <ui:TextBlock Margin="0,2" Foreground="#C75000" Text="{Binding StringFormat='• {0}'}" TextWrapping="Wrap" />
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <ui:TextBlock Margin="0,6,0,0" Style="{StaticResource CaptionTextStyle}" Text="{Binding ViewModel.WrittenSource}" />
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
+
                 <!--  Progress  -->
                 <StackPanel Margin="0,0,0,12" Visibility="{Binding ViewModel.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <ui:ProgressRing Width="28" Height="28" HorizontalAlignment="Left" IsIndeterminate="True" />

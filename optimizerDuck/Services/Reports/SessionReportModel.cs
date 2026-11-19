@@ -36,6 +36,43 @@ public sealed record ReportFinding(
 /// <summary>An action Zentra applied during the session (from the optimizerDuck history).</summary>
 public sealed record AppliedAction(string Name, DateTime AppliedAt, int Changes);
 
+/// <summary>The written part of the report (AI or template), ready to print.</summary>
+public sealed record WrittenReport(
+    string Summary,
+    IReadOnlyList<WrittenPriority> Priorities,
+    IReadOnlyList<string> Warnings,
+    string Source
+)
+{
+    public static WrittenReport? From(Ai.AiReportRecord? record)
+    {
+        if (record is null)
+            return null;
+        var actions = record
+            .Payload.Findings.SelectMany(f => f.Actions)
+            .GroupBy(a => a.ActionId)
+            .ToDictionary(g => g.Key, g => g.First());
+        return new WrittenReport(
+            record.Report.Summary,
+            record
+                .Report.Priorities.OrderBy(p => p.Priority)
+                .Select(p =>
+                    actions.TryGetValue(p.ActionId, out var a)
+                        ? new WrittenPriority(p.Priority, a.Title, a.Who, p.Explanation)
+                        : null
+                )
+                .OfType<WrittenPriority>()
+                .ToList(),
+            record.Report.Warnings,
+            record.Source == Ai.ReportSource.Ai
+                ? Loc.Instance["Report.Written.Source.Ai"]
+                : Loc.Instance["Report.Written.Source.Template"]
+        );
+    }
+}
+
+public sealed record WrittenPriority(int Number, string Title, string Who, string Explanation);
+
 /// <summary>
 ///     Everything the PDF shows, already in the report language. Pure: built from a session and
 ///     the change history, no I/O, so it can be tested without drawing a PDF.
@@ -57,6 +94,7 @@ public sealed record SessionReportModel
 
     public required IReadOnlyList<string> Notes { get; init; }
     public IReadOnlyList<BootCulprit> BootCulprits { get; init; } = [];
+    public WrittenReport? Written { get; init; }
 
     public static SessionReportModel Build(
         ServiceSession session,
@@ -155,6 +193,7 @@ public sealed record SessionReportModel
             ClientPending = pending,
             Notes = notes,
             BootCulprits = (session.After ?? session.Before)?.BootCulprits ?? [],
+            Written = WrittenReport.From(session.Report),
         };
     }
 

@@ -6,15 +6,77 @@ using optimizerDuck.Common.Helpers;
 using optimizerDuck.Domain.Diagnostics;
 using optimizerDuck.Domain.Measurements;
 using optimizerDuck.Services.Diagnostics;
+using optimizerDuck.Services.System;
 
 namespace optimizerDuck.Services.Measurements;
+
+/// <summary>
+///     The anonymous hardware lines the AI report may mention: models and sizes only, read from
+///     the snapshot. No serials, names, paths or disk numbers.
+/// </summary>
+public sealed record HardwareSummary(
+    string? Os,
+    int? Build,
+    string? Cpu,
+    int? Cores,
+    int? Threads,
+    double? RamGb,
+    string? RamType,
+    int? RamMts,
+    IReadOnlyList<string> Gpus,
+    string? Board,
+    string? SystemDiskKind
+)
+{
+    public static HardwareSummary From(DiagnosticSnapshot s)
+    {
+        string? Text(Measured<string> m) => m.TryGet(out var v) ? v.Trim() : null;
+        int? Int(Measured<int> m) => m.TryGet(out var v) ? v : null;
+
+        var speeds = s
+            .Ram.Modules.Select(m => m.ConfiguredMTps)
+            .Where(m => m.HasValue)
+            .Select(m => m.ValueOrDefault)
+            .ToList();
+        var board = string.Join(
+                ' ',
+                new[] { Text(s.Board.Manufacturer), Text(s.Board.Product) }.Where(t =>
+                    t is not null
+                )
+            )
+            .Trim();
+
+        return new HardwareSummary(
+            Text(s.Os.Edition),
+            Int(s.Os.Build),
+            Text(s.Cpu.Model),
+            Int(s.Cpu.Cores),
+            Int(s.Cpu.Threads),
+            s.Ram.InstalledBytes.TryGet(out var bytes)
+                ? Math.Round(bytes / (1024d * 1024 * 1024), 1)
+                : null,
+            s.Ram.Type == MemoryType.Unknown ? null : s.Ram.Type.ToString().ToUpperInvariant(),
+            speeds.Count > 0 ? speeds.Min() : null,
+            s.Gpus.Select(g => Text(g.Model)).OfType<string>().Distinct().ToList(),
+            board.Length > 0 ? board : null,
+            s.SystemVolume.Kind switch
+            {
+                StorageMediaType.Nvme => "NVMe",
+                StorageMediaType.Ssd => "SSD",
+                StorageMediaType.Hdd => "HDD",
+                _ => null,
+            }
+        );
+    }
+}
 
 /// <summary>The diagnosis part a session keeps: score and findings, not the raw snapshot.</summary>
 public sealed record DiagnosisSummary(
     DateTimeOffset CapturedAtUtc,
     ScoreBreakdown Score,
     IReadOnlyList<Finding> Findings,
-    IReadOnlyList<RuleResult> NotMeasurable
+    IReadOnlyList<RuleResult> NotMeasurable,
+    HardwareSummary? Hardware = null
 )
 {
     public static DiagnosisSummary From(DiagnosticReport report) =>
@@ -22,7 +84,8 @@ public sealed record DiagnosisSummary(
             report.Snapshot.CapturedAtUtc,
             report.Score,
             report.Findings.ToList(),
-            report.Results.Where(r => r.Outcome == RuleOutcome.NotMeasurable).ToList()
+            report.Results.Where(r => r.Outcome == RuleOutcome.NotMeasurable).ToList(),
+            HardwareSummary.From(report.Snapshot)
         );
 }
 
@@ -39,6 +102,9 @@ public sealed record ServiceSession
     public DiagnosisSummary? DiagnosisAfter { get; init; }
     public Measurement? Before { get; init; }
     public Measurement? After { get; init; }
+
+    /// <summary>The written report (AI or template), with exactly what was sent to produce it.</summary>
+    public Ai.AiReportRecord? Report { get; init; }
 }
 
 /// <summary>Saves sessions as JSON under %LocalAppData%\Zentra\Sessions\.</summary>

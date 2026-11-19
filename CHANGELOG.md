@@ -4,6 +4,58 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Fase 5: informe con IA desde la app (19/11/2026)
+
+**Qué hace**
+- Tarjeta **Informe con IA** en la página Sesión: se pega la clave de la API de Claude, se pulsa "Redactar informe" y se ve el texto antes de generar el PDF.
+- El PDF empieza con **Resumen** y **Qué hacer, en orden** (cada acción dice quién la hace: Zentra, el técnico, la BIOS o una pieza nueva), las advertencias y una nota de quién redactó el texto.
+- Sin clave, sin internet o con cualquier error de la API, el texto lo escribe la plantilla de Zentra con los mismos datos. Todo PDF lleva texto escrito.
+
+**La clave**
+- En el PC del cliente vive solo en memoria y se borra al cerrar Zentra. Se lee de un cuadro de contraseña sin enlace de datos, el cuadro se limpia al usarla y el portapapeles se vacía al pegarla.
+- "Recordar en este equipo" (cifrada con DPAPI para el usuario de Windows) solo aparece si Zentra se abre con `--equipo-tecnico`. Si se abre sin ese argumento, la copia recordada se borra.
+- Nunca se escribe en logs, `session.json`, el PDF ni la configuración: los logs y los crash logs tapan cualquier `sk-ant-…` por si acaso. Si la API responde que la clave no sirve, se borra de la memoria.
+- Rechaza claves de administrador y claves con espacios o saltos de línea.
+
+**Lo que se envía** (sección 8.1 del plan, con lista blanca de campos)
+- Equipo (modelos y tamaños), puntaje antes y después, mediciones con su diferencia, hallazgos con su evidencia y sus acciones, lo que no se pudo medir y lo que se aplicó. Son los mismos textos en español del PDF.
+- Nunca: el nombre del cliente, fechas, el id de la sesión, los programas que retrasan el arranque ni números de disco. Lo enviado queda guardado en `session.json` junto al texto.
+
+**La llamada**
+- `POST /v1/messages` con `HttpClient`, modelo `claude-sonnet-5-5`, versión `2026-10-21`, 60 s, sin proxy.
+- El formato de la sección 8.2 se fuerza con *structured outputs* (`output_config.format` con esquema JSON). `action_id` es una lista cerrada con solo las acciones de los hallazgos de ese PC.
+- Máximo 2 llamadas por informe: si la revisión rechaza la primera respuesta, se reintenta una vez con los motivos; si vuelve a fallar, plantilla.
+
+**La revisión automática del texto**
+- Cada acción debe estar en el catálogo y en los hallazgos; prioridades 1, 2, 3… sin repetir.
+- Toda cifra del texto debe estar en los datos enviados (lee "6.100" y "41,0" en español e inglés). Las cifras pegadas a letras (DDR4, B450M) son nombres.
+- Rechaza enlaces, correos, lo de la lista negra (activadores, limpiadores de registro, desactivar Defender o Windows Update…), programas que el servicio no recomienda y emojis o flechas (la fuente del PDF no los tiene).
+
+**Cambios respecto al plan**
+- Se usan *structured outputs* en vez de `tool_choice` forzado: con Sonnet 5.5 un `tool_choice` forzado da error 400.
+- Sin `temperature` (en Sonnet 5.5 da error 400) y versión de API `2026-10-21` en vez de `2023-06-01`.
+- `max_tokens` 8000 en vez de 2000, para que la respuesta no llegue cortada.
+- La tarjeta va en la página Sesión, no en una `ReportPage` aparte.
+- La app pasa a `net10.0-windows10.0.17763.0` para poder borrar el historial del portapapeles (Win+V) al pegar la clave. Pesa 23 MB más.
+
+**Revisión de seguridad (consultor Fable)**
+- Sin hallazgos críticos ni altos. Se corrigieron los cuatro medios y dos bajos:
+  - Al pegar la clave también se borra el historial del portapapeles.
+  - Una respuesta con `null` cae a la plantilla en vez de lanzar excepción.
+  - La lista negra busca un verbo de apagar o quitar junto a algo protegido, sin tildes ni mayúsculas.
+  - Sin redirecciones automáticas, y un acceso denegado a la clave guardada no rompe la página.
+- Los demás bajos quedan anotados en el plan para la Fase 6.
+
+**Prueba real en el PC de Diego** (19/11/2026, con una clave exclusiva y límite de gasto)
+- La IA redactó el informe en la primera llamada: 3.295 tokens de entrada y 1.015 de salida, unos USD 0,017.
+- El texto pasó la revisión automática: 6 prioridades del catálogo y 5 advertencias, todo en español sencillo.
+- La clave no aparece en ninguno de los archivos de `%LocalAppData%\Zentra` (log, sesiones, PDF, configuración) y no se creó la carpeta `Secrets` (modo cliente).
+
+**Tests**
+- Centinela: con una clave real en forma, ocho escenarios (respuesta buena, rechazada, 401, 500, 429, basura y excepciones que llevan la petición completa) y la clave no aparece en el log, el crash log, `session.json` ni el PDF. Control positivo en UTF-8, UTF-16 y Base64.
+- El payload solo lleva campos de la lista blanca; solo cuatro clases tocan la clave.
+- Validador (con las frases que pasaron la primera versión), cliente HTTP con respuestas simuladas y nulls, y servicio con reintento y plantilla.
+
 ### Fase 4: reparación y almacenamiento (19/11/2026)
 
 **Reparar Windows** (página nueva)

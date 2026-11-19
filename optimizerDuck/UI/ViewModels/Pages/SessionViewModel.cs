@@ -4,7 +4,9 @@ using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using optimizerDuck.Common.Helpers;
 using optimizerDuck.Domain.Measurements;
+using optimizerDuck.Services.Ai;
 using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Diagnostics;
 using optimizerDuck.Services.Measurements;
@@ -21,6 +23,8 @@ public partial class SessionViewModel(
     MeasurementService measurementService,
     SessionStore sessionStore,
     PdfReportService pdfReportService,
+    AiReportService aiReportService,
+    ApiKeyStore apiKeyStore,
     TimeProvider timeProvider,
     ILogger<SessionViewModel> logger
 ) : ViewModel
@@ -36,6 +40,7 @@ public partial class SessionViewModel(
     [NotifyCanExecuteChangedFor(nameof(MeasureBeforeCommand))]
     [NotifyCanExecuteChangedFor(nameof(MeasureAfterCommand))]
     [NotifyCanExecuteChangedFor(nameof(GeneratePdfCommand))]
+    [NotifyCanExecuteChangedFor(nameof(WriteReportCommand))]
     [NotifyCanExecuteChangedFor(nameof(CancelCommand))]
     [NotifyCanExecuteChangedFor(nameof(NewSessionCommand))]
     private bool _isBusy;
@@ -84,8 +89,122 @@ public partial class SessionViewModel(
         ScoreBeforeText = ScoreAfterText = "—";
         Metrics.Clear();
         OnPropertyChanged(nameof(HasMetrics));
+        ShowWritten(null);
         StatusText = string.Empty;
         RefreshCommands();
+    }
+
+    // ----- AI report (phase 5) -----------------------------------------------------------
+
+    [ObservableProperty]
+    private bool _rememberKey;
+
+    [ObservableProperty]
+    private string? _keyErrorText;
+
+    [ObservableProperty]
+    private string? _writtenSummary;
+
+    [ObservableProperty]
+    private string? _writtenSource;
+
+    public bool HasKey => apiKeyStore.HasKey;
+    public bool CanRememberKey => apiKeyStore.CanRemember;
+    public bool HasWritten => WrittenSummary is not null;
+
+    public string KeyStatusText =>
+        !apiKeyStore.HasKey ? Loc.Instance["Session.Ai.Key.None"]
+        : apiKeyStore.IsRemembered ? Loc.Instance["Session.Ai.Key.Remembered"]
+        : Loc.Instance["Session.Ai.Key.InMemory"];
+
+    public ObservableCollection<WrittenPriority> WrittenPriorities { get; } = [];
+    public ObservableCollection<string> WrittenWarnings { get; } = [];
+
+    /// <summary>
+    ///     Reads the key from the standard WPF PasswordBox (no binding: a bound password would sit
+    ///     in a string property) and clears the box right away.
+    /// </summary>
+    [RelayCommand]
+    private void UseKey(object? parameter)
+    {
+        if (parameter is not System.Windows.Controls.PasswordBox box)
+            return;
+        var error = apiKeyStore.Set(box.Password, RememberKey);
+        box.Clear();
+        KeyErrorText = error is { } e ? Loc.Instance[$"Session.Ai.KeyError.{e}"] : null;
+        RefreshKey();
+    }
+
+    [RelayCommand]
+    private void ForgetKey()
+    {
+        apiKeyStore.Forget();
+        RememberKey = false;
+        KeyErrorText = null;
+        RefreshKey();
+    }
+
+    [RelayCommand(CanExecute = nameof(CanGeneratePdf))]
+    private async Task WriteReportAsync()
+    {
+        if (_session is null)
+            return;
+        IsBusy = true;
+        ErrorText = null;
+        try
+        {
+            await WriteReportCoreAsync();
+            sessionStore.Save(_session);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Report writing failed");
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private async Task WriteReportCoreAsync()
+    {
+        StatusText = Loc.Instance[
+            apiKeyStore.HasKey ? "Session.Ai.Writing" : "Session.Ai.WritingTemplate"
+        ];
+        var model = await pdfReportService.BuildModelAsync(_session!);
+        var record = await Task.Run(() =>
+            aiReportService.WriteAsync(_session!, model, CancellationToken.None)
+        );
+        _session = _session! with { Report = record };
+        ShowWritten(record);
+        RefreshKey();
+        StatusText =
+            record.Source == ReportSource.Ai
+                ? Loc.Instance["Session.Ai.Done", record.InputTokens ?? 0, record.OutputTokens ?? 0]
+                : Loc.Instance[
+                    $"Session.Ai.Template.{record.TemplateReason ?? TemplateReason.NoKey}"
+                ];
+    }
+
+    private void ShowWritten(AiReportRecord? record)
+    {
+        var written = WrittenReport.From(record);
+        WrittenSummary = written?.Summary;
+        WrittenSource = written?.Source;
+        WrittenPriorities.Clear();
+        WrittenWarnings.Clear();
+        foreach (var p in written?.Priorities ?? [])
+            WrittenPriorities.Add(p);
+        foreach (var w in written?.Warnings ?? [])
+            WrittenWarnings.Add(w);
+        OnPropertyChanged(nameof(HasWritten));
+    }
+
+    private void RefreshKey()
+    {
+        OnPropertyChanged(nameof(HasKey));
+        OnPropertyChanged(nameof(KeyStatusText));
     }
 
     [RelayCommand(CanExecute = nameof(CanGeneratePdf))]
@@ -99,6 +218,10 @@ public partial class SessionViewModel(
         try
         {
             _session = _session with { ClientLabel = ClientLabel };
+            // Every PDF carries a written report: the AI's when there is a key, the template's if not.
+            if (_session.Report is null)
+                await WriteReportCoreAsync();
+            StatusText = Loc.Instance["Session.Step.Pdf"];
             sessionStore.Save(_session);
             LastPdfPath = await pdfReportService.GenerateAsync(_session);
             StatusText = Loc.Instance["Session.Pdf.Saved", LastPdfPath];
@@ -107,7 +230,7 @@ public partial class SessionViewModel(
         catch (Exception ex)
         {
             logger.LogError(ex, "PDF generation failed");
-            ErrorText = Loc.Instance["Session.Error", ex.Message];
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
         }
         finally
         {
@@ -163,6 +286,12 @@ public partial class SessionViewModel(
                         DiagnosisAfter = summary,
                         ClientLabel = ClientLabel,
                     };
+            // A new measurement makes the written report stale.
+            _session = _session with
+            {
+                Report = null,
+            };
+            ShowWritten(null);
             sessionStore.Save(_session);
             ShowSession();
             StatusText = Loc.Instance["Session.Step.Done", 0];
@@ -174,7 +303,7 @@ public partial class SessionViewModel(
         catch (Exception ex)
         {
             logger.LogError(ex, "Measurement {Phase} failed", phase);
-            ErrorText = Loc.Instance["Session.Error", ex.Message];
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
         }
         finally
         {
@@ -207,5 +336,6 @@ public partial class SessionViewModel(
     {
         MeasureAfterCommand.NotifyCanExecuteChanged();
         GeneratePdfCommand.NotifyCanExecuteChanged();
+        WriteReportCommand.NotifyCanExecuteChanged();
     }
 }
