@@ -40,7 +40,7 @@ public partial class AppXPackage : LocalizedObject
 
     public required string InstallLocation { get; init; }
 
-    public AppRisk Risk { get; init; }
+    public AppRisk Risk { get; set; }
 
     public RiskVisual RiskVisual =>
         Risk switch

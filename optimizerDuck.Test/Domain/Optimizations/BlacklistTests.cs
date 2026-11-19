@@ -356,7 +356,7 @@ public class BlacklistTests
     [InlineData("Microsoft.UI.Xaml.2.8")]
     [InlineData("Microsoft.NET.Native.Framework.2.2")]
     [InlineData("Microsoft.WindowsCalculator")]
-    [InlineData("Microsoft.WindowsPhotos")]
+    [InlineData("Microsoft.Windows.Photos")]
     [InlineData("microsoft.microsoftedge.stable")]
     public void IsProtectedApp_BlocksPackagesThatAreNeverRemoved(string packageName)
     {

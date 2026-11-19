@@ -4091,4 +4091,7 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="Session.Step.Report" xml:space="preserve">
     <value>Client report</value>
   </data>
+  <data name="ScheduledTasks.Protected" xml:space="preserve">
+    <value>Not changed: {0} keeps Windows updated, protected or recoverable (Windows Update, Defender, restore points or BitLocker). Zentra never disables, deletes or replaces it.</value>
+  </data>
 </root>
