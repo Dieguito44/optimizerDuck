@@ -4,6 +4,30 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 3A: presets y línea de comandos (19/11/2026, PR 13, sobre el PR 12)
+
+Primer bloque de la Fase 3 (estandarizar el servicio). La guía está en `docs/PRESETS-Y-CLI.md`.
+
+- **Presets en JSON (F3-01):** cada preset tiene nombre, versión, los ajustes por GUID, apps exactas y fragmentos de nombre. El Servicio estándar es el preset incluido.
+  - En Sesión: "Importar preset", "Exportar preset" y "Volver al Servicio estándar". La confirmación nombra el preset.
+  - Al importar, Zentra valida el archivo y nombra cada problema:
+    - campos desconocidos o GUID que no existen;
+    - ajustes o apps repetidos;
+    - ajustes Experto sin `allowRisky`;
+    - apps protegidas;
+    - fragmentos de menos de 6 letras;
+    - archivos de más de 256 KB.
+  - Las apps protegidas nunca se quitan.
+- **Línea de comandos (F3-02):** por ejemplo, `Zentra.exe --preset estandar --diagnose --report <carpeta> --client <nombre> [--silent] [--keep-apps] [--allow-risky]`.
+  - **Mismo orden que la página Sesión:** valida, previsualiza, confirma (salvo con `--silent`), crea el punto de restauración, mide antes, aplica, mide después y escribe el informe.
+  - **Sin punto de restauración no aplica nada.**
+  - **Ajustes Experto:** necesitan `allowRisky` en el preset y además `--allow-risky`.
+  - **Códigos de salida fijos:** 0, 1–6 y 10.
+  - **Salida:** va a la consola que lo abrió, o al archivo o tubería si está redirigida. También queda en `zentra-cli.txt`.
+  - La sesión guarda el nombre del preset aplicado.
+- **Tests:** 1558 en total, 0 fallos. Cubren la ida y vuelta del preset, cada rechazo, el orden de los pasos del CLI, la cancelación, el punto de restauración fallido y el resultado parcial.
+- **Sin probar en el PC real:** el CLI y los botones de presets en pantalla.
+
 ### Mejoras, Fase 2D: pruebas y datos (19/11/2026, PR 12, sobre el PR 11)
 
 Cierra la Fase 2 del plan de mejoras.

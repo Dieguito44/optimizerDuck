@@ -141,6 +141,11 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<optimizerDuck.UI.ViewModels.Pages.ServiceProfileViewModel>();
         services.AddSingleton<optimizerDuck.UI.ViewModels.Pages.GameModeViewModel>();
         services.AddSingleton<PdfReportService>();
+        // Plan of improvements F3-02: Zentra.exe without its window.
+        services.AddSingleton<
+            optimizerDuck.Services.Cli.ICliHost,
+            optimizerDuck.Services.Cli.CliHost
+        >();
 
         // Zentra Windows repair (phase 4).
         services.AddSingleton<RepairService>();

@@ -1,0 +1,271 @@
+using System.IO;
+using System.Text;
+using Microsoft.Extensions.Logging;
+using optimizerDuck.Common.Helpers;
+using optimizerDuck.Domain.Execution;
+using optimizerDuck.Domain.Measurements;
+using optimizerDuck.Domain.UI;
+using optimizerDuck.Services.Configuration;
+using optimizerDuck.Services.Measurements;
+using optimizerDuck.Services.Optimization;
+using optimizerDuck.Services.Profiles;
+using optimizerDuck.UI.ViewModels.Pages;
+
+namespace optimizerDuck.Services.Cli;
+
+/// <summary>What the CLI needs from the machine, so the order of the steps can be tested.</summary>
+public interface ICliHost
+{
+    bool IsElevated { get; }
+    DateTimeOffset Now { get; }
+
+    /// <summary>The confirmation window (not with --silent). True = apply.</summary>
+    Task<bool> ConfirmAsync(
+        ServicePreset preset,
+        IReadOnlyList<PlannedChange> changes,
+        IReadOnlyList<string> apps
+    );
+
+    Task<RestorePointResult> CreateRestorePointAsync();
+
+    /// <summary>The same measurement and diagnosis as "Medir antes" and "Medir después".</summary>
+    Task<(Measurement Measurement, DiagnosisSummary Diagnosis)> MeasureAsync(
+        MeasurementPhase phase,
+        IProgress<string> progress,
+        CancellationToken ct
+    );
+
+    /// <summary>Saves session.json (and the PDF when there is a "before"); copies them and the transcript to the folder.</summary>
+    Task<IReadOnlyList<string>> WriteReportAsync(
+        ServiceSession session,
+        string? reportDirectory,
+        string transcript,
+        CancellationToken ct
+    );
+}
+
+/// <summary>
+///     Plan of improvements F3-02: Zentra without its window. The order is the one the Session page
+///     follows, with the same guards: the preset is validated and previewed first, the technician
+///     confirms (unless --silent), and nothing is applied without a restore point.
+/// </summary>
+public sealed class CliRunner(
+    ServiceProfileRunner runner,
+    ICliHost host,
+    TextWriter output,
+    ILogger<CliRunner> logger
+)
+{
+    private readonly StringBuilder _transcript = new();
+
+    public async Task<CliExitCode> RunAsync(CliOptions options, CancellationToken ct)
+    {
+        try
+        {
+            return await RunCoreAsync(options, ct).ConfigureAwait(false);
+        }
+        catch (OperationCanceledException)
+        {
+            Say(Loc.Instance["Cli.Cancelled"]);
+            return CliExitCode.Cancelled;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "CLI run failed");
+            Say(Loc.Instance["Cli.Failed", SecretRedactor.Redact(ex.Message)]);
+            return CliExitCode.Failed;
+        }
+    }
+
+    private async Task<CliExitCode> RunCoreAsync(CliOptions options, CancellationToken ct)
+    {
+        if (options.Help)
+        {
+            Say(Loc.Instance["Cli.Help"]);
+            return CliExitCode.Ok;
+        }
+        if (!host.IsElevated)
+        {
+            Say(Loc.Instance["Cli.NotElevated"]);
+            return CliExitCode.NotElevated;
+        }
+
+        ServicePreset? preset = null;
+        if (options.PresetPath is not null)
+        {
+            preset = await LoadPresetAsync(options);
+            if (preset is null)
+                return CliExitCode.InvalidPreset;
+        }
+
+        var session = new ServiceSession
+        {
+            CreatedAtUtc = host.Now,
+            ClientLabel = options.Client,
+            PresetName = preset?.Name,
+        };
+
+        if (preset is not null)
+        {
+            Say(Loc.Instance["Cli.Preset", preset.Name]);
+            var changes = (await runner.PreviewAsync(preset, ct))
+                .Where(c => !c.IsAlreadyThere)
+                .ToList();
+            var apps = options.KeepApps
+                ? []
+                : (await runner.AppsToRemoveAsync(preset)).Select(a => a.Name).ToList();
+
+            Say(Loc.Instance["Cli.Preview", changes.Count, apps.Count]);
+            foreach (var group in changes.GroupBy(c => c.Setting))
+            {
+                Say(group.Key);
+                foreach (var change in group)
+                    Say(ServiceProfileViewModel.PreviewLine(change));
+            }
+            foreach (var app in apps)
+                Say(Loc.Instance["Cli.AppLine", app]);
+
+            if (!options.Silent && !await host.ConfirmAsync(preset, changes, apps))
+            {
+                Say(Loc.Instance["Cli.Cancelled"]);
+                return CliExitCode.Cancelled;
+            }
+
+            var restorePoint = await host.CreateRestorePointAsync();
+            if (
+                restorePoint
+                is not (RestorePointResult.Success or RestorePointResult.FrequencyLimitReached)
+            )
+            {
+                Say(Loc.Instance["Cli.RestorePointFailed"]);
+                return CliExitCode.RestorePointFailed;
+            }
+            Say(
+                restorePoint == RestorePointResult.Success
+                    ? Loc.Instance["Cli.RestorePoint"]
+                    : Loc.Instance["Profile.RestorePoint.Recent"]
+            );
+        }
+
+        if (options.Diagnose)
+            session = await MeasureAsync(session, MeasurementPhase.Before, ct);
+
+        ProfileRunResult? result = null;
+        if (preset is not null)
+        {
+            var progress = new SyncProgress<ProcessingProgress>(p => Say(p.Message));
+            result = await runner.ApplyAsync(preset, !options.KeepApps, progress, ct);
+            Say(
+                Loc.Instance[
+                    "Profile.Done.Applied",
+                    result.Count(ProfileStepOutcome.Applied),
+                    result.Count(ProfileStepOutcome.AlreadyOptimal)
+                        + result.Count(ProfileStepOutcome.AlreadyApplied),
+                    result.Count(ProfileStepOutcome.NotApplicable),
+                    result.Count(ProfileStepOutcome.Failed),
+                    result.AppsRemoved.Count
+                ]
+            );
+            foreach (var s in result.Settings.Where(s => s.Outcome == ProfileStepOutcome.Failed))
+                Say(Loc.Instance["Profile.Problem.Setting", s.Name]);
+            foreach (var name in result.AppsFailed)
+                Say(Loc.Instance["Profile.Problem.App", name]);
+
+            if (options.Diagnose)
+                session = await MeasureAsync(session, MeasurementPhase.After, ct);
+        }
+
+        var files = await host.WriteReportAsync(
+            session,
+            options.ReportDirectory,
+            _transcript.ToString(),
+            ct
+        );
+        foreach (var file in files)
+            Say(Loc.Instance["Cli.File", file]);
+
+        var partial =
+            result is not null
+            && (result.Count(ProfileStepOutcome.Failed) > 0 || result.AppsFailed.Count > 0);
+        Say(partial ? Loc.Instance["Cli.DonePartial"] : Loc.Instance["Cli.Done"]);
+        return partial ? CliExitCode.Partial : CliExitCode.Ok;
+    }
+
+    private async Task<ServicePreset?> LoadPresetAsync(CliOptions options)
+    {
+        ServicePreset preset;
+        if (options.UsesStandardPreset)
+            preset = ServicePreset.Standard;
+        else
+        {
+            var path = options.PresetPath!;
+            if (!File.Exists(path))
+            {
+                Say(Loc.Instance["Cli.PresetMissing", path]);
+                return null;
+            }
+            var loaded = ServicePresetFile.Load(path, await runner.CatalogAsync());
+            if (!loaded.IsValid)
+            {
+                Say(Loc.Instance["Preset.Invalid", Path.GetFileName(path)]);
+                foreach (var problem in loaded.Problems)
+                    Say("  " + ServiceProfileViewModel.ProblemText(problem));
+                return null;
+            }
+            preset = loaded.Preset!;
+        }
+
+        // Two keys for Experto settings: allowRisky in the file and --allow-risky on the command line.
+        var risky = (await runner.SettingsAsync(preset))
+            .Where(o => o.Risk == OptimizationRisk.Risky)
+            .ToList();
+        if (risky.Count > 0 && !options.AllowRisky)
+        {
+            Say(Loc.Instance["Cli.RiskyNeedsFlag", string.Join(", ", risky.Select(o => o.Name))]);
+            return null;
+        }
+        return preset;
+    }
+
+    private async Task<ServiceSession> MeasureAsync(
+        ServiceSession session,
+        MeasurementPhase phase,
+        CancellationToken ct
+    )
+    {
+        Say(
+            Loc.Instance[
+                phase == MeasurementPhase.Before ? "Cli.MeasureBefore" : "Cli.MeasureAfter"
+            ]
+        );
+        var (measurement, diagnosis) = await host.MeasureAsync(
+            phase,
+            new SyncProgress<string>(Say),
+            ct
+        );
+        Say(Loc.Instance["Cli.Score", diagnosis.Score.Score]);
+        return phase == MeasurementPhase.Before
+            ? session with
+            {
+                Before = measurement,
+                DiagnosisBefore = diagnosis,
+            }
+            : session with
+            {
+                After = measurement,
+                DiagnosisAfter = diagnosis,
+            };
+    }
+
+    private void Say(string line)
+    {
+        output.WriteLine(line);
+        _transcript.AppendLine(line);
+    }
+
+    /// <summary>Reports on the caller's thread, so the output keeps its order.</summary>
+    private sealed class SyncProgress<T>(Action<T> report) : IProgress<T>
+    {
+        public void Report(T value) => report(value);
+    }
+}

@@ -6073,4 +6073,78 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   <data name="Preset.Problem.Empty" xml:space="preserve">
     <value>El preset no tiene ajustes ni apps.</value>
   </data>
+  <data name="Cli.Help" xml:space="preserve">
+    <value>Zentra en línea de comandos (como administrador):
+  Zentra.exe --diagnose [--report &lt;carpeta&gt;] [--client &lt;nombre&gt;]
+  Zentra.exe --preset &lt;archivo.json|estandar&gt; [--diagnose] [--report &lt;carpeta&gt;] [--client &lt;nombre&gt;] [--silent] [--keep-apps] [--allow-risky]
+
+  --diagnose     Mide y diagnostica. Con --preset: antes y después.
+  --preset       Aplica un preset. Siempre con vista previa y punto de restauración.
+  --report       Copia session.json, el PDF y zentra-cli.txt a esa carpeta.
+  --client       Nombre del cliente para el informe.
+  --silent       No pide confirmación.
+  --keep-apps    No quita las apps del preset.
+  --allow-risky  Permite ajustes de nivel Experto, si el preset también los permite.
+
+Códigos de salida: 0 listo, 1 argumentos, 2 preset no válido, 3 sin administrador,
+4 sin punto de restauración, 5 con fallos, 6 cancelado, 10 error inesperado.
+En PowerShell, para esperar a que termine: Start-Process Zentra.exe -ArgumentList &apos;--diagnose&apos; -Wait -PassThru</value>
+  </data>
+  <data name="Cli.BadArguments" xml:space="preserve">
+    <value>Argumentos no válidos: {0}</value>
+  </data>
+  <data name="Cli.NotElevated" xml:space="preserve">
+    <value>Zentra debe correr como administrador. No se cambió nada.</value>
+  </data>
+  <data name="Cli.Cancelled" xml:space="preserve">
+    <value>Cancelado. No se aplicó nada.</value>
+  </data>
+  <data name="Cli.Failed" xml:space="preserve">
+    <value>Error inesperado: {0}. El registro de Zentra tiene el detalle.</value>
+  </data>
+  <data name="Cli.Preset" xml:space="preserve">
+    <value>Preset: {0}</value>
+  </data>
+  <data name="Cli.Preview" xml:space="preserve">
+    <value>Vista previa: cambiarían {0} valores y se quitarían {1} apps.</value>
+  </data>
+  <data name="Cli.AppLine" xml:space="preserve">
+    <value>   App · {0}: se quita</value>
+  </data>
+  <data name="Cli.RestorePoint" xml:space="preserve">
+    <value>Punto de restauración creado.</value>
+  </data>
+  <data name="Cli.RestorePointFailed" xml:space="preserve">
+    <value>No se pudo crear el punto de restauración. No se aplicó nada.</value>
+  </data>
+  <data name="Cli.PresetMissing" xml:space="preserve">
+    <value>No existe el archivo de preset: {0}</value>
+  </data>
+  <data name="Cli.RiskyNeedsFlag" xml:space="preserve">
+    <value>El preset tiene ajustes de nivel Experto ({0}). Solo se aplican con --allow-risky.</value>
+  </data>
+  <data name="Cli.MeasureBefore" xml:space="preserve">
+    <value>Midiendo antes (unos minutos)...</value>
+  </data>
+  <data name="Cli.MeasureAfter" xml:space="preserve">
+    <value>Midiendo después (unos minutos)...</value>
+  </data>
+  <data name="Cli.Score" xml:space="preserve">
+    <value>Puntaje: {0}</value>
+  </data>
+  <data name="Cli.File" xml:space="preserve">
+    <value>Archivo: {0}</value>
+  </data>
+  <data name="Cli.Done" xml:space="preserve">
+    <value>Listo.</value>
+  </data>
+  <data name="Cli.DonePartial" xml:space="preserve">
+    <value>Terminado con problemas: revisa los ajustes y las apps que fallaron.</value>
+  </data>
+  <data name="Cli.Confirm.Message" xml:space="preserve">
+    <value>Aplicar el preset &quot;{0}&quot; en este PC: cambiarían {1} valores y se quitarían {2} apps. Antes se crea un punto de restauración. ¿Aplicar?</value>
+  </data>
+  <data name="Cli.Confirm.More" xml:space="preserve">
+    <value>... y {0} más (la lista completa está en la salida).</value>
+  </data>
 </root>

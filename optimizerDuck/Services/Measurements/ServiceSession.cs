@@ -103,6 +103,9 @@ public sealed record ServiceSession
     public Measurement? Before { get; init; }
     public Measurement? After { get; init; }
 
+    /// <summary>The preset applied in this session, when there was one (plan F3-01 and F3-02).</summary>
+    public string? PresetName { get; init; }
+
     /// <summary>The written report (AI or template), with exactly what was sent to produce it.</summary>
     public Ai.AiReportRecord? Report { get; init; }
 }
