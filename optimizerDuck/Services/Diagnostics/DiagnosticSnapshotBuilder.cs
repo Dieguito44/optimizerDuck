@@ -245,11 +245,25 @@ public static class DiagnosticSnapshotBuilder
                     (row.ReadErrorsUncorrected ?? 0) + (row.WriteErrorsUncorrected ?? 0)
                 );
 
+        var kind = MapMediaType(row.MediaType, row.BusType);
+
+        // NVMe drives report "Percentage Used" from their health log, so Windows' Wear is real.
+        // On SATA, Windows does not decode the vendor SMART attributes and reports 0 even on a
+        // worn drive: a 0 there means "unknown", not "new". Needs smartctl.
+        var wear = row.Wear switch
+        {
+            null => Measured<int>.Missing(reason),
+            0 when kind != StorageMediaType.Nvme => Measured<int>.Missing(
+                NotMeasuredReason.RequiresExternalTool
+            ),
+            { } value => Measured<int>.Of(value),
+        };
+
         return new DiskSnapshot
         {
             Number = row.Number,
             Model = Text(row.Model),
-            Kind = MapMediaType(row.MediaType, row.BusType),
+            Kind = kind,
             Bus = MapBus(row.BusType),
             SizeBytes = Measured.FromNullable(row.SizeBytes),
             IsSystem = systemDisk.TryGet(out var system) && system == row.Number,
@@ -260,7 +274,7 @@ public static class DiagnosticSnapshotBuilder
                 2 => Measured<DiskHealth>.Of(DiskHealth.Unhealthy),
                 _ => Measured<DiskHealth>.Missing(NotMeasuredReason.NotReported),
             },
-            WearPercent = Measured.FromNullable(row.Wear, reason),
+            WearPercent = wear,
             UncorrectedErrors = errors,
             PowerOnHours = Measured.FromNullable(row.PowerOnHours, reason),
             TemperatureC = row.TemperatureC is > 0

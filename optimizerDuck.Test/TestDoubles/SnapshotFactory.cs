@@ -41,7 +41,8 @@ public static class SnapshotFactory
         int? wear = 5,
         DiskHealth? health = DiskHealth.Healthy,
         long? errors = 0,
-        bool isSystem = false
+        bool isSystem = false,
+        NotMeasuredReason wearReason = NotMeasuredReason.AccessDenied
     ) =>
         new()
         {
@@ -54,7 +55,7 @@ public static class SnapshotFactory
             Health = health is { } h
                 ? Measured<DiskHealth>.Of(h)
                 : Measured<DiskHealth>.Missing(NotMeasuredReason.NotReported),
-            WearPercent = Measured.FromNullable(wear, NotMeasuredReason.AccessDenied),
+            WearPercent = Measured.FromNullable(wear, wearReason),
             UncorrectedErrors = Measured.FromNullable(errors, NotMeasuredReason.AccessDenied),
             BytesWritten = Measured<long>.Missing(NotMeasuredReason.RequiresExternalTool),
         };
@@ -110,8 +111,17 @@ public static class SnapshotFactory
             IntegratedGraphicsOnly = Measured<bool>.Of(true),
             Disks =
             [
-                Disk(0, "KINGSTON SA400S37/480GB", StorageMediaType.Ssd, wear: 40),
-                Disk(1, "CT500P3PSSD8", StorageMediaType.Nvme, wear: 5, isSystem: true),
+                // Measured elevated on 2026-11-19: the A400 reports Wear 0 on SATA (unknown) and
+                // 1 uncorrected read error; the P3 reports Wear 0 (NVMe, real).
+                Disk(
+                    0,
+                    "KINGSTON SA400S37/480GB",
+                    StorageMediaType.Ssd,
+                    wear: null,
+                    errors: 1,
+                    wearReason: NotMeasuredReason.RequiresExternalTool
+                ),
+                Disk(1, "CT500P3PSSD8", StorageMediaType.Nvme, wear: 0, isSystem: true),
             ],
             SystemVolume = new SystemVolumeSnapshot
             {
@@ -126,7 +136,7 @@ public static class SnapshotFactory
                 TrimEnabled = Measured<bool>.Of(true),
                 PagefileAutomatic = Measured<bool>.Of(true),
                 StorageSenseEnabled = Measured<bool>.Of(true),
-                StartupAppsEnabled = Measured<int>.Of(9),
+                StartupAppsEnabled = Measured<int>.Of(8),
             },
             Stability = new StabilitySnapshot
             {

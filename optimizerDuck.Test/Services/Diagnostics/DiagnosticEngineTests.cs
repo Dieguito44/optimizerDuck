@@ -158,18 +158,18 @@ public class RuleEngineAndScoreTests
 public class DiegoPcGoldenTests
 {
     [Fact]
-    public void DiegoPc_FindsUmaInstabilityStartupAndVbs_Score70()
+    public void DiegoPc_FindsUmaDiskErrorsInstabilityAndVbs_Score51()
     {
         var report = DiagnosticReport.Create(DiegoPc(), Refs, DiagnosticRules.All);
 
         Assert.Equal(
-            [RuleIds.ApuUma, RuleIds.StartupMany, RuleIds.Unstable, RuleIds.VbsOn],
+            [RuleIds.ApuUma, RuleIds.SsdHealth, RuleIds.Unstable, RuleIds.VbsOn],
             report.Findings.Select(f => f.RuleId).Order()
         );
-        Assert.Equal(70, report.Score.Score);
+        Assert.Equal(51, report.Score.Score);
         Assert.Equal(0, report.Score.RulesNotMeasurable);
         Assert.Equal(
-            [("R-APU-UMA", 12), ("R-STARTUP-MANY", 6), ("R-UNSTABLE", 12), ("R-VBS-ON", 0)],
+            [("R-APU-UMA", 12), ("R-SSD-HEALTH", 25), ("R-UNSTABLE", 12), ("R-VBS-ON", 0)],
             report.Score.Deductions.Select(d => (d.RuleId, d.Points)).OrderBy(d => d.RuleId)
         );
     }
@@ -192,7 +192,7 @@ public class DiegoPcGoldenTests
 
         var report = DiagnosticReport.Create(slow, Refs, DiagnosticRules.All);
         Assert.Contains(report.Findings, f => f.RuleId == RuleIds.RamXmp);
-        Assert.Equal(58, report.Score.Score);
+        Assert.Equal(39, report.Score.Score);
     }
 }
 
@@ -375,6 +375,35 @@ public class SnapshotBuilderTests
         Assert.Equal("P10.10", board.BiosVersion.ValueOrDefault);
         Assert.Equal(new DateOnly(2024, 1, 24), board.BiosDate.ValueOrDefault);
         Assert.Equal("B450M-HDV R4.0", board.Product.ValueOrDefault);
+    }
+
+    [Fact]
+    public void Build_SataWearZeroIsUnknown_NvmeWearZeroIsReal()
+    {
+        // Measured on the development PC: the worn Kingston A400 (SATA) reports Wear = 0.
+        var probes = Probes() with
+        {
+            Disks =
+            [
+                Probes().Disks[0] with
+                {
+                    Wear = 0,
+                    ReadErrorsUncorrected = 1,
+                },
+                Probes().Disks[1] with
+                {
+                    Wear = 0,
+                },
+            ],
+        };
+
+        var disks = DiagnosticSnapshotBuilder.Build(Info(), probes, Now).Disks;
+
+        Assert.Equal(NotMeasuredReason.RequiresExternalTool, disks[0].WearPercent.Reason);
+        Assert.False(disks[0].WearPercent.HasValue);
+        Assert.Equal(1, disks[0].UncorrectedErrors.ValueOrDefault);
+        Assert.Equal(0, disks[1].WearPercent.ValueOrDefault);
+        Assert.True(disks[1].WearPercent.HasValue);
     }
 
     [Fact]

@@ -1,5 +1,6 @@
 using System.Diagnostics.Eventing.Reader;
 using System.IO;
+using System.Management;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using optimizerDuck.Domain.Diagnostics;
@@ -34,14 +35,16 @@ internal static partial class DiagnosticProbes
 
     public static StorageProbeResult ReadStorage()
     {
-        var disks = WmiHelper.Query(
-            "SELECT DeviceId, FriendlyName, MediaType, BusType, Size, HealthStatus FROM MSFT_PhysicalDisk",
+        // ObjectId is the class key: without it the objects have no path and the reliability
+        // counter (reachable only through the association, never by enumerating its class)
+        // cannot be read.
+        var rows = WmiHelper.Query(
+            "SELECT ObjectId, DeviceId, FriendlyName, MediaType, BusType, Size, HealthStatus FROM MSFT_PhysicalDisk",
             static items =>
                 items
-                    .Select(mo => new
+                    .Select(mo =>
                     {
-                        Id = WmiHelper.GetString(mo, "DeviceId"),
-                        Row = new DiskProbeRow
+                        var row = new DiskProbeRow
                         {
                             Number = int.TryParse(WmiHelper.GetString(mo, "DeviceId"), out var n)
                                 ? n
@@ -51,62 +54,63 @@ internal static partial class DiagnosticProbes
                             BusType = WmiHelper.GetInt(mo, "BusType"),
                             SizeBytes = WmiHelper.GetLong(mo, "Size"),
                             HealthStatus = WmiHelper.GetInt(mo, "HealthStatus"),
-                        },
+                        };
+                        return WithCounters(mo, row);
                     })
+                    .Where(r => r.Number >= 0)
+                    .OrderBy(r => r.Number)
                     .ToList(),
             StorageNamespace
         );
 
-        if (disks is null)
+        if (rows is null)
             return new StorageProbeResult(
                 [],
                 Measured<int>.Missing(DeniedOrFailed),
                 SectionStatus.Failed
             );
 
-        // The reliability counter shares DeviceId with its physical disk.
-        var counters = WmiHelper.Query(
-            "SELECT DeviceId, Wear, Temperature, PowerOnHours, ReadErrorsUncorrected, WriteErrorsUncorrected FROM MSFT_StorageReliabilityCounter",
-            static items =>
-                items
-                    .Select(mo => new
-                    {
-                        Id = WmiHelper.GetString(mo, "DeviceId"),
-                        Wear = WmiHelper.GetInt(mo, "Wear"),
-                        Temperature = WmiHelper.GetInt(mo, "Temperature"),
-                        PowerOnHours = WmiHelper.GetInt(mo, "PowerOnHours"),
-                        ReadErrors = WmiHelper.GetLong(mo, "ReadErrorsUncorrected"),
-                        WriteErrors = WmiHelper.GetLong(mo, "WriteErrorsUncorrected"),
-                    })
-                    .Where(c => c.Id is not null)
-                    .ToDictionary(c => c.Id!, StringComparer.OrdinalIgnoreCase),
-            StorageNamespace
-        );
-
-        var countersReason = counters is null ? DeniedOrFailed : NotMeasuredReason.NotReported;
-        var rows = disks
-            .Select(d =>
-            {
-                if (counters is null || d.Id is null || !counters.TryGetValue(d.Id, out var c))
-                    return d.Row with { CountersReason = countersReason };
-                return d.Row with
-                {
-                    Wear = c.Wear,
-                    TemperatureC = c.Temperature,
-                    PowerOnHours = c.PowerOnHours,
-                    ReadErrorsUncorrected = c.ReadErrors,
-                    WriteErrorsUncorrected = c.WriteErrors,
-                };
-            })
-            .Where(r => r.Number >= 0)
-            .OrderBy(r => r.Number)
-            .ToList();
-
+        var allCounters = rows.All(r => r.CountersReason == NotMeasuredReason.NotReported);
         return new StorageProbeResult(
             rows,
             ReadSystemDiskNumber(),
-            counters is null ? SectionStatus.Partial : SectionStatus.Ok
+            allCounters ? SectionStatus.Ok : SectionStatus.Partial
         );
+    }
+
+    /// <summary>Reads the disk's reliability counter through MSFT_PhysicalDiskToStorageReliabilityCounter.</summary>
+    private static DiskProbeRow WithCounters(ManagementObject disk, DiskProbeRow row)
+    {
+        try
+        {
+            using var related = disk.GetRelated("MSFT_StorageReliabilityCounter");
+            foreach (var item in related)
+            {
+                using var counter = (ManagementObject)item;
+                return row with
+                {
+                    Wear = WmiHelper.GetInt(counter, "Wear"),
+                    TemperatureC = WmiHelper.GetInt(counter, "Temperature"),
+                    PowerOnHours = WmiHelper.GetInt(counter, "PowerOnHours"),
+                    ReadErrorsUncorrected = WmiHelper.GetLong(counter, "ReadErrorsUncorrected"),
+                    WriteErrorsUncorrected = WmiHelper.GetLong(counter, "WriteErrorsUncorrected"),
+                    CountersReason = NotMeasuredReason.NotReported,
+                };
+            }
+            return row with { CountersReason = NotMeasuredReason.NotReported };
+        }
+        catch (ManagementException ex) when (ex.ErrorCode == ManagementStatus.AccessDenied)
+        {
+            return row with { CountersReason = NotMeasuredReason.AccessDenied };
+        }
+        catch (UnauthorizedAccessException)
+        {
+            return row with { CountersReason = NotMeasuredReason.AccessDenied };
+        }
+        catch (ManagementException)
+        {
+            return row with { CountersReason = DeniedOrFailed };
+        }
     }
 
     private static Measured<int> ReadSystemDiskNumber()

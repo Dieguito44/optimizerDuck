@@ -1,3 +1,4 @@
+using System.Globalization;
 using Microsoft.Extensions.Logging;
 using optimizerDuck.Domain.Diagnostics;
 using optimizerDuck.Domain.Diagnostics.Rules;
@@ -195,6 +196,30 @@ public sealed class DiagnosticService(
             report.Score.Deductions.Count,
             report.Score.RulesNotMeasurable
         );
+
+        // One line per rule so a technician can audit the diagnosis from the log. Evidence is
+        // hardware facts only (models, figures, states); the snapshot carries nothing personal.
+        foreach (var result in report.Results)
+        {
+            var evidence = result.Finding is { } finding
+                ? string.Join(
+                    "; ",
+                    finding.Evidence.Select(e =>
+                        $"{e.Key}={e.Number?.ToString(CultureInfo.InvariantCulture) ?? e.Text}{(e.Subject is null ? "" : $" [{e.Subject}]")}"
+                    )
+                )
+                : string.Empty;
+            logger.LogInformation(
+                "Rule {RuleId}: {Outcome} {Severity} {Reason} missing=[{Missing}] {Evidence}",
+                result.RuleId,
+                result.Outcome,
+                result.Finding?.Severity,
+                result.Reason,
+                string.Join(", ", result.MissingInputs),
+                evidence
+            );
+        }
+
         LastReport = report;
         return report;
     }

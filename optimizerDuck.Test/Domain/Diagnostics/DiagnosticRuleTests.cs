@@ -252,7 +252,25 @@ public class DiagnosticRuleTests
     [Fact]
     public void SsdHealth_HealthyDisks_Pass()
     {
-        Assert.Equal(RuleOutcome.Pass, Eval(new SsdHealthRule(), DiegoPc()).Outcome);
+        var healthy = DiegoPc() with
+        {
+            Disks =
+            [
+                Disk(0, "KINGSTON SA400S37/480GB", StorageMediaType.Ssd),
+                Disk(1, "CT500P3PSSD8", StorageMediaType.Nvme),
+            ],
+        };
+        Assert.Equal(RuleOutcome.Pass, Eval(new SsdHealthRule(), healthy).Outcome);
+    }
+
+    [Fact]
+    public void SsdHealth_DevelopmentPcA400WithOneReadError_IsCritical()
+    {
+        var result = Eval(new SsdHealthRule(), DiegoPc());
+        Assert.Equal(Severity.Critical, result.Finding!.Severity);
+        var fact = Assert.Single(result.Finding.Evidence);
+        Assert.Equal("KINGSTON SA400S37/480GB", fact.Subject);
+        Assert.Equal(1, fact.Number);
     }
 
     [Fact]
