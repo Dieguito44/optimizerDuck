@@ -3885,7 +3885,7 @@
     <value>Windows stops turning off the network card to save power, which can drop the connection. It applies after the next restart, so a remote session is not cut.</value>
   </data>
   <data name="Optimizer.Performance.DisableNicPowerSaving.Error.NoAdapter" xml:space="preserve">
-    <value>No connected network card was found.</value>
+    <value>No connected network card has power saving options.</value>
   </data>
   <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Name" xml:space="preserve">
     <value>Large folders out of the search index</value>

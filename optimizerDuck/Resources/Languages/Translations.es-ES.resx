@@ -5684,7 +5684,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
     <value>Windows deja de apagar la tarjeta de red para ahorrar energía, lo que puede cortar la conexión. Se aplica en el próximo reinicio, así no se corta una sesión remota.</value>
   </data>
   <data name="Optimizer.Performance.DisableNicPowerSaving.Error.NoAdapter" xml:space="preserve">
-    <value>No se encontró ninguna tarjeta de red conectada.</value>
+    <value>Ninguna tarjeta de red conectada tiene opciones de ahorro de energía.</value>
   </data>
   <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Name" xml:space="preserve">
     <value>Carpetas grandes fuera del indexador</value>

@@ -406,7 +406,8 @@ public class Performance : LocalizedObject, IOptimizationCategory
         )
         {
             var query = await context.Shell.QueryPowerShellAsync(
-                "Get-NetAdapter -Physical | Where-Object Status -eq 'Up' | ForEach-Object { $_.Name }",
+                // Only adapters whose driver exposes power management; others have nothing to change.
+                "Get-NetAdapter -Physical | Where-Object Status -eq 'Up' | Where-Object { Get-NetAdapterPowerManagement -Name $_.Name -ErrorAction SilentlyContinue } | ForEach-Object { $_.Name }",
                 context.Logger,
                 ct: context.CancellationToken
             );
