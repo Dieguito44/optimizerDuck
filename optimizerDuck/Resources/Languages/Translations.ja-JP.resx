@@ -213,10 +213,10 @@
     <value>現在のアクティブな電源プランを検出できませんでした</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ImportFailed" xml:space="preserve">
-    <value>optimizerDuck の電源プランをインポートできませんでした</value>
+    <value>Zentra の電源プランをインポートできませんでした</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ActivateFailed" xml:space="preserve">
-    <value>optimizerDuck の電源プランを有効化できませんでした</value>
+    <value>Zentra の電源プランを有効化できませんでした</value>
   </data>
   <data name="Optimizer.UI.Tags.System" xml:space="preserve">
     <value>システム</value>
@@ -600,15 +600,6 @@
   <data name="Optimizer.BloatwareAndServices.DisablePreinstalledApps.ShortDescription" xml:space="preserve">
     <value>Windows が不要なサードパーティ アプリやプロモーション ソフトウェアを自動的に再インストールするのを防ぎます</value>
   </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Name" xml:space="preserve">
-    <value>システム サービスの最適化</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.ShortDescription" xml:space="preserve">
-    <value>必要な Windows 機能を維持しながら、非必須のバックグラウンド サービスを調整してリソースを解放します</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Progress.ChangeServiceStartupType" xml:space="preserve">
-    <value>{0} の開始タイプを {1} に設定しています…</value>
-  </data>
   <data name="Optimizer.UI.Tags.Display" xml:space="preserve">
     <value>表示</value>
   </data>
@@ -894,7 +885,7 @@
     <value>謝辞</value>
   </data>
   <data name="Settings.About.Acknowledgements.Description" xml:space="preserve">
-    <value>optimizerDuck は以下のオープンソース ソフトウェアとリソースによって実現されています</value>
+    <value>Zentra は以下のオープンソース ソフトウェアとリソースによって実現されています</value>
   </data>
   <data name="RestorePoint.Title" xml:space="preserve">
     <value>システムの復元</value>
@@ -904,7 +895,7 @@
 変更を適用する前に Windows を保護する安全措置です</value>
   </data>
   <data name="RestorePointDialog.Help" xml:space="preserve">
-    <value>アプリケーションは自動的にシステムの復元を有効化し、「optimizerDuck…」という名前のチェックポイントを作成します。
+    <value>アプリケーションは自動的にシステムの復元を有効化し、「Zentra…」という名前のチェックポイントを作成します。
 問題が発生してもいつでも元に戻せます</value>
   </data>
   <data name="RestorePoint.Snackbar.Error.Title" xml:space="preserve">
@@ -962,7 +953,7 @@
     <value>不要なアプリは見つかりませんでした ¯\_(ツ)_/¯</value>
   </data>
   <data name="Bloatware.Empty.Description" xml:space="preserve">
-    <value>optimizerDuck は削除可能な AppX パッケージを見つけられませんでした。すでにきれいな状態です…</value>
+    <value>Zentra は削除可能な AppX パッケージを見つけられませんでした。すでにきれいな状態です…</value>
   </data>
   <data name="Bloatware.Loading" xml:space="preserve">
     <value>削除可能なアプリを検索しています…</value>
@@ -992,7 +983,7 @@
     <value>インストール済み AppX パッケージを削除する際、対応するプロビジョニング済みパッケージも削除して、新しいユーザーへの自動再インストールを防ぎます</value>
   </data>
   <data name="Dashboard.UpdateInfoBar.Message" xml:space="preserve">
-    <value>optimizerDuck (v{0}) が利用可能です！
+    <value>Zentra (v{0}) が利用可能です！
 今すぐ更新して、最新の機能、改善、バグ修正をお楽しみください</value>
   </data>
   <data name="Common.Search.Placeholder" xml:space="preserve">
@@ -1525,7 +1516,7 @@
     <value>法的同意</value>
   </data>
   <data name="LegalDialog.Intro.Title" xml:space="preserve">
-    <value>optimizerDuckへようこそ！</value>
+    <value>Zentraへようこそ！</value>
   </data>
   <data name="LegalDialog.Intro.Description" xml:space="preserve">
     <value>言語とテーマを選択し、利用規約、プライバシーポリシー、免責事項をご確認のうえ、準備完了です。</value>
@@ -1777,7 +1768,7 @@
     <value>互換性チェックに失敗しました</value>
   </data>
   <data name="Condition.Error.Description" xml:space="preserve">
-    <value>optimizerDuck は、この項目がシステムでサポートされているかどうかを判断できませんでした。</value>
+    <value>Zentra は、この項目がシステムでサポートされているかどうかを判断できませんでした。</value>
   </data>
   <data name="Condition.Windows11.Title" xml:space="preserve">
     <value>Windows 11 が必要です</value>
@@ -1984,7 +1975,7 @@
     <value>以前の電源プランを復元できませんでした: {0}。</value>
   </data>
   <data name="Revert.PowerPlan.Error.DeleteFailed" xml:space="preserve">
-    <value>optimizerDuck の電源プランを削除できませんでした: {0}</value>
+    <value>Zentra の電源プランを削除できませんでした: {0}</value>
   </data>
   <data name="Revert.PowerPlan.Error.NothingToDo" xml:space="preserve">
     <value>復元する内容がありません: 以前の電源プランもインストールされた電源プランも記録されていません。</value>
@@ -2434,7 +2425,7 @@
     <value>記録ファイルを表示</value>
   </data>
   <data name="OptimizationDetailsDialog.Other.OpenRecordFile.Description" xml:space="preserve">
-    <value>この最適化が何をしたかを optimizerDuck が書き留めたファイルを開きます。元に戻した後も残るので、後から確認できます。</value>
+    <value>この最適化が何をしたかを Zentra が書き留めたファイルを開きます。元に戻した後も残るので、後から確認できます。</value>
   </data>
   <data name="Optimizer.Details.Provider.Registry" xml:space="preserve">
     <value>レジストリ</value>
@@ -2510,5 +2501,17 @@
   </data>
   <data name="Error.Unhandled.LogHint" xml:space="preserve">
     <value>詳細はログ ファイルに記録されています。</value>
+  </data>
+  <data name="Settings.About.BasedOn" xml:space="preserve">
+    <value>Based on optimizerDuck by fatDuck. Free software under the GPL v3 license.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Name" xml:space="preserve">
+    <value>Set Rarely Used Services to Manual</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.ShortDescription" xml:space="preserve">
+    <value>Sets Fax, offline Maps, Retail Demo, Windows Insider and Windows Media Player network sharing to Manual. They are never disabled: Windows starts them when something needs them. Services missing on this PC are skipped.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Progress.ChangeServiceStartupType" xml:space="preserve">
+    <value>Setting startup type for {0} to {1}...</value>
   </data>
 </root>

@@ -201,10 +201,10 @@
     <value>無法偵測目前啟用的電源計畫。</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ImportFailed" xml:space="preserve">
-    <value>無法匯入 optimizerDuck 的電源計畫。</value>
+    <value>無法匯入 Zentra 的電源計畫。</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ActivateFailed" xml:space="preserve">
-    <value>無法啟用 optimizerDuck 的電源計畫。</value>
+    <value>無法啟用 Zentra 的電源計畫。</value>
   </data>
   <data name="Optimizer.UI.Tags.System" xml:space="preserve">
     <value>系統</value>
@@ -537,15 +537,6 @@
   <data name="Optimizer.BloatwareAndServices.DisablePreinstalledApps.ShortDescription" xml:space="preserve">
     <value>防止 Windows 自動重新安裝不需要的第三方程式及推廣軟體。</value>
   </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Name" xml:space="preserve">
-    <value>最佳化系統服務</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.ShortDescription" xml:space="preserve">
-    <value>調整非必要的背景服務以釋放資源，同時保留所有必要的 Windows 功能。</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Progress.ChangeServiceStartupType" xml:space="preserve">
-    <value>正在將 {0} 的啟動類型設定為 {1}...</value>
-  </data>
   <data name="Optimizer.UI.Tags.Display" xml:space="preserve">
     <value>顯示</value>
   </data>
@@ -615,7 +606,7 @@
     <value>鳴謝</value>
   </data>
   <data name="Settings.About.Acknowledgements.Description" xml:space="preserve">
-    <value>optimizerDuck 的誕生歸功於以下開放原始碼軟體和資源。</value>
+    <value>Zentra 的誕生歸功於以下開放原始碼軟體和資源。</value>
   </data>
   <data name="RestorePoint.Title" xml:space="preserve">
     <value>系統還原</value>
@@ -625,7 +616,7 @@
 這是一項保護 Windows 的安全措施，建議在套用變更前使用。</value>
   </data>
   <data name="RestorePointDialog.Help" xml:space="preserve">
-    <value>應用程式將自動啟用系統還原，並建立名為「optimizerDuck...」的檢查點。
+    <value>應用程式將自動啟用系統還原，並建立名為「Zentra...」的檢查點。
 這可確保如果出現任何問題，您始終可以回到先前的狀態。</value>
   </data>
   <data name="RestorePoint.Snackbar.Error.Title" xml:space="preserve">
@@ -683,7 +674,7 @@
     <value>找不到不必要的應用程式 ¯\_(ツ)_/¯</value>
   </data>
   <data name="Bloatware.Empty.Description" xml:space="preserve">
-    <value>optimizerDuck 找不到任何可移除的 AppX 套件。這裡空空如也...</value>
+    <value>Zentra 找不到任何可移除的 AppX 套件。這裡空空如也...</value>
   </data>
   <data name="Bloatware.Loading" xml:space="preserve">
     <value>正在尋找可移除的應用程式...</value>
@@ -707,7 +698,7 @@
     <value>刪除已安裝的 AppX 套件時，也一併移除對應的佈建套件，以防止新使用者自動重新安裝。</value>
   </data>
   <data name="Dashboard.UpdateInfoBar.Message" xml:space="preserve">
-    <value>optimizerDuck (v{0}) 已推出！
+    <value>Zentra (v{0}) 已推出！
 立即更新以享有最新的功能、改進和錯誤修正。</value>
   </data>
   <data name="Common.Search.Placeholder" xml:space="preserve">
@@ -1510,7 +1501,7 @@
     <value>主要更新或升級後保留的舊 Windows 安裝檔案</value>
   </data>
   <data name="LegalDialog.Intro.Title" xml:space="preserve">
-    <value>歡迎使用 optimizerDuck！</value>
+    <value>歡迎使用 Zentra！</value>
   </data>
   <data name="LegalDialog.Intro.Description" xml:space="preserve">
     <value>選擇您的語言和主題，花點時間查看我們的服務條款、隱私政策和免責聲明，然後就可以開始了。</value>
@@ -1837,7 +1828,7 @@
     <value>相容性檢查失敗</value>
   </data>
   <data name="Condition.Error.Description" xml:space="preserve">
-    <value>optimizerDuck 無法判斷此項目是否受到您的系統支援。</value>
+    <value>Zentra 無法判斷此項目是否受到您的系統支援。</value>
   </data>
   <data name="Condition.Windows11.Title" xml:space="preserve">
     <value>需要 Windows 11</value>
@@ -1987,7 +1978,7 @@
     <value>還原先前的電源計劃失敗: {0}。</value>
   </data>
   <data name="Revert.PowerPlan.Error.DeleteFailed" xml:space="preserve">
-    <value>刪除 optimizerDuck 電源計劃失敗: {0}</value>
+    <value>刪除 Zentra 電源計劃失敗: {0}</value>
   </data>
   <data name="Revert.PowerPlan.Error.NothingToDo" xml:space="preserve">
     <value>沒有可還原的內容: 未記錄先前或已安裝的電源計劃。</value>
@@ -2437,7 +2428,7 @@
     <value>顯示記錄檔案</value>
   </data>
   <data name="OptimizationDetailsDialog.Other.OpenRecordFile.Description" xml:space="preserve">
-    <value>開啟 optimizerDuck 記錄此項最佳化做了什麼的檔案。還原後仍會保留，方便日後查看。</value>
+    <value>開啟 Zentra 記錄此項最佳化做了什麼的檔案。還原後仍會保留，方便日後查看。</value>
   </data>
   <data name="Optimizer.Details.Provider.Registry" xml:space="preserve">
     <value>登錄檔</value>
@@ -2513,5 +2504,17 @@
   </data>
   <data name="Error.Unhandled.LogHint" xml:space="preserve">
     <value>詳細資料已寫入記錄檔。</value>
+  </data>
+  <data name="Settings.About.BasedOn" xml:space="preserve">
+    <value>Based on optimizerDuck by fatDuck. Free software under the GPL v3 license.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Name" xml:space="preserve">
+    <value>Set Rarely Used Services to Manual</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.ShortDescription" xml:space="preserve">
+    <value>Sets Fax, offline Maps, Retail Demo, Windows Insider and Windows Media Player network sharing to Manual. They are never disabled: Windows starts them when something needs them. Services missing on this PC are skipped.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Progress.ChangeServiceStartupType" xml:space="preserve">
+    <value>Setting startup type for {0} to {1}...</value>
   </data>
 </root>

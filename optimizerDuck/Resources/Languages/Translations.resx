@@ -263,10 +263,10 @@
     <value>Failed to detect the current active power plan.</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ImportFailed" xml:space="preserve">
-    <value>Failed to import optimizerDuck's power plan.</value>
+    <value>Failed to import Zentra's power plan.</value>
   </data>
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Error.ActivateFailed" xml:space="preserve">
-    <value>Failed to activate optimizerDuck's power plan.</value>
+    <value>Failed to activate Zentra's power plan.</value>
   </data>
   <data name="Optimizer.UI.Tags.System" xml:space="preserve">
     <value>System</value>
@@ -352,7 +352,7 @@
     <value>Failed to restore previous power plan: {0}.</value>
   </data>
   <data name="Revert.PowerPlan.Error.DeleteFailed" xml:space="preserve">
-    <value>Failed to delete optimizerDuck power plan: {0}</value>
+    <value>Failed to delete Zentra power plan: {0}</value>
   </data>
   <data name="Revert.PowerPlan.Error.NothingToDo" xml:space="preserve">
     <value>Nothing to revert: no previous or installed power plan recorded.</value>
@@ -592,7 +592,7 @@
     <value>Disable Hibernation &amp; Fast Startup</value>
   </data>
   <data name="Optimizer.PowerManagement.DisableHibernateAndFastStartup.ShortDescription" xml:space="preserve">
-    <value>Turns off hibernation and Fast Startup to reclaim disk space and ensure a full shutdown for cleaner hardware initialization on boot.</value>
+    <value>Optional, not part of the standard profile. Turns off hibernation and Fast Startup. Use it only for driver problems or dual boot. Measure boot time before and after in the same startup mode.</value>
   </data>
   <data name="Optimizer.PowerManagement.DisableUSBPowerSaving.Name" xml:space="preserve">
     <value>Disable USB Power Saving</value>
@@ -695,15 +695,6 @@
   </data>
   <data name="Optimizer.BloatwareAndServices.DisablePreinstalledApps.ShortDescription" xml:space="preserve">
     <value>Prevents Windows from automatically re-installing unwanted third-party apps and promoted software.</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Name" xml:space="preserve">
-    <value>Optimize System Services</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.ShortDescription" xml:space="preserve">
-    <value>Adjusts non-essential background services to free up resources while maintaining all necessary Windows functionality.</value>
-  </data>
-  <data name="Optimizer.BloatwareAndServices.ConfigureServices.Progress.ChangeServiceStartupType" xml:space="preserve">
-    <value>Setting startup type for {0} to {1}...</value>
   </data>
   <data name="Optimizer.UI.Tags.Display" xml:space="preserve">
     <value>Display</value>
@@ -1041,7 +1032,7 @@
     <value>Acknowledgments</value>
   </data>
   <data name="Settings.About.Acknowledgements.Description" xml:space="preserve">
-    <value>optimizerDuck is made possible by the following open-source software and resources.</value>
+    <value>Zentra is made possible by the following open-source software and resources.</value>
   </data>
   <data name="RestorePoint.Title" xml:space="preserve">
     <value>System Restore</value>
@@ -1051,7 +1042,7 @@
 It's a safety measure to protect your Windows before applying changes.</value>
   </data>
   <data name="RestorePointDialog.Help" xml:space="preserve">
-    <value>The application will automatically enable System Restore and create a checkpoint named "optimizerDuck...".
+    <value>The application will automatically enable System Restore and create a checkpoint named "Zentra...".
 This ensures you can always go back if anything goes wrong.</value>
   </data>
   <data name="RestorePoint.Snackbar.Error.Title" xml:space="preserve">
@@ -1109,7 +1100,7 @@ This ensures you can always go back if anything goes wrong.</value>
     <value>No unnecessary apps found ¯\_(ツ)_/¯</value>
   </data>
   <data name="Bloatware.Empty.Description" xml:space="preserve">
-    <value>optimizerDuck didn't find any removable AppX packages. It's empty as a void...</value>
+    <value>Zentra didn't find any removable AppX packages. It's empty as a void...</value>
   </data>
   <data name="Bloatware.Loading" xml:space="preserve">
     <value>Looking for removable apps...</value>
@@ -1148,7 +1139,7 @@ This ensures you can always go back if anything goes wrong.</value>
     <value>When removing installed AppX packages, also remove the corresponding Provisioned packages to prevent automatic reinstallation for new users.</value>
   </data>
   <data name="Dashboard.UpdateInfoBar.Message" xml:space="preserve">
-    <value>optimizerDuck (v{0}) is available!
+    <value>Zentra (v{0}) is available!
 Update now to enjoy the latest features, improvements, and bug fixes.</value>
   </data>
   <data name="Common.Search.Placeholder" xml:space="preserve">
@@ -1811,7 +1802,7 @@ Update now to enjoy the latest features, improvements, and bug fixes.</value>
     <value>Legal Agreement</value>
   </data>
   <data name="LegalDialog.Intro.Title" xml:space="preserve">
-    <value>Welcome to optimizerDuck!</value>
+    <value>Welcome to Zentra!</value>
   </data>
   <data name="LegalDialog.Intro.Description" xml:space="preserve">
     <value>Choose your language and theme, take a moment to review our Terms, Privacy Policy, and Disclaimer, then you're ready to go.</value>
@@ -2011,7 +2002,7 @@ Update now to enjoy the latest features, improvements, and bug fixes.</value>
     <value>Compatibility check failed</value>
   </data>
   <data name="Condition.Error.Description" xml:space="preserve">
-    <value>optimizerDuck could not determine whether this item is supported on your system.</value>
+    <value>Zentra could not determine whether this item is supported on your system.</value>
   </data>
   <data name="Condition.Windows11.Title" xml:space="preserve">
     <value>Windows 11 required</value>
@@ -2500,7 +2491,7 @@ Update now to enjoy the latest features, improvements, and bug fixes.</value>
     <value>Show the record file</value>
   </data>
   <data name="OptimizationDetailsDialog.Other.OpenRecordFile.Description" xml:space="preserve">
-    <value>Reveals the file where optimizerDuck wrote what this optimization did. It stays after a revert, so the history is still there.</value>
+    <value>Reveals the file where Zentra wrote what this optimization did. It stays after a revert, so the history is still there.</value>
   </data>
   <data name="Optimizer.Details.Provider.Registry" xml:space="preserve">
     <value>Registry</value>
@@ -2576,5 +2567,17 @@ Update now to enjoy the latest features, improvements, and bug fixes.</value>
   </data>
   <data name="Error.Unhandled.LogHint" xml:space="preserve">
     <value>Details are in the log file.</value>
+  </data>
+  <data name="Settings.About.BasedOn" xml:space="preserve">
+    <value>Based on optimizerDuck by fatDuck. Free software under the GPL v3 license.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Name" xml:space="preserve">
+    <value>Set Rarely Used Services to Manual</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.ShortDescription" xml:space="preserve">
+    <value>Sets Fax, offline Maps, Retail Demo, Windows Insider and Windows Media Player network sharing to Manual. They are never disabled: Windows starts them when something needs them. Services missing on this PC are skipped.</value>
+  </data>
+  <data name="Optimizer.BloatwareAndServices.SetRarelyUsedServicesToManual.Progress.ChangeServiceStartupType" xml:space="preserve">
+    <value>Setting startup type for {0} to {1}...</value>
   </data>
 </root>
