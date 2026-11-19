@@ -86,16 +86,17 @@ public sealed record SessionReportModel
 
         var pending =
             latest
-                ?.Findings.SelectMany(f => f.ActionIds)
-                .Distinct()
-                .Where(id =>
-                    ActionCatalog.All.TryGetValue(id, out var action)
+                ?.Findings.OrderByDescending(f => f.Severity)
+                .SelectMany(f => f.ActionIds.Select(id => (f.RuleId, ActionId: id)))
+                .Where(x =>
+                    ActionCatalog.All.TryGetValue(x.ActionId, out var action)
                     && action.Kind
                         is ActionKind.ManualBios
                             or ActionKind.Hardware
                             or ActionKind.Manual
                 )
-                .Select(id => Loc.Instance[ActionCatalog.All[id].TitleKey])
+                .Select(x => FindingTextRenderer.ActionTitle(x.RuleId, x.ActionId))
+                .Distinct()
                 .ToList()
             ?? [];
 
@@ -183,7 +184,7 @@ public sealed record SessionReportModel
                 before?.IdleRamUsedBytes,
                 after?.IdleRamUsedBytes,
                 b => b / MiB,
-                "0",
+                "#,##0",
                 " MB",
                 Better.Lower,
                 culture
@@ -193,7 +194,7 @@ public sealed record SessionReportModel
                 before?.SystemFreeBytes,
                 after?.SystemFreeBytes,
                 b => b / GiB,
-                "0.0",
+                "#,##0.0",
                 " GB",
                 Better.Higher,
                 culture
@@ -203,7 +204,7 @@ public sealed record SessionReportModel
                 before?.StartupAppsEnabled,
                 after?.StartupAppsEnabled,
                 v => v,
-                "0",
+                "#,##0",
                 "",
                 Better.Lower,
                 culture
@@ -213,7 +214,7 @@ public sealed record SessionReportModel
                 before?.ProcessCount,
                 after?.ProcessCount,
                 v => v,
-                "0",
+                "#,##0",
                 "",
                 Better.Lower,
                 culture
@@ -223,7 +224,7 @@ public sealed record SessionReportModel
                 before?.RunningServices,
                 after?.RunningServices,
                 v => v,
-                "0",
+                "#,##0",
                 "",
                 Better.Lower,
                 culture
@@ -233,7 +234,7 @@ public sealed record SessionReportModel
                 before?.SequentialReadMiBps,
                 after?.SequentialReadMiBps,
                 v => v,
-                "0",
+                "#,##0",
                 " MB/s",
                 Better.Higher,
                 culture
@@ -243,7 +244,7 @@ public sealed record SessionReportModel
                 before?.RandomReadIops,
                 after?.RandomReadIops,
                 v => v,
-                "0",
+                "#,##0",
                 " IOPS",
                 Better.Higher,
                 culture

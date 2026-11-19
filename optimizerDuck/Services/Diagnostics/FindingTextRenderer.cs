@@ -36,9 +36,22 @@ public static class FindingTextRenderer
             finding.Evidence.Select(EvidenceLine).ToList(),
             finding
                 .ActionIds.Where(ActionCatalog.Contains)
-                .Select(id => Loc.Instance[ActionCatalog.All[id].TitleKey])
+                .Select(id => ActionTitle(finding.RuleId, id))
                 .ToList()
         );
+
+    /// <summary>
+    ///     The action text for a finding. Some rules use an action to "check" rather than "do":
+    ///     an unstable PC with XMP already on needs its XMP profile reviewed, not turned on.
+    /// </summary>
+    public static string ActionTitle(string ruleId, string actionId) =>
+        (ruleId, actionId) switch
+        {
+            (RuleIds.Unstable, ActionIds.BiosXmp) => Loc.Instance[
+                $"Diagnostic.Action.{ActionIds.BiosXmp}.Review"
+            ],
+            _ => Loc.Instance[ActionCatalog.All[actionId].TitleKey],
+        };
 
     public static NotMeasuredView RenderNotMeasured(RuleResult result) =>
         new(

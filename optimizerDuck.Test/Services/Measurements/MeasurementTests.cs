@@ -205,6 +205,36 @@ public class SessionPersistenceTests
     }
 
     [Fact]
+    public void Report_UnstablePcWithXmpOn_AsksToReviewXmpNotToTurnItOn()
+    {
+        // The development PC: XMP already at 3600 and 3 unexpected shutdowns.
+        var report = DiagnosticReport.Create(DiegoPc(), Refs, DiagnosticRules.All);
+        var session = new ServiceSession
+        {
+            CreatedAtUtc = Now,
+            Before = Before(),
+            DiagnosisBefore = DiagnosisSummary.From(report),
+        };
+
+        var model = SessionReportModel.Build(
+            session,
+            [],
+            _ => null,
+            Now,
+            CultureInfo.InvariantCulture
+        );
+
+        var turnOn = optimizerDuck.Services.Configuration.Loc.Instance[
+            ActionCatalog.All[ActionIds.BiosXmp].TitleKey
+        ];
+        var review = optimizerDuck.Services.Configuration.Loc.Instance[
+            $"Diagnostic.Action.{ActionIds.BiosXmp}.Review"
+        ];
+        Assert.DoesNotContain(turnOn, model.ClientPending);
+        Assert.Contains(review, model.ClientPending);
+    }
+
+    [Fact]
     public void Report_ListsOnlyActionsAppliedDuringTheSession()
     {
         var session = new ServiceSession { CreatedAtUtc = Now, Before = Before() };
@@ -242,7 +272,7 @@ public class SessionPersistenceTests
         };
         var path = Path.Combine(Path.GetTempPath(), $"zentra-test-{Guid.NewGuid():N}.pdf");
         var previous = optimizerDuck.Services.Configuration.Loc.CurrentCulture;
-        var checkGlyphs = QuestPDF.Settings.CheckIfAllTextGlyphsAreAvailable;
+        var checkGlyphs = QuestPDF.Settings.ThrowOnMissingTextGlyphs;
 
         try
         {
@@ -250,7 +280,7 @@ public class SessionPersistenceTests
             optimizerDuck.Services.Configuration.Loc.Instance.ChangeCulture(
                 new CultureInfo("es-ES")
             );
-            QuestPDF.Settings.CheckIfAllTextGlyphsAreAvailable = true;
+            QuestPDF.Settings.ThrowOnMissingTextGlyphs = true;
             var model = SessionReportModel.Build(
                 session,
                 [],
@@ -268,7 +298,7 @@ public class SessionPersistenceTests
         }
         finally
         {
-            QuestPDF.Settings.CheckIfAllTextGlyphsAreAvailable = checkGlyphs;
+            QuestPDF.Settings.ThrowOnMissingTextGlyphs = checkGlyphs;
             optimizerDuck.Services.Configuration.Loc.Instance.ChangeCulture(previous);
             File.Delete(path);
         }

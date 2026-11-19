@@ -3189,4 +3189,7 @@ Update now to enjoy the latest features, improvements, and bug fixes.</value>
   <data name="Diagnostic.Evidence.boot.median_s" xml:space="preserve">
     <value>Boot time (median of the last 3)</value>
   </data>
+  <data name="Diagnostic.Action.ACT-BIOS-XMP.Review" xml:space="preserve">
+    <value>Check the stability of the XMP/EXPO profile in the BIOS</value>
+  </data>
 </root>

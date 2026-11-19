@@ -4930,4 +4930,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Diagnostic.Evidence.boot.median_s" xml:space="preserve">
     <value>Tiempo de arranque (mediana de los últimos 3)</value>
   </data>
+  <data name="Diagnostic.Action.ACT-BIOS-XMP.Review" xml:space="preserve">
+    <value>Revisar la estabilidad del perfil XMP/EXPO en la BIOS</value>
+  </data>
 </root>
