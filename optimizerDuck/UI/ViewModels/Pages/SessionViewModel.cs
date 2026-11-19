@@ -4,6 +4,7 @@ using System.IO;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using optimizerDuck.Common.Helpers;
 using optimizerDuck.Domain.Measurements;
 using optimizerDuck.Services.Ai;
 using optimizerDuck.Services.Configuration;
@@ -158,7 +159,7 @@ public partial class SessionViewModel(
         catch (Exception ex)
         {
             logger.LogError(ex, "Report writing failed");
-            ErrorText = Loc.Instance["Session.Error", ex.Message];
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
         }
         finally
         {
@@ -229,7 +230,7 @@ public partial class SessionViewModel(
         catch (Exception ex)
         {
             logger.LogError(ex, "PDF generation failed");
-            ErrorText = Loc.Instance["Session.Error", ex.Message];
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
         }
         finally
         {
@@ -302,7 +303,7 @@ public partial class SessionViewModel(
         catch (Exception ex)
         {
             logger.LogError(ex, "Measurement {Phase} failed", phase);
-            ErrorText = Loc.Instance["Session.Error", ex.Message];
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
         }
         finally
         {

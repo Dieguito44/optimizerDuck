@@ -116,7 +116,9 @@ public sealed class ClaudeClient : IDisposable
         {
             return Fail(ClaudeFailure.Timeout);
         }
-        catch (HttpRequestException)
+        // Any other failure (a handler bug, a socket error) is a network failure: its message may
+        // carry the request, so it is never logged or shown.
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             return Fail(ClaudeFailure.Network);
         }
