@@ -6231,4 +6231,91 @@ Códigos de salida: 0 listo, 1 argumentos, 2 preset no válido, 3 sin administra
 4 sin punto de restauración, 5 con fallos, 6 cancelado, 7 informe alterado o incompleto, 10 error inesperado.
 En PowerShell, para esperar a que termine: Start-Process Zentra.exe -ArgumentList &apos;--diagnose&apos; -Wait -PassThru</value>
   </data>
+  <data name="Diagnostic.Rule.R-DNS-REVIEW.Title" xml:space="preserve">
+    <value>DNS puestos a mano para revisar</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DNS-REVIEW.Description" xml:space="preserve">
+    <value>El DNS convierte los nombres de los sitios en direcciones. Un adaptador de red tiene DNS escritos a mano que no son el router ni un proveedor conocido. Un malware los cambia para llevar al cliente a páginas falsas, pero también los puede poner una empresa o una VPN: hay que revisar quién los puso.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BROWSER-EXT.Title" xml:space="preserve">
+    <value>Extensiones del navegador para revisar</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BROWSER-EXT.Description" xml:space="preserve">
+    <value>Las extensiones instaladas fuera de las tiendas oficiales, forzadas por una directiva o cargadas sin empaquetar son la vía habitual del adware. Las que tienen acceso a todos los sitios se listan para revisar, sin restar puntos: muchas buenas lo necesitan, como los bloqueadores de anuncios.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BROWSER-SEARCH.Title" xml:space="preserve">
+    <value>Buscador poco común en el navegador</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BROWSER-SEARCH.Description" xml:space="preserve">
+    <value>El buscador predeterminado del navegador no es uno de los habituales. Cambiarlo, muchas veces junto con la página de inicio, es el secuestro de navegador clásico. El buscador de Firefox no se lee.</value>
+  </data>
+  <data name="Diagnostic.Evidence.network.dns" xml:space="preserve">
+    <value>Servidores DNS</value>
+  </data>
+  <data name="Diagnostic.Evidence.network.dns_static_review" xml:space="preserve">
+    <value>DNS puestos a mano para revisar</value>
+  </data>
+  <data name="Diagnostic.Evidence.network.dns_server" xml:space="preserve">
+    <value>DNS puesto a mano</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extensions" xml:space="preserve">
+    <value>Extensiones del navegador</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extensions_outside_store" xml:space="preserve">
+    <value>Extensiones fuera de la tienda</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extensions_broad" xml:space="preserve">
+    <value>Extensiones con acceso a todos los sitios</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extension_outside_store" xml:space="preserve">
+    <value>No viene de la tienda</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extension_policy" xml:space="preserve">
+    <value>Forzada por una directiva</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extension_unpacked" xml:space="preserve">
+    <value>Cargada sin empaquetar (modo desarrollador)</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extension_broad" xml:space="preserve">
+    <value>Permisos amplios</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.search" xml:space="preserve">
+    <value>Buscador predeterminado</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.search_policy" xml:space="preserve">
+    <value>Buscador forzado por una directiva</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.search_unknown" xml:space="preserve">
+    <value>Navegadores con un buscador poco común</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.startup" xml:space="preserve">
+    <value>Página de inicio</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-RETRIM" xml:space="preserve">
+    <value>Optimizar los SSD ahora (ReTrim)</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DNS-REVIEW" xml:space="preserve">
+    <value>Preguntar quién puso esos DNS; si nadie lo hizo, volver el adaptador a DNS automático</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-BROWSER-REVIEW" xml:space="preserve">
+    <value>Revisar con el cliente y quitar a mano las extensiones y el buscador que no reconozca</value>
+  </data>
+  <data name="Optimizer.Storage.RetrimSsds.Name" xml:space="preserve">
+    <value>Optimizar los SSD ahora (ReTrim)</value>
+  </data>
+  <data name="Optimizer.Storage.RetrimSsds.ShortDescription" xml:space="preserve">
+    <value>Le dice a cada SSD qué bloques quedaron libres, como hace cada semana &quot;Optimizar unidades&quot; de Windows. No cambia ninguna configuración.</value>
+  </data>
+  <data name="Optimizer.Storage.RetrimSsds.Progress.Volume" xml:space="preserve">
+    <value>Optimizando la unidad {0}:...</value>
+  </data>
+  <data name="Optimizer.Storage.RetrimSsds.Error.NoSsd" xml:space="preserve">
+    <value>No hay un SSD con letra de unidad.</value>
+  </data>
+  <data name="Condition.HasSsdVolume.Title" xml:space="preserve">
+    <value>Sin SSD</value>
+  </data>
+  <data name="Condition.HasSsdVolume.Description" xml:space="preserve">
+    <value>ReTrim solo aplica a unidades SSD con letra.</value>
+  </data>
 </root>

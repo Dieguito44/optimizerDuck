@@ -148,6 +148,22 @@ public static class SnapshotFactory
                 StuckUpdates = Measured<int>.Of(0),
                 DisabledServices = Measured<IReadOnlyList<string>>.Of([]),
             },
+            // Block 3C: NOT measured on Diego's PC. Neutral values that trigger nothing (DNS from the
+            // router, no extensions, the browser's own search engine), so the golden score stays the
+            // one measured in 2A.
+            Network = new NetworkSnapshot
+            {
+                DnsServers = Measured<IReadOnlyList<DnsServer>>.Of([
+                    new("Ethernet", "192.168.1.1", false, DnsKind.Private, null),
+                ]),
+            },
+            Browsers = new BrowserSnapshot
+            {
+                Extensions = Measured<IReadOnlyList<BrowserExtension>>.Of([]),
+                Homes = Measured<IReadOnlyList<BrowserHome>>.Of([
+                    new("Edge (Default)", null, false, []),
+                ]),
+            },
             // What the display probe read on Diego's PC (one APU, an HDMI monitor at its maximum and a
             // phantom DisplayPort output without EDID).
             Display = optimizerDuck.Services.Diagnostics.DisplaySnapshotMapper.Map(

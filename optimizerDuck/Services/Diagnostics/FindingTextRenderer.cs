@@ -25,7 +25,8 @@ public sealed record NotMeasuredView(string RuleId, string Title, string Reason)
 /// </summary>
 public static class FindingTextRenderer
 {
-    public static FindingView Render(Finding finding) =>
+    /// <param name="forAi">Leaves out the evidence marked local only (names, addresses, hosts).</param>
+    public static FindingView Render(Finding finding, bool forAi = false) =>
         new(
             finding.RuleId,
             finding.Severity,
@@ -33,7 +34,7 @@ public static class FindingTextRenderer
             ScoreCalculator.PointsFor(finding.Severity),
             Loc.Instance[$"Diagnostic.Rule.{finding.RuleId}.Title"],
             Loc.Instance[$"Diagnostic.Rule.{finding.RuleId}.Description"],
-            finding.Evidence.Select(EvidenceLine).ToList(),
+            finding.Evidence.Where(e => !forAi || !e.LocalOnly).Select(EvidenceLine).ToList(),
             finding
                 .ActionIds.Where(ActionCatalog.Contains)
                 .Select(id => ActionTitle(finding.RuleId, id))

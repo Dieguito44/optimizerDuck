@@ -202,7 +202,7 @@ public static class AiPayloadBuilder
                     ?.Findings.OrderByDescending(f => f.Severity)
                     .Select(f =>
                     {
-                        var view = FindingTextRenderer.Render(f);
+                        var view = FindingTextRenderer.Render(f, forAi: true);
                         return new AiFinding(
                             f.RuleId,
                             view.SeverityText,

@@ -4432,4 +4432,91 @@ Exit codes: 0 done, 1 arguments, 2 invalid preset, 3 not administrator,
 4 no restore point, 5 done with failures, 6 cancelled, 7 report changed or missing, 10 unexpected error.
 In PowerShell, to wait for it: Start-Process Zentra.exe -ArgumentList &apos;--diagnose&apos; -Wait -PassThru</value>
   </data>
+  <data name="Diagnostic.Rule.R-DNS-REVIEW.Title" xml:space="preserve">
+    <value>DNS servers set by hand to review</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DNS-REVIEW.Description" xml:space="preserve">
+    <value>DNS turns site names into addresses. A network adapter has DNS servers typed by hand that are neither the router nor a well-known provider. Malware changes them to send the client to fake pages, but a company or a VPN may also set them: check who did.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BROWSER-EXT.Title" xml:space="preserve">
+    <value>Browser extensions to review</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BROWSER-EXT.Description" xml:space="preserve">
+    <value>Extensions installed outside the official stores, forced by a policy or loaded unpacked are the usual way adware gets in. Extensions with access to every site are listed to review, without points: many good ones need it, such as ad blockers.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BROWSER-SEARCH.Title" xml:space="preserve">
+    <value>Unusual search engine in the browser</value>
+  </data>
+  <data name="Diagnostic.Rule.R-BROWSER-SEARCH.Description" xml:space="preserve">
+    <value>The browser&apos;s default search engine is not one of the usual ones. Changing it, often together with the startup page, is the classic browser hijack. Firefox&apos;s search engine is not read.</value>
+  </data>
+  <data name="Diagnostic.Evidence.network.dns" xml:space="preserve">
+    <value>DNS servers</value>
+  </data>
+  <data name="Diagnostic.Evidence.network.dns_static_review" xml:space="preserve">
+    <value>DNS servers set by hand to review</value>
+  </data>
+  <data name="Diagnostic.Evidence.network.dns_server" xml:space="preserve">
+    <value>DNS set by hand</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extensions" xml:space="preserve">
+    <value>Browser extensions</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extensions_outside_store" xml:space="preserve">
+    <value>Extensions outside the store</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extensions_broad" xml:space="preserve">
+    <value>Extensions with access to every site</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extension_outside_store" xml:space="preserve">
+    <value>Not from the store</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extension_policy" xml:space="preserve">
+    <value>Forced by a policy</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extension_unpacked" xml:space="preserve">
+    <value>Loaded unpacked (developer mode)</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.extension_broad" xml:space="preserve">
+    <value>Wide permissions</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.search" xml:space="preserve">
+    <value>Default search engine</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.search_policy" xml:space="preserve">
+    <value>Search engine forced by a policy</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.search_unknown" xml:space="preserve">
+    <value>Browsers with an unusual search engine</value>
+  </data>
+  <data name="Diagnostic.Evidence.browser.startup" xml:space="preserve">
+    <value>Startup page</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-RETRIM" xml:space="preserve">
+    <value>Optimize the SSDs now (ReTrim)</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DNS-REVIEW" xml:space="preserve">
+    <value>Ask who set those DNS servers; if nobody did, set the adapter back to automatic DNS</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-BROWSER-REVIEW" xml:space="preserve">
+    <value>Review with the client and remove by hand the extensions and the search engine they do not recognize</value>
+  </data>
+  <data name="Optimizer.Storage.RetrimSsds.Name" xml:space="preserve">
+    <value>Optimize the SSDs now (ReTrim)</value>
+  </data>
+  <data name="Optimizer.Storage.RetrimSsds.ShortDescription" xml:space="preserve">
+    <value>Tells each SSD which blocks are free, as Windows&apos; weekly &quot;Optimize drives&quot; does. Changes no setting.</value>
+  </data>
+  <data name="Optimizer.Storage.RetrimSsds.Progress.Volume" xml:space="preserve">
+    <value>Optimizing drive {0}:...</value>
+  </data>
+  <data name="Optimizer.Storage.RetrimSsds.Error.NoSsd" xml:space="preserve">
+    <value>There is no SSD with a drive letter.</value>
+  </data>
+  <data name="Condition.HasSsdVolume.Title" xml:space="preserve">
+    <value>No SSD</value>
+  </data>
+  <data name="Condition.HasSsdVolume.Description" xml:space="preserve">
+    <value>ReTrim only applies to SSD drives with a drive letter.</value>
+  </data>
 </root>
