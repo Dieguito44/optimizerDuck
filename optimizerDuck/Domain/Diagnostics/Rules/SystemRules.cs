@@ -59,6 +59,34 @@ public sealed class BootSlowRule : IDiagnosticRule
     }
 }
 
+/// <summary>R-WIN-CORRUPT: the Windows component store is damaged (DISM CheckHealth).</summary>
+public sealed class WinCorruptRule : IDiagnosticRule
+{
+    public string RuleId => RuleIds.WinCorrupt;
+    public IReadOnlyList<string> PossibleActionIds { get; } = [ActionIds.RepairWindows];
+
+    public RuleResult Evaluate(DiagnosticSnapshot snapshot, ReferenceTables refs)
+    {
+        if (!snapshot.ImageHealth.TryGet(out var health))
+            return RuleResult.NotMeasurable(
+                RuleId,
+                snapshot.ImageHealth.Reason,
+                "windows.image_health"
+            );
+
+        return health == Services.Repair.WindowsImageHealth.Healthy
+            ? RuleResult.Pass(RuleId)
+            : RuleResult.Found(
+                new Finding(
+                    RuleId,
+                    Severity.High,
+                    [new("windows.image_health", Text: health.ToString())],
+                    [ActionIds.RepairWindows]
+                )
+            );
+    }
+}
+
 /// <summary>R-TCP-AUTOTUNE: TCP receive window auto-tuning disabled.</summary>
 public sealed class TcpAutoTuneRule : IDiagnosticRule
 {
@@ -322,6 +350,7 @@ public static class DiagnosticRules
         new HddSystemRule(),
         new DiskFreeRule(),
         new UnstableRule(),
+        new WinCorruptRule(),
         new TrimOffRule(),
         new StartupManyRule(),
         new BootSlowRule(),

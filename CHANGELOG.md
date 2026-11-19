@@ -4,6 +4,34 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Fase 4: reparación y almacenamiento (19/11/2026)
+
+**Reparar Windows** (página nueva)
+- Corre, en este orden: DISM `/ScanHealth`, DISM `/RestoreHealth` (solo si la imagen tiene daños; si está sana se salta), `sfc /scannow` y `chkdsk C: /scan`.
+- Pasa por `OperationRunner`: diálogo de progreso con el porcentaje de cada paso, reintento si algo falla y registro en el historial. Las reparaciones quedan como irreversibles.
+- La salida se lee con la codificación de cada herramienta (UTF-16 de sfc, OEM 850 de DISM y chkdsk, UTF-8), así que no salen caracteres rotos.
+- El estado de la imagen se lee con `Repair-WindowsImage -CheckHealth`, que no depende del idioma. `chkdsk` se interpreta por su código de salida (0 sin errores, 1 o 2 reparó, 3 necesita reparar al reiniciar).
+- Cada paso tiene un límite de 60 minutos.
+
+**Categoría Almacenamiento** (en Optimizar)
+- Limpiar el almacén de componentes (ACT-DISM-CLEANUP, Safe): `/AnalyzeComponentStore` y `/StartComponentCleanup`. Irreversible.
+- Activar el Sensor de almacenamiento (ACT-STORAGESENSE, Safe). Reversible.
+- Activar TRIM (ACT-TRIM, Safe): `DisableDeleteNotification = 0`. Reversible.
+- Comprimir Windows (ACT-COMPACTOS, Moderate): solo en discos de sistema de 256 GB o menos. Se revierte con `compact /CompactOS:never`. Si ya estaba comprimido, se salta.
+- Borrar respaldos de actualizaciones (ACT-DISM-RESETBASE, Risky): irreversible, nunca en un perfil por defecto.
+- DISM y Compact OS usan un límite de 60 minutos; el del resto de la app es de 2.
+
+**Red**
+- Ajuste automático de TCP en normal (ACT-TCP-NORMAL, Safe, en Rendimiento): lee el nivel actual con `Get-NetTCPSetting` (no depende del idioma) y al revertir pone el nivel anterior.
+
+**Diagnóstico**
+- Regla R-WIN-CORRUPT: archivos de Windows dañados según DISM CheckHealth (Alta, ACT-REPAIR-WIN).
+
+**Prueba en el PC de Diego** (19/11/2026, solo la prueba autorizada)
+- Storage Sense, TRIM y TCP ya estaban bien: quedaron como "No había nada que hacer" y sin datos de reversión.
+- Reversión real: con Storage Sense apagado a propósito, se aplicó (0 a 1, cambio con reversión guardada) y se revirtió (1 a 0, archivo de reversión borrado, historial con "Revert"). Al final se dejó activo, como estaba.
+- Sin probar en el PC: la limpieza con DISM, Reparar Windows, Compact OS y ResetBase. Están cubiertos por tests.
+
 ### Fase 3: medición antes/después y PDF (19/11/2026)
 
 **Qué hace**

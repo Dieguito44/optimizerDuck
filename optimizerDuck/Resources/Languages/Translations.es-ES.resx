@@ -4933,4 +4933,145 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Diagnostic.Action.ACT-BIOS-XMP.Review" xml:space="preserve">
     <value>Revisar la estabilidad del perfil XMP/EXPO en la BIOS</value>
   </data>
+  <data name="Optimizer.Storage" xml:space="preserve">
+    <value>Almacenamiento</value>
+  </data>
+  <data name="Optimizer.Storage.DismComponentCleanup.Name" xml:space="preserve">
+    <value>Limpiar el almacén de componentes de Windows</value>
+  </data>
+  <data name="Optimizer.Storage.DismComponentCleanup.ShortDescription" xml:space="preserve">
+    <value>Quita versiones viejas de componentes que dejan las actualizaciones (DISM StartComponentCleanup). Libera espacio. No se puede deshacer: las versiones quitadas no vuelven.</value>
+  </data>
+  <data name="Optimizer.Storage.DismComponentCleanup.Progress.Analyze" xml:space="preserve">
+    <value>Analizando el almacén de componentes...</value>
+  </data>
+  <data name="Optimizer.Storage.DismComponentCleanup.Progress.Cleanup" xml:space="preserve">
+    <value>Limpiando el almacén de componentes (puede tardar varios minutos)...</value>
+  </data>
+  <data name="Optimizer.Storage.EnableStorageSense.Name" xml:space="preserve">
+    <value>Activar el Sensor de almacenamiento</value>
+  </data>
+  <data name="Optimizer.Storage.EnableStorageSense.ShortDescription" xml:space="preserve">
+    <value>Deja que Windows borre archivos temporales y vacíe la papelera solo cuando falta espacio.</value>
+  </data>
+  <data name="Optimizer.Storage.EnableTrim.Name" xml:space="preserve">
+    <value>Activar TRIM</value>
+  </data>
+  <data name="Optimizer.Storage.EnableTrim.ShortDescription" xml:space="preserve">
+    <value>Asegura que Windows le diga al SSD qué bloques están libres, para que no pierda velocidad con el tiempo.</value>
+  </data>
+  <data name="Optimizer.Storage.EnableCompactOs.Name" xml:space="preserve">
+    <value>Comprimir Windows (Compact OS)</value>
+  </data>
+  <data name="Optimizer.Storage.EnableCompactOs.ShortDescription" xml:space="preserve">
+    <value>Comprime los archivos de Windows para liberar varios GB. Solo para discos de sistema de 256 GB o menos. Tarda de 10 a 20 minutos.</value>
+  </data>
+  <data name="Optimizer.Storage.EnableCompactOs.Progress.Compressing" xml:space="preserve">
+    <value>Comprimiendo los archivos de Windows (de 10 a 20 minutos)...</value>
+  </data>
+  <data name="Optimizer.Storage.DismResetBase.Name" xml:space="preserve">
+    <value>Borrar respaldos de actualizaciones (ResetBase)</value>
+  </data>
+  <data name="Optimizer.Storage.DismResetBase.ShortDescription" xml:space="preserve">
+    <value>Libera más espacio que la limpieza normal, pero las actualizaciones instaladas ya no se podrán desinstalar. No se puede deshacer. Solo con consentimiento del cliente.</value>
+  </data>
+  <data name="Optimizer.Storage.DismResetBase.Progress.Cleanup" xml:space="preserve">
+    <value>Limpiando y borrando respaldos de actualizaciones (puede tardar varios minutos)...</value>
+  </data>
+  <data name="Optimizer.Storage.Error.CommandFailed" xml:space="preserve">
+    <value>El comando falló (código {0}).</value>
+  </data>
+  <data name="Condition.SmallSystemDisk.Title" xml:space="preserve">
+    <value>Solo para discos pequeños</value>
+  </data>
+  <data name="Condition.SmallSystemDisk.Description" xml:space="preserve">
+    <value>Compact OS solo vale la pena cuando el disco de Windows es de 256 GB o menos.</value>
+  </data>
+  <data name="Optimizer.Performance.TcpAutoTuningNormal.Name" xml:space="preserve">
+    <value>Ajuste automático de TCP en normal</value>
+  </data>
+  <data name="Optimizer.Performance.TcpAutoTuningNormal.ShortDescription" xml:space="preserve">
+    <value>Si algún &quot;truco&quot; desactivó o limitó el ajuste automático de TCP, lo vuelve a normal para que las descargas usen toda la conexión.</value>
+  </data>
+  <data name="Optimizer.Performance.TcpAutoTuningNormal.Error.ReadFailed" xml:space="preserve">
+    <value>No se pudo leer el nivel actual del ajuste automático de TCP.</value>
+  </data>
+  <data name="Sidebar.Repair" xml:space="preserve">
+    <value>Reparar Windows</value>
+  </data>
+  <data name="Repair.Header.Title" xml:space="preserve">
+    <value>Reparar Windows</value>
+  </data>
+  <data name="Repair.Header.Description" xml:space="preserve">
+    <value>Revisa y repara los archivos de sistema de Windows y el disco con las herramientas que trae Windows.</value>
+  </data>
+  <data name="Repair.Warning" xml:space="preserve">
+    <value>Puede tardar de 20 a 60 minutos. Crea antes un punto de restauración y deja el PC encendido y conectado. DISM puede descargar archivos de Windows Update.</value>
+  </data>
+  <data name="Repair.Steps.Title" xml:space="preserve">
+    <value>Qué hace, en orden</value>
+  </data>
+  <data name="Repair.Steps.Description" xml:space="preserve">
+    <value>1. DISM ScanHealth: revisa el almacén de componentes. 2. DISM RestoreHealth: lo repara, solo si tiene daños. 3. sfc /scannow: revisa y repara los archivos de sistema. 4. chkdsk /scan: revisa el disco de Windows sin reiniciar.</value>
+  </data>
+  <data name="Repair.Button.Run" xml:space="preserve">
+    <value>Reparar Windows</value>
+  </data>
+  <data name="Repair.Results.Title" xml:space="preserve">
+    <value>Resultado</value>
+  </data>
+  <data name="Repair.Progress" xml:space="preserve">
+    <value>Paso {0} de {1}: {2} ({3})</value>
+  </data>
+  <data name="Repair.Step.ScanHealth" xml:space="preserve">
+    <value>DISM ScanHealth</value>
+  </data>
+  <data name="Repair.Step.RestoreHealth" xml:space="preserve">
+    <value>DISM RestoreHealth</value>
+  </data>
+  <data name="Repair.Step.Sfc" xml:space="preserve">
+    <value>Comprobador de archivos de sistema (sfc)</value>
+  </data>
+  <data name="Repair.Step.ChkdskScan" xml:space="preserve">
+    <value>Revisión del disco (chkdsk /scan)</value>
+  </data>
+  <data name="Repair.Outcome.Ok" xml:space="preserve">
+    <value>Sin problemas</value>
+  </data>
+  <data name="Repair.Outcome.Repaired" xml:space="preserve">
+    <value>Hecho</value>
+  </data>
+  <data name="Repair.Outcome.Skipped" xml:space="preserve">
+    <value>No hizo falta</value>
+  </data>
+  <data name="Repair.Outcome.Problem" xml:space="preserve">
+    <value>Encontró un problema</value>
+  </data>
+  <data name="Repair.Outcome.Failed" xml:space="preserve">
+    <value>Falló</value>
+  </data>
+  <data name="Repair.RestoreHealth.NotNeeded" xml:space="preserve">
+    <value>El almacén de componentes está sano: no hay nada que reparar.</value>
+  </data>
+  <data name="Repair.TimedOut" xml:space="preserve">
+    <value>Tardó más de 60 minutos y se detuvo.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-WIN-CORRUPT.Title" xml:space="preserve">
+    <value>Archivos de Windows dañados</value>
+  </data>
+  <data name="Diagnostic.Rule.R-WIN-CORRUPT.Description" xml:space="preserve">
+    <value>El almacén de componentes de Windows reporta daños. Puede causar errores y fallas al actualizar. &quot;Reparar Windows&quot; lo corrige.</value>
+  </data>
+  <data name="Diagnostic.Evidence.windows.image_health" xml:space="preserve">
+    <value>Almacén de componentes</value>
+  </data>
+  <data name="Diagnostic.Value.Repairable" xml:space="preserve">
+    <value>con daños, reparable</value>
+  </data>
+  <data name="Diagnostic.Value.NonRepairable" xml:space="preserve">
+    <value>con daños, no reparable</value>
+  </data>
+  <data name="Diagnostic.Value.Healthy" xml:space="preserve">
+    <value>sano</value>
+  </data>
 </root>

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using optimizerDuck.Domain.Diagnostics;
 using optimizerDuck.Domain.Diagnostics.Rules;
 using optimizerDuck.Services.System;
+using optimizerDuck.Services.System.Primitives;
 using optimizerDuck.Services.UI;
 
 namespace optimizerDuck.Services.Diagnostics;
@@ -21,10 +22,13 @@ public interface IDiagnosticCollector
 public sealed class DiagnosticCollector(
     SystemInfoService systemInfo,
     StartupManagerService startupManager,
+    ShellService shell,
     TimeProvider timeProvider,
     ILogger<DiagnosticCollector> logger
 ) : IDiagnosticCollector
 {
+    private static readonly TimeSpan ImageHealthTimeout = TimeSpan.FromSeconds(60);
+
     private static readonly TimeSpan ProbeTimeout = TimeSpan.FromSeconds(10);
     private static readonly TimeSpan StartupTimeout = TimeSpan.FromSeconds(20);
 
@@ -78,6 +82,7 @@ public sealed class DiagnosticCollector(
             ct
         );
         var startupTask = CountStartupAppsAsync(ct);
+        var imageTask = ReadImageHealthAsync(ct);
         var bootTask = Run(
             "boot",
             () => Measurements.BootTimeProbe.Read().MedianMs,
@@ -92,7 +97,8 @@ public sealed class DiagnosticCollector(
                 configTask,
                 activationTask,
                 startupTask,
-                bootTask
+                bootTask,
+                imageTask
             )
             .ConfigureAwait(false);
 
@@ -135,6 +141,7 @@ public sealed class DiagnosticCollector(
         var snapshot = DiagnosticSnapshotBuilder.Build(info, probes, now) with
         {
             BootMedianMs = await bootTask.ConfigureAwait(false),
+            ImageHealth = await imageTask.ConfigureAwait(false),
         };
         logger.LogInformation(
             "Diagnostic snapshot collected: {Disks} disks, {Gpus} GPUs, {Modules} RAM modules",
@@ -143,6 +150,35 @@ public sealed class DiagnosticCollector(
             snapshot.Ram.Modules.Count
         );
         return snapshot;
+    }
+
+    /// <summary>DISM CheckHealth: reads the flag the last scan left, fast and read-only.</summary>
+    private async Task<Measured<Repair.WindowsImageHealth>> ReadImageHealthAsync(
+        CancellationToken ct
+    )
+    {
+        try
+        {
+            var result = await shell
+                .QueryPowerShellAsync(
+                    "(Repair-WindowsImage -Online -CheckHealth).ImageHealthState",
+                    logger,
+                    ct: ct
+                )
+                .WaitAsync(ImageHealthTimeout, ct)
+                .ConfigureAwait(false);
+            return Repair.RepairService.ParseImageHealth(result.Stdout) is { } health
+                ? Measured<Repair.WindowsImageHealth>.Of(health)
+                : Measured<Repair.WindowsImageHealth>.Missing(
+                    Environment.IsPrivilegedProcess
+                        ? NotMeasuredReason.QueryFailed
+                        : NotMeasuredReason.AccessDenied
+                );
+        }
+        catch (TimeoutException)
+        {
+            return Measured<Repair.WindowsImageHealth>.Missing(NotMeasuredReason.TimedOut);
+        }
     }
 
     private async Task<Measured<int>> CountStartupAppsAsync(CancellationToken ct)

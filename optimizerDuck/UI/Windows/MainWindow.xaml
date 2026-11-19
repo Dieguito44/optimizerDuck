@@ -57,6 +57,12 @@
                     Icon="{ui:SymbolIcon ClipboardTaskListLtr24}"
                     TargetPageType="{x:Type pages:SessionPage}" />
 
+                <controls:FilledNavigationViewItem
+                    Content="{extensions:Loc Sidebar.Repair}"
+                    Cursor="Hand"
+                    Icon="{ui:SymbolIcon WrenchScrewdriver24}"
+                    TargetPageType="{x:Type pages:RepairPage}" />
+
                 <ui:NavigationViewItemSeparator Margin="0,2,0,2" />
 
                 <controls:FilledNavigationViewItem
