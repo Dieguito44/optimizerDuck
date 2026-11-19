@@ -3649,4 +3649,16 @@ Aggiorna ora per godere delle ultime funzionalità, miglioramenti e correzioni.<
   <data name="BiosGuide.Recover.Body" xml:space="preserve">
     <value>In the BIOS, F9 or Exit &gt; Load UEFI Defaults puts every setting back to factory values; then save with F10. To leave without saving: F7 or Exit &gt; Discard Changes and Exit.</value>
   </data>
+  <data name="Condition.WidgetsPolicy.Title" xml:space="preserve">
+    <value>Windows 11 Pro or higher</value>
+  </data>
+  <data name="Condition.WidgetsPolicy.Description" xml:space="preserve">
+    <value>The &quot;Allow widgets&quot; policy exists on Windows 11 Pro, Enterprise and Education, not on Home or Windows 10.</value>
+  </data>
+  <data name="Revert.GroupPolicy.Description" xml:space="preserve">
+    <value>Restore the local policy {0}\{1}</value>
+  </data>
+  <data name="Optimizer.Details.Provider.GroupPolicy" xml:space="preserve">
+    <value>Group Policy</value>
+  </data>
 </root>

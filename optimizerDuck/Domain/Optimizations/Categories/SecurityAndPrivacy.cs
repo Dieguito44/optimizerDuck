@@ -316,34 +316,34 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
         }
     }
 
+    /// <summary>
+    ///     Zentra: the official "Allow widgets = Disabled" policy, set through the local Group
+    ///     Policy like gpedit.msc does. Writing the registry directly (what optimizerDuck did) is
+    ///     blocked by the User Choice Protection Driver on current Windows 11, even for an
+    ///     administrator, and so was the old HKCU Feeds value (a Windows 10 taskbar setting).
+    /// </summary>
     [Optimization(
         Id = "26F3AE39-4EAA-45D4-9375-B244159D5EB3",
         Risk = OptimizationRisk.Safe,
-        Tags = OptimizationTags.Privacy | OptimizationTags.System
+        Tags = OptimizationTags.Privacy | OptimizationTags.System | OptimizationTags.Windows11Only,
+        Condition = typeof(WidgetsPolicyCondition)
     )]
     public class DisableNewsAndInterests : BaseOptimization
     {
-        public override Task<ApplyResult> ApplyAsync(
+        public override async Task<ApplyResult> ApplyAsync(
             IProgress<ProcessingProgress> progress,
             OptimizationContext context
         )
         {
-            RegistryService.Write(
+            await LocalGroupPolicyService.SetMachineDwordAsync(
                 context,
-                new RegistryItem(
-                    @"HKLM\SOFTWARE\Policies\Microsoft\Dsh",
-                    "AllowNewsAndInterests",
-                    0
-                ),
-                new RegistryItem(
-                    @"HKCU\Software\Microsoft\Windows\CurrentVersion\Feeds",
-                    "ShellFeedsTaskbarViewMode",
-                    0
-                )
+                @"Software\Policies\Microsoft\Dsh",
+                "AllowNewsAndInterests",
+                0
             );
 
-            context.Logger.LogInformation("Disabled News and Interests feed");
-            return Task.FromResult(context.Changes.ToApplyResult());
+            context.Logger.LogInformation("Widgets policy set to not allowed");
+            return context.Changes.ToApplyResult();
         }
     }
 

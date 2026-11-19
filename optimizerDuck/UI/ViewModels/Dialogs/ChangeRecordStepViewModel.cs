@@ -196,6 +196,7 @@ public sealed class ChangeRecordStepViewModel
             "Hibernation" => Loc.Instance["Optimizer.Details.Provider.Hibernation"],
             "USB power" => Loc.Instance["Optimizer.Details.Provider.UsbPower"],
             "Shell" => Loc.Instance["Optimizer.Details.Provider.Shell"],
+            "Group Policy" => Loc.Instance["Optimizer.Details.Provider.GroupPolicy"],
             _ => name,
         };
     }

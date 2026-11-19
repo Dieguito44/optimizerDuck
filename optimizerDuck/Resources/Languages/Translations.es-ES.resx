@@ -5440,4 +5440,16 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="BiosGuide.Recover.Body" xml:space="preserve">
     <value>En la BIOS, F9 o Exit &gt; Load UEFI Defaults devuelve todo a los valores de fábrica; luego guarda con F10. Para salir sin guardar: F7 o Exit &gt; Discard Changes and Exit.</value>
   </data>
+  <data name="Condition.WidgetsPolicy.Title" xml:space="preserve">
+    <value>Windows 11 Pro o superior</value>
+  </data>
+  <data name="Condition.WidgetsPolicy.Description" xml:space="preserve">
+    <value>La directiva &quot;Permitir widgets&quot; existe en Windows 11 Pro, Enterprise y Education, no en Home ni en Windows 10.</value>
+  </data>
+  <data name="Revert.GroupPolicy.Description" xml:space="preserve">
+    <value>Restaurar la directiva local {0}\{1}</value>
+  </data>
+  <data name="Optimizer.Details.Provider.GroupPolicy" xml:space="preserve">
+    <value>Directiva de grupo</value>
+  </data>
 </root>
