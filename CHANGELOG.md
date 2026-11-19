@@ -4,9 +4,29 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
-### Fase 7: opciones con consentimiento escrito (19/11/2026, abierta: falta la prueba en el PC)
+### Mejoras, Fase 2A: protecciones y diagnóstico honesto (19/11/2026, PR 9, sobre el PR 8)
 
-Se apoya en la rama de la Fase 6B (PR 6), que debe fusionarse antes.
+Primer bloque del plan de mejoras posterior a la auditoría. La Fase 1 del plan (bloqueantes de seguridad y legales) queda de última por decisión de Diego; hasta cerrarla no se atiende a clientes.
+
+- **Protecciones (F2-04):**
+  - Fotos protegida con su nombre real.
+  - En Bloatware, "Segura" es solo lo que quita el perfil; el resto pasa a "Precaución".
+  - Las tareas de Windows Update, Defender, restauración, BitLocker, TPM y Edge Update no se pueden deshabilitar, borrar ni sobrescribir, y Zentra dice por qué.
+- **Reglas recalibradas (F2-07):**
+  - R-THERMAL cuenta incidentes, no eventos, y sin temperatura medida queda en Media.
+  - R-RAM-XMP no se evalúa en portátiles con SMBIOS; en escritorio, SMBIOS sola es Media.
+  - R-UNSTABLE sin pantallazos azules es Media.
+  - R-SSD-HEALTH es Crítica solo con el disco "no sano"; errores acumulados solos, Alta.
+  - R-APPS-OUTDATED: si winget falla, es "no medible".
+- **Sin datos inventados:**
+  - sfc lee su resultado real en CBS.log.
+  - Una sonda que falla ya no tumba el diagnóstico.
+  - La velocidad configurada de la RAM ya no se rellena con la del módulo.
+- **Puntaje:** el de referencia del PC de Diego pasa de 51 a 70.
+
+### Fase 7: opciones con consentimiento escrito (19/11/2026, PR 7, fusionada sin prueba en el PC)
+
+Se apoyó en la rama de la Fase 6B (PR 6).
 
 - **Ventana de consentimiento:** cada opción pide marcar "El cliente aceptó por escrito este cambio". El texto dice qué cambia, el riesgo, si hace falta reiniciar y cómo se deshace. Sin ventana (tests, sin interfaz) la respuesta es siempre "no".
 - **Pausar Windows Update 7 días** (ACT-WU-PAUSE7, Moderate): los valores nativos de pausa que escribe Configuración, nunca más de 7 días. Se reanuda sola; revertir la reanuda ya.
@@ -20,9 +40,9 @@ Se apoya en la rama de la Fase 6B (PR 6), que debe fusionarse antes.
 - Además: la pausa no se puede encadenar (7 días de espera tras cada pausa), el consentimiento queda en el log, no se aplica nada si no se pueden leer las exclusiones actuales, y el modo juego avanzado no aplica si la Integridad de memoria está bloqueada por UEFI o por directiva.
 - Fable re-verificó los arreglos: nada bloquea el merge.
 
-**Estado:** los tests corren en GitHub; en local Smart App Control ya bloquea también la DLL de tests. La prueba en el PC de Diego queda para cuando haya firma (Fase 8). PR 7 abierto.
+**Estado:** PR 7 fusionado el 19/11/2026 sin la prueba en el PC. Diego apagó Smart App Control en su PC ese día, así que la prueba ya se puede hacer.
 
-### Fase 6B: diagnóstico ampliado y mantenimiento (19/11/2026, abierta: falta la prueba en el PC)
+### Fase 6B: diagnóstico ampliado y mantenimiento (19/11/2026, PR 6, fusionada sin prueba en el PC)
 
 **Diagnósticos nuevos**
 - R-MON-HZ (Alta): monitor por debajo de sus Hz. Solo monitores físicos con EDID, sin clonar, en su resolución nativa y con 10 Hz o más de diferencia. Monitores con la configuración de pantalla de Windows (CCD), no con WMI (que da una fila por adaptador).
