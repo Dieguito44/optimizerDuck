@@ -164,6 +164,11 @@ public class ProfilePreviewTests
             @"\.SetValue\(|\bFile\.(Write|Delete|Move|Copy|Create)|\bDirectory\.(Delete|Move)"
                 + @"|\bProcess\.Start\b|\bnew\s+ProcessStartInfo\b|\bServiceController\b"
                 + @"|\bClientConsent\b"
+                // Any service that is not one of the four guarded primitives (hibernation, USB
+                // power, search index, monitors, system restore...): found in 3D, five of them
+                // changed the PC during a preview.
+                + @"|\b(?!RegistryService\b|ServiceProcessService\b|ScheduledTaskService\b|LocalGroupPolicyService\b)[A-Z]\w*Service\.[A-Z]\w*\("
+                + @"|\bnew\s+[\w.]*Service\("
         );
         var psQuery = new Regex(
             @"QueryPowerShellAsync\(\s*(?://[^\n]*\n\s*)*\$?""(?<cmd>[^""]*)"""
@@ -195,7 +200,9 @@ public class ProfilePreviewTests
             );
             var body = next.Success ? text.Substring(start, next.Index + 1) : text[start..];
 
-            var handlesPreview = body.Contains("context.Preview") || body.Contains("PreviewOnly(");
+            var handlesPreview =
+                Regex.IsMatch(body, @"\b(context|call)\.Preview\b")
+                || body.Contains("PreviewOnly(");
             if (!handlesPreview)
                 foreach (Match m in direct.Matches(body))
                     offenders.Add($"{type.Name}: {m.Value} without a preview guard");
