@@ -256,6 +256,51 @@ public static class Shared
         "CyberLinkMediaSuiteEssentials", // OEM media suite
     };
 
+    /// <summary>
+    ///     AppX packages Zentra never lists or removes (plan sections 1 and 6.2): Edge, WebView2,
+    ///     the Store, winget, Windows Security, Calculator and Photos. Unlike
+    ///     <see cref="CautionApps" />, this is a hard block, not a label.
+    /// </summary>
+    public static readonly HashSet<string> ProtectedApps = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "Microsoft.MicrosoftEdge",
+        "Microsoft.MicrosoftEdge.Stable",
+        "Microsoft.MicrosoftEdgeDevToolsClient",
+        "Microsoft.Win32WebViewHost",
+        "Microsoft.WindowsStore",
+        "Microsoft.StorePurchaseApp",
+        "Microsoft.DesktopAppInstaller",
+        "Microsoft.SecHealthUI",
+        "Microsoft.WindowsCalculator",
+        "Microsoft.WindowsPhotos",
+    };
+
+    /// <summary>Package name prefixes and fragments that are always protected.</summary>
+    private static readonly string[] ProtectedAppPrefixes =
+    [
+        "Microsoft.VCLibs",
+        "Microsoft.UI.Xaml",
+        "Microsoft.NET.Native",
+        "Microsoft.WindowsAppRuntime",
+    ];
+
+    private static readonly string[] ProtectedAppFragments = ["MicrosoftEdge", "WebView"];
+
+    /// <summary>Whether an AppX package must never be listed for removal or removed.</summary>
+    public static bool IsProtectedApp(string? packageName)
+    {
+        if (string.IsNullOrWhiteSpace(packageName))
+            return false;
+
+        return ProtectedApps.Contains(packageName)
+            || ProtectedAppPrefixes.Any(prefix =>
+                packageName.StartsWith(prefix, StringComparison.OrdinalIgnoreCase)
+            )
+            || ProtectedAppFragments.Any(fragment =>
+                packageName.Contains(fragment, StringComparison.OrdinalIgnoreCase)
+            );
+    }
+
     /// <summary>The per-user data directory under LocalApplicationData.</summary>
     public static string RootDirectory =>
         Path.Combine(
