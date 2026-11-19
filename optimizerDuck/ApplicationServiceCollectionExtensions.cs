@@ -68,6 +68,7 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<DiagnosticPage>();
         services.AddSingleton<SessionViewModel>();
         services.AddSingleton<SessionPage>();
+        services.AddSingleton<optimizerDuck.Services.Repair.DefenderScanService>();
         services.AddSingleton<RepairViewModel>();
         services.AddSingleton<RepairPage>();
         services.AddSingleton<optimizerDuck.Services.Software.SoftwareService>();

@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using Microsoft.Extensions.Logging;
 using optimizerDuck.Common.Extensions;
 using optimizerDuck.Domain.Abstractions;
@@ -276,5 +277,64 @@ public sealed class SmallSystemDiskCondition : ConditionBase
                 () => Loc.Instance["Condition.SmallSystemDisk.Title"],
                 () => Loc.Instance["Condition.SmallSystemDisk.Description"]
             );
+    }
+
+    /// <summary>
+    ///     Zentra ACT-BACKUP-SETUP (plan phase 6B): system protection on the Windows drive and a
+    ///     weekly task (Sunday 12:00, as SYSTEM) that creates a restore point. Reverting removes
+    ///     the task; protection stays on, because turning it off deletes every restore point.
+    /// </summary>
+    [Optimization(
+        Id = "A6C2F9B4-3E81-4D7A-95B0-C4E7D1A83F52",
+        Risk = OptimizationRisk.Safe,
+        Tags = OptimizationTags.System | OptimizationTags.Disk
+    )]
+    public class WeeklyRestorePoints : BaseOptimization
+    {
+        internal const string TaskPath = @"\Zentra\";
+        internal const string TaskName = "Punto de restauracion semanal";
+
+        public override async Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            var drive = Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\";
+            var protection = new Services.System.SystemRestoreService(
+                Microsoft
+                    .Extensions
+                    .Logging
+                    .Abstractions
+                    .NullLogger<Services.System.SystemRestoreService>
+                    .Instance
+            ).EnableProtection(drive);
+            context.Logger.LogInformation(
+                "System protection on {Drive}: {Ok}",
+                drive,
+                protection.Succeeded
+            );
+
+            var exists = await context.Shell.QueryPowerShellAsync(
+                $"[bool](Get-ScheduledTask -TaskPath '{TaskPath}' -TaskName '{TaskName}' -ErrorAction SilentlyContinue)",
+                context.Logger,
+                ct: context.CancellationToken
+            );
+            if (exists.Stdout?.Trim().Equals("True", StringComparison.OrdinalIgnoreCase) == true)
+            {
+                context.Changes.AddSkip(Name, TaskPath + TaskName);
+                return context.Changes.ToApplyResult();
+            }
+
+            await context.Shell.PowerShellAsync(
+                "$a = New-ScheduledTaskAction -Execute 'powershell.exe' -Argument '-NoProfile -WindowStyle Hidden -Command \"Checkpoint-Computer -Description ''Zentra semanal'' -RestorePointType MODIFY_SETTINGS\"'; "
+                    + "$t = New-ScheduledTaskTrigger -Weekly -DaysOfWeek Sunday -At 12:00; "
+                    + "$p = New-ScheduledTaskPrincipal -UserId 'SYSTEM' -LogonType ServiceAccount -RunLevel Highest; "
+                    + "$s = New-ScheduledTaskSettingsSet -StartWhenAvailable; "
+                    + $"Register-ScheduledTask -TaskPath '{TaskPath}' -TaskName '{TaskName}' -Action $a -Trigger $t -Principal $p -Settings $s -Force | Out-Null",
+                context,
+                $"Unregister-ScheduledTask -TaskPath '{TaskPath}' -TaskName '{TaskName}' -Confirm:$false"
+            );
+            return context.Changes.ToApplyResult();
+        }
     }
 }

@@ -3872,4 +3872,79 @@ Atualize agora para desfrutar das últimas funcionalidades, melhorias e correç�
   <data name="Diagnostic.Evidence.backup.onedrive" xml:space="preserve">
     <value>OneDrive folder</value>
   </data>
+  <data name="Optimizer.Performance.DisableBrowserBackground.Name" xml:space="preserve">
+    <value>Browsers without background mode</value>
+  </data>
+  <data name="Optimizer.Performance.DisableBrowserBackground.ShortDescription" xml:space="preserve">
+    <value>Edge and Chrome stop running after you close them, and Edge stops preloading at sign-in. Frees RAM. The browsers will show &quot;Managed by your organization&quot;: that is this setting.</value>
+  </data>
+  <data name="Optimizer.Performance.DisableNicPowerSaving.Name" xml:space="preserve">
+    <value>Network card without power saving</value>
+  </data>
+  <data name="Optimizer.Performance.DisableNicPowerSaving.ShortDescription" xml:space="preserve">
+    <value>Windows stops turning off the network card to save power, which can drop the connection. It applies after the next restart, so a remote session is not cut.</value>
+  </data>
+  <data name="Optimizer.Performance.DisableNicPowerSaving.Error.NoAdapter" xml:space="preserve">
+    <value>No connected network card was found.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Name" xml:space="preserve">
+    <value>Large folders out of the search index</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.ShortDescription" xml:space="preserve">
+    <value>Downloads and game library folders leave the Windows Search index, so the indexer stops working through huge folders. Files there can still be opened; search will not list them.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Error.OtherUser" xml:space="preserve">
+    <value>Zentra runs with another account than the signed-in user, so it would exclude the wrong folders.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Error.NotExcluded" xml:space="preserve">
+    <value>Windows Search still indexes the folder.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Error.SearchUnavailable" xml:space="preserve">
+    <value>Windows Search is not available.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Error.NoFolders" xml:space="preserve">
+    <value>No Downloads or game folders were found.</value>
+  </data>
+  <data name="Optimizer.Storage.WeeklyRestorePoints.Name" xml:space="preserve">
+    <value>Weekly restore points</value>
+  </data>
+  <data name="Optimizer.Storage.WeeklyRestorePoints.ShortDescription" xml:space="preserve">
+    <value>Turns on system protection for the Windows drive and creates a weekly task (Sunday 12:00) that makes a restore point. Reverting removes the task; protection stays on, because turning it off deletes every restore point.</value>
+  </data>
+  <data name="Revert.IndexExclusion.Description" xml:space="preserve">
+    <value>Index {0} again</value>
+  </data>
+  <data name="Defender.Title" xml:space="preserve">
+    <value>Virus scan (Microsoft Defender)</value>
+  </data>
+  <data name="Defender.Help" xml:space="preserve">
+    <value>Full scan: checks every file, can take an hour or more. Offline scan: restarts the PC and scans before Windows starts (about 15 minutes); the remote session is cut.</value>
+  </data>
+  <data name="Defender.Full.Title" xml:space="preserve">
+    <value>Full scan</value>
+  </data>
+  <data name="Defender.Offline.Title" xml:space="preserve">
+    <value>Offline scan</value>
+  </data>
+  <data name="Defender.Offline.Warning" xml:space="preserve">
+    <value>The PC restarts in a few minutes and Defender scans before Windows starts, for about 15 minutes. The remote session will be cut: agree with the client first and save open work.</value>
+  </data>
+  <data name="Defender.Offline.Confirm" xml:space="preserve">
+    <value>Restart and scan</value>
+  </data>
+  <data name="Defender.TimedOut" xml:space="preserve">
+    <value>The scan took longer than expected and was stopped.</value>
+  </data>
+  <data name="Defender.Failed" xml:space="preserve">
+    <value>Defender ended with code {0}.</value>
+  </data>
+  <data name="Report.Section.HeavyApps" xml:space="preserve">
+    <value>Programs that take the most space</value>
+  </data>
+  <data name="Report.HeavyApp" xml:space="preserve">
+    <value>• {0}: {1} GB (installed {2})</value>
+  </data>
+  <data name="Report.HeavyApps.Note" xml:space="preserve">
+    <value>Sizes as the installers declare them. When each program was last used cannot be measured reliably.</value>
+  </data>
 </root>

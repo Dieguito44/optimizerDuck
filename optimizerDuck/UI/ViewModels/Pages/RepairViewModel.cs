@@ -16,12 +16,16 @@ public sealed record RepairStepItem(string Name, string Outcome, string Summary)
 /// </summary>
 public partial class RepairViewModel(
     RepairService repairService,
+    DefenderScanService defenderScanService,
+    Wpf.Ui.IContentDialogService dialogs,
     ToolRunPresenter presenter,
     ILogger<RepairViewModel> logger
 ) : ViewModel
 {
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(RunRepairCommand))]
+    [NotifyCanExecuteChangedFor(nameof(FullScanCommand))]
+    [NotifyCanExecuteChangedFor(nameof(OfflineScanCommand))]
     private bool _isRunning;
 
     [ObservableProperty]
@@ -59,6 +63,46 @@ public partial class RepairViewModel(
                     )
                 );
             HasResults = Steps.Count > 0;
+            IsRunning = false;
+        }
+    }
+
+    /// <summary>ACT-DEFENDER-FULL: a full Defender scan. Can take an hour or more.</summary>
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private Task FullScanAsync() => RunToolAsync(defenderScanService.BuildFullScanRequest());
+
+    /// <summary>ACT-DEFENDER-OFFLINE: restarts the PC into the offline scanner, after a warning.</summary>
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private async Task OfflineScanAsync()
+    {
+        var answer = await Wpf.Ui.Extensions.ContentDialogServiceExtensions.ShowSimpleDialogAsync(
+            dialogs,
+            new Wpf.Ui.SimpleContentDialogCreateOptions
+            {
+                Title = Loc.Instance["Defender.Offline.Title"],
+                Content = Loc.Instance["Defender.Offline.Warning"],
+                PrimaryButtonText = Loc.Instance["Defender.Offline.Confirm"],
+                CloseButtonText = Loc.Instance["Button.Cancel"],
+            }
+        );
+        if (answer == Wpf.Ui.Controls.ContentDialogResult.Primary)
+            await RunToolAsync(defenderScanService.BuildOfflineScanRequest());
+    }
+
+    private async Task RunToolAsync(Domain.Execution.OperationRequest request)
+    {
+        IsRunning = true;
+        try
+        {
+            var outcome = await presenter.RunAsync(request);
+            await presenter.ReportAsync(request, outcome, request.DisplayName);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "{Tool} failed", request.DisplayName);
+        }
+        finally
+        {
             IsRunning = false;
         }
     }

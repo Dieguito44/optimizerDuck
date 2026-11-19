@@ -5671,4 +5671,79 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Diagnostic.Evidence.backup.onedrive" xml:space="preserve">
     <value>Carpeta de OneDrive</value>
   </data>
+  <data name="Optimizer.Performance.DisableBrowserBackground.Name" xml:space="preserve">
+    <value>Navegadores sin segundo plano</value>
+  </data>
+  <data name="Optimizer.Performance.DisableBrowserBackground.ShortDescription" xml:space="preserve">
+    <value>Edge y Chrome dejan de seguir corriendo al cerrarlos, y Edge deja de precargarse al iniciar sesión. Libera RAM. Los navegadores mostrarán &quot;Administrado por tu organización&quot;: es este ajuste.</value>
+  </data>
+  <data name="Optimizer.Performance.DisableNicPowerSaving.Name" xml:space="preserve">
+    <value>Tarjeta de red sin ahorro de energía</value>
+  </data>
+  <data name="Optimizer.Performance.DisableNicPowerSaving.ShortDescription" xml:space="preserve">
+    <value>Windows deja de apagar la tarjeta de red para ahorrar energía, lo que puede cortar la conexión. Se aplica en el próximo reinicio, así no se corta una sesión remota.</value>
+  </data>
+  <data name="Optimizer.Performance.DisableNicPowerSaving.Error.NoAdapter" xml:space="preserve">
+    <value>No se encontró ninguna tarjeta de red conectada.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Name" xml:space="preserve">
+    <value>Carpetas grandes fuera del indexador</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.ShortDescription" xml:space="preserve">
+    <value>Descargas y las carpetas de juegos salen del índice de la búsqueda de Windows, así el indexador deja de recorrer carpetas enormes. Los archivos se siguen abriendo; la búsqueda no los mostrará.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Error.OtherUser" xml:space="preserve">
+    <value>Zentra corre con otra cuenta distinta a la del usuario que inició sesión, así que excluiría carpetas equivocadas.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Error.NotExcluded" xml:space="preserve">
+    <value>La búsqueda de Windows sigue indexando la carpeta.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Error.SearchUnavailable" xml:space="preserve">
+    <value>La búsqueda de Windows no está disponible.</value>
+  </data>
+  <data name="Optimizer.Performance.ExcludeLargeFoldersFromIndex.Error.NoFolders" xml:space="preserve">
+    <value>No se encontraron carpetas de Descargas ni de juegos.</value>
+  </data>
+  <data name="Optimizer.Storage.WeeklyRestorePoints.Name" xml:space="preserve">
+    <value>Puntos de restauración semanales</value>
+  </data>
+  <data name="Optimizer.Storage.WeeklyRestorePoints.ShortDescription" xml:space="preserve">
+    <value>Activa la protección del sistema en el disco de Windows y crea una tarea semanal (domingo 12:00) que hace un punto de restauración. Al revertir se borra la tarea; la protección queda activa, porque apagarla borra todos los puntos de restauración.</value>
+  </data>
+  <data name="Revert.IndexExclusion.Description" xml:space="preserve">
+    <value>Volver a indexar {0}</value>
+  </data>
+  <data name="Defender.Title" xml:space="preserve">
+    <value>Escaneo de virus (Microsoft Defender)</value>
+  </data>
+  <data name="Defender.Help" xml:space="preserve">
+    <value>Escaneo completo: revisa todos los archivos, puede tardar una hora o más. Escaneo sin conexión: reinicia el PC y revisa antes de que arranque Windows (unos 15 minutos); la sesión remota se corta.</value>
+  </data>
+  <data name="Defender.Full.Title" xml:space="preserve">
+    <value>Escaneo completo</value>
+  </data>
+  <data name="Defender.Offline.Title" xml:space="preserve">
+    <value>Escaneo sin conexión</value>
+  </data>
+  <data name="Defender.Offline.Warning" xml:space="preserve">
+    <value>El PC se reinicia en unos minutos y Defender revisa antes de que arranque Windows, durante unos 15 minutos. La sesión remota se cortará: acuérdalo antes con el cliente y guarda lo que esté abierto.</value>
+  </data>
+  <data name="Defender.Offline.Confirm" xml:space="preserve">
+    <value>Reiniciar y escanear</value>
+  </data>
+  <data name="Defender.TimedOut" xml:space="preserve">
+    <value>El escaneo tardó más de lo esperado y se detuvo.</value>
+  </data>
+  <data name="Defender.Failed" xml:space="preserve">
+    <value>Defender terminó con el código {0}.</value>
+  </data>
+  <data name="Report.Section.HeavyApps" xml:space="preserve">
+    <value>Programas que más espacio ocupan</value>
+  </data>
+  <data name="Report.HeavyApp" xml:space="preserve">
+    <value>• {0}: {1} GB (instalado el {2})</value>
+  </data>
+  <data name="Report.HeavyApps.Note" xml:space="preserve">
+    <value>Tamaños según lo que declara cada instalador. La última vez que se usó cada programa no se puede medir con confianza.</value>
+  </data>
 </root>
