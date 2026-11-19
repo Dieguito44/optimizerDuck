@@ -65,6 +65,18 @@ public static class DisplayModeService
         return plans;
     }
 
+    /// <summary>The dry run (plan F2-03): each monitor's rate now and after. Changes nothing.</summary>
+    public static void Preview(OpCall call)
+    {
+        foreach (var plan in Plan(DisplayNative.ReadMonitors(), DisplayNative.CurrentMode))
+            call.Preview?.Add(
+                PlannedChangeKind.Command,
+                plan.Monitor.FriendlyName ?? plan.Monitor.GdiName ?? "monitor",
+                $"{plan.Current.Hz} Hz",
+                $"{plan.Target.Hz} Hz"
+            );
+    }
+
     public static async Task ApplyAsync(OpCall call)
     {
         var plans = Plan(DisplayNative.ReadMonitors(), DisplayNative.CurrentMode);

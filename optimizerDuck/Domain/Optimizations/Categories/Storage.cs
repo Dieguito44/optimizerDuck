@@ -269,33 +269,50 @@ public class Storage : LocalizedObject, IOptimizationCategory
         {
             var drive = Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\";
             var wasOn = Services.Diagnostics.PlatformProbes.ReadSystemProtection();
-            var protection = new Services.System.SystemRestoreService(
-                Microsoft
-                    .Extensions
-                    .Logging
-                    .Abstractions
-                    .NullLogger<Services.System.SystemRestoreService>
-                    .Instance
-            ).EnableProtection(drive);
-            context.Logger.LogInformation(
-                "System protection on {Drive}: {Ok}",
-                drive,
-                protection.Succeeded
-            );
-            // Turning protection on is recorded (audit Z-08). It is not undone on revert,
-            // because turning it off deletes every restore point.
-            if (!protection.Succeeded)
-                context.Changes.Add(
-                    Name,
-                    Loc.Instance["Optimizer.Storage.WeeklyRestorePoints.Protection", drive],
-                    false,
-                    error: Loc.Instance["Optimizer.Storage.WeeklyRestorePoints.ProtectionFailed"]
+            var protectionText = Loc.Instance[
+                "Optimizer.Storage.WeeklyRestorePoints.Protection",
+                drive
+            ];
+            if (context.Preview is { } plan)
+            {
+                // A preview only says protection would be turned on; the task below is a
+                // guarded primitive and only describes itself.
+                plan.Add(
+                    PlannedChangeKind.Command,
+                    protectionText,
+                    wasOn.TryGet(out var current) ? (current ? "on" : "off") : null,
+                    "on"
                 );
-            else if (!(wasOn.TryGet(out var on) && on))
-                context.Changes.AddIrreversible(
-                    Name,
-                    Loc.Instance["Optimizer.Storage.WeeklyRestorePoints.Protection", drive]
+            }
+            else
+            {
+                var protection = new Services.System.SystemRestoreService(
+                    Microsoft
+                        .Extensions
+                        .Logging
+                        .Abstractions
+                        .NullLogger<Services.System.SystemRestoreService>
+                        .Instance
+                ).EnableProtection(drive);
+                context.Logger.LogInformation(
+                    "System protection on {Drive}: {Ok}",
+                    drive,
+                    protection.Succeeded
                 );
+                // Turning protection on is recorded (audit Z-08). It is not undone on revert,
+                // because turning it off deletes every restore point.
+                if (!protection.Succeeded)
+                    context.Changes.Add(
+                        Name,
+                        protectionText,
+                        false,
+                        error: Loc.Instance[
+                            "Optimizer.Storage.WeeklyRestorePoints.ProtectionFailed"
+                        ]
+                    );
+                else if (!(wasOn.TryGet(out var on) && on))
+                    context.Changes.AddIrreversible(Name, protectionText);
+            }
 
             var exists = await context.Shell.QueryPowerShellAsync(
                 $"[bool](Get-ScheduledTask -TaskPath '{TaskPath}' -TaskName '{TaskName}' -ErrorAction SilentlyContinue)",
