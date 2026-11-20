@@ -255,7 +255,11 @@ public class SystemRestoreService
         catch (Exception ex)
         {
             _logger.LogWarning(ex, "[SYSTEMRESTORE][{Method}] threw", method);
-            return new SystemRestoreResult(false, uint.MaxValue, ex.Message);
+            // With system protection off, Windows 11 throws COMException 0x80070422 instead of
+            // returning it: keep the code, so the caller turns protection on and retries (Hyper-V
+            // test, 20/11/2026: the profile stopped with "no se pudo crear el punto").
+            var status = ex is System.Runtime.InteropServices.COMException com ? unchecked((uint)com.HResult) : uint.MaxValue;
+            return new SystemRestoreResult(false, status, ex.Message);
         }
     }
 }
