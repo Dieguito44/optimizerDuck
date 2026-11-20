@@ -5252,7 +5252,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
     <value>Al conectar un dispositivo, Windows ya no descarga sola la app del fabricante. Los drivers se siguen instalando. Tomado de Win11Debloat.</value>
   </data>
   <data name="Profile.Title" xml:space="preserve">
-    <value>Perfil Servicio estándar</value>
+    <value>Perfil del servicio</value>
   </data>
   <data name="Profile.Help" xml:space="preserve">
     <value>Aplica los ajustes estándar (privacidad, IA, anuncios, almacenamiento) y quita las apps preinstaladas de la lista del servicio. Hazlo después de &quot;Medir antes&quot;. Cada ajuste se puede revertir; las apps quitadas se reinstalan desde la Microsoft Store.</value>
@@ -6026,7 +6026,7 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
     <value>Volver al Servicio estándar</value>
   </data>
   <data name="Preset.Current.Standard" xml:space="preserve">
-    <value>Preset: Servicio estándar (incluido en Zentra).</value>
+    <value>Perfil: Servicio estándar (incluido en Zentra).</value>
   </data>
   <data name="Preset.Current.Imported" xml:space="preserve">
     <value>Preset: {0} (importado, {1} ajustes).</value>
@@ -6768,7 +6768,7 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
     <value>Resumen</value>
   </data>
   <data name="Optimize.Standard.Title" xml:space="preserve">
-    <value>Perfil Servicio estándar</value>
+    <value>Perfil del servicio</value>
   </data>
   <data name="Optimize.Standard.Description" xml:space="preserve">
     <value>El servicio de siempre: privacidad, IA, anuncios y almacenamiento, más las apps preinstaladas de la lista. Primero muestra la vista previa, pide confirmación y crea un punto de restauración.</value>
@@ -7000,5 +7000,38 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
   </data>
   <data name="Optimizer.Gpu.DisableMultiplaneOverlay.ShortDescription" xml:space="preserve">
     <value>Corrige parpadeos, pantallas negras y reinicios del driver de video en algunas gráficas. Se aplica al reiniciar. Úsalo solo si el PC tiene esos síntomas.</value>
+  </data>
+  <data name="Preset.Current.BuiltIn" xml:space="preserve">
+    <value>Perfil: {0}. {1}</value>
+  </data>
+  <data name="Profile.Builtin.Standard" xml:space="preserve">
+    <value>Para todos: privacidad, anuncios, IA, apps basura y almacenamiento.</value>
+  </data>
+  <data name="Profile.Builtin.SlowPc" xml:space="preserve">
+    <value>El estándar más menos trabajo en segundo plano: efectos visuales, apps y navegadores en segundo plano, servicios poco usados y el indexador. Para PCs viejos, con disco mecánico o poca RAM.</value>
+  </data>
+  <data name="Profile.Builtin.Gaming" xml:space="preserve">
+    <value>El estándar más gráfica de alto rendimiento para los juegos, monitor a su frecuencia máxima, ajustes de la gráfica según la marca, USB y red sin ahorro de energía.</value>
+  </data>
+  <data name="Profile.Builtin.Privacy" xml:space="preserve">
+    <value>El estándar más telemetría completa, informes de errores, Copilot, Recall, Edge sin telemetría y los programas del fabricante desde la BIOS.</value>
+  </data>
+  <data name="Profile.Suggested" xml:space="preserve">
+    <value>Sugerido para este PC: {0} ({1}).</value>
+  </data>
+  <data name="Profile.Reason.Hdd" xml:space="preserve">
+    <value>Windows está en un disco mecánico</value>
+  </data>
+  <data name="Profile.Reason.LowRam" xml:space="preserve">
+    <value>tiene {0} GB de RAM</value>
+  </data>
+  <data name="Profile.Reason.Games" xml:space="preserve">
+    <value>tiene juegos instalados</value>
+  </data>
+  <data name="Profile.Reason.Default" xml:space="preserve">
+    <value>no se vio nada especial</value>
+  </data>
+  <data name="Profile.Selector" xml:space="preserve">
+    <value>Perfil</value>
   </data>
 </root>

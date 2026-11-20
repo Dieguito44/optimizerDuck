@@ -4,6 +4,33 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Perfiles y pestaña Experto (20/11/2026, versión 1.1.0)
+
+Ideas revisadas contra [WinUtil](https://github.com/ChrisTitusTech/winutil) (licencia MIT). Se tomaron las ideas y los valores del registro, no su código.
+
+- **Perfiles nuevos:** además del **Servicio estándar**, ahora hay **Equipo lento**, **Juegos** y **Privacidad máxima**.
+  - Cada uno es el estándar más sus ajustes, solo Seguros o de Precaución y sin diálogo de confirmación.
+  - Se eligen en Sesión y en Optimizar > Resumen.
+  - "Revertir perfil" revierte lo que se haya aplicado de cualquier perfil.
+- **Perfil sugerido:** Zentra sugiere el perfil según el PC y lo deja elegido, salvo que el técnico ya haya elegido otro.
+  - Windows en un disco mecánico, o 8 GB de RAM o menos → Equipo lento.
+  - Juegos instalados → Juegos.
+- **Ajustes nuevos:**
+  - Edge sin telemetría ni anuncios (Seguro).
+  - Apagar los programas del fabricante desde la BIOS (WPBT, Precaución).
+  - Pantallazo azul con detalles (Seguro).
+  - Apagar MPO (Precaución), para parpadeos y reinicios del driver de video.
+- **Pestaña Experto:** decisión de Diego, que saca de la lista negra todo lo de WinUtil menos quitar OneDrive y bloquear Adobe.
+  - **Quitar Edge:** conserva los favoritos y las contraseñas y no toca WebView2. Pide confirmación "No reversible".
+  - **Apagar BitLocker:** pide confirmación.
+  - **Apagar IPv6.**
+  - **Apagar la búsqueda de Windows.**
+  - **Liberar el almacenamiento reservado.**
+  - **Quitar el aviso de archivos RDP sin firma.**
+  - Todos son Experto y quedan fuera de los perfiles y de "Aplicar seguros".
+  - `BlacklistTests` permite estas excepciones solo en `Expert.cs`, y una regla nueva sigue prohibiendo quitar WebView2.
+- **Tests:** 1857, 0 fallos.
+
 ### Prueba en otro PC (20/11/2026, versión 1.0.2)
 
 Diego probó la 1.0.0 en otro PC. El puntaje quedó 52 → 52 y el arranque 55,1 s → 55,1 s. Ese PC ya estaba limpio (104 procesos, 1,4 GB de RAM en reposo, 3 apps de inicio), pero Zentra además medía y mostraba mal varias cosas:

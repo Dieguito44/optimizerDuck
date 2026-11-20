@@ -12,6 +12,8 @@ using Wpf.Ui;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Extensions;
 
+using optimizerDuck.Services.System;
+
 namespace optimizerDuck.UI.ViewModels.Pages;
 
 /// <summary>
@@ -50,8 +52,46 @@ public partial class ServiceProfileViewModel(
 
     public string PresetText =>
         Preset.IsBuiltIn
-            ? Loc.Instance["Preset.Current.Standard"]
+            ? Loc.Instance["Preset.Current.BuiltIn", Preset.Name, Preset.Description]
             : Loc.Instance["Preset.Current.Imported", Preset.Name, Preset.Settings.Count];
+
+    /// <summary>The profiles the selector offers (version 1.1.0).</summary>
+    public IReadOnlyList<ServicePreset> BuiltInPresets => ServicePreset.BuiltIns;
+
+    /// <summary>The profile the technician picked; the suggestion no longer replaces it.</summary>
+    public ServicePreset? SelectedBuiltIn
+    {
+        get => Preset.IsBuiltIn ? Preset : null;
+        set
+        {
+            if (value is null || ReferenceEquals(value, Preset))
+                return;
+            _chosenByTechnician = true;
+            Preset = value;
+            OnPropertyChanged();
+        }
+    }
+
+    private bool _chosenByTechnician;
+
+    /// <summary>"Sugerido para este PC: …", from the PC's disk, RAM and games.</summary>
+    [ObservableProperty]
+    private string? _suggestionText;
+
+    /// <summary>
+    ///     Suggests the profile for this PC and selects it, unless the technician already chose
+    ///     one or imported a preset.
+    /// </summary>
+    public void Suggest(SystemInfo info)
+    {
+        var (suggested, reason) = ServiceProfiles.Suggest(info);
+        SuggestionText = Loc.Instance["Profile.Suggested", suggested.Name, reason];
+        if (!_chosenByTechnician && Preset.IsBuiltIn && !ReferenceEquals(Preset, suggested))
+        {
+            Preset = suggested;
+            OnPropertyChanged(nameof(SelectedBuiltIn));
+        }
+    }
 
     public bool IsCustomPreset => !Preset.IsBuiltIn;
 
@@ -92,6 +132,8 @@ public partial class ServiceProfileViewModel(
                 return;
             }
             Preset = result.Preset!;
+            _chosenByTechnician = true;
+            OnPropertyChanged(nameof(SelectedBuiltIn));
             StatusText = Loc.Instance["Preset.Imported", Preset.Name];
             logger.LogInformation(
                 "Preset {Name} imported from {File}: {Settings} settings, {Apps} apps",
@@ -133,6 +175,8 @@ public partial class ServiceProfileViewModel(
     private void UseStandardPreset()
     {
         Preset = ServicePreset.Standard;
+        _chosenByTechnician = false;
+        OnPropertyChanged(nameof(SelectedBuiltIn));
         ErrorText = null;
         Problems.Clear();
         StatusText = Loc.Instance["Preset.Current.Standard"];
@@ -187,13 +231,17 @@ public partial class ServiceProfileViewModel(
             var confirm = new ContentDialog
             {
                 // A pack from Optimize has its own name and no apps: say so, not "Servicio estándar".
-                Title = preset.IsBuiltIn
+                Title = ReferenceEquals(preset, ServicePreset.Standard)
                     ? Loc.Instance["Profile.Confirm.Title"]
                     : Loc.Instance["Preset.Confirm.Title", preset.Name],
                 Content = PreviewContent(
                     preset.Apps.Count == 0 && preset.AppFragments.Count == 0
                         ? Loc.Instance["Profile.Confirm.MessageNoApps", settings.Count]
-                        : (preset.IsBuiltIn ? "" : Loc.Instance["Preset.Confirm.Name", preset.Name])
+                        : (
+                            ReferenceEquals(preset, ServicePreset.Standard)
+                                ? ""
+                                : Loc.Instance["Preset.Confirm.Name", preset.Name]
+                        )
                             + Loc.Instance[
                                 "Profile.Confirm.Message",
                                 settings.Count,
@@ -257,7 +305,16 @@ public partial class ServiceProfileViewModel(
 
             IsBusy = true;
             var progress = new Progress<Domain.UI.ProcessingProgress>(p => StatusText = p.Message);
-            var result = await runner.RevertAsync(Preset, progress, CancellationToken.None);
+            // Any profile's settings: a PC may have had "Juegos" applied and "Servicio estándar"
+            // selected now. Only what was applied is reverted.
+            var everyProfile = Preset with
+            {
+                Settings = Preset
+                    .Settings.Concat(ServicePreset.BuiltIns.SelectMany(p => p.Settings))
+                    .Distinct()
+                    .ToList(),
+            };
+            var result = await runner.RevertAsync(everyProfile, progress, CancellationToken.None);
             Show(result, applied: false);
         }
         catch (Exception ex)

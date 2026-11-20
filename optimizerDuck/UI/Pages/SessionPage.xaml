@@ -279,6 +279,28 @@
                             Style="{StaticResource CaptionTextStyle}"
                             Text="{ext:Loc Profile.Help}"
                             TextWrapping="Wrap" />
+                        <!--  Version 1.1.0: which profile, and the one suggested for this PC.  -->
+                        <Grid Margin="0,0,0,6" ColumnDefinitions="Auto,*">
+                            <ui:TextBlock
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center"
+                                FontTypography="Body"
+                                Text="{ext:Loc Profile.Selector}" />
+                            <ComboBox
+                                Grid.Column="1"
+                                MinWidth="240"
+                                HorizontalAlignment="Left"
+                                DisplayMemberPath="Name"
+                                IsEnabled="{Binding ViewModel.Profile.IsBusy, Converter={StaticResource InverseBooleanConverter}}"
+                                ItemsSource="{Binding ViewModel.Profile.BuiltInPresets}"
+                                SelectedItem="{Binding ViewModel.Profile.SelectedBuiltIn, Mode=TwoWay}" />
+                        </Grid>
+                        <ui:TextBlock
+                            Margin="0,0,0,6"
+                            FontTypography="Caption"
+                            Foreground="{DynamicResource ZentraBrandBrush}"
+                            Text="{Binding ViewModel.Profile.SuggestionText}"
+                            TextWrapping="Wrap" />
                         <!--  Plan of improvements F3-01: which preset the buttons apply.  -->
                         <ui:TextBlock
                             Margin="0,0,0,6"

@@ -5210,4 +5210,37 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Optimizer.Gpu.DisableMultiplaneOverlay.ShortDescription" xml:space="preserve">
     <value>Fixes flicker, black screens and video driver resets on some graphics cards. Applies after a restart. Use it only if the PC has those symptoms.</value>
   </data>
+  <data name="Preset.Current.BuiltIn" xml:space="preserve">
+    <value>Profile: {0}. {1}</value>
+  </data>
+  <data name="Profile.Builtin.Standard" xml:space="preserve">
+    <value>For everyone: privacy, ads, AI, junk apps and storage.</value>
+  </data>
+  <data name="Profile.Builtin.SlowPc" xml:space="preserve">
+    <value>The standard one plus less background work: visual effects, background apps and browsers, rarely used services and the indexer. For old PCs, mechanical disks or little RAM.</value>
+  </data>
+  <data name="Profile.Builtin.Gaming" xml:space="preserve">
+    <value>The standard one plus high-performance graphics for games, the monitor at its highest refresh rate, graphics settings by maker, USB and network without power saving.</value>
+  </data>
+  <data name="Profile.Builtin.Privacy" xml:space="preserve">
+    <value>The standard one plus full telemetry, error reports, Copilot, Recall, Edge without telemetry and the maker's programs from the BIOS.</value>
+  </data>
+  <data name="Profile.Suggested" xml:space="preserve">
+    <value>Suggested for this PC: {0} ({1}).</value>
+  </data>
+  <data name="Profile.Reason.Hdd" xml:space="preserve">
+    <value>Windows is on a mechanical disk</value>
+  </data>
+  <data name="Profile.Reason.LowRam" xml:space="preserve">
+    <value>it has {0} GB of RAM</value>
+  </data>
+  <data name="Profile.Reason.Games" xml:space="preserve">
+    <value>it has games installed</value>
+  </data>
+  <data name="Profile.Reason.Default" xml:space="preserve">
+    <value>nothing special was found</value>
+  </data>
+  <data name="Profile.Selector" xml:space="preserve">
+    <value>Profile</value>
+  </data>
 </root>

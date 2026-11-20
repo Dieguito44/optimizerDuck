@@ -12,6 +12,8 @@ using optimizerDuck.Services.Diagnostics;
 using optimizerDuck.Services.Measurements;
 using optimizerDuck.Services.Reports;
 
+using optimizerDuck.Services.System;
+
 namespace optimizerDuck.UI.ViewModels.Pages;
 
 /// <summary>
@@ -26,6 +28,7 @@ public partial class SessionViewModel(
     AiReportService aiReportService,
     ApiKeyStore apiKeyStore,
     ServiceProfileViewModel profile,
+    SystemInfoService systemInfo,
     GameModeViewModel gameMode,
     FollowUpViewModel followUp,
     TimeProvider timeProvider,
@@ -48,6 +51,7 @@ public partial class SessionViewModel(
 
     public override void OnNavigatedTo()
     {
+        _ = SuggestProfileAsync();
         if (!_profileWired)
         {
             _profileWired = true;
@@ -129,6 +133,19 @@ public partial class SessionViewModel(
 
     [RelayCommand(CanExecute = nameof(CanMeasureBefore))]
     private Task MeasureBeforeAsync() => MeasureAsync(MeasurementPhase.Before);
+
+    /// <summary>Version 1.1.0: the profile that fits this PC (disk, RAM, games).</summary>
+    private async Task SuggestProfileAsync()
+    {
+        try
+        {
+            Profile.Suggest(await systemInfo.EnsureSnapshotAsync());
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logger.LogWarning(ex, "Could not suggest a profile");
+        }
+    }
 
     [RelayCommand(CanExecute = nameof(CanMeasureAfter))]
     private Task MeasureAfterAsync() => MeasureAsync(MeasurementPhase.After);

@@ -152,6 +152,7 @@ public sealed partial class OptimizeOverviewViewModel(
             if (Packs.Count == 0)
                 BuildPacks();
             var snapshot = await systemInfo.EnsureSnapshotAsync();
+            Profile.Suggest(snapshot);
             var all = Packs.SelectMany(p => p.Category.Optimizations).ToArray();
             foreach (var o in all)
                 o.ConditionResult = ConditionEvaluator.Evaluate(o.ConditionType, snapshot, logger);
@@ -266,7 +267,7 @@ public sealed partial class OptimizeOverviewViewModel(
     [RelayCommand]
     private async Task ApplyStandardAsync()
     {
-        await Profile.ApplyPresetAsync(ServicePreset.Standard);
+        await Profile.ApplyPresetAsync(Profile.Preset);
         await RefreshAsync();
     }
 
