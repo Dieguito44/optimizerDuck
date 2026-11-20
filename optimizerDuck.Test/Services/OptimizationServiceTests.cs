@@ -145,7 +145,7 @@ public class OptimizationServiceTests
                 };
 
                 var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
-                await File.WriteAllTextAsync(revertPath, json);
+                await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(revertPath, json);
 
                 var service = CreateService();
                 var progress = new Progress<ProcessingProgress>(_ => { });

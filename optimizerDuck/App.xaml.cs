@@ -320,11 +320,26 @@ public partial class App : Application
         Directory.CreateDirectory(Shared.ResourcesDirectory);
         Directory.CreateDirectory(Shared.DownloadsDirectory);
         Directory.CreateDirectory(Shared.AssetsDirectory);
-        Directory.CreateDirectory(Shared.RevertDirectory);
-        Directory.CreateDirectory(Shared.HistoryDirectory);
 
         var logPath = Path.Combine(Shared.RootDirectory, $"{Shared.AppName}.log");
         Log.Logger = BuildLoggerConfiguration(logPath).CreateLogger();
+
+        // Plan F1-02: the revert state in a folder only administrators can write. If it cannot
+        // be made safe, nothing may be applied: Zentra stops here.
+        if (!Services.State.StateStore.Prepare())
+        {
+            await Dispatcher.InvokeAsync(() =>
+            {
+                System.Windows.MessageBox.Show(
+                    Loc.Instance["State.Unsafe", Shared.StateDirectory],
+                    Shared.AppName,
+                    System.Windows.MessageBoxButton.OK,
+                    MessageBoxImage.Error
+                );
+                Shutdown((int)Services.Cli.CliExitCode.Failed);
+            });
+            return;
+        }
 
         _host = Microsoft
             .Extensions.Hosting.Host.CreateDefaultBuilder()
@@ -349,6 +364,12 @@ public partial class App : Application
             .Build();
 
         await _host.StartAsync();
+
+        // Plan F1-03: a run that did not finish left its changes in the journal; they become
+        // revert data now, before anything else can apply.
+        var recovered = await Services.Revert.IntentJournal.RecoverAsync(
+            _host.Services.GetRequiredService<RevertManager>()
+        );
 
         // ACT-MON-HZ asks the person at the PC before keeping a new refresh rate.
         optimizerDuck.Services.Diagnostics.DisplayModeService.Confirm =
@@ -414,6 +435,21 @@ public partial class App : Application
             var mainWindow = _host.Services.GetRequiredService<MainWindow>();
             mainWindow.Closing += MainWindow_Closing;
             mainWindow.Show();
+
+            if (recovered.Count > 0)
+                System.Windows.MessageBox.Show(
+                    mainWindow,
+                    Loc.Instance[
+                        "State.Recovered",
+                        string.Join(
+                            Environment.NewLine,
+                            recovered.Select(r => $"• {r.Name} ({r.Steps.Count})")
+                        )
+                    ],
+                    Shared.AppName,
+                    System.Windows.MessageBoxButton.OK,
+                    MessageBoxImage.Warning
+                );
         });
 
         _logger.LogInformation("Preloading optimizations and customize settings...");

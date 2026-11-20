@@ -365,7 +365,7 @@ public class ApplyRevertComprehensiveTests
                 };
 
                 var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
-                await File.WriteAllTextAsync(revertPath, json);
+                await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(revertPath, json);
 
                 var service = CreateService();
                 var progress = new Progress<ProcessingProgress>(_ => { });
@@ -490,7 +490,7 @@ public class ApplyRevertComprehensiveTests
                 };
 
                 var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
-                await File.WriteAllTextAsync(revertPath, json);
+                await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(revertPath, json);
 
                 var manager = new RevertManager(
                     NullLogger<RevertManager>.Instance,
@@ -565,7 +565,7 @@ public class ApplyRevertComprehensiveTests
                 };
 
                 var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
-                await File.WriteAllTextAsync(revertPath, json);
+                await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(revertPath, json);
 
                 var service = CreateService();
                 var progress = new Progress<ProcessingProgress>(_ => { });
@@ -630,7 +630,7 @@ public class ApplyRevertComprehensiveTests
                 };
 
                 var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
-                await File.WriteAllTextAsync(revertPath, json);
+                await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(revertPath, json);
 
                 var service = CreateService();
                 var progress = new Progress<ProcessingProgress>(_ => { });
@@ -701,7 +701,7 @@ public class ApplyRevertComprehensiveTests
                 };
 
                 var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
-                await File.WriteAllTextAsync(revertPath, json);
+                await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(revertPath, json);
 
                 var service = CreateService();
                 var progress = new Progress<ProcessingProgress>(_ => { });
@@ -764,7 +764,7 @@ public class ApplyRevertComprehensiveTests
                 };
 
                 var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
-                await File.WriteAllTextAsync(revertPath, json);
+                await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(revertPath, json);
 
                 var manager = new RevertManager(
                     NullLogger<RevertManager>.Instance,
@@ -1045,7 +1045,10 @@ public class ApplyRevertComprehensiveTests
             try
             {
                 Directory.CreateDirectory(Shared.RevertDirectory);
-                await File.WriteAllTextAsync(revertPath, "{ invalid json }");
+                await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
+                    revertPath,
+                    "{ invalid json }"
+                );
 
                 var service = CreateService();
                 var progress = new Progress<ProcessingProgress>(_ => { });

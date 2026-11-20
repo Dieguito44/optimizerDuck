@@ -5,6 +5,7 @@ using System.Security.Principal;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using optimizerDuck.Common.Helpers;
 using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Repair;
 
@@ -191,78 +192,20 @@ public sealed class FollowUpService(ILogger<FollowUpService> logger)
 
     // ---- The folder --------------------------------------------------------------------------
 
-    /// <summary>
-    ///     Creates the folders, or checks the existing ones: no links, owned by Administrators or
-    ///     SYSTEM. Then puts the protected ACL on Seguimiento (inheritance cut).
-    /// </summary>
+    /// <summary>The folders, checked or created, with the protected ACL (Users may read results).</summary>
     private bool PrepareFolder()
     {
-        foreach (var dir in new[] { RootFolder, Folder })
-        {
-            if (Directory.Exists(dir))
-            {
-                var info = new DirectoryInfo(dir);
-                if (info.Attributes.HasFlag(FileAttributes.ReparsePoint))
-                {
-                    logger.LogWarning("Follow-up folder {Dir} is a link: refused", dir);
-                    return false;
-                }
-                var owner = info.GetAccessControl().GetOwner(typeof(SecurityIdentifier));
-                if (!IsTrustedOwner(owner as SecurityIdentifier))
-                {
-                    logger.LogWarning(
-                        "Follow-up folder {Dir} has owner {Owner}: refused",
-                        dir,
-                        owner
-                    );
-                    return false;
-                }
-            }
-            else
-                Directory.CreateDirectory(dir);
-        }
-        new DirectoryInfo(Folder).SetAccessControl(ProtectedAcl());
-        return true;
+        if (ProtectedFolder.Ensure(usersCanRead: true, RootFolder, Folder))
+            return true;
+        logger.LogWarning("Follow-up folder {Dir} is a link or has another owner: refused", Folder);
+        return false;
     }
 
-    /// <summary>
-    ///     Only the Administrators group (the owner an elevated administrator gives what it
-    ///     creates) or SYSTEM. A folder a standard user created first is refused, not taken over.
-    /// </summary>
     internal static bool IsTrustedOwner(SecurityIdentifier? owner) =>
-        owner is not null
-        && (
-            owner.IsWellKnown(WellKnownSidType.BuiltinAdministratorsSid)
-            || owner.IsWellKnown(WellKnownSidType.LocalSystemSid)
-        );
+        ProtectedFolder.IsTrustedOwner(owner);
 
     /// <summary>SYSTEM and Administrators: full control. Users: read and run. Nothing inherited.</summary>
-    internal static DirectorySecurity ProtectedAcl()
-    {
-        var acl = new DirectorySecurity();
-        acl.SetAccessRuleProtection(isProtected: true, preserveInheritance: false);
-        acl.SetOwner(new SecurityIdentifier(WellKnownSidType.BuiltinAdministratorsSid, null));
-        const InheritanceFlags all =
-            InheritanceFlags.ContainerInherit | InheritanceFlags.ObjectInherit;
-        foreach (
-            var (sid, rights) in new[]
-            {
-                (WellKnownSidType.LocalSystemSid, FileSystemRights.FullControl),
-                (WellKnownSidType.BuiltinAdministratorsSid, FileSystemRights.FullControl),
-                (WellKnownSidType.BuiltinUsersSid, FileSystemRights.ReadAndExecute),
-            }
-        )
-            acl.AddAccessRule(
-                new FileSystemAccessRule(
-                    new SecurityIdentifier(sid, null),
-                    rights,
-                    all,
-                    PropagationFlags.None,
-                    AccessControlType.Allow
-                )
-            );
-        return acl;
-    }
+    internal static DirectorySecurity ProtectedAcl() => ProtectedFolder.Acl(usersCanRead: true);
 
     /// <summary>
     ///     The Zentra that runs now. A release is one self-contained Zentra.exe; a build folder

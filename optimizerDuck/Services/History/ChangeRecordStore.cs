@@ -31,9 +31,10 @@ public static class ChangeRecordStore
             // Atomic like the revert files: a torn report is worse than no report. No lock is
             // needed because an item is applied through one command at a time.
             var tempPath = path + ".tmp";
+            // Plan F1-02: sealed with the state HMAC.
             File.WriteAllText(
                 tempPath,
-                JsonConvert.SerializeObject(record, Formatting.Indented),
+                State.StateFile.Seal(JsonConvert.SerializeObject(record, Formatting.Indented)),
                 Encoding.UTF8
             );
 
@@ -65,9 +66,13 @@ public static class ChangeRecordStore
             if (!File.Exists(path))
                 return null;
 
-            return JsonConvert.DeserializeObject<ChangeRecord>(
-                File.ReadAllText(path, Encoding.UTF8)
-            );
+            var json = State.StateFile.Unseal(File.ReadAllText(path, Encoding.UTF8));
+            if (json is null)
+            {
+                logger?.LogWarning("Change record {Id} failed its integrity check: ignored", id);
+                return null;
+            }
+            return JsonConvert.DeserializeObject<ChangeRecord>(json);
         }
         catch (Exception ex)
         {

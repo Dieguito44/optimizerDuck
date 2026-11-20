@@ -317,14 +317,39 @@ public static class Shared
     /// <summary>The directory that holds bundled assets.</summary>
     public static string AssetsDirectory => Path.Combine(ResourcesDirectory, "Assets");
 
+    /// <summary>
+    ///     Plan of improvements F1-02 (audit Z-02): revert data, history and the intent journal
+    ///     live in %ProgramData%\Zentra\Estado, which only Administrators and SYSTEM can write,
+    ///     and every file is sealed with an HMAC. Before, they were in the user's %LOCALAPPDATA%,
+    ///     where a standard user could change what Zentra later writes back as administrator.
+    /// </summary>
+    public static string StateDirectory =>
+        StateRootOverride
+        ?? Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.CommonApplicationData),
+            AppName,
+            "Estado"
+        );
+
+    /// <summary>Tests point the state at a temporary folder (no ACL, no ProgramData).</summary>
+    internal static string? StateRootOverride { get; set; }
+
     /// <summary>The directory that holds one revert file per applied item.</summary>
-    public static string RevertDirectory => Path.Combine(RootDirectory, "Revert");
+    public static string RevertDirectory => Path.Combine(StateDirectory, "Revert");
 
     /// <summary>
     ///     Where what an apply did is recorded, one file per item. Separate from the revert data,
     ///     so a report outlives the revert file it describes.
     /// </summary>
-    public static string HistoryDirectory => Path.Combine(RootDirectory, "History");
+    public static string HistoryDirectory => Path.Combine(StateDirectory, "History");
+
+    /// <summary>Plan F1-03: what a run is changing, step by step, until it finishes.</summary>
+    public static string JournalDirectory => Path.Combine(StateDirectory, "Journal");
+
+    /// <summary>Where Zentra kept revert data before F1-02 (moved on the first start).</summary>
+    internal static string LegacyRevertDirectory => Path.Combine(RootDirectory, "Revert");
+
+    internal static string LegacyHistoryDirectory => Path.Combine(RootDirectory, "History");
 
     /// <summary>Gets a value that indicates whether the OS is Windows 11 or later.</summary>
     public static bool IsWindows11OrGreater =>

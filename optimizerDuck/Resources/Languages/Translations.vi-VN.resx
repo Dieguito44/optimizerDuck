@@ -4783,4 +4783,12 @@ In PowerShell, to wait for it: Start-Process Zentra.exe -ArgumentList &apos;--di
   <data name="Warranty.NoPage" xml:space="preserve">
     <value>{0} {1} · serial {2} copied. Zentra has no warranty page for this manufacturer: look it up on its support site.</value>
   </data>
+  <data name="State.Unsafe" xml:space="preserve">
+    <value>Zentra&apos;s state folder ({0}) already exists with an owner that is not Administrators or SYSTEM, or it is a link. Zentra cannot keep its revert data safely there, so it will not start. Ask whoever manages this PC to check that folder.</value>
+  </data>
+  <data name="State.Recovered" xml:space="preserve">
+    <value>Zentra closed while it was applying changes. They were kept so they can be reverted:
+{0}
+Check those settings in Optimize: revert them, or apply them again to finish.</value>
+  </data>
 </root>

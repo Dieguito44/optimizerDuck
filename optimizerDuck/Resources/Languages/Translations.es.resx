@@ -6590,4 +6590,12 @@ En PowerShell, para esperar a que termine: Start-Process Zentra.exe -ArgumentLis
   <data name="Warranty.NoPage" xml:space="preserve">
     <value>{0} {1} · serial {2} copiado. Zentra no tiene la página de garantía de este fabricante: búscala en su sitio de soporte.</value>
   </data>
+  <data name="State.Unsafe" xml:space="preserve">
+    <value>La carpeta de estado de Zentra ({0}) ya existe con un dueño que no es Administradores ni SYSTEM, o es un enlace. Zentra no puede guardar ahí sus datos de reversión de forma segura, así que no va a abrir. Pide a quien administra este PC que revise esa carpeta.</value>
+  </data>
+  <data name="State.Recovered" xml:space="preserve">
+    <value>Zentra se cerró mientras aplicaba cambios. Se guardaron para poder revertirlos:
+{0}
+Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para terminar.</value>
+  </data>
 </root>

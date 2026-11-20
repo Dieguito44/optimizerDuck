@@ -21,6 +21,15 @@ public sealed class ChangeSet
     /// <summary>When the run that collects these changes started.</summary>
     public DateTime StartedAt { get; } = DateTime.Now;
 
+    /// <summary>
+    ///     Plan F1-03: called with every change that carries a revert step, as soon as it is
+    ///     recorded, so the intent journal can put it on disk before the next change.
+    /// </summary>
+    public Action<Change>? Recorded { get; set; }
+
+    /// <summary>Set when this run's revert data could not be saved: its journal must be kept.</summary>
+    public bool RevertSaveFailed { get; set; }
+
     /// <summary>How long the run has been going, for the record of what it did.</summary>
     public long ElapsedMs => _clock.ElapsedMilliseconds;
 
@@ -185,6 +194,7 @@ public sealed class ChangeSet
             Detail = detail,
             NativeErrorCode = nativeErrorCode,
         };
+        Change added;
         lock (_gate)
         {
             // The span since the previous step was recorded, which is the work this step did:
@@ -201,8 +211,11 @@ public sealed class ChangeSet
                     RecordedAt = DateTime.Now,
                 }
             );
-            return _changes[^1];
+            added = _changes[^1];
         }
+        if (added.Revert is not null)
+            Recorded?.Invoke(added);
+        return added;
     }
 
     /// <summary>
