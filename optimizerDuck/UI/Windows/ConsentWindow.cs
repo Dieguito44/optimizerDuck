@@ -17,6 +17,9 @@ public sealed class ConsentWindow : Window
     {
         Title = title;
         Topmost = true;
+        // The theme's colors: without them the window stayed white while its checkbox and
+        // buttons took the dark theme's light text (found in the Sandbox tests, 19/11/2026).
+        ThemedWindow.Apply(this);
         ResizeMode = ResizeMode.NoResize;
         SizeToContent = SizeToContent.WidthAndHeight;
         WindowStartupLocation = WindowStartupLocation.CenterScreen;
