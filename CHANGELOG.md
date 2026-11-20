@@ -4,6 +4,24 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 2C: aplicar con más cuidado (19/11/2026, PR 11, sobre el PR 10)
+
+- **Vista previa del perfil (F2-03):** antes de aplicar el Servicio estándar, el diálogo muestra cada valor que cambiaría en el PC (ahora → después), agrupado por ajuste. Es un ensayo:
+  - Las 18 primitivas que cambian el sistema (registro, servicios, tareas, directiva local, plan de energía y comandos) solo describen el cambio; no escriben ni registran nada.
+  - Un test exige que los ajustes del perfil cambien el PC solo por esas primitivas.
+  - **Verificado en el PC de Diego:** 52 valores en 17 ajustes; tras cancelar, los valores siguen sin existir y el servicio de IA sigue en Automático.
+- **Cuenta del cliente (F2-05):** si Zentra corre con otra cuenta de administrador, todo lo de usuario va a la cuenta de quien está en el PC (`HKEY_USERS\<SID>`):
+  - lo que pasa por `RegistryService`: optimizaciones, perfil, Personalizar y reversiones;
+  - OneDrive en el diagnóstico;
+  - Bloatware (`-User <SID>` validado);
+  - el Gestor de Inicio (Run, RunOnce, carpeta Inicio y tareas UWP).
+  
+  Sesión lo avisa.
+- **Abrir sin elevar (F2-06, auditoría Z-30):** enlaces, PDF, carpetas, archivos y Configuración se abren con el Explorador del escritorio (`IShellDispatch2.ShellExecute`), como el usuario de la sesión. Si falla, se usa `explorer.exe`. El Administrador de tareas, el Programador de tareas y el Panel de control siguen elevados a propósito. **Verificado:** el navegador abierto desde Zentra corre sin elevar.
+- **"Abrir carpeta" en Sesión:** sin sesión abre la carpeta de sesiones anteriores o dice que se crea con "Medir antes"; antes no hacía nada.
+- **Hallazgo de pruebas:** Zentra abierto por Claude hereda la virtualización de `AppData` del paquete MSIX de Claude, y sus datos quedan en la carpeta del paquete. Eso explicaba el "Ubicación no disponible" anotado desde la Fase 1. Para probar, Zentra lo abre Diego.
+- **Sin probar en pantalla:** "Abrir carpeta" con Zentra abierto por Diego (Diego decidió seguir).
+
 ### Mejoras, Fase 2B: diagnósticos nuevos de solo lectura (19/11/2026, PR 10, sobre el PR 9)
 
 - **Reglas nuevas:**

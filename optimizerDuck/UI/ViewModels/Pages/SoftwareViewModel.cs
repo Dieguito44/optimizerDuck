@@ -3,6 +3,7 @@ using System.Diagnostics;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
+using optimizerDuck.Common.Helpers;
 using optimizerDuck.Domain.UI;
 using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Software;
@@ -158,7 +159,7 @@ public partial class SoftwareViewModel(
             || !url.StartsWith("https://www.amd.com/") && !url.StartsWith("https://www.nvidia.com/")
         )
             return;
-        Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+        UnelevatedShell.Open(url);
     }
 
     private async Task RunAsync(

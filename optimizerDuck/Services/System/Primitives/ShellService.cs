@@ -242,6 +242,11 @@ public sealed class ShellService
         CancellationToken ct = default
     )
     {
+        if (call.Preview is { } plan)
+        {
+            plan.Add(PlannedChangeKind.Command, command, null, "(run)");
+            return Task.FromResult(OpResult.Success());
+        }
         return RunCoreAsync(
             "cmd.exe",
             "/c",
@@ -277,6 +282,11 @@ public sealed class ShellService
         CancellationToken ct = default
     )
     {
+        if (call.Preview is { } plan)
+        {
+            plan.Add(PlannedChangeKind.Command, command, null, "(run)");
+            return Task.FromResult(OpResult.Success());
+        }
         return RunCoreAsync(
             "cmd.exe",
             "/c",
@@ -311,6 +321,11 @@ public sealed class ShellService
         CancellationToken ct = default
     )
     {
+        if (call.Preview is { } plan)
+        {
+            plan.Add(PlannedChangeKind.Command, command, null, "(run)");
+            return Task.FromResult(OpResult.Success());
+        }
         return RunCoreAsync(
             "powershell.exe",
             ShellMapping.PowerShellArguments,
@@ -345,6 +360,11 @@ public sealed class ShellService
         CancellationToken ct = default
     )
     {
+        if (call.Preview is { } plan)
+        {
+            plan.Add(PlannedChangeKind.Command, command, null, "(run)");
+            return Task.FromResult(OpResult.Success());
+        }
         return RunCoreAsync(
             "powershell.exe",
             ShellMapping.PowerShellArguments,

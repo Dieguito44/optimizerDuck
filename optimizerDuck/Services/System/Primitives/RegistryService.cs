@@ -39,6 +39,16 @@ public static class RegistryService
         ["HKEY_CURRENT_CONFIG"] = Registry.CurrentConfig,
     };
 
+    /// <summary>A registry value as text for the preview ("1", "a; b" for multi-strings).</summary>
+    internal static string DisplayValue(object? value) =>
+        value switch
+        {
+            null => "(null)",
+            string[] lines => string.Join("; ", lines),
+            byte[] bytes => Convert.ToHexString(bytes),
+            _ => Convert.ToString(value, CultureInfo.InvariantCulture) ?? string.Empty,
+        };
+
     private static bool TryParsePath(
         string fullPath,
         ILogger? logger,
@@ -66,6 +76,16 @@ public static class RegistryService
         }
 
         subPath = idx > 0 ? pathSpan[(idx + 1)..].ToString() : string.Empty;
+
+        // HKCU is the client's when Zentra runs as another administrator (plan F2-05): every
+        // read, write and revert of "HKCU\..." goes to HKEY_USERS\<client SID> instead.
+        if (
+            ReferenceEquals(rootKey, Registry.CurrentUser) && InteractiveUser.RedirectSid is { } sid
+        )
+        {
+            rootKey = Registry.Users;
+            subPath = subPath.Length == 0 ? sid : $@"{sid}\{subPath}";
+        }
         return true;
     }
 
@@ -372,6 +392,19 @@ public static class RegistryService
     public static OpResult Write(OpCall call, RegistryItem item)
     {
         ArgumentNullException.ThrowIfNull(call);
+        if (call.Preview is { } plan)
+        {
+            // Dry run (plan F2-03): read what is there, describe the write, change nothing.
+            plan.Add(
+                PlannedChangeKind.Registry,
+                $@"{item.Path}\{item.Name ?? "(Default)"}",
+                TryReadValue(item, out var current, call.Logger) && current is not null
+                    ? DisplayValue(current)
+                    : null,
+                DisplayValue(item.Value)
+            );
+            return OpResult.Success();
+        }
         var name = ServiceStrings.RegistryName;
         var description = ServiceStrings.Format(
             ServiceStrings.RegistryDescriptionWrite,
@@ -559,6 +592,18 @@ public static class RegistryService
     public static OpResult DeleteValue(OpCall call, RegistryItem item)
     {
         ArgumentNullException.ThrowIfNull(call);
+        if (call.Preview is { } plan)
+        {
+            plan.Add(
+                PlannedChangeKind.Registry,
+                $@"{item.Path}\{item.Name ?? "(Default)"}",
+                TryReadValue(item, out var current, call.Logger) && current is not null
+                    ? DisplayValue(current)
+                    : null,
+                "(delete)"
+            );
+            return OpResult.Success();
+        }
         var name = ServiceStrings.RegistryName;
         var description = ServiceStrings.Format(
             ServiceStrings.RegistryDescriptionDelete,
@@ -709,6 +754,11 @@ public static class RegistryService
     /// <returns>The operation result, carrying the revert step on success.</returns>
     public static OpResult CreateSubKey(OpCall call, RegistryItem item)
     {
+        if (call.Preview is { } plan)
+        {
+            plan.Add(PlannedChangeKind.Registry, item.Path, null, "(create key)");
+            return OpResult.Success();
+        }
         ArgumentNullException.ThrowIfNull(call);
         var name = ServiceStrings.RegistryName;
         var description = ServiceStrings.Format(
@@ -805,6 +855,11 @@ public static class RegistryService
     /// <returns>The operation result, carrying the revert step on success.</returns>
     public static OpResult DeleteSubKeyTree(OpCall call, RegistryItem item)
     {
+        if (call.Preview is { } plan)
+        {
+            plan.Add(PlannedChangeKind.Registry, item.Path, null, "(delete key)");
+            return OpResult.Success();
+        }
         ArgumentNullException.ThrowIfNull(call);
         var name = ServiceStrings.RegistryName;
         var description = ServiceStrings.Format(

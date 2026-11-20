@@ -84,7 +84,7 @@ public static class GitHubSourceHelper
 
         try
         {
-            Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+            UnelevatedShell.Open(url);
         }
         catch (Exception ex)
         {

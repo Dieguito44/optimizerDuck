@@ -5974,4 +5974,37 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   <data name="Optimizer.Storage.WeeklyRestorePoints.ProtectionFailed" xml:space="preserve">
     <value>Windows no activó la protección del sistema.</value>
   </data>
+  <data name="Session.UserRedirect" xml:space="preserve">
+    <value>Zentra corre con otra cuenta de administrador distinta a la de quien está en este PC. Los ajustes y apps del usuario se cambian en la cuenta de quien tiene la sesión abierta en el PC, no en la del administrador.</value>
+  </data>
+  <data name="Profile.Preview.Running" xml:space="preserve">
+    <value>Revisando qué cambiaría el perfil en este PC (todavía no se cambia nada)...</value>
+  </data>
+  <data name="Profile.Preview.Header" xml:space="preserve">
+    <value>Qué va a cambiar: {0} valores en {1} ajustes (ahora → después)</value>
+  </data>
+  <data name="Profile.Preview.None" xml:space="preserve">
+    <value>Este PC ya tiene todos los ajustes del perfil; solo se quitarían las apps.</value>
+  </data>
+  <data name="Profile.Preview.Missing" xml:space="preserve">
+    <value>(no existe)</value>
+  </data>
+  <data name="Profile.Preview.Kind.Registry" xml:space="preserve">
+    <value>Registro</value>
+  </data>
+  <data name="Profile.Preview.Kind.Service" xml:space="preserve">
+    <value>Servicio</value>
+  </data>
+  <data name="Profile.Preview.Kind.Task" xml:space="preserve">
+    <value>Tarea</value>
+  </data>
+  <data name="Profile.Preview.Kind.Policy" xml:space="preserve">
+    <value>Directiva</value>
+  </data>
+  <data name="Profile.Preview.Kind.Command" xml:space="preserve">
+    <value>Comando</value>
+  </data>
+  <data name="Session.Folder.NotYet" xml:space="preserve">
+    <value>Todavía no hay carpeta de sesión: se crea con &quot;Medir antes&quot;.</value>
+  </data>
 </root>

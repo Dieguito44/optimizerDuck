@@ -135,6 +135,22 @@ public class ServiceProfileRunnerTests
         public Task<IReadOnlyList<AppXPackage>> InstalledAppsAsync() =>
             Task.FromResult<IReadOnlyList<AppXPackage>>(Installed);
 
+        public Task<IReadOnlyList<optimizerDuck.Domain.Execution.PlannedChange>> PreviewAsync(
+            IOptimization o
+        )
+        {
+            Calls.Add("preview:" + o.GetType().Name);
+            return Task.FromResult<IReadOnlyList<optimizerDuck.Domain.Execution.PlannedChange>>([
+                new(
+                    optimizerDuck.Domain.Execution.PlannedChangeKind.Registry,
+                    o.GetType().Name,
+                    @"HKCU\Test\Value",
+                    "1",
+                    "0"
+                ),
+            ]);
+        }
+
         public Task<bool> RemoveAppAsync(AppXPackage app)
         {
             Calls.Add("remove:" + app.Name);
@@ -217,5 +233,20 @@ public class ServiceProfileRunnerTests
 
         await Runner(ops).RevertAsync(NoProgress, CancellationToken.None);
         Assert.Empty(ops.Applied);
+    }
+
+    [Fact]
+    public async Task Preview_SkipsLikeApply_AndNeverApplies()
+    {
+        var ops = new FakeOperations(RealSettings());
+        ops.Blocked.Add(typeof(AI.DisableClickToDo));
+        ops.Applied.Add(typeof(Storage.EnableTrim));
+
+        var plan = await Runner(ops).PreviewAsync(CancellationToken.None);
+
+        Assert.Equal(StandardServiceProfile.Settings.Count - 2, plan.Count);
+        Assert.DoesNotContain(ops.Calls, c => c.StartsWith("apply:") || c.StartsWith("remove:"));
+        Assert.DoesNotContain("preview:DisableClickToDo", ops.Calls);
+        Assert.DoesNotContain("preview:EnableTrim", ops.Calls);
     }
 }

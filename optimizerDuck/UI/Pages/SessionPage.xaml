@@ -32,6 +32,14 @@
             HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="0,0,0,24">
+                <!--  Zentra runs as another administrator: user settings go to the client's account (plan F2-05).  -->
+                <ui:InfoBar
+                    Margin="0,0,0,12"
+                    IsClosable="False"
+                    IsOpen="{Binding ViewModel.IsUserRedirected, Mode=OneWay}"
+                    Message="{ext:Loc Session.UserRedirect}"
+                    Severity="Informational" />
+
                 <!--  Client label (local only)  -->
                 <Border Style="{StaticResource CardSurfaceStyle}">
                     <StackPanel>

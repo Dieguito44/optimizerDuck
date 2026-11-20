@@ -115,7 +115,7 @@ public partial class LegalDialogViewModel(
             };
             if (url == null)
                 return;
-            Process.Start(new ProcessStartInfo { FileName = url, UseShellExecute = true });
+            UnelevatedShell.Open(url);
         }
         catch (Exception ex)
         {

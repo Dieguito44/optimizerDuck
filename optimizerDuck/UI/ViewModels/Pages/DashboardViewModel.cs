@@ -228,7 +228,7 @@ public partial class DashboardViewModel : ViewModel
         {
             var drivePath = $"{diskVolume.DriveLetter}\\";
 
-            Process.Start(new ProcessStartInfo { FileName = drivePath, UseShellExecute = true });
+            UnelevatedShell.Open(drivePath);
         }
         catch (Exception ex)
         {
@@ -318,9 +318,7 @@ public partial class DashboardViewModel : ViewModel
             switch (action)
             {
                 case "Settings":
-                    Process.Start(
-                        new ProcessStartInfo { FileName = "ms-settings:", UseShellExecute = true }
-                    );
+                    UnelevatedShell.Open("ms-settings:");
                     break;
 
                 case "TaskManager":
@@ -479,13 +477,7 @@ public partial class DashboardViewModel : ViewModel
     {
         try
         {
-            Process.Start(
-                new ProcessStartInfo
-                {
-                    FileName = UpdaterService.LatestReleaseUrl,
-                    UseShellExecute = true,
-                }
-            );
+            UnelevatedShell.Open(UpdaterService.LatestReleaseUrl);
         }
         catch (Exception ex)
         {

@@ -120,6 +120,9 @@ public partial class SessionViewModel(
 
     public bool HasKey => apiKeyStore.HasKey;
     public bool CanRememberKey => apiKeyStore.CanRemember;
+
+    /// <summary>Zentra runs as another administrator than the person at the PC (plan F2-05).</summary>
+    public bool IsUserRedirected => optimizerDuck.Services.System.InteractiveUser.IsRedirected;
     public bool HasWritten => WrittenSummary is not null;
 
     public string KeyStatusText =>
@@ -235,7 +238,7 @@ public partial class SessionViewModel(
             sessionStore.Save(_session);
             LastPdfPath = await pdfReportService.GenerateAsync(_session);
             StatusText = Loc.Instance["Session.Pdf.Saved", LastPdfPath];
-            Process.Start(new ProcessStartInfo(LastPdfPath) { UseShellExecute = true });
+            UnelevatedShell.Open(LastPdfPath);
         }
         catch (Exception ex)
         {
@@ -251,11 +254,15 @@ public partial class SessionViewModel(
     [RelayCommand]
     private void OpenFolder()
     {
-        if (_session is null)
-            return;
-        var folder = SessionStore.FolderFor(_session);
-        if (Directory.Exists(folder))
-            Process.Start(new ProcessStartInfo(folder) { UseShellExecute = true });
+        // This session's folder once it exists (it is created by "Measure before"); before
+        // that, the folder with every earlier session. Never a silent click.
+        var folder = _session is null ? null : SessionStore.FolderFor(_session);
+        if (folder is not null && Directory.Exists(folder))
+            UnelevatedShell.Open(folder);
+        else if (Directory.Exists(SessionStore.SessionsDirectory))
+            UnelevatedShell.Open(SessionStore.SessionsDirectory);
+        else
+            StatusText = Loc.Instance["Session.Folder.NotYet"];
     }
 
     private async Task MeasureAsync(MeasurementPhase phase)

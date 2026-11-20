@@ -59,6 +59,18 @@ public static class ServiceProcessService
     /// <returns>The outcome of the change request.</returns>
     public static async Task<OpResult> ChangeServiceStartupTypeAsync(OpCall call, ServiceItem item)
     {
+        if (call.Preview is { } plan)
+        {
+            var (current, notFound) = await GetStartupTypeAsync(item.Name, call.Logger)
+                .ConfigureAwait(false);
+            plan.Add(
+                PlannedChangeKind.Service,
+                item.Name,
+                notFound ? null : current?.ToString(),
+                item.StartupType.ToString()
+            );
+            return OpResult.Success();
+        }
         ArgumentNullException.ThrowIfNull(call);
 
         var description = ServiceStrings.Format(
