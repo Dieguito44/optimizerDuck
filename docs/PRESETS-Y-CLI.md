@@ -121,9 +121,9 @@ Los programas del usuario son los de la persona que está en el PC, aunque el t�
 - ejecuta solo `Zentra.exe --followup`, que mide y diagnostica, sin preset ni cambios;
 - se borra sola después de la segunda revisión.
 
-Cada resultado (`session.json`, PDF y huellas) queda en `%ProgramData%\Zentra\Seguimiento-dias_…` y `30-dias_…`. No se envía nada a ninguna parte.
+Cada resultado (`session.json`, PDF y huellas) queda en `%ProgramData%\Zentra\Seguimiento\7-dias_…` y `30-dias_…`. No se envía nada a ninguna parte.
 
-**Seguridad de la carpeta.** Zentra corre como SYSTEM desde una copia guardada en `%ProgramData%\Zentra\Seguimientopp`. Por eso, esa carpeta tiene su propia ACL, sin herencia de ProgramData:
+**Seguridad de la carpeta.** Zentra corre como SYSTEM desde una copia guardada en `%ProgramData%\Zentra\Seguimiento\app`. Por eso, esa carpeta tiene su propia ACL, sin herencia de ProgramData:
 - SYSTEM y Administradores: control total.
 - Usuarios: solo lectura.
 

@@ -4,6 +4,39 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 3D: seguimiento, segunda opinión e idiomas (19/11/2026, PR 16, sobre el PR 15)
+
+Cierra la Fase 3.
+
+- **Segunda corrección de la vista previa (también en los PR 13, 14 y 15).** Cinco ajustes cambiaban el PC de verdad al previsualizar un preset, porque llaman a servicios propios fuera de las primitivas con guarda:
+  - monitores a su frecuencia máxima;
+  - excluir carpetas del índice;
+  - desactivar la hibernación;
+  - desactivar el ahorro de energía USB;
+  - puntos de restauración semanales, que encendían la protección del sistema.
+
+  Ahora solo describen el cambio. El test de vista previa exige guarda a toda llamada a un servicio que no sea una de las cuatro primitivas.
+- **Seguimiento a 7 y 30 días (F3-05):** botón "Programar seguimiento" en Sesión, con consentimiento escrito del cliente.
+  - **Qué hace:** una tarea como SYSTEM corre solo el diagnóstico, sin cambios, a los 7 y a los 30 días. Guarda el resultado en `%ProgramData%\Zentra\Seguimiento` y se borra sola tras la segunda revisión.
+  - **La carpeta:** tiene su propia ACL (SYSTEM y Administradores con control total, Usuarios solo lectura, sin herencia). Se rechaza si ya existía con otro dueño o es un enlace. El ejecutable se descomprime dentro de ella, no en la carpeta temporal.
+  - **Quitarlo:** "Quitar seguimiento" o `--remove-followup`.
+- **Segunda opinión con Microsoft Safety Scanner (F3-08):** botón en Reparar.
+  - Descarga solo desde microsoft.com.
+  - Exige la firma Authenticode de Microsoft con cadena hasta una raíz de Microsoft, y mantiene el archivo bloqueado.
+  - Corre `/Q /N`: solo detecta, no quita nada.
+  - Copia el log de ese análisis. Si no puede leer el resultado, dice "no medible", nunca "limpio".
+  - Borra el escáner al final.
+- **Idiomas (F3-11):**
+  - El español pasa a `Translations.es.resx` (neutro) y el idioma por defecto es **es-CO**, con fechas y números de Colombia.
+  - Una configuración guardada con es-ES se resuelve sola.
+  - **Tests nuevos:** cada idioma tiene todas las claves y ningún marcador `{n}` de más; cada idioma soportado tiene su archivo; cada clave literal del código existe.
+  - Esa revisión encontró 20 claves inexistentes en un diálogo heredado de optimizerDuck. Nada abre ese diálogo, así que el test lo exime.
+- **Tests:** 1682 en total, 0 fallos.
+- **Sin probar en el PC real:**
+  - el seguimiento, porque crea una tarea en el PC;
+  - el Safety Scanner, porque descarga unos 200 MB;
+  - la pantalla con es-CO.
+
 ### Mejoras, Fase 3C: revisiones de solo lectura y una corrección de la 3A (19/11/2026, PR 15, sobre el PR 14)
 
 - **Corrección importante (también en los PR 13 y 14):** con presets, cualquier ajuste se puede previsualizar, no solo los del perfil.
