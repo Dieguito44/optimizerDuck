@@ -4,6 +4,21 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Rediseño de la interfaz (19/11/2026, PR 24, sobre el PR 23)
+
+Diego aprobó el diseño desde una maqueta interactiva, hecha a partir de una captura de referencia. De la referencia se tomaron el orden y el estilo. No se copiaron sus funciones de la lista negra (activador MAS, apagar Smart App Control, interruptor de Defender), ni los botones de Office y Adobe, ni WinUtil.
+
+- **Barra de categorías arriba:** reemplaza el menú lateral. Las píldoras van en tres grupos: Servicio (Panel, Diagnóstico, Sesión), Arreglar (Optimizar, Reparar, Limpieza, Apps) y Herramientas (Programas, Arranque, Tareas, Personalizar, BIOS), con Configuración a la derecha. Se marca la página abierta, también cuando se llega desde un botón de otra página.
+- **Bitácora abajo:** muestra siempre la última línea y, al hacer clic, la lista. Cada ejecución deja "empezó" y cómo terminó (en verde, amarillo o rojo). También quedan las reversiones, el diagnóstico, las mediciones, el PDF y los archivos de la IA. Vive solo en memoria y pasa por el redactor de secretos.
+- **Optimizar más fácil:**
+  - **Nueva pestaña Resumen:** el perfil Servicio estándar, los 4 hallazgos más importantes del diagnóstico (cada uno con un botón a la página donde se arregla) y un paquete por categoría. Cada paquete dice cuántos ajustes están aplicados y tiene "Ver ajustes" y "Aplicar N seguros".
+  - **"Aplicar seguros"** usa el mismo flujo del perfil: vista previa, confirmación con el nombre del paquete y punto de restauración. Solo incluye los ajustes Seguros que no piden confirmación y que aplican a ese PC.
+  - **Cada categoría es una lista de filas** en vez de una grilla de tarjetas: nombre y descripción, riesgo y estado, interruptor.
+- **Reparar con tarjetas:** Reparar Windows, Escaneo completo, Escaneo sin conexión y Segunda opinión. Cada una lleva su estado ("Listo", "Trabajando…", "Hecho a las…", "Falló") y su botón "Ejecutar".
+- **Probado en Windows Sandbox con capturas:** la navegación, la Resumen, los paquetes con su vista previa, un ajuste aplicado desde la lista con sus líneas en la bitácora, y Reparar.
+- **Tests:** 1808 en total, 0 fallos (bitácora, destino de cada hallazgo, estados de las tarjetas).
+- **Sin cambiar todavía:** el diseño interno de las demás páginas (Panel, Diagnóstico, Sesión, Limpieza, Programas…), que siguen como estaban dentro de la nueva barra.
+
 ### Correcciones de las pruebas en el PC de Diego y en Windows Sandbox (19/11/2026, PR 23, sobre el PR 22)
 
 Probamos la versión completa en el PC de Diego (solo lectura) y en Windows Sandbox, donde Claude manejó Zentra. Guía y resultados en `Pruebas-Zentra-2026-11-19.md`. Las cuatro primeras correcciones ya están en el PR 22; estas son las demás.

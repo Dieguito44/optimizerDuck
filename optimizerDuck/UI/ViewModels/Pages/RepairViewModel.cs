@@ -10,6 +10,51 @@ namespace optimizerDuck.UI.ViewModels.Pages;
 /// <summary>One finished repair step on the page.</summary>
 public sealed record RepairStepItem(string Name, string Outcome, string Summary);
 
+public enum ToolCardStatus
+{
+    Ready,
+    Running,
+    Done,
+    Failed,
+}
+
+/// <summary>
+///     The status chip of a tool card (redesign, 19/11/2026): Listo, Trabajando..., Hecho a las
+///     HH:mm, Falló. The progress itself shows in the run's dialog and in the activity log.
+/// </summary>
+public sealed partial class ToolCardState : ObservableObject
+{
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Text))]
+    private ToolCardStatus _status;
+
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(Text))]
+    private DateTime? _finishedAt;
+
+    public string Text =>
+        Status switch
+        {
+            ToolCardStatus.Running => Loc.Instance["Tool.State.Running"],
+            ToolCardStatus.Done => Loc.Instance[
+                "Tool.State.Done",
+                FinishedAt?.ToString("HH:mm") ?? ""
+            ],
+            ToolCardStatus.Failed => Loc.Instance["Tool.State.Failed"],
+            _ => Loc.Instance["Tool.State.Ready"],
+        };
+
+    public void Start() => Status = ToolCardStatus.Running;
+
+    public void Finish(Domain.UI.OptimizationSuccessResult? result)
+    {
+        FinishedAt = DateTime.Now;
+        Status = result is Domain.UI.OptimizationSuccessResult.Failed or null
+            ? ToolCardStatus.Failed
+            : ToolCardStatus.Done;
+    }
+}
+
 /// <summary>
 ///     "Repair Windows" page. The run goes through the shared tool presenter, so it shows the
 ///     progress dialog, offers retries and writes the history like every other tool.
@@ -35,6 +80,11 @@ public partial class RepairViewModel(
 
     public ObservableCollection<RepairStepItem> Steps { get; } = [];
 
+    public ToolCardState RepairState { get; } = new();
+    public ToolCardState FullScanState { get; } = new();
+    public ToolCardState OfflineScanState { get; } = new();
+    public ToolCardState SafetyScanState { get; } = new();
+
     private bool CanRun() => !IsRunning;
 
     [RelayCommand(CanExecute = nameof(CanRun))]
@@ -44,10 +94,13 @@ public partial class RepairViewModel(
         Steps.Clear();
         HasResults = false;
         var results = new List<RepairStepResult>();
+        RepairState.Start();
+        Domain.UI.OptimizationSuccessResult? status = null;
         try
         {
             var request = repairService.BuildRequest(results);
             var outcome = await presenter.RunAsync(request);
+            status = outcome.Status;
             await presenter.ReportAsync(request, outcome, Loc.Instance["Repair.Header.Title"]);
         }
         catch (Exception ex)
@@ -56,6 +109,7 @@ public partial class RepairViewModel(
         }
         finally
         {
+            RepairState.Finish(status);
             foreach (var r in results)
                 Steps.Add(
                     new RepairStepItem(
@@ -71,7 +125,8 @@ public partial class RepairViewModel(
 
     /// <summary>ACT-DEFENDER-FULL: a full Defender scan. Can take an hour or more.</summary>
     [RelayCommand(CanExecute = nameof(CanRun))]
-    private Task FullScanAsync() => RunToolAsync(defenderScanService.BuildFullScanRequest());
+    private Task FullScanAsync() =>
+        RunToolAsync(defenderScanService.BuildFullScanRequest(), FullScanState);
 
     /// <summary>ACT-DEFENDER-OFFLINE: restarts the PC into the offline scanner, after a warning.</summary>
     [RelayCommand(CanExecute = nameof(CanRun))]
@@ -88,7 +143,7 @@ public partial class RepairViewModel(
             }
         );
         if (answer == Wpf.Ui.Controls.ContentDialogResult.Primary)
-            await RunToolAsync(defenderScanService.BuildOfflineScanRequest());
+            await RunToolAsync(defenderScanService.BuildOfflineScanRequest(), OfflineScanState);
     }
 
     /// <summary>
@@ -112,7 +167,7 @@ public partial class RepairViewModel(
             return;
 
         SafetyScanResult? result = null;
-        await RunToolAsync(safetyScannerService.BuildRequest(r => result = r));
+        await RunToolAsync(safetyScannerService.BuildRequest(r => result = r), SafetyScanState);
         if (result is null)
             return;
 
@@ -129,12 +184,15 @@ public partial class RepairViewModel(
         HasResults = true;
     }
 
-    private async Task RunToolAsync(Domain.Execution.OperationRequest request)
+    private async Task RunToolAsync(Domain.Execution.OperationRequest request, ToolCardState state)
     {
         IsRunning = true;
+        state.Start();
+        Domain.UI.OptimizationSuccessResult? status = null;
         try
         {
             var outcome = await presenter.RunAsync(request);
+            status = outcome.Status;
             await presenter.ReportAsync(request, outcome, request.DisplayName);
         }
         catch (Exception ex)
@@ -143,6 +201,7 @@ public partial class RepairViewModel(
         }
         finally
         {
+            state.Finish(status);
             IsRunning = false;
         }
     }

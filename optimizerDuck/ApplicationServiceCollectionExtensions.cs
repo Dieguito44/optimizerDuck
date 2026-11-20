@@ -86,6 +86,8 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<ServiceToolsViewModel>();
         services.AddSingleton<OptimizeViewModel>();
         services.AddSingleton<OptimizePage>();
+        services.AddSingleton<OptimizeOverviewViewModel>();
+        services.AddSingleton<OptimizeOverviewPage>();
         services.AddSingleton<SettingsViewModel>();
         services.AddSingleton<SettingsPage>();
         services.AddSingleton<BloatwareViewModel>();

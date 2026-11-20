@@ -1,6 +1,7 @@
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
+using System.Windows.Media;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
@@ -10,6 +11,7 @@ using optimizerDuck.Domain.Configuration;
 using optimizerDuck.Resources.Languages;
 using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Customize;
+using optimizerDuck.Services.UI;
 using optimizerDuck.UI.Controls;
 using optimizerDuck.UI.Dialogs;
 using optimizerDuck.UI.Pages;
@@ -59,6 +61,57 @@ public partial class MainWindow : IWindow
         RootNavigation.SetPageProviderService(pageProvider);
 
         RootNavigation.Loaded += OnRootNavigationLoaded;
+
+        // Redesign (19/11/2026): the tabs live in Zentra's own top bar. Any navigation (a tab,
+        // a button inside a page) marks the tab of the page that opened.
+        RootNavigation.Navigated += (_, args) => MarkCurrentTab(args.Page?.GetType());
+
+        LogList.ItemsSource = ActivityLog.Entries;
+        ActivityLog.Added += OnActivityAdded;
+        if (ActivityLog.Entries.Count > 0)
+            OnActivityAdded(ActivityLog.Entries[^1]);
+    }
+
+    private void OnNavClick(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { Tag: Type page })
+            RootNavigation.Navigate(page);
+    }
+
+    private void MarkCurrentTab(Type? page)
+    {
+        if (page is null)
+            return;
+        foreach (var tab in FindTabs(this))
+            tab.IsChecked = tab.Tag is Type t && t == page;
+    }
+
+    private static IEnumerable<RadioButton> FindTabs(DependencyObject root)
+    {
+        for (var i = 0; i < VisualTreeHelper.GetChildrenCount(root); i++)
+        {
+            var child = VisualTreeHelper.GetChild(root, i);
+            if (child is RadioButton { Tag: Type } tab)
+                yield return tab;
+            else if (child is not NavigationView)
+                foreach (var nested in FindTabs(child))
+                    yield return nested;
+        }
+    }
+
+    private void OnActivityAdded(ActivityEntry entry)
+    {
+        LogLastLine.Text = $"{entry.TimeText}  {entry.Text}";
+        LogScroll.ScrollToEnd();
+    }
+
+    private void OnLogHeaderClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+    {
+        var open = LogScroll.Visibility != Visibility.Visible;
+        LogScroll.Visibility = open ? Visibility.Visible : Visibility.Collapsed;
+        LogToggleText.Text = Loc.Instance[open ? "Activity.Hide" : "Activity.Show"];
+        if (open)
+            LogScroll.ScrollToEnd();
     }
 
     internal void UpdatePendingIndicator(bool hasPending)

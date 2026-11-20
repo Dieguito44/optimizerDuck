@@ -1118,4 +1118,143 @@
         </Style.Triggers>
     </Style>
 
+    <!--  Same as ScrollableTopNavigationViewTemplate, with the pane collapsed.  -->
+    <ControlTemplate x:Key="HiddenPaneNavigationViewTemplate" TargetType="{x:Type ui:NavigationView}">
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+            </Grid.RowDefinitions>
+
+            <Grid x:Name="PaneGrid" Grid.Row="0" Visibility="Collapsed">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <ui:Button
+                    x:Name="PART_BackButton"
+                    Grid.Column="0"
+                    IsEnabled="{TemplateBinding IsBackEnabled}"
+                    Style="{StaticResource BasePaneButtonStyle}"
+                    Visibility="{TemplateBinding IsBackButtonVisible,
+                                                 Converter={StaticResource BackButtonVisibilityToVisibilityConverter}}">
+                    <ui:Button.Icon>
+                        <ui:SymbolIcon Symbol="ArrowLeft48" />
+                    </ui:Button.Icon>
+                </ui:Button>
+
+                <ContentPresenter
+                    Grid.Column="1"
+                    Margin="0"
+                    Content="{TemplateBinding PaneHeader}" />
+
+                <ScrollViewer
+                    Grid.Column="2"
+                    CanContentScroll="False"
+                    HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl
+                        x:Name="PART_MenuItemsItemsControl"
+                        Focusable="False"
+                        KeyboardNavigation.DirectionalNavigation="Contained">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel
+                                    Margin="0"
+                                    IsItemsHost="True"
+                                    Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+
+                <ContentPresenter Grid.Column="3" Content="{TemplateBinding AutoSuggestBox}" />
+
+                <ContentPresenter
+                    Grid.Column="4"
+                    Margin="0"
+                    Content="{TemplateBinding PaneFooter}" />
+
+                <ScrollViewer
+                    Grid.Column="5"
+                    CanContentScroll="False"
+                    HorizontalScrollBarVisibility="Auto"
+                    VerticalScrollBarVisibility="Disabled">
+                    <ItemsControl
+                        x:Name="PART_FooterMenuItemsItemsControl"
+                        Focusable="False"
+                        KeyboardNavigation.DirectionalNavigation="Contained">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel
+                                    Margin="0"
+                                    IsItemsHost="True"
+                                    Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+
+            <Grid Grid.Row="1">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <ContentPresenter
+                    Grid.Row="0"
+                    Margin="0"
+                    Content="{TemplateBinding Header}"
+                    Visibility="{TemplateBinding HeaderVisibility}" />
+
+                <ui:NavigationViewContentPresenter
+                    x:Name="PART_NavigationViewContentPresenter"
+                    Grid.Row="1"
+                    Padding="{TemplateBinding Padding}"
+                    Transition="{TemplateBinding Transition}"
+                    TransitionDuration="{TemplateBinding TransitionDuration}">
+<ui:NavigationViewContentPresenter.Template>
+                            <ControlTemplate TargetType="{x:Type ui:NavigationViewContentPresenter}">
+                                <!--  Same as PART_FrameCP in the pane templates: the page host does not
+                                      inherit FlowDirection when the template is applied.  -->
+                                <ContentPresenter
+                                    x:Name="PART_FrameCP"
+                                    Margin="{TemplateBinding Padding}"
+                                    FlowDirection="{TemplateBinding FlowDirection}" />
+                            </ControlTemplate>
+                        </ui:NavigationViewContentPresenter.Template>
+                </ui:NavigationViewContentPresenter>
+
+                <ContentPresenter
+                    Grid.Row="0"
+                    Grid.RowSpan="2"
+                    Margin="0"
+                    Content="{TemplateBinding ContentOverlay}" />
+            </Grid>
+        </Grid>
+    </ControlTemplate>
+
+    <!--
+        Main window since the redesign (19/11/2026): the menu lives in Zentra's own top bar, so the
+        NavigationView keeps its menu items (it needs them to navigate) but never shows them.
+    -->
+    <Style
+        x:Key="HiddenPaneNavigationViewStyle"
+        BasedOn="{StaticResource DefaultNavigationViewStyle}"
+        TargetType="{x:Type ui:NavigationView}">
+        <!--  A trigger, like the other styles: the base style sets the template in its own trigger.  -->
+        <Style.Triggers>
+            <Trigger Property="PaneDisplayMode" Value="Top">
+                <Setter Property="Template" Value="{StaticResource HiddenPaneNavigationViewTemplate}" />
+                <Setter Property="ItemTemplate" Value="{StaticResource ScrollableTopCompactNavigationViewItemTemplate}" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+
 </ResourceDictionary>

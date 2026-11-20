@@ -25,6 +25,22 @@ public class OptimizeViewModel(OptimizationRegistry optimizationService) : ViewM
     private void ReloadCategories()
     {
         OptimizationCategories.Clear();
+
+        // Redesign (19/11/2026): the first tab is the summary with the findings and the packs.
+        var overview = new NavigationViewItem
+        {
+            TargetPageType = typeof(UI.Pages.OptimizeOverviewPage),
+        };
+        overview.SetBinding(
+            ContentControl.ContentProperty,
+            new Binding("[Optimize.Overview.Tab]")
+            {
+                Source = Services.Configuration.Loc.Instance,
+                Mode = BindingMode.OneWay,
+            }
+        );
+        OptimizationCategories.Add(overview);
+
         foreach (var category in optimizationService.OptimizationCategories)
         {
             var item = new NavigationViewItem

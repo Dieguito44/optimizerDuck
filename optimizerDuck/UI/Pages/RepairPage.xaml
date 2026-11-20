@@ -39,57 +39,277 @@
                     Message="{ext:Loc Repair.Warning}"
                     Severity="Warning" />
 
-                <Border Style="{StaticResource CardSurfaceStyle}">
-                    <StackPanel>
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Repair.Steps.Title}" />
-                        <ui:TextBlock
-                            Margin="0,6,0,0"
-                            Style="{StaticResource CaptionTextStyle}"
-                            Text="{ext:Loc Repair.Steps.Description}" />
-                    </StackPanel>
-                </Border>
-
-                <Border Style="{StaticResource ToolbarSurfaceStyle}">
-                    <ui:Button
-                        Appearance="Primary"
-                        Command="{Binding ViewModel.RunRepairCommand}"
-                        Content="{ext:Loc Repair.Button.Run}"
-                        Cursor="Hand"
-                        Icon="{ui:SymbolIcon WrenchScrewdriver24}" />
-                </Border>
-
-                <!--  Defender scans (phase 6B)  -->
-                <Border Style="{StaticResource CardSurfaceStyle}">
-                    <StackPanel>
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Defender.Title}" />
-                        <ui:TextBlock
-                            Margin="0,2,0,8"
-                            Style="{StaticResource CaptionTextStyle}"
-                            Text="{ext:Loc Defender.Help}"
-                            TextWrapping="Wrap" />
-                        <WrapPanel Orientation="Horizontal">
-                            <ui:Button
-                                Margin="0,2,8,2"
-                                Command="{Binding ViewModel.FullScanCommand}"
-                                Content="{ext:Loc Defender.Full.Title}"
-                                Cursor="Hand"
-                                Icon="{ui:SymbolIcon ShieldCheckmark24}" />
-                            <ui:Button
-                                Margin="0,2,8,2"
-                                Command="{Binding ViewModel.OfflineScanCommand}"
-                                Content="{ext:Loc Defender.Offline.Title}"
-                                Cursor="Hand"
-                                Icon="{ui:SymbolIcon ArrowRepeatAll24}" />
-                            <!--  Plan of improvements F3-08: second opinion, detect only.  -->
-                            <ui:Button
-                                Margin="0,2,8,2"
-                                Command="{Binding ViewModel.SafetyScanCommand}"
-                                Content="{ext:Loc SafetyScanner.Title}"
-                                Cursor="Hand"
-                                Icon="{ui:SymbolIcon ShieldQuestion24}" />
-                        </WrapPanel>
-                    </StackPanel>
-                </Border>
+                <!--  Redesign (19/11/2026): one card per tool, with its status and an "Ejecutar" button.  -->
+                <WrapPanel Margin="0,0,-12,0" ItemWidth="380" Orientation="Horizontal">
+                    <Border
+                        Margin="0,0,12,12"
+                        Padding="16,14"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border
+                                    Width="38"
+                                    Height="38"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Top"
+                                    Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8">
+                                    <ui:SymbolIcon
+                                        FontSize="19"
+                                        Foreground="{DynamicResource ZentraBrandBrush}"
+                                        Symbol="WrenchScrewdriver24" />
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Repair.Button.Run}" TextWrapping="Wrap" />
+                                    <ui:TextBlock
+                                        Margin="0,3,0,0"
+                                        FontTypography="Caption"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        Text="{ext:Loc Repair.Steps.Description}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid
+                                Grid.Row="2"
+                                Margin="0,14,0,0"
+                                ColumnDefinitions="*,Auto">
+                                <Border HorizontalAlignment="Left" Style="{StaticResource StatusChipStyle}">
+                                    <TextBlock FontSize="12" Text="{Binding ViewModel.RepairState.Text}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ViewModel.RepairState.Status}" Value="Running">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ZentraBrandBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ViewModel.RepairState.Status}" Value="Done">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ZentraGoodBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ViewModel.RepairState.Status}" Value="Failed">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ZentraCriticalBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                                <ui:Button
+                                    Grid.Column="1"
+                                    Appearance="Primary"
+                                    Command="{Binding ViewModel.RunRepairCommand}"
+                                    Content="{ext:Loc Tool.Run}"
+                                    Cursor="Hand"
+                                    Icon="{ui:SymbolIcon Play24}" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,12,12"
+                        Padding="16,14"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border
+                                    Width="38"
+                                    Height="38"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Top"
+                                    Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8">
+                                    <ui:SymbolIcon
+                                        FontSize="19"
+                                        Foreground="{DynamicResource ZentraBrandBrush}"
+                                        Symbol="ShieldCheckmark24" />
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Defender.Full.Title}" TextWrapping="Wrap" />
+                                    <ui:TextBlock
+                                        Margin="0,3,0,0"
+                                        FontTypography="Caption"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        Text="{ext:Loc Tool.Defender.Full.Description}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid
+                                Grid.Row="2"
+                                Margin="0,14,0,0"
+                                ColumnDefinitions="*,Auto">
+                                <Border HorizontalAlignment="Left" Style="{StaticResource StatusChipStyle}">
+                                    <TextBlock FontSize="12" Text="{Binding ViewModel.FullScanState.Text}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ViewModel.FullScanState.Status}" Value="Running">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ZentraBrandBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ViewModel.FullScanState.Status}" Value="Done">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ZentraGoodBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ViewModel.FullScanState.Status}" Value="Failed">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ZentraCriticalBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                                <ui:Button
+                                    Grid.Column="1"
+                                    Appearance="Primary"
+                                    Command="{Binding ViewModel.FullScanCommand}"
+                                    Content="{ext:Loc Tool.Run}"
+                                    Cursor="Hand"
+                                    Icon="{ui:SymbolIcon Play24}" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,12,12"
+                        Padding="16,14"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border
+                                    Width="38"
+                                    Height="38"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Top"
+                                    Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8">
+                                    <ui:SymbolIcon
+                                        FontSize="19"
+                                        Foreground="{DynamicResource ZentraBrandBrush}"
+                                        Symbol="ArrowRepeatAll24" />
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Defender.Offline.Title}" TextWrapping="Wrap" />
+                                    <ui:TextBlock
+                                        Margin="0,3,0,0"
+                                        FontTypography="Caption"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        Text="{ext:Loc Tool.Defender.Offline.Description}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid
+                                Grid.Row="2"
+                                Margin="0,14,0,0"
+                                ColumnDefinitions="*,Auto">
+                                <Border HorizontalAlignment="Left" Style="{StaticResource StatusChipStyle}">
+                                    <TextBlock FontSize="12" Text="{Binding ViewModel.OfflineScanState.Text}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ViewModel.OfflineScanState.Status}" Value="Running">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ZentraBrandBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ViewModel.OfflineScanState.Status}" Value="Done">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ZentraGoodBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ViewModel.OfflineScanState.Status}" Value="Failed">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ZentraCriticalBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                                <ui:Button
+                                    Grid.Column="1"
+                                    Appearance="Primary"
+                                    Command="{Binding ViewModel.OfflineScanCommand}"
+                                    Content="{ext:Loc Tool.Run}"
+                                    Cursor="Hand"
+                                    Icon="{ui:SymbolIcon Play24}" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,12,12"
+                        Padding="16,14"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border
+                                    Width="38"
+                                    Height="38"
+                                    Margin="0,0,12,0"
+                                    VerticalAlignment="Top"
+                                    Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                    BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8">
+                                    <ui:SymbolIcon
+                                        FontSize="19"
+                                        Foreground="{DynamicResource ZentraBrandBrush}"
+                                        Symbol="ShieldQuestion24" />
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc SafetyScanner.Title}" TextWrapping="Wrap" />
+                                    <ui:TextBlock
+                                        Margin="0,3,0,0"
+                                        FontTypography="Caption"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        Text="{ext:Loc Tool.SafetyScanner.Description}"
+                                        TextWrapping="Wrap" />
+                                </StackPanel>
+                            </Grid>
+                            <Grid
+                                Grid.Row="2"
+                                Margin="0,14,0,0"
+                                ColumnDefinitions="*,Auto">
+                                <Border HorizontalAlignment="Left" Style="{StaticResource StatusChipStyle}">
+                                    <TextBlock FontSize="12" Text="{Binding ViewModel.SafetyScanState.Text}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding ViewModel.SafetyScanState.Status}" Value="Running">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ZentraBrandBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ViewModel.SafetyScanState.Status}" Value="Done">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ZentraGoodBrush}" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding ViewModel.SafetyScanState.Status}" Value="Failed">
+                                                        <Setter Property="Foreground" Value="{DynamicResource ZentraCriticalBrush}" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style>
+                                    </TextBlock>
+                                </Border>
+                                <ui:Button
+                                    Grid.Column="1"
+                                    Appearance="Primary"
+                                    Command="{Binding ViewModel.SafetyScanCommand}"
+                                    Content="{ext:Loc Tool.Run}"
+                                    Cursor="Hand"
+                                    Icon="{ui:SymbolIcon Play24}" />
+                            </Grid>
+                        </Grid>
+                    </Border>
+                </WrapPanel>
 
                 <StackPanel Visibility="{Binding ViewModel.HasResults, Converter={StaticResource BooleanToVisibilityConverter}}">
                     <ui:TextBlock

@@ -170,12 +170,12 @@
                 </ui:VirtualizingItemsControl.Template>
                 <ui:VirtualizingItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid VerticalAlignment="Top" Columns="{Binding ActualWidth, RelativeSource={RelativeSource AncestorType=ScrollViewer}, Converter={StaticResource WidthToColumnConverter}}" />
+                        <VirtualizingStackPanel VerticalAlignment="Top" />
                     </ItemsPanelTemplate>
                 </ui:VirtualizingItemsControl.ItemsPanel>
                 <ui:VirtualizingItemsControl.ItemContainerStyle>
                     <Style TargetType="ContentPresenter">
-                        <Setter Property="Margin" Value="0,0,12,12" />
+                        <Setter Property="Margin" Value="0,0,12,6" />
                         <Setter Property="HorizontalAlignment" Value="Stretch" />
                     </Style>
                 </ui:VirtualizingItemsControl.ItemContainerStyle>
@@ -183,7 +183,7 @@
                 <ui:VirtualizingItemsControl.ItemTemplate>
                     <DataTemplate DataType="{x:Type optimization:BaseOptimization}">
                         <Border
-                            Padding="20,14"
+                            Padding="16,10"
                             Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
                             BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
                             BorderThickness="1"
@@ -279,147 +279,82 @@
                                     </StackPanel>
                                 </Grid>
 
-                                <!--  Normal state  -->
-                                <Grid RowDefinitions="Auto,Auto,Auto,Auto,*" Visibility="{Binding IsConditionBlocked, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
-                                    <ui:TextBlock
-                                        Grid.Row="0"
-                                        FontTypography="Caption"
-                                        Foreground="{DynamicResource TextFillColorDisabledBrush}"
-                                        Text="{Binding Id}"
-                                        TextWrapping="Wrap"
-                                        Visibility="Collapsed" />
-                                    <ui:TextBlock
-                                        Grid.Row="1"
-                                        FontTypography="Subtitle"
-                                        Text="{Binding Name}"
-                                        TextWrapping="Wrap"
-                                        ToolTip="{Binding Id}" />
+                                <!--  Normal state: one row. Name and what it does on the left, risk and state in the
+                                      middle, the switch on the right (redesign, 19/11/2026).  -->
+                                <Grid ColumnDefinitions="*,Auto,Auto" Visibility="{Binding IsConditionBlocked, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                                    <StackPanel Margin="0,0,16,0" VerticalAlignment="Center">
+                                        <ui:TextBlock
+                                            FontTypography="BodyStrong"
+                                            Text="{Binding Name}"
+                                            TextWrapping="Wrap"
+                                            ToolTip="{Binding Id}" />
+                                        <ui:TextBlock
+                                            Margin="0,2,0,0"
+                                            FontTypography="Caption"
+                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                            Text="{Binding ShortDescription}"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
 
-                                    <ui:VirtualizingItemsControl
-                                        Grid.Row="2"
-                                        Margin="0,2,0,2"
-                                        ItemsSource="{Binding TagDisplays}">
-                                        <ui:VirtualizingItemsControl.ItemsPanel>
-                                            <ItemsPanelTemplate>
-                                                <WrapPanel HorizontalAlignment="Left" VerticalAlignment="Top" />
-                                            </ItemsPanelTemplate>
-                                        </ui:VirtualizingItemsControl.ItemsPanel>
-                                        <ui:VirtualizingItemsControl.ItemContainerStyle>
-                                            <Style TargetType="ContentPresenter">
-                                                <Setter Property="Margin" Value="0,0,2,2" />
-                                                <Setter Property="HorizontalAlignment" Value="Left" />
-                                            </Style>
-                                        </ui:VirtualizingItemsControl.ItemContainerStyle>
-                                        <ui:VirtualizingItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border
-                                                    Padding="6,2"
-                                                    HorizontalAlignment="Left"
-                                                    Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
-                                                    CornerRadius="{StaticResource CornerRadiusSmall}"
-                                                    ToolTip="{Binding Description}"
-                                                    ToolTipService.InitialShowDelay="150"
-                                                    ToolTipService.Placement="Top">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <ui:SymbolIcon
-                                                            Margin="0,0,6,0"
-                                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                            Symbol="{Binding Icon}" />
+                                    <WrapPanel
+                                        Grid.Column="1"
+                                        MaxWidth="360"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                        <controls:RiskBadge
+                                            Margin="0,2,6,2"
+                                            Risk="{Binding Risk}"
+                                            RiskVisual="{Binding RiskVisual}" />
+                                        <controls:StateBadge
+                                            Margin="0,2,6,2"
+                                            Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                            Command="{Binding DataContext.ViewModel.ShowDetailsCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}"
+                                            Icon="CheckmarkCircle24"
+                                            IconBrush="{DynamicResource SystemFillColorSuccessBrush}"
+                                            Text="{ext:Loc Optimizer.UI.State.AlreadyOptimal}"
+                                            ToolTip="{ext:Loc Optimizer.UI.State.AlreadyOptimal.Tooltip}"
+                                            Visibility="{Binding State.IsAlreadyOptimal, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                        <controls:StateBadge
+                                            Margin="0,2,6,2"
+                                            Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                            Command="{Binding DataContext.ViewModel.ShowDetailsCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}"
+                                            Icon="CheckmarkCircle24"
+                                            IconBrush="{DynamicResource SystemFillColorSuccessBrush}"
+                                            Text="{Binding State.RelativeTime}"
+                                            ToolTip="{Binding State.AppliedTooltip}"
+                                            Visibility="{Binding State.AppliedAt, Converter={StaticResource NullToVisibilityConverter}}" />
+                                        <!--  Done and not reversible (ResetBase): said even with no revert data.  -->
+                                        <controls:StateBadge
+                                            Margin="0,2,6,2"
+                                            Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                            Command="{Binding DataContext.ViewModel.ShowDetailsCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}"
+                                            Icon="LockClosed24"
+                                            Text="{Binding State.DoneIrreversibleText}"
+                                            Visibility="{Binding State.DoneIrreversibleText, Converter={StaticResource NullToVisibilityConverter}}" />
+                                    </WrapPanel>
 
-                                                        <ui:TextBlock
-                                                            HorizontalAlignment="Center"
-                                                            VerticalAlignment="Center"
-                                                            FontTypography="Caption"
-                                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                                                            Text="{Binding Display}"
-                                                            TextWrapping="Wrap" />
-                                                    </StackPanel>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ui:VirtualizingItemsControl.ItemTemplate>
-                                    </ui:VirtualizingItemsControl>
-
-                                    <ui:TextBlock
-                                        Grid.Row="3"
-                                        Margin="0,10,0,0"
-                                        FontTypography="Body"
-                                        Text="{Binding ShortDescription}"
-                                        TextTrimming="WordEllipsis"
-                                        TextWrapping="Wrap" />
-
-                                    <Grid
-                                        Grid.Row="4"
-                                        Margin="0,10,0,0"
-                                        VerticalAlignment="Bottom"
-                                        ColumnDefinitions="*,Auto">
-                                        <Grid RowDefinitions="Auto,Auto">
-                                            <StackPanel HorizontalAlignment="Left" Orientation="Horizontal">
-                                                <controls:RiskBadge Risk="{Binding Risk}" RiskVisual="{Binding RiskVisual}" />
-                                                <controls:StateBadge
-                                                    Margin="6,0,0,0"
-                                                    Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
-                                                    Command="{Binding DataContext.ViewModel.ShowDetailsCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                    CommandParameter="{Binding}"
-                                                    Icon="CheckmarkCircle24"
-                                                    IconBrush="{DynamicResource SystemFillColorSuccessBrush}"
-                                                    Text="{ext:Loc Optimizer.UI.State.AlreadyOptimal}"
-                                                    ToolTip="{ext:Loc Optimizer.UI.State.AlreadyOptimal.Tooltip}"
-                                                    Visibility="{Binding State.IsAlreadyOptimal, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                            </StackPanel>
-
-                                            <controls:StateBadge
-                                                Grid.Row="1"
-                                                Margin="0,8,0,0"
-                                                Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
-                                                Command="{Binding DataContext.ViewModel.ShowDetailsCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                CommandParameter="{Binding}"
-                                                Icon="CheckmarkCircle24"
-                                                Text="{Binding State.RelativeTime}"
-                                                ToolTip="{Binding State.AppliedTooltip}"
-                                                Visibility="{Binding State.AppliedAt, Converter={StaticResource NullToVisibilityConverter}}" />
-                                            <!--  Done and not reversible (ResetBase): the card says so even with no revert data.  -->
-                                            <controls:StateBadge
-                                                Grid.Row="1"
-                                                Margin="0,8,0,0"
-                                                Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
-                                                Command="{Binding DataContext.ViewModel.ShowDetailsCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                CommandParameter="{Binding}"
-                                                Icon="LockClosed24"
-                                                Text="{Binding State.DoneIrreversibleText}"
-                                                Visibility="{Binding State.DoneIrreversibleText, Converter={StaticResource NullToVisibilityConverter}}" />
-                                        </Grid>
-
-                                        <StackPanel
-                                            Grid.Column="1"
-                                            Margin="10,0,0,0"
-                                            VerticalAlignment="Bottom"
-                                            Orientation="Horizontal">
-                                            <ui:ToggleSwitch
-                                                HorizontalAlignment="Right"
-                                                Command="{Binding DataContext.ViewModel.ToggleOptimizationCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                CommandParameter="{Binding}"
-                                                Cursor="Hand"
-                                                IsChecked="{Binding State.IsApplied, Mode=TwoWay}"
-                                                IsEnabled="{Binding DataContext.ViewModel.IsProcessing, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource InverseBooleanConverter}}" />
-                                            <ui:Button
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Bottom"
-                                                Command="{Binding DataContext.ViewModel.ViewSourceOnGitHubCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                CommandParameter="{Binding}"
-                                                Cursor="Hand"
-                                                Icon="{ui:SymbolIcon Code24}"
-                                                Style="{StaticResource TransparentButtonStyle}"
-                                                ToolTip="{ext:Loc Optimizer.Menu.ViewSource}" />
-                                            <ui:Button
-                                                HorizontalAlignment="Right"
-                                                VerticalAlignment="Bottom"
-                                                Command="{Binding DataContext.ViewModel.ShowDetailsCommand, RelativeSource={RelativeSource AncestorType=Page}}"
-                                                CommandParameter="{Binding}"
-                                                Cursor="Hand"
-                                                Icon="{ui:SymbolIcon MoreVertical24}"
-                                                Style="{StaticResource TransparentButtonStyle}" />
-                                        </StackPanel>
-                                    </Grid>
+                                    <StackPanel
+                                        Grid.Column="2"
+                                        Margin="10,0,0,0"
+                                        VerticalAlignment="Center"
+                                        Orientation="Horizontal">
+                                        <ui:ToggleSwitch
+                                            Command="{Binding DataContext.ViewModel.ToggleOptimizationCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}"
+                                            Cursor="Hand"
+                                            IsChecked="{Binding State.IsApplied, Mode=TwoWay}"
+                                            IsEnabled="{Binding DataContext.ViewModel.IsProcessing, RelativeSource={RelativeSource AncestorType=Page}, Converter={StaticResource InverseBooleanConverter}}" />
+                                        <ui:Button
+                                            Command="{Binding DataContext.ViewModel.ShowDetailsCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                            CommandParameter="{Binding}"
+                                            Cursor="Hand"
+                                            Icon="{ui:SymbolIcon MoreVertical24}"
+                                            Style="{StaticResource TransparentButtonStyle}"
+                                            ToolTip="{ext:Loc Optimizer.Menu.Details}" />
+                                    </StackPanel>
                                 </Grid>
                             </Grid>
                         </Border>

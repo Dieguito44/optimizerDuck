@@ -1,0 +1,251 @@
+<Page
+    x:Class="optimizerDuck.UI.Pages.OptimizeOverviewPage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:ext="clr-namespace:optimizerDuck.Common.Extensions"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:pages="clr-namespace:optimizerDuck.UI.Pages"
+    xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+    Title="OptimizeOverviewPage"
+    d:DataContext="{d:DesignInstance pages:OptimizeOverviewPage}"
+    d:DesignHeight="700"
+    d:DesignWidth="1000"
+    Style="{StaticResource PageRootStyle}"
+    mc:Ignorable="d">
+
+    <!--  Redesign (19/11/2026): the diagnosis findings, then one pack per category.  -->
+    <ScrollViewer HorizontalScrollBarVisibility="Disabled" VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="0,4,12,24">
+
+            <!--  Servicio estándar  -->
+            <Border
+                Margin="0,0,0,22"
+                Padding="18,14"
+                Background="{DynamicResource ZentraBrandMutedBrush}"
+                BorderBrush="{DynamicResource ZentraBrandBrush}"
+                BorderThickness="1"
+                CornerRadius="10">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <ui:SymbolIcon
+                        Margin="0,0,14,0"
+                        VerticalAlignment="Center"
+                        FontSize="28"
+                        Foreground="{DynamicResource ZentraBrandBrush}"
+                        Symbol="ShieldCheckmark24" />
+                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Optimize.Standard.Title}" />
+                        <ui:TextBlock
+                            Margin="0,2,0,0"
+                            FontTypography="Caption"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{ext:Loc Optimize.Standard.Description}"
+                            TextWrapping="Wrap" />
+                        <ui:TextBlock
+                            Margin="0,4,0,0"
+                            FontTypography="Caption"
+                            Text="{Binding ViewModel.Profile.StatusText}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                    <ui:Button
+                        Grid.Column="2"
+                        Margin="14,0,0,0"
+                        VerticalAlignment="Center"
+                        Appearance="Primary"
+                        Command="{Binding ViewModel.ApplyStandardCommand}"
+                        Content="{ext:Loc Optimize.Standard.Apply}"
+                        Cursor="Hand"
+                        Icon="{ui:SymbolIcon Play24}"
+                        IsEnabled="{Binding ViewModel.Profile.IsBusy, Converter={StaticResource InverseBooleanConverter}}" />
+                </Grid>
+            </Border>
+
+            <!--  What the diagnosis found  -->
+            <Grid Margin="0,0,0,10" ColumnDefinitions="*,Auto">
+                <ui:TextBlock FontTypography="Subtitle" Text="{ext:Loc Optimize.Findings.Title}" />
+                <ui:TextBlock
+                    Grid.Column="1"
+                    VerticalAlignment="Bottom"
+                    FontTypography="Caption"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Text="{Binding ViewModel.FindingsSummary}" />
+            </Grid>
+
+            <Border
+                Margin="0,0,0,22"
+                Padding="16,12"
+                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                BorderThickness="1"
+                CornerRadius="8"
+                Visibility="{Binding ViewModel.HasReport, Converter={StaticResource InverseBooleanToVisibilityConverter}}">
+                <Grid ColumnDefinitions="*,Auto">
+                    <StackPanel VerticalAlignment="Center">
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Optimize.Findings.None.Title}" />
+                        <ui:TextBlock
+                            FontTypography="Caption"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{ext:Loc Optimize.Findings.None.Description}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                    <ui:Button
+                        Grid.Column="1"
+                        Command="{Binding ViewModel.DiagnoseCommand}"
+                        Content="{ext:Loc Optimize.Findings.None.Button}"
+                        Cursor="Hand"
+                        Icon="{ui:SymbolIcon Stethoscope24}" />
+                </Grid>
+            </Border>
+
+            <ItemsControl Margin="0,0,0,12" ItemsSource="{Binding ViewModel.Findings}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel ItemWidth="330" Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="0,0,12,12"
+                            Padding="14,12"
+                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8">
+                            <Grid RowDefinitions="Auto,Auto,*,Auto">
+                                <TextBlock
+                                    FontSize="11"
+                                    FontWeight="SemiBold"
+                                    Foreground="{Binding SeverityBrush}"
+                                    Text="{Binding SeverityText}" />
+                                <ui:TextBlock
+                                    Grid.Row="1"
+                                    Margin="0,4,0,0"
+                                    FontTypography="BodyStrong"
+                                    Text="{Binding Title}"
+                                    TextWrapping="Wrap" />
+                                <ui:TextBlock
+                                    Grid.Row="2"
+                                    Margin="0,2,0,0"
+                                    FontTypography="Caption"
+                                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                    MaxHeight="48"
+                                    Text="{Binding Description}"
+                                    TextTrimming="WordEllipsis"
+                                    TextWrapping="Wrap" />
+                                <Grid
+                                    Grid.Row="3"
+                                    Margin="0,10,0,0"
+                                    ColumnDefinitions="*,Auto">
+                                    <ui:TextBlock
+                                        VerticalAlignment="Center"
+                                        FontTypography="Caption"
+                                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                        Text="{Binding Who}" />
+                                    <ui:Button
+                                        Grid.Column="1"
+                                        Command="{Binding DataContext.ViewModel.OpenFindingCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                        CommandParameter="{Binding}"
+                                        Content="{Binding ActionText}"
+                                        Cursor="Hand" />
+                                </Grid>
+                            </Grid>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <!--  Packs  -->
+            <Grid Margin="0,0,0,10" ColumnDefinitions="*,Auto">
+                <ui:TextBlock FontTypography="Subtitle" Text="{ext:Loc Optimize.Packs.Title}" />
+                <ui:TextBlock
+                    Grid.Column="1"
+                    VerticalAlignment="Bottom"
+                    FontTypography="Caption"
+                    Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                    Text="{ext:Loc Optimize.Packs.Hint}" />
+            </Grid>
+
+            <ItemsControl ItemsSource="{Binding ViewModel.Packs}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel ItemWidth="330" Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border
+                            Margin="0,0,12,12"
+                            Padding="14,12"
+                            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8">
+                            <StackPanel>
+                                <Grid ColumnDefinitions="Auto,*">
+                                    <Border
+                                        Width="36"
+                                        Height="36"
+                                        Margin="0,0,12,0"
+                                        VerticalAlignment="Top"
+                                        Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                        BorderThickness="1"
+                                        CornerRadius="8">
+                                        <ui:SymbolIcon
+                                            FontSize="18"
+                                            Foreground="{DynamicResource ZentraBrandBrush}"
+                                            Symbol="{Binding Icon}" />
+                                    </Border>
+                                    <StackPanel Grid.Column="1">
+                                        <ui:TextBlock FontTypography="BodyStrong" Text="{Binding Name}" />
+                                        <ui:TextBlock
+                                            Height="36"
+                                            Margin="0,2,0,0"
+                                            FontTypography="Caption"
+                                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                            Text="{Binding Description}"
+                                            TextTrimming="WordEllipsis"
+                                            TextWrapping="Wrap" />
+                                    </StackPanel>
+                                </Grid>
+                                <Grid Margin="0,10,0,0" ColumnDefinitions="*,Auto">
+                                    <ProgressBar
+                                        Height="4"
+                                        VerticalAlignment="Center"
+                                        Maximum="100"
+                                        Value="{Binding Percent, Mode=OneWay}" />
+                                    <TextBlock
+                                        Grid.Column="1"
+                                        Margin="10,0,0,0"
+                                        FontSize="12"
+                                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                        Text="{Binding CountText}" />
+                                </Grid>
+                                <StackPanel
+                                    Margin="0,12,0,0"
+                                    HorizontalAlignment="Right"
+                                    Orientation="Horizontal">
+                                    <ui:Button
+                                        Margin="0,0,8,0"
+                                        Command="{Binding DataContext.ViewModel.OpenCategoryCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                        CommandParameter="{Binding}"
+                                        Content="{ext:Loc Optimize.Pack.SeeSettings}"
+                                        Cursor="Hand" />
+                                    <ui:Button
+                                        Appearance="Primary"
+                                        Command="{Binding DataContext.ViewModel.ApplySafeCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                        CommandParameter="{Binding}"
+                                        Content="{Binding ApplyText}"
+                                        Cursor="Hand"
+                                        Icon="{ui:SymbolIcon Play24}"
+                                        IsEnabled="{Binding CanApply}" />
+                                </StackPanel>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</Page>

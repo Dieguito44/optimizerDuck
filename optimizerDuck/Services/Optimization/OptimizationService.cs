@@ -280,6 +280,13 @@ public class OptimizationService(
 
         if (result.Success)
             MarkRecordReverted(optimization, _logger);
+        Services.UI.ActivityLog.Add(
+            Loc.Instance[
+                result.Success ? "Activity.Reverted" : "Activity.RevertFailed",
+                optimization.Name
+            ],
+            result.Success ? Services.UI.ActivityKind.Good : Services.UI.ActivityKind.Error
+        );
 
         return result;
     }

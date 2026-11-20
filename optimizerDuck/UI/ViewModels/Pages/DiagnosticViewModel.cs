@@ -123,6 +123,12 @@ public partial class DiagnosticViewModel(
 
     private void Show(DiagnosticReport report)
     {
+        Services.UI.ActivityLog.Add(
+            Loc.Instance["Activity.Diagnosis", report.Score.Score, report.Findings.Count()],
+            report.Score.Score >= 60
+                ? Services.UI.ActivityKind.Good
+                : Services.UI.ActivityKind.Warning
+        );
         Score = report.Score.Score;
         ScoreBrush = BrushForScore(report.Score.Score);
         CoverageText = Loc.Instance[

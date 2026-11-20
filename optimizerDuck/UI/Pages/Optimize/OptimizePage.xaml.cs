@@ -7,7 +7,11 @@ namespace optimizerDuck.UI.Pages;
 
 public partial class OptimizePage : INavigableView<OptimizeViewModel>
 {
-    public OptimizePage(OptimizeViewModel viewModel, INavigationViewPageProvider pageProvider)
+    public OptimizePage(
+        OptimizeViewModel viewModel,
+        OptimizeOverviewViewModel overview,
+        INavigationViewPageProvider pageProvider
+    )
     {
         ViewModel = viewModel;
         DataContext = this;
@@ -16,6 +20,8 @@ public partial class OptimizePage : INavigableView<OptimizeViewModel>
 
         RootNavigation.SetPageProviderService(pageProvider);
         ViewModel.OptimizationsLoaded += OnOptimizationsLoaded;
+        // "Ver ajustes" on a pack opens that category's tab.
+        overview.OpenCategoryRequested += page => RootNavigation.Navigate(page);
     }
 
     public OptimizeViewModel ViewModel { get; }
