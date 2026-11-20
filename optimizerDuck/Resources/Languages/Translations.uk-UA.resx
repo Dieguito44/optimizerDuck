@@ -4960,4 +4960,214 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Optimizer.UI.State.DoneIrreversible" xml:space="preserve">
     <value>Done on {0} · not reversible</value>
   </data>
+  <data name="Nav.Group.Service" xml:space="preserve">
+    <value>SERVICE</value>
+  </data>
+  <data name="Nav.Group.Fix" xml:space="preserve">
+    <value>FIX</value>
+  </data>
+  <data name="Nav.Group.Tools" xml:space="preserve">
+    <value>TOOLS</value>
+  </data>
+  <data name="Activity.Title" xml:space="preserve">
+    <value>Activity log</value>
+  </data>
+  <data name="Activity.Show" xml:space="preserve">
+    <value>Show</value>
+  </data>
+  <data name="Activity.Hide" xml:space="preserve">
+    <value>Hide</value>
+  </data>
+  <data name="Activity.Started" xml:space="preserve">
+    <value>{0}: started</value>
+  </data>
+  <data name="Activity.Success" xml:space="preserve">
+    <value>{0}: done, changes: {1}</value>
+  </data>
+  <data name="Activity.NothingToDo" xml:space="preserve">
+    <value>{0}: it was already like that</value>
+  </data>
+  <data name="Activity.PartialSuccess" xml:space="preserve">
+    <value>{0}: finished with failures, changes: {1}</value>
+  </data>
+  <data name="Activity.Failed" xml:space="preserve">
+    <value>{0}: failed</value>
+  </data>
+  <data name="Activity.Reverted" xml:space="preserve">
+    <value>{0}: reverted</value>
+  </data>
+  <data name="Activity.RevertFailed" xml:space="preserve">
+    <value>{0}: could not be reverted</value>
+  </data>
+  <data name="Activity.Diagnosis" xml:space="preserve">
+    <value>Diagnosis: score {0} of 100, {1} findings</value>
+  </data>
+  <data name="Activity.MeasuredBefore" xml:space="preserve">
+    <value>Session: "before" measurement saved</value>
+  </data>
+  <data name="Activity.MeasuredAfter" xml:space="preserve">
+    <value>Session: "after" measurement saved</value>
+  </data>
+  <data name="Activity.Pdf" xml:space="preserve">
+    <value>Session: PDF saved ({0})</value>
+  </data>
+  <data name="Optimizer.Menu.Details" xml:space="preserve">
+    <value>Details</value>
+  </data>
+  <data name="Optimize.Overview.Tab" xml:space="preserve">
+    <value>Summary</value>
+  </data>
+  <data name="Optimize.Standard.Title" xml:space="preserve">
+    <value>Standard service profile</value>
+  </data>
+  <data name="Optimize.Standard.Description" xml:space="preserve">
+    <value>The usual service: privacy, AI, ads and storage settings, plus the preinstalled apps on the list. Preview, confirmation and restore point first.</value>
+  </data>
+  <data name="Optimize.Standard.Apply" xml:space="preserve">
+    <value>Apply profile</value>
+  </data>
+  <data name="Optimize.Findings.Title" xml:space="preserve">
+    <value>What the diagnosis found</value>
+  </data>
+  <data name="Optimize.Findings.Summary" xml:space="preserve">
+    <value>Score {0} of 100 · {1} findings, the {2} most important here</value>
+  </data>
+  <data name="Optimize.Findings.None.Title" xml:space="preserve">
+    <value>No diagnosis yet</value>
+  </data>
+  <data name="Optimize.Findings.None.Description" xml:space="preserve">
+    <value>Run the diagnosis first: it reads the PC without changing anything and says what to fix.</value>
+  </data>
+  <data name="Optimize.Findings.None.Button" xml:space="preserve">
+    <value>Diagnose</value>
+  </data>
+  <data name="Optimize.Finding.Go.RepairPage" xml:space="preserve">
+    <value>Repair</value>
+  </data>
+  <data name="Optimize.Finding.Go.DiskCleanupPage" xml:space="preserve">
+    <value>Clean up</value>
+  </data>
+  <data name="Optimize.Finding.Go.StartupManagerPage" xml:space="preserve">
+    <value>Review startup</value>
+  </data>
+  <data name="Optimize.Finding.Go.SessionPage" xml:space="preserve">
+    <value>Go to session</value>
+  </data>
+  <data name="Optimize.Finding.Go.SoftwarePage" xml:space="preserve">
+    <value>Programs</value>
+  </data>
+  <data name="Optimize.Finding.Go.BiosGuidePage" xml:space="preserve">
+    <value>BIOS guide</value>
+  </data>
+  <data name="Optimize.Finding.Go.DiagnosticPage" xml:space="preserve">
+    <value>See detail</value>
+  </data>
+  <data name="Optimize.Packs.Title" xml:space="preserve">
+    <value>Packs</value>
+  </data>
+  <data name="Optimize.Packs.Hint" xml:space="preserve">
+    <value>One click applies only the safe settings; the others stay for you to review</value>
+  </data>
+  <data name="Optimize.Pack.Count" xml:space="preserve">
+    <value>{0} of {1} applied</value>
+  </data>
+  <data name="Optimize.Pack.ApplySafe" xml:space="preserve">
+    <value>Apply {0} safe</value>
+  </data>
+  <data name="Optimize.Pack.NothingSafe" xml:space="preserve">
+    <value>Safe ones applied</value>
+  </data>
+  <data name="Optimize.Pack.SeeSettings" xml:space="preserve">
+    <value>See settings</value>
+  </data>
+  <data name="Optimize.Pack.Performance.Description" xml:space="preserve">
+    <value>Active window first, multimedia, network and background processes.</value>
+  </data>
+  <data name="Optimize.Pack.SecurityAndPrivacy.Description" xml:space="preserve">
+    <value>Telemetry, ads, activity history, location and Copilot.</value>
+  </data>
+  <data name="Optimize.Pack.Gpu.Description" xml:space="preserve">
+    <value>Monitor refresh rate, high-performance graphics and driver power saving.</value>
+  </data>
+  <data name="Optimize.Pack.PowerManagement.Description" xml:space="preserve">
+    <value>Power plan, hibernation and USB power saving.</value>
+  </data>
+  <data name="Optimize.Pack.BloatwareAndServices.Description" xml:space="preserve">
+    <value>Preinstalled apps, rarely used services and device apps.</value>
+  </data>
+  <data name="Optimize.Pack.UserExperience.Description" xml:space="preserve">
+    <value>Faster Explorer and menus, no web search or ads in Start.</value>
+  </data>
+  <data name="Optimize.Pack.AI.Description" xml:space="preserve">
+    <value>Recall, Click To Do and the AI in Edge, Paint and Notepad.</value>
+  </data>
+  <data name="Optimize.Pack.Storage.Description" xml:space="preserve">
+    <value>TRIM, Storage Sense, restore points and component cleanup.</value>
+  </data>
+  <data name="Tool.Run" xml:space="preserve">
+    <value>Run</value>
+  </data>
+  <data name="Tool.State.Ready" xml:space="preserve">
+    <value>Ready</value>
+  </data>
+  <data name="Tool.State.Running" xml:space="preserve">
+    <value>Working…</value>
+  </data>
+  <data name="Tool.State.Done" xml:space="preserve">
+    <value>Done at {0}</value>
+  </data>
+  <data name="Tool.State.Failed" xml:space="preserve">
+    <value>Failed</value>
+  </data>
+  <data name="Tool.Defender.Full.Description" xml:space="preserve">
+    <value>Microsoft Defender checks every file. It can take an hour or more.</value>
+  </data>
+  <data name="Tool.Defender.Offline.Description" xml:space="preserve">
+    <value>Restarts the PC and scans before Windows starts (about 15 minutes). The remote session drops.</value>
+  </data>
+  <data name="Tool.SafetyScanner.Description" xml:space="preserve">
+    <value>Microsoft Safety Scanner, signed by Microsoft: about 200 MB download, it only detects.</value>
+  </data>
+  <data name="Nav.Dashboard" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Nav.Diagnostic" xml:space="preserve">
+    <value>Diagnosis</value>
+  </data>
+  <data name="Nav.Session" xml:space="preserve">
+    <value>Session</value>
+  </data>
+  <data name="Nav.Optimize" xml:space="preserve">
+    <value>Optimize</value>
+  </data>
+  <data name="Nav.Repair" xml:space="preserve">
+    <value>Repair</value>
+  </data>
+  <data name="Nav.DiskCleanup" xml:space="preserve">
+    <value>Cleanup</value>
+  </data>
+  <data name="Nav.Bloatware" xml:space="preserve">
+    <value>Apps</value>
+  </data>
+  <data name="Nav.Software" xml:space="preserve">
+    <value>Programs</value>
+  </data>
+  <data name="Nav.StartupManager" xml:space="preserve">
+    <value>Startup</value>
+  </data>
+  <data name="Nav.ScheduledTasks" xml:space="preserve">
+    <value>Tasks</value>
+  </data>
+  <data name="Nav.Customize" xml:space="preserve">
+    <value>Customize</value>
+  </data>
+  <data name="Nav.BiosGuide" xml:space="preserve">
+    <value>BIOS</value>
+  </data>
+  <data name="Preset.Confirm.Title" xml:space="preserve">
+    <value>Apply "{0}"?</value>
+  </data>
+  <data name="Profile.Confirm.MessageNoApps" xml:space="preserve">
+    <value>A restore point is created first. Then {0} settings are applied; each one can be reverted.</value>
+  </data>
 </root>

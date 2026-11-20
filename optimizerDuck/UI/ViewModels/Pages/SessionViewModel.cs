@@ -236,6 +236,7 @@ public partial class SessionViewModel(
             AiExchange.Write(path, AiExchange.Request(_session, payload));
             sessionStore.Save(_session);
             StatusText = Loc.Instance["Session.Ai.Exported", path];
+            Services.UI.ActivityLog.Add(StatusText, Services.UI.ActivityKind.Good);
             UnelevatedShell.Open(folder);
         }
         catch (Exception ex)
@@ -279,6 +280,7 @@ public partial class SessionViewModel(
             sessionStore.Save(_session);
             ShowWritten(record);
             StatusText = Loc.Instance["Session.Ai.Imported"];
+            Services.UI.ActivityLog.Add(StatusText, Services.UI.ActivityKind.Good);
         }
         catch (Exception ex)
         {
@@ -443,6 +445,10 @@ public partial class SessionViewModel(
                 Loc.Instance["Session.Pdf.Saved", LastPdfPath]
                 + " "
                 + Loc.Instance["Report.Integrity.Hint", ReportIntegrity.Sha256Of(LastPdfPath)];
+            Services.UI.ActivityLog.Add(
+                Loc.Instance["Activity.Pdf", Path.GetFileName(LastPdfPath)],
+                Services.UI.ActivityKind.Good
+            );
             UnelevatedShell.Open(LastPdfPath);
         }
         catch (Exception ex)
@@ -558,6 +564,14 @@ public partial class SessionViewModel(
             sessionStore.Save(_session);
             ShowSession();
             StatusText = Loc.Instance["Session.Step.Done", 0];
+            Services.UI.ActivityLog.Add(
+                Loc.Instance[
+                    phase == MeasurementPhase.Before
+                        ? "Activity.MeasuredBefore"
+                        : "Activity.MeasuredAfter"
+                ],
+                Services.UI.ActivityKind.Good
+            );
         }
         catch (OperationCanceledException)
         {

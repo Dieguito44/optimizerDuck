@@ -13,6 +13,7 @@
                 <ResourceDictionary Source="pack://application:,,,/UI/Styles/Converters.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/UI/Styles/NavigationViewOverride.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/UI/Styles/ToolTipOverride.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/UI/Styles/Redesign.xaml" />
             </ResourceDictionary.MergedDictionaries>
 
             <Style TargetType="Image">

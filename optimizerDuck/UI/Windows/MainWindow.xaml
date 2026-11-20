@@ -27,17 +27,98 @@
     WindowStartupLocation="CenterScreen"
     mc:Ignorable="d">
     <Grid FlowDirection="{Binding Direction, Source={x:Static config:Loc.Instance}}">
+        <!--  Redesign (19/11/2026): title, grouped tabs, the page, and the activity log.  -->
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <Border
+            Grid.Row="1"
+            Padding="16,6,16,8"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,0,0,1">
+            <Grid ColumnDefinitions="*,Auto">
+                <WrapPanel x:Name="NavBar" Orientation="Horizontal">
+                    <StackPanel Margin="0,0,12,2">
+                        <TextBlock Style="{StaticResource NavGroupLabelStyle}" Text="{extensions:Loc Nav.Group.Service}" />
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Click="OnNavClick" Style="{StaticResource NavPillStyle}" Tag="{x:Type pages:DashboardPage}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Margin="0,0,5,0" FontSize="15" Symbol="Home24" /><TextBlock Text="{extensions:Loc Nav.Dashboard}" /></StackPanel>
+                            </RadioButton>
+                            <RadioButton Click="OnNavClick" Style="{StaticResource NavPillStyle}" Tag="{x:Type pages:DiagnosticPage}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Margin="0,0,5,0" FontSize="15" Symbol="Stethoscope24" /><TextBlock Text="{extensions:Loc Nav.Diagnostic}" /></StackPanel>
+                            </RadioButton>
+                            <RadioButton Click="OnNavClick" Style="{StaticResource NavPillStyle}" Tag="{x:Type pages:SessionPage}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Margin="0,0,5,0" FontSize="15" Symbol="ClipboardTaskListLtr24" /><TextBlock Text="{extensions:Loc Nav.Session}" /></StackPanel>
+                            </RadioButton>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Margin="0,0,12,2">
+                        <TextBlock Style="{StaticResource NavGroupLabelStyle}" Text="{extensions:Loc Nav.Group.Fix}" />
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Click="OnNavClick" Style="{StaticResource NavPillStyle}" Tag="{x:Type pages:OptimizePage}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Margin="0,0,5,0" FontSize="15" Symbol="Flash24" /><TextBlock Text="{extensions:Loc Nav.Optimize}" /></StackPanel>
+                            </RadioButton>
+                            <RadioButton Click="OnNavClick" Style="{StaticResource NavPillStyle}" Tag="{x:Type pages:RepairPage}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Margin="0,0,5,0" FontSize="15" Symbol="WrenchScrewdriver24" /><TextBlock Text="{extensions:Loc Nav.Repair}" /></StackPanel>
+                            </RadioButton>
+                            <RadioButton Click="OnNavClick" Style="{StaticResource NavPillStyle}" Tag="{x:Type pages:DiskCleanupPage}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Margin="0,0,5,0" FontSize="15" Symbol="HardDrive20" /><TextBlock Text="{extensions:Loc Nav.DiskCleanup}" /></StackPanel>
+                            </RadioButton>
+                            <RadioButton Click="OnNavClick" Style="{StaticResource NavPillStyle}" Tag="{x:Type pages:BloatwarePage}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Margin="0,0,5,0" FontSize="15" Symbol="Delete24" /><TextBlock Text="{extensions:Loc Nav.Bloatware}" /></StackPanel>
+                            </RadioButton>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Margin="0,0,12,2">
+                        <TextBlock Style="{StaticResource NavGroupLabelStyle}" Text="{extensions:Loc Nav.Group.Tools}" />
+                        <StackPanel Orientation="Horizontal">
+                            <RadioButton Click="OnNavClick" Style="{StaticResource NavPillStyle}" Tag="{x:Type pages:SoftwarePage}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Margin="0,0,5,0" FontSize="15" Symbol="AppsAddIn24" /><TextBlock Text="{extensions:Loc Nav.Software}" /></StackPanel>
+                            </RadioButton>
+                            <RadioButton Click="OnNavClick" Style="{StaticResource NavPillStyle}" Tag="{x:Type pages:StartupManagerPage}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Margin="0,0,5,0" FontSize="15" Symbol="Power24" /><TextBlock Text="{extensions:Loc Nav.StartupManager}" /></StackPanel>
+                            </RadioButton>
+                            <RadioButton Click="OnNavClick" Style="{StaticResource NavPillStyle}" Tag="{x:Type pages:ScheduledTasksPage}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Margin="0,0,5,0" FontSize="15" Symbol="TabDesktopArrowClockwise24" /><TextBlock Text="{extensions:Loc Nav.ScheduledTasks}" /></StackPanel>
+                            </RadioButton>
+                            <RadioButton Click="OnNavClick" Style="{StaticResource NavPillStyle}" Tag="{x:Type pages:CustomizePage}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Margin="0,0,5,0" FontSize="15" Symbol="Sparkle24" /><TextBlock Text="{extensions:Loc Nav.Customize}" /></StackPanel>
+                            </RadioButton>
+                            <RadioButton Click="OnNavClick" Style="{StaticResource NavPillStyle}" Tag="{x:Type pages:BiosGuidePage}">
+                                <StackPanel Orientation="Horizontal"><ui:SymbolIcon Margin="0,0,5,0" FontSize="15" Symbol="DeveloperBoard24" /><TextBlock Text="{extensions:Loc Nav.BiosGuide}" /></StackPanel>
+                            </RadioButton>
+                        </StackPanel>
+                    </StackPanel>
+                </WrapPanel>
+                <RadioButton
+                    Grid.Column="1"
+                    Margin="0,0,0,4"
+                    VerticalAlignment="Bottom"
+                    Click="OnNavClick"
+                    Style="{StaticResource NavPillStyle}"
+                    Tag="{x:Type pages:SettingsPage}"
+                    ToolTip="{extensions:Loc Sidebar.Settings}">
+                    <ui:SymbolIcon Symbol="Settings24" />
+                </RadioButton>
+            </Grid>
+        </Border>
+
         <ui:NavigationView
             x:Name="RootNavigation"
+            Grid.Row="2"
             Margin="0"
             Padding="0"
             FrameMargin="0"
+            IsBackButtonVisible="Collapsed"
             IsFooterSeparatorVisible="False"
-            IsPaneToggleVisible="True"
+            IsPaneToggleVisible="False"
             IsTopSeparatorVisible="False"
-            PaneDisplayMode="Left"
-            Style="{StaticResource AdaptivePaneNavigationViewStyle}"
-            TitleBar="{Binding ElementName=TitleBar, Mode=OneWay}">
+            PaneDisplayMode="Top"
+            Style="{StaticResource HiddenPaneNavigationViewStyle}">
             <ui:NavigationView.MenuItems>
                 <controls:FilledNavigationViewItem
                     Content="{extensions:Loc Sidebar.Dashboard}"
@@ -133,7 +214,7 @@
             </ui:NavigationView.ContentOverlay>
         </ui:NavigationView>
 
-        <ui:TitleBar x:Name="TitleBar">
+        <ui:TitleBar x:Name="TitleBar" Grid.Row="0">
             <ui:TitleBar.Header>
                 <StackPanel
                     Margin="14,0,0,0"
@@ -164,6 +245,85 @@
             </ui:TitleBar.Header>
         </ui:TitleBar>
 
-        <ui:ContentDialogHost x:Name="RootContentDialogPresenter" />
+        <!--  Bitácora: the last line always shows; click it to see the list.  -->
+        <Border
+            Grid.Row="3"
+            Padding="16,0,16,0"
+            Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+            BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+            BorderThickness="0,1,0,0">
+            <StackPanel>
+                <Grid
+                    x:Name="LogHeader"
+                    Height="30"
+                    Background="Transparent"
+                    ColumnDefinitions="Auto,*,Auto"
+                    Cursor="Hand"
+                    MouseLeftButtonUp="OnLogHeaderClick">
+                    <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                        <ui:SymbolIcon
+                            Margin="0,0,6,0"
+                            FontSize="14"
+                            Symbol="TextBulletListLtr24" />
+                        <TextBlock FontWeight="SemiBold" Text="{extensions:Loc Activity.Title}" />
+                    </StackPanel>
+                    <TextBlock
+                        x:Name="LogLastLine"
+                        Grid.Column="1"
+                        Margin="14,0,8,0"
+                        VerticalAlignment="Center"
+                        FontFamily="{StaticResource LogFontFamily}"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                        TextTrimming="CharacterEllipsis" />
+                    <TextBlock
+                        x:Name="LogToggleText"
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        FontSize="12"
+                        Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                        Text="{extensions:Loc Activity.Show}" />
+                </Grid>
+                <ScrollViewer
+                    x:Name="LogScroll"
+                    Height="120"
+                    Margin="0,0,0,8"
+                    VerticalScrollBarVisibility="Auto"
+                    Visibility="Collapsed">
+                    <ItemsControl x:Name="LogList">
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <TextBlock
+                                    FontFamily="{StaticResource LogFontFamily}"
+                                    FontSize="12"
+                                    TextWrapping="Wrap">
+                                    <TextBlock.Style>
+                                        <Style TargetType="TextBlock">
+                                            <Setter Property="Foreground" Value="{DynamicResource TextFillColorSecondaryBrush}" />
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding Kind}" Value="Good">
+                                                    <Setter Property="Foreground" Value="{DynamicResource ZentraGoodBrush}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Kind}" Value="Warning">
+                                                    <Setter Property="Foreground" Value="{DynamicResource ZentraWarningBrush}" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding Kind}" Value="Error">
+                                                    <Setter Property="Foreground" Value="{DynamicResource ZentraCriticalBrush}" />
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </TextBlock.Style>
+                                    <Run Foreground="{DynamicResource TextFillColorTertiaryBrush}" Text="{Binding TimeText, Mode=OneWay}" />
+                                    <Run Text="  " />
+                                    <Run Text="{Binding Text, Mode=OneWay}" />
+                                </TextBlock>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </StackPanel>
+        </Border>
+
+        <ui:ContentDialogHost x:Name="RootContentDialogPresenter" Grid.RowSpan="4" />
     </Grid>
 </ui:FluentWindow>

@@ -150,8 +150,17 @@ public partial class ServiceProfileViewModel(
     }
 
     [RelayCommand(CanExecute = nameof(CanRun))]
-    private async Task ApplyAsync()
+    private Task ApplyAsync() => ApplyPresetAsync(Preset);
+
+    /// <summary>
+    ///     Preview, confirmation, restore point and apply for any preset. The Optimize page's packs
+    ///     (redesign, 19/11/2026) build one with the safe settings of a category and come here, so
+    ///     they get the same checks as the "Servicio estándar".
+    /// </summary>
+    public async Task ApplyPresetAsync(ServicePreset preset)
     {
+        if (!CanRun())
+            return;
         ErrorText = null;
         Problems.Clear();
         try
@@ -160,7 +169,6 @@ public partial class ServiceProfileViewModel(
             // button cannot start a second run.
             IsBusy = true;
             StatusText = Loc.Instance["Profile.Preview.Running"];
-            var preset = Preset;
             var settings = await runner.SettingsAsync(preset);
             var apps = await runner.AppsToRemoveAsync(preset);
             var preview = await runner.PreviewAsync(preset, CancellationToken.None);
@@ -178,15 +186,20 @@ public partial class ServiceProfileViewModel(
             // button (Enter never applies it). Found in the Sandbox tests (19/11/2026).
             var confirm = new ContentDialog
             {
-                Title = Loc.Instance["Profile.Confirm.Title"],
+                // A pack from Optimize has its own name and no apps: say so, not "Servicio estándar".
+                Title = preset.IsBuiltIn
+                    ? Loc.Instance["Profile.Confirm.Title"]
+                    : Loc.Instance["Preset.Confirm.Title", preset.Name],
                 Content = PreviewContent(
-                    (preset.IsBuiltIn ? "" : Loc.Instance["Preset.Confirm.Name", preset.Name])
-                        + Loc.Instance[
-                            "Profile.Confirm.Message",
-                            settings.Count,
-                            apps.Count,
-                            appNames
-                        ],
+                    preset.Apps.Count == 0 && preset.AppFragments.Count == 0
+                        ? Loc.Instance["Profile.Confirm.MessageNoApps", settings.Count]
+                        : (preset.IsBuiltIn ? "" : Loc.Instance["Preset.Confirm.Name", preset.Name])
+                            + Loc.Instance[
+                                "Profile.Confirm.Message",
+                                settings.Count,
+                                apps.Count,
+                                appNames
+                            ],
                     preview
                 ),
                 PrimaryButtonText = Loc.Instance["Profile.Confirm.Apply"],

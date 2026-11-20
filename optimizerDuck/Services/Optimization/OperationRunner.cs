@@ -8,6 +8,7 @@ using optimizerDuck.Services.History;
 using optimizerDuck.Services.Revert;
 using optimizerDuck.Services.System;
 using optimizerDuck.Services.System.Primitives;
+using optimizerDuck.Services.UI;
 
 namespace optimizerDuck.Services.Optimization;
 
@@ -49,6 +50,7 @@ public class OperationRunner(
             changes.Recorded = change => IntentJournal.Record(request.Subject.Id, change);
         }
 
+        ActivityLog.Add(Loc.Instance["Activity.Started", request.DisplayName]);
         var result = await RunCoreAsync(request, changes, progress, cancellationToken)
             .ConfigureAwait(false);
 
@@ -59,9 +61,19 @@ public class OperationRunner(
 
         // Best effort, after the result is decided: the record must never change what a run
         // reports about the machine.
-        ChangeRecordStore.TryWrite(
-            ChangeRecord.From(changes, request.Subject, result.Status.ToString()),
-            _logger
+        var record = ChangeRecord.From(changes, request.Subject, result.Status.ToString());
+        ChangeRecordStore.TryWrite(record, _logger);
+
+        // The activity log at the bottom of the window (redesign): one line per run.
+        ActivityLog.Add(
+            Loc.Instance[$"Activity.{result.Status}", request.DisplayName, record.ChangedCount],
+            result.Status switch
+            {
+                OptimizationSuccessResult.Success => ActivityKind.Good,
+                OptimizationSuccessResult.NothingToDo => ActivityKind.Info,
+                OptimizationSuccessResult.PartialSuccess => ActivityKind.Warning,
+                _ => ActivityKind.Error,
+            }
         );
 
         return result;
