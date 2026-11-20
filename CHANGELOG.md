@@ -4,6 +4,31 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Versión 1.1.2 (20/11/2026, rama version-1.1.2)
+
+Las ocho mejoras que se acordaron después de la prueba en el PC virtual.
+
+- **Apps de inicio en "Equipo lento":** después del perfil, Zentra muestra las apps que arrancan con Windows.
+  - Deja marcadas las que casi nunca hace falta que arranquen solas: Teams, Spotify, Discord, Steam, Epic, Adobe, Skype, Zoom…
+  - Nunca marca seguridad, drivers ni sincronización (OneDrive, Dropbox).
+  - "Revertir perfil" las vuelve a activar.
+- **"Reiniciar y continuar":** reinicia el PC y Zentra se abre solo en Sesión, listo para "Medir después". La tarea programada se borra sola.
+- **Regla "La gráfica se reinicia" (R-GPU-RESETS):** cuenta los reinicios del driver de video en 30 días (Display 4101 y LiveKernelEvent 141, 117 y 1a1).
+  - Recomienda actualizar el driver y, si sigue, apagar MPO.
+  - En el PC de Diego encuentra 3.733 reinicios, y la consulta tarda unos 200 ms.
+- **"Terminar servicio":** borra del PC del cliente la copia descomprimida de Zentra (lleva la clave), sus datos y el `.exe` si no estaba en una USB.
+  - Antes copia las sesiones.
+  - Se conservan los datos para revertir y los puntos de restauración.
+  - Avisa si hay un seguimiento programado, que deja una copia de Zentra.
+- **Modo USB:** si Zentra corre desde una USB, las sesiones se guardan en `Zentra-Sesiones` junto al `.exe`. Cada sesión lleva una marca anónima del PC, y solo se retoma la del mismo PC.
+- **Disco mecánico:** si Windows no dice qué disco tiene Windows, se usan las lecturas de archivos pequeños medidas con DiskSpd. Menos de 1.000 por segundo es un disco que gira.
+- **Medición:** avisa en el PDF si Windows Update o la Store estaban instalando mientras se medía.
+- **Textos:**
+  - 122 títulos heredados pasan a mayúscula solo al inicio ("Limpieza de disco").
+  - El diálogo de BitLocker ya no dice "se puede revertir", y el de Edge dice cómo reinstalarlo.
+- **Corrección:** con `--equipo-tecnico`, Zentra entraba en modo línea de comandos y no abría la ventana.
+- **Tests:** 1901, 0 fallos.
+
 ### Prueba completa en un PC virtual con Windows 11 (20/11/2026, versión 1.1.1)
 
 PC de pruebas en Hyper-V en el PC de Diego, con 4 GB de RAM y 2 núcleos. Windows 11 Pro en español de México sin activar, BitLocker cifrado de fábrica y protección del sistema apagada, como un PC de cliente. Las pruebas se manejaron con puntos de control, PowerShell Direct y automatización de la interfaz.
