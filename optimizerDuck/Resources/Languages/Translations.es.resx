@@ -5137,6 +5137,9 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Session.Ai.Key.None" xml:space="preserve">
     <value>Sin clave: el informe saldrá con la plantilla.</value>
   </data>
+  <data name="Session.Ai.Key.Embedded" xml:space="preserve">
+    <value>Clave de Zentra incluida: el informe se redacta aquí mismo con la IA, con la autorización del cliente.</value>
+  </data>
   <data name="Session.Ai.Key.InMemory" xml:space="preserve">
     <value>Clave cargada en memoria. Se borra al cerrar Zentra.</value>
   </data>

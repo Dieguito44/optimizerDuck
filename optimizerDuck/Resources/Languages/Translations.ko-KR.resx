@@ -3329,6 +3329,9 @@
   <data name="Session.Ai.Key.None" xml:space="preserve">
     <value>No key: the report will use the template.</value>
   </data>
+  <data name="Session.Ai.Key.Embedded" xml:space="preserve">
+    <value>Zentra's built-in key: the report is written right here with the AI, with the client's authorization.</value>
+  </data>
   <data name="Session.Ai.Key.InMemory" xml:space="preserve">
     <value>Key loaded in memory. It is erased when Zentra closes.</value>
   </data>

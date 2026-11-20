@@ -174,6 +174,7 @@ public partial class SessionViewModel(
 
     public string KeyStatusText =>
         !apiKeyStore.HasKey ? Loc.Instance["Session.Ai.Key.None"]
+        : apiKeyStore.IsEmbedded ? Loc.Instance["Session.Ai.Key.Embedded"]
         : apiKeyStore.IsRemembered ? Loc.Instance["Session.Ai.Key.Remembered"]
         : Loc.Instance["Session.Ai.Key.InMemory"];
 
@@ -211,6 +212,9 @@ public partial class SessionViewModel(
     /// <summary>Started with --equipo-tecnico: the key box. Anywhere else, the files.</summary>
     public bool IsTechnicianPc => apiKeyStore.IsTechnicianPc;
     public bool IsClientPc => !IsTechnicianPc;
+
+    /// <summary>The file round trip to the technician's PC, only when this Zentra has no key.</summary>
+    public bool ShowsFileExchange => IsClientPc && !apiKeyStore.HasEmbeddedKey;
 
     /// <summary>
     ///     The client's authorization (Ley 1581). Unchecked, nothing about the session goes to the

@@ -1,4 +1,4 @@
-<Page
+﻿<Page
     x:Class="optimizerDuck.UI.Pages.SessionPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -428,7 +428,7 @@
                         </CheckBox>
 
                         <!--  Plan F1-08: on a client's PC there is no key box; the report goes through files.  -->
-                        <StackPanel Visibility="{Binding ViewModel.IsClientPc, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel Visibility="{Binding ViewModel.ShowsFileExchange, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <ui:TextBlock
                                 Style="{StaticResource CaptionTextStyle}"
                                 Text="{ext:Loc Session.Ai.ClientHelp}"
@@ -496,6 +496,11 @@
                             Cursor="Hand"
                             Icon="{ui:SymbolIcon DocumentArrowRight24}" />
                         </StackPanel>
+                        <!--  This Zentra carries the key (20/11/2026): say so on the client's PC too.  -->
+                        <ui:TextBlock
+                            Margin="0,6,0,0"
+                            Text="{Binding ViewModel.KeyStatusText}"
+                            Visibility="{Binding ViewModel.IsClientPc, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <ui:Button
                             Margin="0,10,0,0"
                             Appearance="Primary"

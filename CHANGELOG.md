@@ -4,6 +4,17 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Clave de la IA incluida en Zentra (20/11/2026, versión 1.0.1)
+
+Decisión de Diego: Zentra es solo suyo, para su servicio, y el informe con IA debe salir en el PC del cliente sin pasar por el PC del técnico.
+
+- **Cómo se incluye:** `dotnet publish` en el PC de Diego mete la clave en `Zentra.exe`. Sale de un archivo cifrado con DPAPI fuera del repositorio (`C:\Proyectos\zentra-secretos`) y queda enmascarada.
+  - Nunca está en el código ni en git. El repositorio es público.
+  - Las compilaciones de GitHub y los tests no llevan clave.
+  - Una prueba nueva falla si alguna vez aparece una clave en los archivos del repositorio.
+- **En el PC del cliente:** con la clave incluida, "Redactar informe" usa la IA ahí mismo y no se muestran los botones de exportar e importar archivos. Sigue haciendo falta la casilla de autorización del cliente (Ley 1581).
+- **Riesgo aceptado:** quien desarme el `.exe` puede sacar la clave. Por eso conviene una clave solo para Zentra, con límite de gasto, y cambiarla si una copia de Zentra se pierde.
+
 ### Prueba de la versión 1 (20/11/2026, rama pruebas-v1)
 
 Zentra pasa a la **versión 1.0.0** (antes mostraba la 2.29.0 heredada de optimizerDuck). Correcciones de la prueba completa en GitHub y de las etapas 1 y 2 en el PC de Diego:

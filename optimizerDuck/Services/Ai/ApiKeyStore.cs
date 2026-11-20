@@ -102,13 +102,20 @@ public sealed class ApiKeyStore
             Environment
                 .GetCommandLineArgs()
                 .Contains(TechnicianSwitch, StringComparer.OrdinalIgnoreCase),
-            logger
+            logger,
+            EmbeddedApiKey.TryGet()
         ) { }
 
-    internal ApiKeyStore(string secretsDirectory, bool technicianMode, ILogger<ApiKeyStore> logger)
+    internal ApiKeyStore(
+        string secretsDirectory,
+        bool technicianMode,
+        ILogger<ApiKeyStore> logger,
+        ApiKeySecret? embedded = null
+    )
     {
         _blobPath = Path.Combine(secretsDirectory, "claude.key.dpapi");
         _logger = logger;
+        _embedded = embedded;
         CanRemember = technicianMode;
 
         if (!CanRemember && File.Exists(_blobPath))
@@ -122,7 +129,23 @@ public sealed class ApiKeyStore
         {
             TryLoadRemembered();
         }
+
+        // Diego's decision (20/11/2026): the key built into his own Zentra, on any PC, so the
+        // report is written on the client's PC. A key typed on the technician's PC still wins.
+        if (Current is null && _embedded is not null)
+        {
+            Current = _embedded;
+            _logger.LogInformation("Built-in API key loaded in memory");
+        }
     }
+
+    private readonly ApiKeySecret? _embedded;
+
+    /// <summary>The key in memory is the one built into this Zentra.</summary>
+    public bool IsEmbedded => Current is not null && ReferenceEquals(Current, _embedded);
+
+    /// <summary>This Zentra carries a key: the report is written here, without files.</summary>
+    public bool HasEmbeddedKey => _embedded is not null;
 
     public ApiKeySecret? Current { get; private set; }
     public bool HasKey => Current is not null;
@@ -172,7 +195,7 @@ public sealed class ApiKeyStore
     public void Forget()
     {
         TryDelete();
-        Current = null;
+        Current = _embedded; // the built-in key stays, if this Zentra has one
         _logger.LogInformation("API key forgotten");
         Changed?.Invoke(this, EventArgs.Empty);
     }
