@@ -49,7 +49,12 @@ public static class SystemTools
             return Winget() ?? throw NotFound("winget (App Installer, signed by Microsoft)");
         if (Known.TryGetValue(name, out var path))
             return path();
-        throw NotFound($"'{fileName}' is not a known Windows tool; use an absolute path");
+        // Any other Windows tool (gpupdate, netsh, wevtutil...) only from System32, which only
+        // TrustedInstaller can write. Never from the PATH or the current folder.
+        var system32 = Path.Combine(System32, name + ".exe");
+        if (File.Exists(system32))
+            return system32;
+        throw NotFound($"'{fileName}' is not a Windows tool in System32; use an absolute path");
     }
 
     /// <summary>Like a failed Process.Start, so the callers' existing handling applies.</summary>
