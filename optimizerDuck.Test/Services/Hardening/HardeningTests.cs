@@ -23,6 +23,8 @@ public partial class SystemToolsTests
     [InlineData("sfc.exe", "sfc.exe")]
     [InlineData("chkdsk.exe", "chkdsk.exe")]
     [InlineData("taskmgr", "taskmgr.exe")]
+    [InlineData("gpupdate.exe", "gpupdate.exe")] // not on the list, but in System32 (CI found it)
+    [InlineData("netsh", "netsh.exe")]
     public void WindowsTools_ResolveToSystem32(string name, string file)
     {
         var path = SystemTools.Resolve(name);
