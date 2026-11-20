@@ -155,10 +155,13 @@ public partial class ServiceProfileViewModel(
             var preview = await runner.PreviewAsync(preset, CancellationToken.None);
             IsBusy = false;
             StatusText = null;
+            // Plan F1-09: removing apps is the part that cannot be undone; the dialog says so.
             var appNames =
                 apps.Count == 0
                     ? Loc.Instance["Profile.Confirm.NoApps"]
-                    : string.Join(", ", apps.Select(a => a.Name));
+                    : string.Join(", ", apps.Select(a => a.Name))
+                        + Environment.NewLine
+                        + Loc.Instance["Profile.Confirm.AppsIrreversible"];
 
             var answer = await dialogService.ShowSimpleDialogAsync(
                 new SimpleContentDialogCreateOptions

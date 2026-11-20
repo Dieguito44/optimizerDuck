@@ -16,6 +16,9 @@ public enum ApiKeyFormatError
     WrongPrefix,
     BadCharacters,
     AdminKey,
+
+    /// <summary>Plan F1-08: the key is never pasted on a client's PC, only on the technician's.</summary>
+    NotTechnicianPc,
 }
 
 /// <summary>
@@ -79,10 +82,11 @@ public sealed partial class ApiKeySecret
 }
 
 /// <summary>
-///     Holds the Claude API key for the session. On a client PC it lives only in memory and
-///     goes away with the app. "Remember on this PC" (DPAPI, current user) exists only when
-///     Zentra is started with <c>--equipo-tecnico</c>, the switch Diego puts on his own
-///     shortcut; started without it, any remembered key is deleted.
+///     Holds the Claude API key. Only on the technician's PC, the one Zentra is started on with
+///     <c>--equipo-tecnico</c> (the switch Diego puts on his own shortcut): there it lives in
+///     memory and can be remembered (DPAPI, current user). On a client's PC the key is refused
+///     (plan F1-08, audit Z-32): the report goes through files instead (<see cref="AiExchange" />),
+///     and any remembered key found there is deleted.
 /// </summary>
 public sealed class ApiKeyStore
 {
@@ -123,12 +127,20 @@ public sealed class ApiKeyStore
     public ApiKeySecret? Current { get; private set; }
     public bool HasKey => Current is not null;
     public bool CanRemember { get; }
+
+    /// <summary>Started with <see cref="TechnicianSwitch" />: the only PC where a key is accepted.</summary>
+    public bool IsTechnicianPc => CanRemember;
     public bool IsRemembered => CanRemember && File.Exists(_blobPath);
 
     public event EventHandler? Changed;
 
     public ApiKeyFormatError? Set(string? raw, bool remember)
     {
+        if (!CanRemember)
+        {
+            _logger.LogWarning("API key refused: not the technician's PC");
+            return ApiKeyFormatError.NotTechnicianPc;
+        }
         var error = ApiKeySecret.TryCreate(raw, out var key);
         if (error is not null)
         {
@@ -137,11 +149,11 @@ public sealed class ApiKeyStore
         }
 
         Current = key;
-        if (remember && CanRemember)
+        if (remember)
             Remember(key!);
         _logger.LogInformation(
             "API key loaded in memory{Remembered}",
-            remember && CanRemember ? " and remembered on this PC" : ""
+            remember ? " and remembered on this PC" : ""
         );
         Changed?.Invoke(this, EventArgs.Empty);
         return null;

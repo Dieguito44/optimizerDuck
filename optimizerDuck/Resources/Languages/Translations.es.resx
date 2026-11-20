@@ -5117,7 +5117,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
     <value>Informe con IA</value>
   </data>
   <data name="Session.Ai.Help" xml:space="preserve">
-    <value>Pega la clave de la API de Claude para que la IA redacte el informe en palabras sencillas. Solo se envían datos anónimos: sin nombres, sin números de serie, sin programas. Al pegarla se vacían el portapapeles y su historial (Win+V). Sin clave, el informe sale con la plantilla de Zentra.</value>
+    <value>La IA redacta el informe en palabras sencillas. Solo van datos técnicos anónimos: sin nombres, sin números de serie, sin programas. Sin la casilla del cliente, o sin clave, el informe sale con la plantilla de Zentra.</value>
   </data>
   <data name="Session.Ai.Button.UseKey" xml:space="preserve">
     <value>Usar clave</value>
@@ -5132,7 +5132,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
     <value>Recordar en este equipo (cifrada para este usuario de Windows)</value>
   </data>
   <data name="Session.Ai.RememberWarning" xml:space="preserve">
-    <value>Solo en el PC del técnico. En el PC de un cliente la clave queda en memoria y se borra al cerrar Zentra.</value>
+    <value>Solo en tu PC (Zentra abierto con --equipo-tecnico). El PC de un cliente no acepta la clave.</value>
   </data>
   <data name="Session.Ai.Key.None" xml:space="preserve">
     <value>Sin clave: el informe saldrá con la plantilla.</value>
@@ -6382,7 +6382,7 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   <data name="Cli.Help" xml:space="preserve">
     <value>Zentra en línea de comandos (como administrador):
   Zentra.exe --diagnose [--inventory] [--report &lt;carpeta&gt;] [--client &lt;nombre&gt;]
-  Zentra.exe --preset &lt;archivo.json|estandar&gt; [--diagnose] [--inventory] [--report &lt;carpeta&gt;] [--client &lt;nombre&gt;] [--silent] [--keep-apps] [--allow-risky]
+  Zentra.exe --preset &lt;archivo.json|estandar&gt; [--diagnose] [--inventory] [--report &lt;carpeta&gt;] [--client &lt;nombre&gt;] [--silent] [--remove-apps] [--allow-risky]
   Zentra.exe --verify &lt;carpeta del informe&gt;
   Zentra.exe --remove-followup
 
@@ -6392,7 +6392,8 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   --report           Copia session.json, el PDF, ZENTRA-SHA256.txt, el inventario y zentra-cli.txt a esa carpeta.
   --client           Nombre del cliente para el informe.
   --silent           No pide confirmación.
-  --keep-apps        No quita las apps del preset.
+  --remove-apps      Quita también las apps del preset (no se puede deshacer).
+  --keep-apps        No quita las apps (es lo normal; se acepta por compatibilidad).
   --allow-risky      Permite ajustes de nivel Experto, si el preset también los permite.
   --verify           Compara los archivos del informe con ZENTRA-SHA256.txt. No cambia nada.
   --remove-followup  Borra la tarea de seguimiento y su copia de Zentra (los resultados quedan).
@@ -6597,5 +6598,101 @@ En PowerShell, para esperar a que termine: Start-Process Zentra.exe -ArgumentLis
     <value>Zentra se cerró mientras aplicaba cambios. Se guardaron para poder revertirlos:
 {0}
 Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para terminar.</value>
+  </data>
+  <data name="Session.Ai.Consent.Text" xml:space="preserve">
+    <value>El cliente autoriza enviar a Anthropic, PBC (Estados Unidos) los datos técnicos de esta revisión, sin nombres, números de serie ni rutas, solo para redactar el informe en palabras sencillas. Anthropic los borra dentro de 30 días, salvo en los casos que lista su política de privacidad (por ejemplo, para hacer cumplir sus políticas de uso o si la ley lo exige). Es voluntario: sin esta casilla no se envía nada y el informe sale con la plantilla.</value>
+  </data>
+  <data name="Session.Ai.Consent.Required" xml:space="preserve">
+    <value>Primero marca la casilla de autorización del cliente.</value>
+  </data>
+  <data name="Session.Ai.Template.NoConsent" xml:space="preserve">
+    <value>Informe redactado con la plantilla (el cliente no autorizó usar la IA).</value>
+  </data>
+  <data name="Session.Ai.ClientHelp" xml:space="preserve">
+    <value>En el PC del cliente no se pega la clave. 1) Exporta los datos: queda zentra-ia-solicitud.json en la carpeta de la sesión. 2) Llévalo a tu PC (Zentra abierto con --equipo-tecnico) y usa "Escribir desde archivo". 3) Trae zentra-ia-informe.json e impórtalo aquí. Luego genera el PDF.</value>
+  </data>
+  <data name="Session.Ai.Button.Export" xml:space="preserve">
+    <value>Exportar datos para la IA</value>
+  </data>
+  <data name="Session.Ai.Button.Import" xml:space="preserve">
+    <value>Importar informe</value>
+  </data>
+  <data name="Session.Ai.Button.FromFile" xml:space="preserve">
+    <value>Escribir desde archivo</value>
+  </data>
+  <data name="Session.Ai.Exported" xml:space="preserve">
+    <value>Datos para la IA guardados en {0}. Llévalos a tu PC.</value>
+  </data>
+  <data name="Session.Ai.Imported" xml:space="preserve">
+    <value>Informe importado y revisado. Ya puedes generar el PDF.</value>
+  </data>
+  <data name="Session.Ai.ResultSaved" xml:space="preserve">
+    <value>Informe guardado en {0} ({1} tokens de entrada, {2} de salida). Llévalo al PC del cliente e impórtalo allá.</value>
+  </data>
+  <data name="Session.Ai.FileFilter" xml:space="preserve">
+    <value>Archivos de Zentra (*.json)|*.json</value>
+  </data>
+  <data name="Session.Ai.ImportError.Unreadable" xml:space="preserve">
+    <value>No se pudo leer el archivo.</value>
+  </data>
+  <data name="Session.Ai.ImportError.WrongFile" xml:space="preserve">
+    <value>Ese no es un archivo de Zentra para la IA, o está dañado.</value>
+  </data>
+  <data name="Session.Ai.ImportError.OtherSession" xml:space="preserve">
+    <value>Ese informe es de otra sesión.</value>
+  </data>
+  <data name="Session.Ai.ImportError.OtherPayload" xml:space="preserve">
+    <value>Ese informe se escribió con otros datos. Exporta de nuevo y repite el paso en tu PC.</value>
+  </data>
+  <data name="Session.Ai.ImportError.NoConsent" xml:space="preserve">
+    <value>Falta la autorización del cliente para usar la IA.</value>
+  </data>
+  <data name="Session.Ai.ImportError.Rejected" xml:space="preserve">
+    <value>El informe no pasó la revisión de Zentra y no se usó.</value>
+  </data>
+  <data name="Session.Ai.KeyError.NotTechnicianPc" xml:space="preserve">
+    <value>Este no es tu PC de técnico: aquí no se pega la clave. Usa "Exportar datos para la IA".</value>
+  </data>
+  <data name="Irreversible.NotConfirmed" xml:space="preserve">
+    <value>"{0}" no se aplicó: necesita tu confirmación porque no se puede deshacer del todo.</value>
+  </data>
+  <data name="Irreversible.Label.Irreversible" xml:space="preserve">
+    <value>No reversible</value>
+  </data>
+  <data name="Irreversible.Label.HardToRevert" xml:space="preserve">
+    <value>Difícil de revertir</value>
+  </data>
+  <data name="Irreversible.Title" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="Irreversible.Question" xml:space="preserve">
+    <value>¿Seguro que quieres seguir?</value>
+  </data>
+  <data name="Irreversible.Yes" xml:space="preserve">
+    <value>Sí, seguir</value>
+  </data>
+  <data name="Irreversible.Why.Irreversible" xml:space="preserve">
+    <value>Zentra no puede deshacer este cambio.</value>
+  </data>
+  <data name="Irreversible.Why.HardToRevert" xml:space="preserve">
+    <value>Se puede revertir, pero tarda y puede fallar.</value>
+  </data>
+  <data name="Irreversible.Why.DismResetBase" xml:space="preserve">
+    <value>Borra las versiones anteriores de los componentes de Windows. Después no se pueden desinstalar las actualizaciones que ya están instaladas, y Zentra no lo puede deshacer.</value>
+  </data>
+  <data name="Irreversible.Why.EnableCompactOs" xml:space="preserve">
+    <value>Comprime los archivos de Windows para liberar espacio. "Revertir" lo deshace, pero tarda varios minutos y necesita espacio libre en el disco.</value>
+  </data>
+  <data name="Irreversible.Why.Uninstall" xml:space="preserve">
+    <value>Zentra no lo vuelve a instalar. Si el cliente lo necesita, hay que instalarlo de nuevo a mano.</value>
+  </data>
+  <data name="Irreversible.Uninstall" xml:space="preserve">
+    <value>Desinstalar {0}</value>
+  </data>
+  <data name="Profile.Confirm.AppsIrreversible" xml:space="preserve">
+    <value>No reversible: Zentra no vuelve a poner las apps quitadas.</value>
+  </data>
+  <data name="Preset.Problem.NeedsConfirmation" xml:space="preserve">
+    <value>"{0}" no se puede deshacer del todo; se aplica a mano en Optimizar, con su propia confirmación.</value>
   </data>
 </root>

@@ -1,4 +1,5 @@
 using Newtonsoft.Json;
+using optimizerDuck.Common.Helpers;
 using optimizerDuck.Domain.Diagnostics;
 using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Diagnostics;
@@ -144,6 +145,9 @@ public enum TemplateReason
     Truncated,
     Refused,
     Rejected,
+
+    /// <summary>Plan F1-07: the client did not accept sending the data (Ley 1581).</summary>
+    NoConsent,
 }
 
 /// <summary>The report kept in session.json: the text, who wrote it, and what was sent.</summary>
@@ -163,7 +167,68 @@ public sealed record AiReportRecord
 /// <summary>Builds the payload from a session and the report model the PDF uses.</summary>
 public static class AiPayloadBuilder
 {
-    public static AiPayload Build(ServiceSession session, SessionReportModel model)
+    /// <summary>
+    ///     The payload with this PC's names and serial taken out (plan F1-07). The whitelist
+    ///     already leaves them out; this is the second net, for a name that slips into a text
+    ///     (a finding's evidence, a device name).
+    /// </summary>
+    public static AiPayload Build(ServiceSession session, SessionReportModel model) =>
+        Build(session, model, PersonalTerms.For(session));
+
+    public static AiPayload Build(
+        ServiceSession session,
+        SessionReportModel model,
+        PersonalTerms terms
+    ) => Scrub(Raw(session, model), terms);
+
+    /// <summary>Every text of the payload through <see cref="PersonalData.Redact(string, IEnumerable{string?}, IEnumerable{string?})" />.</summary>
+    public static AiPayload Scrub(AiPayload payload, PersonalTerms terms)
+    {
+        string S(string text) => PersonalData.Redact(text, terms.Names, terms.Serials);
+        string? N(string? text) => text is null ? null : S(text);
+        return payload with
+        {
+            Hardware = payload.Hardware is not { } hw
+                ? null
+                : hw with
+                {
+                    Os = N(hw.Os),
+                    Cpu = N(hw.Cpu),
+                    RamType = N(hw.RamType),
+                    Gpus = hw.Gpus.Select(S).ToList(),
+                    Board = N(hw.Board),
+                    SystemDiskKind = N(hw.SystemDiskKind),
+                },
+            Metrics = payload
+                .Metrics.Select(m =>
+                    m with
+                    {
+                        Name = S(m.Name),
+                        Before = S(m.Before),
+                        After = S(m.After),
+                        Difference = S(m.Difference),
+                    }
+                )
+                .ToList(),
+            Findings = payload
+                .Findings.Select(f =>
+                    f with
+                    {
+                        Title = S(f.Title),
+                        Description = S(f.Description),
+                        Evidence = f.Evidence.Select(S).ToList(),
+                        Actions = f
+                            .Actions.Select(a => a with { Title = S(a.Title), Who = S(a.Who) })
+                            .ToList(),
+                    }
+                )
+                .ToList(),
+            NotMeasured = payload.NotMeasured.Select(S).ToList(),
+            Applied = payload.Applied.Select(a => a with { Name = S(a.Name) }).ToList(),
+        };
+    }
+
+    private static AiPayload Raw(ServiceSession session, SessionReportModel model)
     {
         var latest = session.DiagnosisAfter ?? session.DiagnosisBefore;
         var hw = latest?.Hardware;
@@ -225,6 +290,16 @@ public static class AiPayloadBuilder
             Applied = model.Applied.Select(a => new AiApplied(a.Name, a.Changes)).ToList(),
         };
     }
+
+    /// <summary>SHA-256 of the payload's JSON: ties a report written elsewhere to this payload.</summary>
+    public static string Sha256(AiPayload payload) =>
+        Convert
+            .ToHexString(
+                global::System.Security.Cryptography.SHA256.HashData(
+                    global::System.Text.Encoding.UTF8.GetBytes(ToJson(payload))
+                )
+            )
+            .ToLowerInvariant();
 
     public static string ToJson(AiPayload payload) =>
         JsonConvert.SerializeObject(

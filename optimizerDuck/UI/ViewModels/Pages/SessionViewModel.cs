@@ -64,6 +64,9 @@ public partial class SessionViewModel(
     [NotifyCanExecuteChangedFor(nameof(CancelCommand))]
     [NotifyCanExecuteChangedFor(nameof(NewSessionCommand))]
     [NotifyCanExecuteChangedFor(nameof(ExportInventoryCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ExportAiRequestCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ImportAiReportCommand))]
+    [NotifyCanExecuteChangedFor(nameof(WriteFromRequestCommand))]
     private bool _isBusy;
 
     [ObservableProperty]
@@ -106,6 +109,7 @@ public partial class SessionViewModel(
     private void NewSession()
     {
         _session = null;
+        AiConsentGiven = false;
         LastPdfPath = null;
         ScoreBeforeText = ScoreAfterText = "—";
         Metrics.Clear();
@@ -166,6 +170,175 @@ public partial class SessionViewModel(
         RememberKey = false;
         KeyErrorText = null;
         RefreshKey();
+    }
+
+    // ----- Consent and the report through files (plan F1-07 and F1-08) ------------------
+
+    private AiConsentRecord? _consent;
+
+    /// <summary>Started with --equipo-tecnico: the key box. Anywhere else, the files.</summary>
+    public bool IsTechnicianPc => apiKeyStore.IsTechnicianPc;
+    public bool IsClientPc => !IsTechnicianPc;
+
+    /// <summary>
+    ///     The client's authorization (Ley 1581). Unchecked, nothing about the session goes to the
+    ///     AI or to a file for it; the template writes the report.
+    /// </summary>
+    [ObservableProperty]
+    private bool _aiConsentGiven;
+
+    partial void OnAiConsentGivenChanged(bool value)
+    {
+        _consent = value ? AiConsent.Accept(timeProvider.GetUtcNow()) : null;
+        if (_session is null)
+            return;
+        _session = _session with { AiConsent = _consent };
+        sessionStore.Save(_session);
+    }
+
+    /// <summary>Client's PC: the anonymized data, in the session folder, for the technician's PC.</summary>
+    [RelayCommand(CanExecute = nameof(CanGeneratePdf))]
+    private async Task ExportAiRequestAsync()
+    {
+        if (_session is null)
+            return;
+        ErrorText = null;
+        if (!AiConsent.IsGiven(_session))
+        {
+            ErrorText = Loc.Instance["Session.Ai.Consent.Required"];
+            return;
+        }
+        IsBusy = true;
+        try
+        {
+            _session = _session with { ClientLabel = ClientLabel };
+            var payload = await BuildPayloadAsync();
+            var folder = SessionStore.FolderFor(_session);
+            Directory.CreateDirectory(folder);
+            var path = Path.Combine(folder, AiRequestFile.SuggestedName);
+            AiExchange.Write(path, AiExchange.Request(_session, payload));
+            sessionStore.Save(_session);
+            StatusText = Loc.Instance["Session.Ai.Exported", path];
+            UnelevatedShell.Open(folder);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "AI request export failed");
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    /// <summary>Client's PC: the report the technician's PC wrote, only if it is this session's.</summary>
+    [RelayCommand(CanExecute = nameof(CanGeneratePdf))]
+    private async Task ImportAiReportAsync()
+    {
+        if (_session is null)
+            return;
+        ErrorText = null;
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Filter = Loc.Instance["Session.Ai.FileFilter"],
+            FileName = AiResultFile.SuggestedName,
+        };
+        if (dialog.ShowDialog() != true)
+            return;
+        IsBusy = true;
+        try
+        {
+            _session = _session with { ClientLabel = ClientLabel };
+            var payload = await BuildPayloadAsync();
+            var (record, error) = AiExchange.ImportFile(dialog.FileName, _session, payload);
+            if (record is null)
+            {
+                logger.LogWarning("AI report import refused: {Reason}", error);
+                ErrorText = Loc.Instance[$"Session.Ai.ImportError.{error}"];
+                return;
+            }
+            _session = _session with { Report = record };
+            sessionStore.Save(_session);
+            ShowWritten(record);
+            StatusText = Loc.Instance["Session.Ai.Imported"];
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "AI report import failed");
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    /// <summary>Technician's PC: reads a client's request, writes the report, saves it beside it.</summary>
+    [RelayCommand(CanExecute = nameof(IsIdle))]
+    private async Task WriteFromRequestAsync()
+    {
+        ErrorText = null;
+        if (!apiKeyStore.IsTechnicianPc)
+            return;
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Filter = Loc.Instance["Session.Ai.FileFilter"],
+            FileName = AiRequestFile.SuggestedName,
+        };
+        if (dialog.ShowDialog() != true)
+            return;
+        var request = AiExchange.ReadRequest(dialog.FileName);
+        if (request is null)
+        {
+            ErrorText = Loc.Instance["Session.Ai.ImportError.WrongFile"];
+            return;
+        }
+        IsBusy = true;
+        StatusText = Loc.Instance["Session.Ai.Writing"];
+        try
+        {
+            var record = await Task.Run(() =>
+                aiReportService.WriteAsync(request, CancellationToken.None)
+            );
+            RefreshKey();
+            if (record.Source != ReportSource.Ai)
+            {
+                // A template is written on the client's PC just as well: nothing to hand back.
+                StatusText = Loc.Instance[
+                    $"Session.Ai.Template.{record.TemplateReason ?? TemplateReason.NoKey}"
+                ];
+                return;
+            }
+            var path = Path.Combine(
+                Path.GetDirectoryName(dialog.FileName)!,
+                AiResultFile.SuggestedName
+            );
+            AiExchange.Write(path, AiExchange.Result(request, record));
+            StatusText = Loc.Instance[
+                "Session.Ai.ResultSaved",
+                path,
+                record.InputTokens ?? 0,
+                record.OutputTokens ?? 0
+            ];
+            UnelevatedShell.Open(Path.GetDirectoryName(path)!);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Report from a request file failed");
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
+        }
+        finally
+        {
+            IsBusy = false;
+        }
+    }
+
+    private async Task<AiPayload> BuildPayloadAsync()
+    {
+        var model = await pdfReportService.BuildModelAsync(_session!);
+        var session = _session!;
+        return await Task.Run(() => AiPayloadBuilder.Build(session, model));
     }
 
     [RelayCommand(CanExecute = nameof(CanGeneratePdf))]
@@ -331,6 +504,7 @@ public partial class SessionViewModel(
             {
                 CreatedAtUtc = timeProvider.GetUtcNow(),
                 ClientLabel = ClientLabel,
+                AiConsent = _consent,
             };
 
             // Measure first: the diagnosis uses the RAM at rest (R-RAM-IDLE-HIGH), and running the
@@ -409,5 +583,7 @@ public partial class SessionViewModel(
         MeasureAfterCommand.NotifyCanExecuteChanged();
         GeneratePdfCommand.NotifyCanExecuteChanged();
         WriteReportCommand.NotifyCanExecuteChanged();
+        ExportAiRequestCommand.NotifyCanExecuteChanged();
+        ImportAiReportCommand.NotifyCanExecuteChanged();
     }
 }

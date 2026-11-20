@@ -222,9 +222,14 @@ public partial class BloatwareViewModel : ViewModel
 
         var askForConfirmationDialog = new ContentDialog
         {
-            Title = Loc.Instance["BloatwareDialog.Confirmation.Title", SelectedCount],
+            // Plan F1-09: a removed app is not put back by Zentra.
+            Title = Loc.Instance[
+                "Irreversible.Title",
+                IrreversibleConfirmation.Label(OptimizationConfirmation.Irreversible),
+                Loc.Instance["BloatwareDialog.Confirmation.Title", SelectedCount]
+            ],
             Content = new BloatwareConfirmationDialog { DataContext = confirmationViewModel },
-            PrimaryButtonText = Loc.Instance["Button.Ok"],
+            PrimaryButtonText = Loc.Instance["Irreversible.Yes"],
             CloseButtonText = Loc.Instance["Button.Cancel"],
         };
 

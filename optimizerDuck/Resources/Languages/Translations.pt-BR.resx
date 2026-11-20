@@ -3318,7 +3318,7 @@ Atualize agora para desfrutar das últimas funcionalidades, melhorias e correç�
     <value>Report with AI</value>
   </data>
   <data name="Session.Ai.Help" xml:space="preserve">
-    <value>Paste the Claude API key to have the AI write the report in plain words. Only anonymous data is sent: no names, no serial numbers, no programs. Pasting it empties the clipboard and its history (Win+V). Without a key, the report is written with the Zentra template.</value>
+    <value>The AI writes the report in plain words. Only anonymous technical data goes: no names, no serial numbers, no programs. Without the client's box, or without a key, the report comes out with Zentra's template.</value>
   </data>
   <data name="Session.Ai.Button.UseKey" xml:space="preserve">
     <value>Use key</value>
@@ -3333,7 +3333,7 @@ Atualize agora para desfrutar das últimas funcionalidades, melhorias e correç�
     <value>Remember on this PC (encrypted for this Windows user)</value>
   </data>
   <data name="Session.Ai.RememberWarning" xml:space="preserve">
-    <value>Only on the technician&apos;s own PC. On a client&apos;s PC the key stays in memory and is erased when Zentra closes.</value>
+    <value>Only on your PC (Zentra started with --equipo-tecnico). A client's PC does not accept the key.</value>
   </data>
   <data name="Session.Ai.Key.None" xml:space="preserve">
     <value>No key: the report will use the template.</value>
@@ -4583,7 +4583,7 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="Cli.Help" xml:space="preserve">
     <value>Zentra from the command line (as administrator):
   Zentra.exe --diagnose [--inventory] [--report &lt;folder&gt;] [--client &lt;name&gt;]
-  Zentra.exe --preset &lt;file.json|estandar&gt; [--diagnose] [--inventory] [--report &lt;folder&gt;] [--client &lt;name&gt;] [--silent] [--keep-apps] [--allow-risky]
+  Zentra.exe --preset &lt;file.json|estandar&gt; [--diagnose] [--inventory] [--report &lt;folder&gt;] [--client &lt;name&gt;] [--silent] [--remove-apps] [--allow-risky]
   Zentra.exe --verify &lt;report folder&gt;
   Zentra.exe --remove-followup
 
@@ -4593,7 +4593,8 @@ How to undo it: on the Session page press Turn the protection back on and restar
   --report           Copy session.json, the PDF, ZENTRA-SHA256.txt, the inventory and zentra-cli.txt to that folder.
   --client           Client name for the report.
   --silent           Do not ask for confirmation.
-  --keep-apps        Do not remove the preset&apos;s apps.
+  --remove-apps      Also remove the preset&apos;s apps (cannot be undone).
+  --keep-apps        Keep the apps (the default; still accepted).
   --allow-risky      Allow Expert settings, if the preset allows them too.
   --verify           Check the report files against ZENTRA-SHA256.txt. Changes nothing.
   --remove-followup  Delete the follow-up task and its copy of Zentra (the results stay).
@@ -4798,5 +4799,101 @@ In PowerShell, to wait for it: Start-Process Zentra.exe -ArgumentList &apos;--di
     <value>Zentra closed while it was applying changes. They were kept so they can be reverted:
 {0}
 Check those settings in Optimize: revert them, or apply them again to finish.</value>
+  </data>
+  <data name="Session.Ai.Consent.Text" xml:space="preserve">
+    <value>The client authorizes sending this check's technical data to Anthropic, PBC (United States), with no names, serial numbers or paths, only to write the report in plain words. Anthropic deletes it within 30 days, except in the cases its privacy policy lists (for example, to enforce its usage policies or when the law requires it). It is voluntary: without this box nothing is sent and the template writes the report.</value>
+  </data>
+  <data name="Session.Ai.Consent.Required" xml:space="preserve">
+    <value>First tick the client's authorization box.</value>
+  </data>
+  <data name="Session.Ai.Template.NoConsent" xml:space="preserve">
+    <value>Report written with the template (the client did not authorize the AI).</value>
+  </data>
+  <data name="Session.Ai.ClientHelp" xml:space="preserve">
+    <value>On a client's PC the key is not pasted. 1) Export the data: zentra-ia-solicitud.json is saved in the session folder. 2) Take it to your PC (Zentra started with --equipo-tecnico) and use "Write from file". 3) Bring back zentra-ia-informe.json and import it here. Then create the PDF.</value>
+  </data>
+  <data name="Session.Ai.Button.Export" xml:space="preserve">
+    <value>Export data for the AI</value>
+  </data>
+  <data name="Session.Ai.Button.Import" xml:space="preserve">
+    <value>Import report</value>
+  </data>
+  <data name="Session.Ai.Button.FromFile" xml:space="preserve">
+    <value>Write from file</value>
+  </data>
+  <data name="Session.Ai.Exported" xml:space="preserve">
+    <value>Data for the AI saved in {0}. Take it to your PC.</value>
+  </data>
+  <data name="Session.Ai.Imported" xml:space="preserve">
+    <value>Report imported and checked. You can create the PDF now.</value>
+  </data>
+  <data name="Session.Ai.ResultSaved" xml:space="preserve">
+    <value>Report saved in {0} ({1} input tokens, {2} output). Take it to the client's PC and import it there.</value>
+  </data>
+  <data name="Session.Ai.FileFilter" xml:space="preserve">
+    <value>Zentra files (*.json)|*.json</value>
+  </data>
+  <data name="Session.Ai.ImportError.Unreadable" xml:space="preserve">
+    <value>The file could not be read.</value>
+  </data>
+  <data name="Session.Ai.ImportError.WrongFile" xml:space="preserve">
+    <value>That is not a Zentra AI file, or it is damaged.</value>
+  </data>
+  <data name="Session.Ai.ImportError.OtherSession" xml:space="preserve">
+    <value>That report belongs to another session.</value>
+  </data>
+  <data name="Session.Ai.ImportError.OtherPayload" xml:space="preserve">
+    <value>That report was written from other data. Export again and repeat the step on your PC.</value>
+  </data>
+  <data name="Session.Ai.ImportError.NoConsent" xml:space="preserve">
+    <value>The client's authorization to use the AI is missing.</value>
+  </data>
+  <data name="Session.Ai.ImportError.Rejected" xml:space="preserve">
+    <value>The report did not pass Zentra's checks and was not used.</value>
+  </data>
+  <data name="Session.Ai.KeyError.NotTechnicianPc" xml:space="preserve">
+    <value>This is not your technician PC: the key is not pasted here. Use "Export data for the AI".</value>
+  </data>
+  <data name="Irreversible.NotConfirmed" xml:space="preserve">
+    <value>"{0}" was not applied: it needs your confirmation because it cannot be fully undone.</value>
+  </data>
+  <data name="Irreversible.Label.Irreversible" xml:space="preserve">
+    <value>Not reversible</value>
+  </data>
+  <data name="Irreversible.Label.HardToRevert" xml:space="preserve">
+    <value>Hard to revert</value>
+  </data>
+  <data name="Irreversible.Title" xml:space="preserve">
+    <value>{0}: {1}</value>
+  </data>
+  <data name="Irreversible.Question" xml:space="preserve">
+    <value>Do you want to go on?</value>
+  </data>
+  <data name="Irreversible.Yes" xml:space="preserve">
+    <value>Yes, go on</value>
+  </data>
+  <data name="Irreversible.Why.Irreversible" xml:space="preserve">
+    <value>Zentra cannot undo this change.</value>
+  </data>
+  <data name="Irreversible.Why.HardToRevert" xml:space="preserve">
+    <value>It can be reverted, but it is slow and can fail.</value>
+  </data>
+  <data name="Irreversible.Why.DismResetBase" xml:space="preserve">
+    <value>It deletes the older versions of Windows components. After that, the updates already installed cannot be uninstalled, and Zentra cannot undo it.</value>
+  </data>
+  <data name="Irreversible.Why.EnableCompactOs" xml:space="preserve">
+    <value>It compresses Windows' files to free space. "Revert" undoes it, but it takes several minutes and needs free space on the disk.</value>
+  </data>
+  <data name="Irreversible.Why.Uninstall" xml:space="preserve">
+    <value>Zentra does not install it again. If the client needs it, it has to be installed again by hand.</value>
+  </data>
+  <data name="Irreversible.Uninstall" xml:space="preserve">
+    <value>Uninstall {0}</value>
+  </data>
+  <data name="Profile.Confirm.AppsIrreversible" xml:space="preserve">
+    <value>Not reversible: Zentra does not put removed apps back.</value>
+  </data>
+  <data name="Preset.Problem.NeedsConfirmation" xml:space="preserve">
+    <value>"{0}" cannot be fully undone; it is applied by hand in Optimize, with its own confirmation.</value>
   </data>
 </root>

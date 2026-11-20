@@ -135,7 +135,7 @@ public sealed class CliRunner(
             var changes = (await runner.PreviewAsync(preset, ct))
                 .Where(c => !c.IsAlreadyThere)
                 .ToList();
-            var apps = options.KeepApps
+            var apps = !options.RemovesApps
                 ? []
                 : (await runner.AppsToRemoveAsync(preset)).Select(a => a.Name).ToList();
 
@@ -178,7 +178,7 @@ public sealed class CliRunner(
         if (preset is not null)
         {
             var progress = new SyncProgress<ProcessingProgress>(p => Say(p.Message));
-            result = await runner.ApplyAsync(preset, !options.KeepApps, progress, ct);
+            result = await runner.ApplyAsync(preset, options.RemovesApps, progress, ct);
             Say(
                 Loc.Instance[
                     "Profile.Done.Applied",

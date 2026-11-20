@@ -9,6 +9,8 @@ public abstract class StubOptimization : IOptimization
 {
     public virtual Guid Id { get; init; } = Guid.NewGuid();
     public virtual OptimizationRisk Risk { get; init; } = OptimizationRisk.Safe;
+    public virtual OptimizationConfirmation Confirmation { get; init; } =
+        OptimizationConfirmation.None;
     public virtual string OptimizationKey { get; init; } = "TestOptimization";
     public virtual string Name { get; init; } = "Test Optimization";
     public virtual string ShortDescription { get; init; } = "Test optimization";

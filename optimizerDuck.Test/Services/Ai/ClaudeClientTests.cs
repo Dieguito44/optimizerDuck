@@ -193,7 +193,7 @@ public class AiReportServiceTests
     )
     {
         var dir = Path.Combine(Path.GetTempPath(), "zentra-svc-" + Guid.NewGuid().ToString("N"));
-        var keys = new ApiKeyStore(dir, false, NullLogger<ApiKeyStore>.Instance);
+        var keys = new ApiKeyStore(dir, technicianMode: true, NullLogger<ApiKeyStore>.Instance);
         var handler = new FakeHandler(answers);
         var service = new AiReportService(
             keys,

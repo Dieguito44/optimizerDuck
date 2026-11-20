@@ -165,13 +165,15 @@ public sealed class ApiKeyStoreTests : IDisposable
         new(_dir.FullName, technician, NullLogger<ApiKeyStore>.Instance);
 
     [Fact]
-    public void ClientMode_KeepsTheKeyInMemoryOnly()
+    public void ClientMode_RefusesTheKey()
     {
+        // Plan F1-08: the key never touches a client's PC, not even in memory.
         var store = NewStore(technician: false);
 
-        Assert.Null(store.Set(TestKeys.New(), remember: true));
+        Assert.Equal(ApiKeyFormatError.NotTechnicianPc, store.Set(TestKeys.New(), remember: true));
 
-        Assert.True(store.HasKey);
+        Assert.False(store.HasKey);
+        Assert.False(store.IsTechnicianPc);
         Assert.False(store.CanRemember);
         Assert.False(store.IsRemembered);
         Assert.False(File.Exists(BlobPath));
@@ -253,7 +255,7 @@ public sealed class ApiKeyStoreTests : IDisposable
     [Fact]
     public void Set_RejectsAMalformedKey_AndKeepsThePreviousOne()
     {
-        var store = NewStore(technician: false);
+        var store = NewStore(technician: true);
         store.Set(TestKeys.New(), remember: false);
         var before = store.Current;
 

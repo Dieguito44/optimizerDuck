@@ -28,6 +28,7 @@ internal static class AiFixtures
         {
             CreatedAtUtc = Now,
             ClientLabel = ClientCanary,
+            AiConsent = AiConsent.Accept(Now),
             Before = before,
             After = before with
             {
