@@ -324,7 +324,7 @@ public sealed class FollowUpService(ILogger<FollowUpService> logger)
         var triggers = string.Join(
             ",",
             due.Select(d =>
-                $"(New-ScheduledTaskTrigger -Once -At ([datetime]::ParseExact('{d.LocalDateTime.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)}','yyyy-MM-dd HH:mm',$null)))"
+                $"(New-ScheduledTaskTrigger -Once -At ([datetime]::ParseExact('{d.DateTime.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)}','yyyy-MM-dd HH:mm',$null)))"
             )
         );
         return "$a = New-ScheduledTaskAction -Execute 'cmd.exe' -Argument '"
