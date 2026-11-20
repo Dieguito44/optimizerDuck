@@ -99,6 +99,25 @@
         />
     </ItemGroup>
 
+    <!-- smartctl from smartmontools 7.5, GPL-2.0 (see Resources\Tools\smartmontools\SOURCE.txt). -->
+    <ItemGroup>
+        <Content
+            Include="Resources\Tools\smartmontools\smartctl.exe"
+            Link="Tools\smartctl.exe"
+            CopyToOutputDirectory="PreserveNewest"
+        />
+        <Content
+            Include="Resources\Tools\smartmontools\LICENSE.txt"
+            Link="Tools\smartctl.LICENSE.txt"
+            CopyToOutputDirectory="PreserveNewest"
+        />
+        <Content
+            Include="Resources\Tools\smartmontools\SOURCE.txt"
+            Link="Tools\smartctl.SOURCE.txt"
+            CopyToOutputDirectory="PreserveNewest"
+        />
+    </ItemGroup>
+
     <ItemGroup>
         <Resource Include="Resources\Images\Duck.png" />
         <Resource Include="Resources\Images\Zentra.png" />

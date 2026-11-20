@@ -197,7 +197,7 @@ public sealed record DiskSnapshot
     public Measured<int> PowerOnHours { get; init; }
     public Measured<int> TemperatureC { get; init; }
 
-    /// <summary>Total host writes. Needs smartctl, which Zentra does not ship yet.</summary>
+    /// <summary>Total host writes, read with the smartctl Zentra ships (F2-09).</summary>
     public Measured<long> BytesWritten { get; init; }
 }
 

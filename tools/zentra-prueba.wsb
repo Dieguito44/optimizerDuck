@@ -1,0 +1,16 @@
+<Configuration>
+  <!-- Zentra in Windows Sandbox (test bench, level 3): a throwaway Windows, separate from this PC. -->
+  <!-- Publish first with tools\publicar-prueba.ps1. The folder is read-only inside; -->
+  <!-- everything is erased when the Sandbox closes. Change HostFolder if you publish elsewhere. -->
+  <Networking>Disable</Networking>
+  <MappedFolders>
+    <MappedFolder>
+      <HostFolder>C:\Proyectos\zentra-preview</HostFolder>
+      <SandboxFolder>C:\Zentra</SandboxFolder>
+      <ReadOnly>true</ReadOnly>
+    </MappedFolder>
+  </MappedFolders>
+  <LogonCommand>
+    <Command>C:\Zentra\Zentra.exe</Command>
+  </LogonCommand>
+</Configuration>

@@ -28,6 +28,13 @@ public sealed record DiskProbeRow
 
     /// <summary>Why the reliability counters are missing, when they are.</summary>
     public NotMeasuredReason CountersReason { get; init; } = NotMeasuredReason.NotReported;
+
+    /// <summary>Total host writes in bytes, from smartctl (F2-09).</summary>
+    public long? HostWritesBytes { get; init; }
+
+    /// <summary>Why the host writes are missing, when they are.</summary>
+    public NotMeasuredReason HostWritesReason { get; init; } =
+        NotMeasuredReason.RequiresExternalTool;
 }
 
 /// <summary>Everything the probes read outside <see cref="SystemInfo" />.</summary>
@@ -282,7 +289,7 @@ public static class DiagnosticSnapshotBuilder
             TemperatureC = row.TemperatureC is > 0
                 ? Measured<int>.Of(row.TemperatureC.Value)
                 : Measured<int>.Missing(reason),
-            BytesWritten = Measured<long>.Missing(NotMeasuredReason.RequiresExternalTool),
+            BytesWritten = Measured.FromNullable(row.HostWritesBytes, row.HostWritesReason),
         };
     }
 
