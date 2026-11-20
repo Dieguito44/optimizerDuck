@@ -50,7 +50,11 @@ public class RevertManagerTests
         try
         {
             var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
-            await File.WriteAllTextAsync(path, json, cancellationToken);
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
+                path,
+                json,
+                cancellationToken
+            );
 
             var data = await RevertManager.GetRevertDataAsync(id);
 
@@ -76,7 +80,11 @@ public class RevertManagerTests
 
         try
         {
-            await File.WriteAllTextAsync(path, "{ invalid json }", cancellationToken);
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
+                path,
+                "{ invalid json }",
+                cancellationToken
+            );
 
             var isApplied = await RevertManager.IsAppliedAsync(id);
 
@@ -99,7 +107,11 @@ public class RevertManagerTests
 
         try
         {
-            await File.WriteAllTextAsync(path, "{ invalid json }", cancellationToken);
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
+                path,
+                "{ invalid json }",
+                cancellationToken
+            );
 
             var manager = new RevertManager(
                 NullLogger<RevertManager>.Instance,
@@ -163,7 +175,11 @@ public class RevertManagerTests
         try
         {
             var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
-            await File.WriteAllTextAsync(path, json, cancellationToken);
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
+                path,
+                json,
+                cancellationToken
+            );
 
             var manager = new RevertManager(
                 NullLogger<RevertManager>.Instance,
@@ -225,7 +241,11 @@ public class RevertManagerTests
         try
         {
             var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
-            await File.WriteAllTextAsync(path, json, cancellationToken);
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
+                path,
+                json,
+                cancellationToken
+            );
 
             var manager = new RevertManager(
                 NullLogger<RevertManager>.Instance,
@@ -292,7 +312,11 @@ public class RevertManagerTests
         try
         {
             var json = JsonConvert.SerializeObject(payload, Formatting.Indented);
-            await File.WriteAllTextAsync(path, json, cancellationToken);
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
+                path,
+                json,
+                cancellationToken
+            );
 
             var manager = new RevertManager(
                 NullLogger<RevertManager>.Instance,
@@ -434,7 +458,7 @@ public class RevertManagerTests
 
         try
         {
-            await File.WriteAllTextAsync(
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
                 path,
                 JsonConvert.SerializeObject(payload),
                 cancellationToken
@@ -507,7 +531,7 @@ public class RevertManagerTests
                 AppliedAt = DateTime.UtcNow,
                 Steps = [],
             };
-            await File.WriteAllTextAsync(
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
                 siblingFile,
                 JsonConvert.SerializeObject(payload),
                 cancellationToken
@@ -743,7 +767,11 @@ public class RevertIntegrityTests
 
         try
         {
-            await File.WriteAllTextAsync(path, damaged, cancellationToken);
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
+                path,
+                damaged,
+                cancellationToken
+            );
 
             var changes = new ChangeSet();
             changes.Add("Registry", "wrote a value", true, new MockRevertStep());
@@ -782,7 +810,11 @@ public class RevertIntegrityTests
                     Steps = Array.Empty<RevertStepData?>(),
                 }
             );
-            await File.WriteAllTextAsync(path, future, cancellationToken);
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
+                path,
+                future,
+                cancellationToken
+            );
 
             var changes = new ChangeSet();
             changes.Add("Registry", "wrote a value", true, new MockRevertStep());
@@ -812,7 +844,7 @@ public class RevertIntegrityTests
 
         try
         {
-            await File.WriteAllTextAsync(
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
                 path,
                 $"{{\"SchemaVersion\":1,\"OptimizationId\":\"{id}\","
                     + "\"OptimizationName\":\"IntegrityTest\",\"Steps\":null}",
@@ -858,7 +890,11 @@ public class RevertIntegrityTests
         {
             Assert.False(await RevertManager.IsAppliedAsync(id));
 
-            await File.WriteAllTextAsync(path, "{ broken }", cancellationToken);
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
+                path,
+                "{ broken }",
+                cancellationToken
+            );
             Assert.True(await RevertManager.IsAppliedAsync(id));
 
             var parked = path + ".unreadable-20260101000000";
@@ -884,7 +920,11 @@ public class RevertIntegrityTests
 
         try
         {
-            await File.WriteAllTextAsync(path, "{ broken }", cancellationToken);
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
+                path,
+                "{ broken }",
+                cancellationToken
+            );
 
             var result = await NewManager()
                 .RevertAsync(new MockOptimization(id), cancellationToken: cancellationToken);
@@ -1000,7 +1040,7 @@ public class RevertIntegrityTests
         {
             // A registered type whose payload is missing its required fields: that entry must stay
             // loadable, so the rest of the file still reverts and the failure names the type.
-            await File.WriteAllTextAsync(
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
                 path,
                 JsonConvert.SerializeObject(
                     new RevertData
@@ -1102,7 +1142,7 @@ public class RevertIntegrityTests
         await gate.WaitAsync(cancellationToken);
         try
         {
-            await File.WriteAllTextAsync(
+            await optimizerDuck.Test.TestDoubles.TestState.WriteAsync(
                 path,
                 JsonConvert.SerializeObject(
                     new RevertData

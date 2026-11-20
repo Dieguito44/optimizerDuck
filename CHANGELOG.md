@@ -4,6 +4,23 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 1B: estado protegido y diario de intención (19/11/2026, PR 21, sobre el PR 20)
+
+- **Estado protegido (F1-02, auditoría Z-02):** los datos de reversión, el historial y el diario pasan de `%LOCALAPPDATA%\Zentra` a `%ProgramData%\Zentra\Estado`.
+  - **La carpeta:** solo SYSTEM y Administradores pueden escribir; Usuarios solo leen y no hay herencia. Si ya existe con otro dueño o es un enlace, Zentra no abre: sin estado seguro no se aplica nada.
+  - **La firma:** cada archivo empieza con un HMAC-SHA256. La clave es aleatoria y única por PC, protegida con DPAPI de máquina. Un archivo alterado, o sin firma, se trata como ilegible y se aparta: nunca se revierte un valor que otro cambió.
+  - **Migración:** al primer arranque se mueven y firman los archivos de la carpeta anterior. Se confía en ellos esa única vez, porque antes no se podían verificar; solo afecta a PCs que ya usaron Zentra, como el de Diego.
+- **Diario de intención (F1-03, auditoría Z-09):** antes, los datos de reversión llegaban al disco solo al final de cada ajuste. Si Zentra se cerraba a mitad, los cambios ya hechos quedaban sin vuelta atrás.
+  - **Ahora:** cada cambio con reversión se escribe en el diario apenas ocurre, firmado y forzado a disco. El diario se borra cuando el ajuste guarda su reversión.
+  - **Al siguiente arranque:** lo que quedó en el diario se convierte en datos de reversión y un aviso lista esos ajustes, para revertirlos o aplicarlos de nuevo.
+  - **Cancelar a mitad** ahora también guarda la reversión de lo ya hecho.
+- **Tests:** 1770 en total, 0 fallos.
+  - Firma y rechazo de archivos alterados (reversión, historial, diario), migración y la ACL.
+  - Un ajuste sin terminar que se recupera.
+  - Una prueba solo para el CI que crea la carpeta protegida de verdad en ProgramData.
+  - Las pruebas guardan su estado en una carpeta temporal propia.
+- **Sin probar en el PC real:** el primer arranque, que crea la carpeta y mueve tus datos actuales. Ocurre cuando abras Zentra.
+
 ### Mejoras, Fase 1A: procesos y archivos endurecidos (19/11/2026, PR 20, sobre el PR 19)
 
 Primer bloque de la Fase 1 (bloqueantes legales y de seguridad).

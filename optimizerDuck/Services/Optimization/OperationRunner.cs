@@ -41,8 +41,21 @@ public class OperationRunner(
         ArgumentNullException.ThrowIfNull(progress);
 
         var changes = new ChangeSet();
+        // Plan F1-03: every change with a way back reaches the disk as soon as it is made.
+        var journaled = request.Revert == RevertPersistence.Enabled;
+        if (journaled)
+        {
+            IntentJournal.Begin(request.Subject.Id, request.Subject.Key, DateTimeOffset.UtcNow);
+            changes.Recorded = change => IntentJournal.Record(request.Subject.Id, change);
+        }
+
         var result = await RunCoreAsync(request, changes, progress, cancellationToken)
             .ConfigureAwait(false);
+
+        // The run's revert data is saved (or there was none): the journal is no longer needed.
+        // When saving failed, the journal stays and the next start recovers it.
+        if (journaled && !changes.RevertSaveFailed)
+            IntentJournal.Complete(request.Subject.Id);
 
         // Best effort, after the result is decided: the record must never change what a run
         // reports about the machine.
@@ -91,6 +104,8 @@ public class OperationRunner(
         catch (OperationCanceledException ocex)
         {
             _logger.LogInformation("Operation {Name} was cancelled", request.Subject.LogName);
+            // What changed before the cancel still needs its way back (plan F1-03).
+            await TrySaveRevertDataAsync(changes, request).ConfigureAwait(false);
             return new OptimizationResult
             {
                 Status = changes.ModifiedSystem
@@ -274,6 +289,7 @@ public class OperationRunner(
         }
         catch (Exception ex)
         {
+            changes.RevertSaveFailed = true;
             _logger.LogError(ex, "Failed to save revert data for {Name}", request.Subject.Key);
             RecordRunFailure(changes, request, ex);
         }

@@ -71,11 +71,40 @@ public class RevertManager(
         // Compensation is persisted whenever it exists, whether the step reported success or a
         // partial failure: a step that was refused after it had already changed something still
         // needs its previous state recorded.
-        var incoming = changes.Changes.Where(c => c.Revert != null).OrderBy(c => c.Index).ToList();
+        var incoming = changes
+            .Changes.Where(c => c.Revert != null)
+            .OrderBy(c => c.Index)
+            .Select(c => (c.Revert!.Type, Data: c.Revert.ToData()))
+            .ToList();
 
         if (incoming.Count == 0)
             return;
+        await MergeStepsAsync(id, name, incoming, cancellationToken).ConfigureAwait(false);
+    }
 
+    /// <summary>
+    ///     Plan F1-03: the steps an unfinished run left in the intent journal, added to the item's
+    ///     revert data exactly as a finished run would have added them.
+    /// </summary>
+    public Task SaveRecoveredStepsAsync(
+        Guid id,
+        string name,
+        IReadOnlyList<RevertStepData> steps
+    ) =>
+        MergeStepsAsync(
+            id,
+            name,
+            steps.OrderBy(s => s.Index).Select(s => (s.Type, s.Data)).ToList(),
+            CancellationToken.None
+        );
+
+    private async Task MergeStepsAsync(
+        Guid id,
+        string name,
+        IReadOnlyList<(string Type, JObject Data)> incoming,
+        CancellationToken cancellationToken
+    )
+    {
         var filePath = GetFilePath(id);
         var lockObj = await AcquireFileLockAsync(id).ConfigureAwait(false);
         try
@@ -98,16 +127,15 @@ public class RevertManager(
                 data.Steps.Where(s => s != null).Select(s => s!.Index).DefaultIfEmpty(0).Max() + 1;
             var merged = data.Steps.Where(s => s != null).Cast<RevertStepData>().ToList();
 
-            foreach (var change in incoming)
-            {
-                var step = new RevertStepData
-                {
-                    Index = nextIndex++,
-                    Type = change.Revert!.Type,
-                    Data = change.Revert.ToData(),
-                };
-                merged.Add(step);
-            }
+            foreach (var (type, stepData) in incoming)
+                merged.Add(
+                    new RevertStepData
+                    {
+                        Index = nextIndex++,
+                        Type = type,
+                        Data = stepData,
+                    }
+                );
 
             var maxIndex = merged.Count > 0 ? merged.Max(s => s.Index) : 0;
             var steps = new RevertStepData?[maxIndex];
@@ -520,9 +548,24 @@ public class RevertManager(
             {
                 try
                 {
-                    var json = await File.ReadAllTextAsync(path).ConfigureAwait(false);
-                    if (string.IsNullOrWhiteSpace(json))
+                    var text = await File.ReadAllTextAsync(path).ConfigureAwait(false);
+                    if (string.IsNullOrWhiteSpace(text))
                         return null;
+
+                    // Plan F1-02: only a file Zentra sealed is trusted. An altered one (or one
+                    // without its HMAC) is reported as unreadable and parked, never reverted.
+                    var json = State.StateFile.Unseal(text);
+                    if (json is null)
+                    {
+                        LogCorruptRevertFile(
+                            logger,
+                            path,
+                            new InvalidOperationException(
+                                "Revert file failed its integrity check (altered or not sealed)"
+                            )
+                        );
+                        return null;
+                    }
 
                     var data = JsonConvert.DeserializeObject<RevertData>(json);
                     if (data == null)
@@ -650,7 +693,7 @@ public class RevertManager(
     {
         Directory.CreateDirectory(Path.GetDirectoryName(path)!);
 
-        var json = JsonConvert.SerializeObject(data, Formatting.Indented);
+        var json = State.StateFile.Seal(JsonConvert.SerializeObject(data, Formatting.Indented));
         var tempPath = path + ".tmp";
         await using (
             var stream = new FileStream(
