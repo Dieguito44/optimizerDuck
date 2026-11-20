@@ -24,6 +24,9 @@ public enum CliExitCode
     /// <summary>The technician said no in the confirmation, or the run was cancelled.</summary>
     Cancelled = 6,
 
+    /// <summary>--verify: a report file is missing or changed since Zentra wrote it.</summary>
+    VerificationFailed = 7,
+
     /// <summary>Something unexpected; the log has the details.</summary>
     Failed = 10,
 }
@@ -55,6 +58,12 @@ public sealed record CliOptions
     public bool KeepApps { get; init; }
 
     public bool Help { get; init; }
+
+    /// <summary>Also write the software inventory (plan F3-06).</summary>
+    public bool Inventory { get; init; }
+
+    /// <summary>A report folder (or its ZENTRA-SHA256.txt) to check, alone (plan F3-04).</summary>
+    public string? VerifyPath { get; init; }
 
     public bool UsesStandardPreset => PresetPath is { } p && StandardNames.Contains(p);
 
@@ -91,9 +100,13 @@ public sealed record CliOptions
                 case "--keep-apps":
                     options = options with { KeepApps = true };
                     break;
+                case "--inventory":
+                    options = options with { Inventory = true };
+                    break;
                 case "--preset":
                 case "--report":
                 case "--client":
+                case "--verify":
                     if (
                         i + 1 >= args.Count
                         || args[i + 1].StartsWith("--", StringComparison.Ordinal)
@@ -107,6 +120,7 @@ public sealed record CliOptions
                     {
                         "--preset" => options with { PresetPath = value },
                         "--report" => options with { ReportDirectory = value },
+                        "--verify" => options with { VerifyPath = value },
                         _ => options with { Client = value },
                     };
                     break;
@@ -116,9 +130,18 @@ public sealed record CliOptions
             }
         }
 
-        if (!options.Diagnose && options.PresetPath is null)
+        if (options.VerifyPath is not null)
         {
-            error = "nothing to do: use --diagnose, --preset or both";
+            if (options with { VerifyPath = null } != new CliOptions())
+            {
+                error = "--verify goes alone";
+                return null;
+            }
+            return options;
+        }
+        if (!options.Diagnose && options.PresetPath is null && !options.Inventory)
+        {
+            error = "nothing to do: use --diagnose, --preset, --inventory or --verify";
             return null;
         }
         if (

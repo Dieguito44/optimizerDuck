@@ -52,6 +52,8 @@ public class CliOptionsTests
     [InlineData("--report", "x")] // nothing to do
     [InlineData("--diagnose", "--silent")] // --silent only with a preset
     [InlineData("--diagnose", "--allow-risky")]
+    [InlineData("--verify", "D:/Ana", "--diagnose")] // --verify goes alone
+    [InlineData("--verify")]
     public void BadCommands_AreRefused(params string[] args)
     {
         Assert.Null(CliOptions.Parse(args, out var error));
@@ -81,7 +83,7 @@ public class CliOptionsTests
     {
         // Scripts depend on these numbers: changing one breaks them.
         Assert.Equal(
-            [0, 1, 2, 3, 4, 5, 6, 10],
+            [0, 1, 2, 3, 4, 5, 6, 7, 10],
             Enum.GetValues<CliExitCode>().Select(c => (int)c).Order()
         );
     }
@@ -193,14 +195,27 @@ public class CliRunnerTests
             );
         }
 
+        public Task<IReadOnlyList<string>> WriteInventoryAsync(
+            ServiceSession session,
+            CancellationToken ct
+        )
+        {
+            calls.Add("inventory");
+            return Task.FromResult<IReadOnlyList<string>>(["inventario.csv"]);
+        }
+
+        public IReadOnlyList<string> Extra { get; private set; } = [];
+
         public Task<IReadOnlyList<string>> WriteReportAsync(
             ServiceSession session,
             string? reportDirectory,
             string transcript,
+            IReadOnlyList<string> extraFiles,
             CancellationToken ct
         )
         {
             calls.Add("report");
+            Extra = extraFiles;
             Written = session;
             Transcript = transcript;
             return Task.FromResult<IReadOnlyList<string>>(["session.json"]);
@@ -378,5 +393,46 @@ public class CliRunnerTests
             File.Delete(file);
         }
         Assert.Empty(run.Calls);
+    }
+
+    [Fact]
+    public void InventoryAlone_AndVerifyAlone_AreValid()
+    {
+        Assert.True(CliOptions.Parse(["--inventory"], out _)!.Inventory);
+        Assert.Equal(@"D:\Ana", CliOptions.Parse(["--verify", @"D:\Ana"], out _)!.VerifyPath);
+    }
+
+    [Fact]
+    public async Task Inventory_IsWrittenAndCopiedWithTheReport()
+    {
+        var run = NewRun();
+        Assert.Equal(CliExitCode.Ok, await Go(run, "--diagnose", "--inventory"));
+        Assert.Equal(["measure:Before", "inventory", "report"], run.Calls);
+        Assert.Equal(["inventario.csv"], run.Host.Extra);
+    }
+
+    [Fact]
+    public async Task Verify_ChecksTheFolder_WithoutTouchingThePc()
+    {
+        var folder = Path.Combine(Path.GetTempPath(), $"zentra-verify-{Guid.NewGuid():N}");
+        Directory.CreateDirectory(folder);
+        try
+        {
+            var pdf = Path.Combine(folder, "Informe.pdf");
+            File.WriteAllText(pdf, "%PDF");
+            optimizerDuck.Services.Reports.ReportIntegrity.WriteManifest(folder, [pdf]);
+
+            var run = NewRun();
+            run.Host.IsElevated = false; // checking a report needs no administrator
+            Assert.Equal(CliExitCode.Ok, await Go(run, "--verify", folder));
+
+            File.AppendAllText(pdf, "changed");
+            Assert.Equal(CliExitCode.VerificationFailed, await Go(run, "--verify", folder));
+            Assert.Empty(run.Calls);
+        }
+        finally
+        {
+            Directory.Delete(folder, recursive: true);
+        }
     }
 }

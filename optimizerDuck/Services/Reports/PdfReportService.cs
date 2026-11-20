@@ -31,10 +31,16 @@ public sealed class PdfReportService(
     /// <returns>The PDF path.</returns>
     public async Task<string> GenerateAsync(ServiceSession session, CancellationToken ct = default)
     {
-        var model = await BuildModelAsync(session).ConfigureAwait(false);
-
         var folder = SessionStore.FolderFor(session);
         Directory.CreateDirectory(folder);
+        var sessionJson = Path.Combine(folder, "session.json");
+
+        // Plan F3-04: the PDF prints the fingerprint of the session.json it comes from.
+        var model = await BuildModelAsync(session).ConfigureAwait(false) with
+        {
+            SessionSha256 = File.Exists(sessionJson) ? ReportIntegrity.Sha256Of(sessionJson) : null,
+        };
+
         var path = Path.Combine(
             folder,
             $"Informe_Zentra_{timeProvider.GetLocalNow():yyyy-MM-dd_HHmm}.pdf"
@@ -51,7 +57,12 @@ public sealed class PdfReportService(
             if (File.Exists(temp))
                 File.Delete(temp);
         }
-        logger.LogInformation("Report PDF written to {Path}", path);
+        ReportIntegrity.WriteManifest(folder, [path, sessionJson]);
+        logger.LogInformation(
+            "Report PDF written to {Path} (SHA-256 {Hash})",
+            path,
+            ReportIntegrity.Sha256Of(path)
+        );
         return path;
     }
 
@@ -281,6 +292,8 @@ public sealed class PdfReportService(
         }
 
         Section(column, "Report.Section.Applied");
+        if (model.PresetName is { } preset)
+            column.Item().Text(Loc.Instance["Report.Preset", Printable(preset)]).Bold();
         if (model.Applied.Count == 0)
             column.Item().Text(Loc.Instance["Report.NoApplied"]);
         foreach (var action in model.Applied)
@@ -333,6 +346,13 @@ public sealed class PdfReportService(
         Section(column, "Report.Section.Notes");
         foreach (var note in model.Notes)
             column.Item().Text(note).FontSize(9);
+        if (model.SessionSha256 is { } hash)
+            column
+                .Item()
+                .PaddingTop(4)
+                .Text(Loc.Instance["Report.SessionHash", hash])
+                .FontSize(8)
+                .FontColor(Colors.Grey.Darken1);
     }
 
     /// <summary>

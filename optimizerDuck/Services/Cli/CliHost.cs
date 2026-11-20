@@ -20,7 +20,8 @@ public sealed class CliHost(
     DiagnosticService diagnosticService,
     SessionStore sessionStore,
     PdfReportService pdfReportService,
-    TimeProvider timeProvider
+    TimeProvider timeProvider,
+    Microsoft.Extensions.Logging.ILogger<CliHost> logger
 ) : ICliHost
 {
     /// <summary>Lines of the preview the confirmation window shows; the full list is in the output.</summary>
@@ -97,19 +98,39 @@ public sealed class CliHost(
         return (measurement, DiagnosisSummary.From(report));
     }
 
+    public Task<IReadOnlyList<string>> WriteInventoryAsync(
+        ServiceSession session,
+        CancellationToken ct
+    ) => Reports.SoftwareInventory.WriteAsync(SessionStore.FolderFor(session), logger, ct);
+
     public async Task<IReadOnlyList<string>> WriteReportAsync(
         ServiceSession session,
         string? reportDirectory,
         string transcript,
+        IReadOnlyList<string> extraFiles,
         CancellationToken ct
     )
     {
+        // Like the Session page, every PDF carries a written report; here always the template's.
+        if (session.Before is not null && session.Report is null)
+            session = session with
+            {
+                Report = Ai.AiReportService.WriteTemplate(
+                    session,
+                    await pdfReportService.BuildModelAsync(session)
+                ),
+            };
+
         sessionStore.Save(session);
         var folder = SessionStore.FolderFor(session);
         var files = new List<string> { Path.Combine(folder, "session.json") };
         if (session.Before is not null)
+        {
             files.Add(await pdfReportService.GenerateAsync(session, ct));
+            files.Add(Path.Combine(folder, Reports.ReportIntegrity.ManifestName));
+        }
 
+        files.AddRange(extraFiles);
         var transcriptPath = Path.Combine(folder, "zentra-cli.txt");
         await File.WriteAllTextAsync(transcriptPath, transcript, Encoding.UTF8, ct);
         files.Add(transcriptPath);

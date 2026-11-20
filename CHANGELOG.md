@@ -4,6 +4,25 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 3B: informe antes/después, huella e inventario (19/11/2026, PR 14, sobre el PR 13)
+
+- **Antes/después (F3-03):** el informe ya tenía puntaje, arranque, RAM, espacio libre y disco, con sus diferencias. Lo nuevo:
+  - **Disco:** DiskSpd varía entre una prueba y otra. Las diferencias de menos del 10 % se muestran, pero no se marcan como mejora ni empeoramiento, y el informe lo explica.
+  - **Preset:** el informe nombra el preset aplicado.
+  - **CLI:** el PDF del CLI ahora lleva el informe escrito, siempre con la plantilla. El CLI nunca llama a la IA: nada del cliente sale del PC sin el técnico presente.
+- **Huella del informe (F3-04):**
+  - `ZENTRA-SHA256.txt` junto al PDF, con la huella del PDF y de `session.json` (formato de sha256sum).
+  - El PDF imprime la huella del `session.json` del que sale.
+  - Sesión y el CLI muestran la huella del PDF para entregarla aparte.
+  - `Zentra.exe --verify <carpeta>` comprueba la carpeta (código 7 si algo cambió o falta). Nunca abre rutas fuera de ella.
+- **Inventario (F3-06):** "Exportar inventario" en Sesión, o `--inventory` en el CLI.
+  - `inventario.csv`: programas con versión, editor, fecha, tamaño y alcance, más la edición de Windows y si está activado. Lleva BOM y el separador del idioma, para Excel. Las celdas que empiezan con `=`, `+`, `-` o `@` se neutralizan, para que no corran como fórmulas.
+  - `winget-export.json`, para `winget import` en el PC nuevo.
+  - Solo lee: no lee claves de producto y no se envía a la IA. Los programas de usuario son los del cliente, aunque el técnico haya elevado con otra cuenta.
+  - "Programas más pesados" del informe ahora también lee la cuenta del cliente.
+- **Tests:** 1584 en total, 0 fallos.
+- **Sin probar en el PC real:** el inventario, la huella en pantalla y `--verify`.
+
 ### Mejoras, Fase 3A: presets y línea de comandos (19/11/2026, PR 13, sobre el PR 12)
 
 Primer bloque de la Fase 3 (estandarizar el servicio). La guía está en `docs/PRESETS-Y-CLI.md`.
