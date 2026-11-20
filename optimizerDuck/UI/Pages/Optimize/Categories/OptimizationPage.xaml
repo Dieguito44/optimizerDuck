@@ -208,12 +208,14 @@
                                         FontTypography="Caption"
                                         Foreground="{DynamicResource TextFillColorDisabledBrush}"
                                         Text="{Binding Id}"
-                                        TextWrapping="Wrap" />
+                                        TextWrapping="Wrap"
+                                        Visibility="Collapsed" />
                                     <ui:TextBlock
                                         Grid.Row="2"
                                         FontTypography="Subtitle"
                                         Text="{Binding Name}"
-                                        TextWrapping="Wrap" />
+                                        TextWrapping="Wrap"
+                                        ToolTip="{Binding Id}" />
 
                                     <Border
                                         Grid.Row="3"
@@ -284,12 +286,14 @@
                                         FontTypography="Caption"
                                         Foreground="{DynamicResource TextFillColorDisabledBrush}"
                                         Text="{Binding Id}"
-                                        TextWrapping="Wrap" />
+                                        TextWrapping="Wrap"
+                                        Visibility="Collapsed" />
                                     <ui:TextBlock
                                         Grid.Row="1"
                                         FontTypography="Subtitle"
                                         Text="{Binding Name}"
-                                        TextWrapping="Wrap" />
+                                        TextWrapping="Wrap"
+                                        ToolTip="{Binding Id}" />
 
                                     <ui:VirtualizingItemsControl
                                         Grid.Row="2"
@@ -373,6 +377,16 @@
                                                 Text="{Binding State.RelativeTime}"
                                                 ToolTip="{Binding State.AppliedTooltip}"
                                                 Visibility="{Binding State.AppliedAt, Converter={StaticResource NullToVisibilityConverter}}" />
+                                            <!--  Done and not reversible (ResetBase): the card says so even with no revert data.  -->
+                                            <controls:StateBadge
+                                                Grid.Row="1"
+                                                Margin="0,8,0,0"
+                                                Background="{DynamicResource CardBackgroundFillColorSecondaryBrush}"
+                                                Command="{Binding DataContext.ViewModel.ShowDetailsCommand, RelativeSource={RelativeSource AncestorType=Page}}"
+                                                CommandParameter="{Binding}"
+                                                Icon="LockClosed24"
+                                                Text="{Binding State.DoneIrreversibleText}"
+                                                Visibility="{Binding State.DoneIrreversibleText, Converter={StaticResource NullToVisibilityConverter}}" />
                                         </Grid>
 
                                         <StackPanel

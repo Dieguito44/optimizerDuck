@@ -107,6 +107,23 @@ public sealed class SoftwareService(ILogger<SoftwareService> logger)
         "Software installer"
     );
 
+    /// <summary>
+    ///     One history record per program (found on Diego's PC, 19/11/2026: with a single key, each
+    ///     install or uninstall replaced the record of the one before, and the PDF lost them). The
+    ///     id comes from the winget id, so the same program always lands in the same record.
+    /// </summary>
+    public static OperationSubject SubjectFor(SoftwarePackage package)
+    {
+        var hash = global::System.Security.Cryptography.SHA256.HashData(
+            global::System.Text.Encoding.UTF8.GetBytes("Zentra.Software:" + package.WingetId)
+        );
+        return new OperationSubject(
+            new Guid(hash.AsSpan(0, 16)),
+            $"SoftwareInstaller.{package.WingetId}",
+            $"Software installer ({package.WingetId})"
+        );
+    }
+
     private static readonly TimeSpan InstallTimeout = TimeSpan.FromMinutes(30);
     private static readonly TimeSpan ListTimeout = TimeSpan.FromMinutes(2);
 
@@ -143,7 +160,7 @@ public sealed class SoftwareService(ILogger<SoftwareService> logger)
 
     public OperationRequest BuildInstallRequest(SoftwarePackage package) =>
         new(
-            Subject,
+            SubjectFor(package),
             Loc.Instance["Software.Run.Install", package.Name],
             logger,
             RevertPersistence.Disabled,
@@ -158,7 +175,7 @@ public sealed class SoftwareService(ILogger<SoftwareService> logger)
 
     public OperationRequest BuildUninstallRequest(SoftwarePackage package) =>
         new(
-            Subject,
+            SubjectFor(package),
             Loc.Instance["Software.Run.Uninstall", package.Name],
             logger,
             RevertPersistence.Disabled,

@@ -64,6 +64,14 @@ public partial class OptimizationState : ObservableObject
     [ObservableProperty]
     private string appliedSummary = string.Empty;
 
+    /// <summary>
+    ///     "Hecho el 19/11/2026 · no reversible" for a setting that cannot be undone and has no
+    ///     revert data (ResetBase). Empty otherwise. Found in the Sandbox tests (19/11/2026):
+    ///     after ResetBase the card looked as if it had never run.
+    /// </summary>
+    [ObservableProperty]
+    private string? doneIrreversibleText;
+
     /// <summary>The applied badge tooltip: what the run did, and what a click does.</summary>
     public string AppliedTooltip =>
         string.IsNullOrEmpty(AppliedSummary)

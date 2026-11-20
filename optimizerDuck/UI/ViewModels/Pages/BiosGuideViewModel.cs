@@ -32,12 +32,12 @@ public partial class BiosGuideViewModel(SystemInfoService systemInfoService) : V
             system.Firmware.BiosVersion ?? "—"
         ];
 
-        // This PC's guide; otherwise the only one there is, marked as another board's.
-        var own = BiosGuides.For(manufacturer, board);
-        Guide = own ?? BiosGuides.All.FirstOrDefault();
-        MatchText = own is not null
+        // Only this PC's own guide. Another board's steps, even "as a reference", can send a
+        // technician to the wrong menu on a client's PC (found in the Sandbox tests, 19/11/2026).
+        Guide = BiosGuides.For(manufacturer, board);
+        MatchText = Guide is not null
             ? Loc.Instance["BiosGuide.Match.Yes"]
-            : Loc.Instance["BiosGuide.Match.No", Guide?.DisplayName ?? "—"];
+            : Loc.Instance["BiosGuide.Match.None"];
         OnPropertyChanged(nameof(HasGuide));
     }
 }

@@ -346,10 +346,29 @@ public class OptimizationService(
                             record.CountOf(ChangeKind.NotApplicable),
                             record.CountOf(ChangeKind.Refused)
                         ];
+                    opt.State.DoneIrreversibleText = DoneIrreversibleText(opt, applied, record);
                 }
             )
             .ConfigureAwait(false);
     }
+
+    /// <summary>
+    ///     The "done, not reversible" line: a setting that needs the "No reversible" dialog, with
+    ///     no revert data, whose last record is a successful apply that was never reverted.
+    /// </summary>
+    internal static string? DoneIrreversibleText(
+        IOptimization optimization,
+        bool applied,
+        ChangeRecord? record
+    ) =>
+        !applied
+        && optimization.Confirmation == OptimizationConfirmation.Irreversible
+        && record is { Operation: ChangeRecordOperation.Apply, RevertedAt: null }
+        && record.Outcome
+            is nameof(OptimizationSuccessResult.Success)
+                or nameof(OptimizationSuccessResult.PartialSuccess)
+            ? Loc.Instance["Optimizer.UI.State.DoneIrreversible", record.AppliedAt.ToString("d")]
+            : null;
 
     /// <summary>
     ///     Updates the applied state of the specified optimizations by scanning revert data

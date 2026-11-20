@@ -270,7 +270,10 @@ public sealed class FollowUpService(ILogger<FollowUpService> logger)
                 $"(New-ScheduledTaskTrigger -Once -At ([datetime]::ParseExact('{d.DateTime.ToString("yyyy-MM-dd HH:mm", CultureInfo.InvariantCulture)}','yyyy-MM-dd HH:mm',$null)))"
             )
         );
-        return "$a = New-ScheduledTaskAction -Execute 'cmd.exe' -Argument '"
+        // The absolute path, like every other process Zentra starts (plan F1-05); the task runs
+        // as SYSTEM, so a bare name would rely on the PATH (found in the Sandbox tests).
+        var cmd = Path.Combine(Environment.SystemDirectory, "cmd.exe");
+        return $"$a = New-ScheduledTaskAction -Execute '{cmd}' -Argument '"
             + argument
             + "'; "
             + "$t = @("

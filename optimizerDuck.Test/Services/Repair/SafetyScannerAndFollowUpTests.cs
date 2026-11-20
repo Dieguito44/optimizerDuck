@@ -151,6 +151,11 @@ public class FollowUpTests
         Assert.Contains("'2026-11-26 11:00'", command);
         Assert.Contains("'2026-12-19 11:00'", command);
         Assert.DoesNotContain("--preset", command);
+        // cmd.exe by its full path, never by name (found in the Sandbox tests, 19/11/2026).
+        Assert.Contains(
+            $"-Execute '{Path.Combine(Environment.SystemDirectory, "cmd.exe")}'",
+            command
+        );
     }
 
     [Theory]

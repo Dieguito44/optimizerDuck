@@ -316,7 +316,12 @@ public sealed class VbsOnRule : IDiagnosticRule
                     new("os.vbs", Text: hasVbs ? (vbs ? "on" : "off") : "unknown"),
                     new("os.hvci", Text: hasHvci ? (hvci ? "on" : "off") : "unknown"),
                 ],
-                [ActionIds.GameModeAdvanced]
+                // The advanced game mode only turns Memory Integrity off. With it already off
+                // there is nothing to offer (found in the Sandbox tests, 19/11/2026: the report
+                // recommended turning off what was off).
+                hasHvci && !hvci
+                    ? []
+                    : [ActionIds.GameModeAdvanced]
             )
         );
     }

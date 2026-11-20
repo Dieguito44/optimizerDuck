@@ -55,7 +55,18 @@ public partial class ServiceProfileViewModel(
 
     public bool IsCustomPreset => !Preset.IsBuiltIn;
 
-    private bool CanRun() => !IsBusy;
+    /// <summary>
+    ///     The Session page is measuring (found in the Sandbox tests, 19/11/2026): applying the
+    ///     profile then would change the PC in the middle of the "before" measurement.
+    /// </summary>
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
+    [NotifyCanExecuteChangedFor(nameof(RevertCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ImportPresetCommand))]
+    [NotifyCanExecuteChangedFor(nameof(UseStandardPresetCommand))]
+    private bool _isSessionBusy;
+
+    private bool CanRun() => !IsBusy && !IsSessionBusy;
 
     [RelayCommand(CanExecute = nameof(CanRun))]
     private async Task ImportPresetAsync()
