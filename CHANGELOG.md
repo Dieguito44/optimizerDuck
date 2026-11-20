@@ -4,6 +4,19 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Prueba de la versión 1 (20/11/2026, rama pruebas-v1)
+
+Zentra pasa a la **versión 1.0.0** (antes mostraba la 2.29.0 heredada de optimizerDuck). Correcciones de la prueba completa en GitHub y de las etapas 1 y 2 en el PC de Diego:
+
+- **Prueba completa en GitHub:** cada ajuste se aplica y se revierte de verdad en un Windows desechable. Resultado: 37 ajustes quedan exactamente como estaban y no queda ningún problema. Hay 3 limitaciones anotadas que solo pasan en Windows Server.
+- **Motor:** espera los datos del PC antes de aplicar un ajuste. Antes, un ajuste aplicado justo al abrir Zentra veía 0 KB de RAM y fallaba.
+- **Vista previa:** un servicio o una tarea que no existe en el PC, o un valor ya borrado, no cuenta como cambio.
+- **Apps:** empieza en la lista del servicio, no en todas las apps del cliente. Los nombres se ven limpios ("WhatsAppDesktop", "Adobe Inc.").
+- **Velocidad de internet:** la latencia es el tiempo de abrir la conexión. Antes decía 208 ms en una línea de 29 ms.
+- **Disco con un error viejo:** si Windows dice que el disco está sano, ya no se recomienda cambiarlo, solo hacer copia de seguridad.
+- **Textos:** "ASRock ASRock" en la BIOS, "Registry" en inglés en Arranque, y "Elije" corregido a "Elige".
+- **Tests:** 1826, 0 fallos.
+
 ### Rediseño de las demás páginas (19/11/2026, PR 25, sobre el PR 24)
 
 - **El mismo encabezado en todas las páginas:** cuadro con ícono, título y descripción. Antes solo lo tenían Diagnóstico, Sesión, Reparar, Programas y BIOS; ahora también Panel, Apps, Limpieza, Arranque, Tareas, Personalizar y Configuración.
