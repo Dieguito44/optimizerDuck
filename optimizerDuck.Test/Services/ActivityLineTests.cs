@@ -39,6 +39,18 @@ public class ActivityLineTests
     }
 
     [Fact]
+    public void ChangesWithNoWayBack_AreCountedAndFlagged()
+    {
+        // Hyper-V test (20/11/2026): removing Edge said "listo, cambios: 0".
+        var result = new OptimizationResult { Status = OptimizationSuccessResult.Success };
+
+        var line = OperationRunner.ActivityLine(result, "Quitar Microsoft Edge", 0, 1);
+
+        Assert.Contains("1", line);
+        Assert.DoesNotContain("cambios: 0", line);
+    }
+
+    [Fact]
     public void ASuccess_StaysShort()
     {
         var result = new OptimizationResult

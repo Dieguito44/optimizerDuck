@@ -67,7 +67,12 @@ public class OperationRunner(
         // The activity log at the bottom of the window (redesign): one line per run. A failure
         // says why (version 1 test, 20/11/2026: "falló" alone left nothing to go on).
         ActivityLog.Add(
-            ActivityLine(result, request.DisplayName, record.ChangedCount),
+            ActivityLine(
+                result,
+                request.DisplayName,
+                record.ChangedCount,
+                record.CountOf(ChangeKind.Irreversible)
+            ),
             result.Status switch
             {
                 OptimizationSuccessResult.Success => ActivityKind.Good,
@@ -80,9 +85,20 @@ public class OperationRunner(
         return result;
     }
 
-    internal static string ActivityLine(OptimizationResult result, string name, int changed)
+    /// <param name="irreversible">
+    ///     Steps that changed the PC with no way back (removing Edge, BitLocker, DISM). They count
+    ///     as changes and are flagged: "cambios: 0" hid them (Hyper-V test, 20/11/2026).
+    /// </param>
+    internal static string ActivityLine(
+        OptimizationResult result,
+        string name,
+        int changed,
+        int irreversible = 0
+    )
     {
-        var line = Loc.Instance[$"Activity.{result.Status}", name, changed];
+        var line = Loc.Instance[$"Activity.{result.Status}", name, changed + irreversible];
+        if (irreversible > 0)
+            line += " " + Loc.Instance["Activity.Irreversible", irreversible];
         if (
             result.Status
             is not (OptimizationSuccessResult.Failed or OptimizationSuccessResult.PartialSuccess)

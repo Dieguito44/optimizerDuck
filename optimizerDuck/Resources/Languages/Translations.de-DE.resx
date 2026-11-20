@@ -5287,4 +5287,7 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Profile.Selector" xml:space="preserve">
     <value>Profile</value>
   </data>
+  <data name="Activity.Irreversible" xml:space="preserve">
+    <value>(no way back: {0})</value>
+  </data>
 </root>
