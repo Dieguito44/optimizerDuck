@@ -12,6 +12,7 @@ using optimizerDuck.Services.Diagnostics;
 using optimizerDuck.Services.Measurements;
 using optimizerDuck.Services.Reports;
 using optimizerDuck.Services.System;
+using Wpf.Ui.Extensions;
 
 namespace optimizerDuck.UI.ViewModels.Pages;
 
@@ -31,6 +32,7 @@ public partial class SessionViewModel(
     GameModeViewModel gameMode,
     FollowUpViewModel followUp,
     TimeProvider timeProvider,
+    Wpf.Ui.IContentDialogService dialogService,
     ILogger<SessionViewModel> logger
 ) : ViewModel
 {
@@ -187,6 +189,90 @@ public partial class SessionViewModel(
 
     [RelayCommand(CanExecute = nameof(CanMeasureAfter))]
     private Task MeasureAfterAsync() => MeasureAsync(MeasurementPhase.After);
+
+    /// <summary>Running from a USB stick: sessions are saved next to Zentra.exe.</summary>
+    public bool IsUsbMode => EndOfService.IsUsbMode;
+
+    public string StorageText =>
+        Loc.Instance[
+            IsUsbMode ? "Session.Storage.Usb" : "Session.Storage.Local",
+            EndOfService.SessionsDirectory
+        ];
+
+    /// <summary>
+    ///     Version 1.1.2: removes Zentra from the client's PC (the unpacked copy that carries the
+    ///     API key, its data, and Zentra.exe if it ran from the client's disk). Revert data and
+    ///     restore points stay. Not on the technician's own PC.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(IsIdle))]
+    private async Task EndServiceAsync()
+    {
+        if (apiKeyStore.IsTechnicianPc)
+        {
+            ErrorText = Loc.Instance["Session.End.TechnicianPc"];
+            return;
+        }
+        var plan = EndOfService.Plan();
+        var answer = await dialogService.ShowSimpleDialogAsync(
+            new global::Wpf.Ui.SimpleContentDialogCreateOptions
+            {
+                Title = Loc.Instance["Session.End.Title"],
+                Content =
+                    Loc.Instance[
+                        "Session.End.Message",
+                        plan.CopySessionsTo ?? EndOfService.SessionsDirectory,
+                        plan.Exe is null
+                            ? Loc.Instance["Session.End.ExeStays"]
+                            : Loc.Instance["Session.End.ExeGoes"]
+                    ] + (FollowUp.IsScheduled ? "\n\n" + Loc.Instance["Session.End.FollowUp"] : ""),
+                PrimaryButtonText = Loc.Instance["Session.End.Confirm"],
+                CloseButtonText = Loc.Instance["Button.Cancel"],
+            }
+        );
+        if (answer != Wpf.Ui.Controls.ContentDialogResult.Primary)
+            return;
+        if (_session is not null)
+            sessionStore.Save(_session);
+        try
+        {
+            if (EndOfService.Run(logger))
+                global::System.Windows.Application.Current.Shutdown();
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            logger.LogError(ex, "End of service failed");
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
+        }
+    }
+
+    private bool CanRestartAndContinue() =>
+        !IsBusy && _session?.Before is not null && _session.After is null;
+
+    /// <summary>
+    ///     Version 1.1.2: restarts the PC and opens Zentra on this page afterwards, where the
+    ///     session is picked up for "Medir después".
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanRestartAndContinue))]
+    private async Task RestartAndContinueAsync()
+    {
+        var answer = await dialogService.ShowSimpleDialogAsync(
+            new global::Wpf.Ui.SimpleContentDialogCreateOptions
+            {
+                Title = Loc.Instance["Session.Restart.Title"],
+                Content = Loc.Instance["Session.Restart.Message"],
+                PrimaryButtonText = Loc.Instance["Session.Restart.Confirm"],
+                CloseButtonText = Loc.Instance["Button.Cancel"],
+            }
+        );
+        if (answer != Wpf.Ui.Controls.ContentDialogResult.Primary)
+            return;
+        if (_session is not null)
+            sessionStore.Save(_session);
+        if (!await Task.Run(() => ContinueAfterRestart.ScheduleAndRestart(logger)))
+            ErrorText = Loc.Instance["Session.Restart.Failed"];
+        else
+            StatusText = Loc.Instance["Session.Restart.Scheduled"];
+    }
 
     [RelayCommand(CanExecute = nameof(IsBusy))]
     private void Cancel() => _cts?.Cancel();
@@ -618,7 +704,11 @@ public partial class SessionViewModel(
             );
             StatusText = Loc.Instance["Session.Step.Diagnosis"];
             var report = await Task.Run(() =>
-                diagnosticService.RunAsync(measurement.IdleRamPercent, _cts.Token)
+                diagnosticService.RunAsync(
+                    measurement.IdleRamPercent,
+                    measurement.RandomReadIops,
+                    _cts.Token
+                )
             );
 
             var summary = DiagnosisSummary.From(report);
@@ -694,6 +784,7 @@ public partial class SessionViewModel(
     private void RefreshCommands()
     {
         MeasureAfterCommand.NotifyCanExecuteChanged();
+        RestartAndContinueCommand.NotifyCanExecuteChanged();
         GeneratePdfCommand.NotifyCanExecuteChanged();
         WriteReportCommand.NotifyCanExecuteChanged();
         ExportAiRequestCommand.NotifyCanExecuteChanged();

@@ -587,4 +587,54 @@ public class DiagnosticRuleTests
             );
         }
     }
+
+    // Version 1.1.2: the graphics driver resets (TDR) seen on Diego's PC.
+    [Theory]
+    [InlineData(0, null)]
+    [InlineData(2, null)]
+    [InlineData(3, Severity.Medium)]
+    [InlineData(25, Severity.High)]
+    public void GpuResets_AreAFindingAfterTwoIn30Days(int resets, Severity? expected)
+    {
+        var snapshot = DiegoPc() with
+        {
+            Stability = DiegoPc().Stability with { GpuResets30d = Measured<int>.Of(resets) },
+        };
+
+        var result = Eval(new GpuResetsRule(), snapshot);
+
+        Assert.Equal(expected, result.Finding?.Severity);
+        if (expected is not null)
+            Assert.Equal([ActionIds.DriverGpu, ActionIds.MpoOff], result.Finding!.ActionIds);
+    }
+
+    // Version 1.1.2: Windows did not say what the disk is; the measured small-file reads do.
+    [Theory]
+    [InlineData(180.0, true)] // a 7200 rpm disk
+    [InlineData(24000.0, false)] // a SATA SSD
+    public void HddSystem_UsesTheMeasuredReads_WhenWindowsDoesNotSay(double iops, bool hdd)
+    {
+        var snapshot = DiegoPc() with
+        {
+            SystemVolume = DiegoPc().SystemVolume with
+            {
+                Kind = StorageMediaType.Unknown,
+                RandomReadIops = Measured<double>.Of(iops),
+            },
+        };
+
+        var result = Eval(new HddSystemRule(), snapshot);
+
+        Assert.Equal(hdd ? RuleOutcome.Finding : RuleOutcome.Pass, result.Outcome);
+    }
+
+    [Fact]
+    public void HddSystem_WithoutKindOrMeasurement_IsNotMeasurable()
+    {
+        var snapshot = DiegoPc() with
+        {
+            SystemVolume = DiegoPc().SystemVolume with { Kind = StorageMediaType.Unknown },
+        };
+        Assert.Equal(RuleOutcome.NotMeasurable, Eval(new HddSystemRule(), snapshot).Outcome);
+    }
 }

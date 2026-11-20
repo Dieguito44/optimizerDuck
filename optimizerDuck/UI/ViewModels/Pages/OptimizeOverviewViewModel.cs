@@ -132,6 +132,8 @@ public sealed partial class OptimizeOverviewViewModel(
                     return typeof(SessionPage);
                 case ActionIds.WingetUpgrade:
                     return typeof(SoftwarePage);
+                case ActionIds.MpoOff:
+                    return typeof(optimizerDuck.UI.Pages.Optimize.Categories.GpuOptimizerPage);
                 case ActionIds.BiosXmp:
                 case ActionIds.BiosUma2G:
                 case ActionIds.BiosUpdate:

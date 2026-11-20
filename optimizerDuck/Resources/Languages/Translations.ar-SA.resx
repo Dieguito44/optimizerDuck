@@ -5283,5 +5283,98 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Session.Resumed" xml:space="preserve">
     <value>Session resumed: measured "before" on {0}. Now measure "after".</value>
   </data>
+  <data name="Irreversible.Why.DisableBitLocker" xml:space="preserve">
+    <value>Windows decrypts the drive in the background. Zentra does not turn it back on: it is turned on by hand in Settings, Privacy and security, Device encryption, which creates a new recovery key the client must keep.</value>
+  </data>
+  <data name="Irreversible.Why.RemoveEdge" xml:space="preserve">
+    <value>Zentra does not reinstall it. It is reinstalled with winget install Microsoft.Edge or from microsoft.com/edge. Favorites and passwords are kept, and WebView2 is not touched.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-GPU-RESETS.Title" xml:space="preserve">
+    <value>The graphics card keeps resetting</value>
+  </data>
+  <data name="Diagnostic.Rule.R-GPU-RESETS.Description" xml:space="preserve">
+    <value>The video driver stopped and Windows restarted it more than twice in 30 days: the screen goes black for a moment or the PC freezes. First update the graphics driver; if it keeps happening, turn off MPO.</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-MPO-OFF" xml:space="preserve">
+    <value>Turn off MPO (Multiplane Overlay)</value>
+  </data>
+  <data name="Diagnostic.Evidence.stability.gpu_resets" xml:space="preserve">
+    <value>Video driver resets (30 days)</value>
+  </data>
+  <data name="Report.Note.BusyBefore" xml:space="preserve">
+    <value>While "before" was measured, Windows was installing ({0}): those figures may vary.</value>
+  </data>
+  <data name="Report.Note.BusyAfter" xml:space="preserve">
+    <value>While "after" was measured, Windows was installing ({0}): those figures may vary.</value>
+  </data>
+  <data name="Diagnostic.Evidence.disk.random_read_iops" xml:space="preserve">
+    <value>Small-file reads per second (an SSD does thousands)</value>
+  </data>
+  <data name="Profile.Startup.Title" xml:space="preserve">
+    <value>Apps that start with Windows</value>
+  </data>
+  <data name="Profile.Startup.Message" xml:space="preserve">
+    <value>These apps start on their own when the PC turns on and slow it down. Zentra checked the ones that rarely need to start on their own; uncheck the ones the client wants to keep. They can still be opened by hand, and "Revert profile" turns them back on.</value>
+  </data>
+  <data name="Profile.Startup.Disable" xml:space="preserve">
+    <value>Disable the checked ones</value>
+  </data>
+  <data name="Profile.Startup.Keep" xml:space="preserve">
+    <value>Leave them as they are</value>
+  </data>
+  <data name="Profile.Startup.Done" xml:space="preserve">
+    <value>Startup apps disabled: {0}. They are turned back on in Startup or with "Revert profile".</value>
+  </data>
+  <data name="Profile.Startup.Restored" xml:space="preserve">
+    <value>Startup apps turned back on: {0}</value>
+  </data>
+  <data name="Session.Button.RestartContinue" xml:space="preserve">
+    <value>Restart and continue</value>
+  </data>
+  <data name="Session.Restart.Title" xml:space="preserve">
+    <value>Restart the PC now?</value>
+  </data>
+  <data name="Session.Restart.Message" xml:space="preserve">
+    <value>The PC restarts in 15 seconds. When you sign in to Windows again, Zentra opens on its own in Session with this session ready for "Measure after". Save first whatever the client has open.</value>
+  </data>
+  <data name="Session.Restart.Confirm" xml:space="preserve">
+    <value>Restart</value>
+  </data>
+  <data name="Session.Restart.Scheduled" xml:space="preserve">
+    <value>The PC restarts in 15 seconds; Zentra opens on its own afterwards.</value>
+  </data>
+  <data name="Session.Restart.Failed" xml:space="preserve">
+    <value>The restart could not be scheduled. Restart by hand and open Zentra: the session is picked up on its own.</value>
+  </data>
+  <data name="Session.Storage.Usb" xml:space="preserve">
+    <value>USB mode: sessions are saved in {0}.</value>
+  </data>
+  <data name="Session.Storage.Local" xml:space="preserve">
+    <value>Sessions are saved on this PC ({0}).</value>
+  </data>
+  <data name="Session.Button.End" xml:space="preserve">
+    <value>End service</value>
+  </data>
+  <data name="Session.End.Title" xml:space="preserve">
+    <value>End the service and remove Zentra from this PC?</value>
+  </data>
+  <data name="Session.End.Message" xml:space="preserve">
+    <value>Zentra closes and deletes from this PC its unpacked copy (it carries the AI key), its logs and its settings. Sessions and PDFs stay in {0}. {1} Revert data and restore points are kept: if you come back with Zentra, "Revert" still works.</value>
+  </data>
+  <data name="Session.End.ExeStays" xml:space="preserve">
+    <value>Zentra.exe stays on your USB stick.</value>
+  </data>
+  <data name="Session.End.ExeGoes" xml:space="preserve">
+    <value>Zentra.exe is deleted from this PC too.</value>
+  </data>
+  <data name="Session.End.FollowUp" xml:space="preserve">
+    <value>Note: a follow-up is scheduled, which leaves a copy of Zentra (with the key) on this PC. If you do not want to leave it, first "Remove follow-up".</value>
+  </data>
+  <data name="Session.End.Confirm" xml:space="preserve">
+    <value>End and remove Zentra</value>
+  </data>
+  <data name="Session.End.TechnicianPc" xml:space="preserve">
+    <value>This is your technician PC: Zentra is not removed here.</value>
+  </data>
 </root>
 

@@ -108,7 +108,19 @@ public sealed record CliOptions
 
     /// <summary>True when Zentra was started with CLI arguments instead of to show its window.</summary>
     public static bool IsCliInvocation(IReadOnlyList<string> args) =>
-        args.Any(a => a.StartsWith("--", StringComparison.Ordinal) || a is "/?" or "-h");
+        args.Any(a =>
+            (a.StartsWith("--", StringComparison.Ordinal) && !WindowSwitches.Contains(a))
+            || a is "/?" or "-h"
+        );
+
+    /// <summary>
+    ///     Switches that open the window, not a command-line run (version 1.1.2: with
+    ///     "--equipo-tecnico" Zentra went into command-line mode and never opened).
+    /// </summary>
+    public static readonly IReadOnlySet<string> WindowSwitches = new HashSet<string>(
+        [Ai.ApiKeyStore.TechnicianSwitch, Measurements.ContinueAfterRestart.Switch],
+        StringComparer.OrdinalIgnoreCase
+    );
 
     /// <summary>Parses the arguments. On an error, returns null and says why (in English, for the log).</summary>
     public static CliOptions? Parse(IReadOnlyList<string> args, out string? error)

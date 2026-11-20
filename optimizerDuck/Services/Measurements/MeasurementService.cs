@@ -58,9 +58,11 @@ public sealed class MeasurementService(
         var after = phase == MeasurementPhase.After ? bootsAfterUtc?.UtcDateTime : null;
         var boot = await Task.Run(() => BootTimeProbe.Read(after), ct).ConfigureAwait(false);
 
+        var busy = new HashSet<string>(BackgroundWorkProbe.RunningNow());
         await WaitForIdleAsync(progress, ct).ConfigureAwait(false);
         progress?.Report(new(MeasurementStep.IdleRam, (int)IdleWindow.TotalSeconds));
         var (idleUsed, idlePercent) = await SampleIdleRamAsync(progress, ct).ConfigureAwait(false);
+        busy.UnionWith(BackgroundWorkProbe.RunningNow());
 
         progress?.Report(new(MeasurementStep.Counts));
         var startupApps = await CountStartupAppsAsync(ct).ConfigureAwait(false);
@@ -74,6 +76,14 @@ public sealed class MeasurementService(
 
         progress?.Report(new(MeasurementStep.DiskBenchmark, 34));
         var bench = await diskBenchmark.RunAsync(ct).ConfigureAwait(false);
+
+        busy.UnionWith(BackgroundWorkProbe.RunningNow());
+        busy.UnionWith(
+            BackgroundWorkProbe.InstalledBetween(
+                captured.UtcDateTime,
+                timeProvider.GetUtcNow().UtcDateTime
+            )
+        );
 
         progress?.Report(new(MeasurementStep.Done));
         var measurement = new Measurement
@@ -93,7 +103,14 @@ public sealed class MeasurementService(
             RunningServices = services,
             SequentialReadMiBps = bench.SequentialReadMiBps,
             RandomReadIops = bench.RandomReadIops,
+            BackgroundWork = [.. busy.Order()],
         };
+        if (busy.Count > 0)
+            logger.LogInformation(
+                "Measurement {Phase}: Windows was installing meanwhile ({Work})",
+                phase,
+                string.Join(", ", busy)
+            );
 
         logger.LogInformation(
             "Measurement {Phase}: boot {Boot} ms ({Source}, {Samples} boots), idle RAM {Ram} ({Percent} %), "

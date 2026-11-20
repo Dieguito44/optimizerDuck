@@ -29,6 +29,7 @@ public static class ActionIds
     public const string DismResetBase = "ACT-DISM-RESETBASE";
     public const string GameModeAdvanced = "ACT-GAMEMODE-ADV";
     public const string MonitorHz = "ACT-MON-HZ";
+    public const string MpoOff = "ACT-MPO-OFF";
     public const string MonitorCable = "ACT-MON-CABLE";
     public const string GpuPreference = "ACT-GPU-PREF";
     public const string WingetUpgrade = "ACT-WINGET-UPGRADE";
@@ -153,6 +154,7 @@ public static class ActionCatalog
         new(ActionIds.DismResetBase, ActionKind.Software, Risky, Irr, Profile),
         new(ActionIds.GameModeAdvanced, ActionKind.Software, Risky, Rev, Rule),
         new(ActionIds.MonitorHz, ActionKind.Software, Safe, Rev, Rule),
+        new(ActionIds.MpoOff, ActionKind.Software, Moderate, Rev, Rule),
         new(ActionIds.MonitorCable, ActionKind.Manual, null, None, Rule),
         new(ActionIds.GpuPreference, ActionKind.Software, Safe, Rev, Rule),
         new(ActionIds.WingetUpgrade, ActionKind.Software, Safe, Irr, Rule),
@@ -214,6 +216,7 @@ public static class RuleIds
     public const string DriverGpuOld = "R-DRIVER-GPU-OLD";
     public const string BiosOld = "R-BIOS-OLD";
     public const string Unstable = "R-UNSTABLE";
+    public const string GpuResets = "R-GPU-RESETS";
     public const string VbsOn = "R-VBS-ON";
     public const string NotActivated = "R-NOT-ACTIVATED";
 

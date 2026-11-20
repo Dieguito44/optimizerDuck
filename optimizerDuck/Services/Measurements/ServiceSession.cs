@@ -96,6 +96,9 @@ public sealed record DiagnosisSummary(
 public sealed record ServiceSession
 {
     public Guid Id { get; init; } = Guid.NewGuid();
+
+    /// <summary>The PC the session belongs to (<see cref="EndOfService.CurrentMachineTag" />, 1.1.2).</summary>
+    public string? MachineTag { get; init; } = EndOfService.CurrentMachineTag;
     public DateTimeOffset CreatedAtUtc { get; init; }
     public string? ClientLabel { get; init; }
     public DiagnosisSummary? DiagnosisBefore { get; init; }
@@ -119,7 +122,7 @@ public sealed record ServiceSession
 /// <summary>Saves sessions as JSON under %LocalAppData%\Zentra\Sessions\.</summary>
 public sealed class SessionStore(ILogger<SessionStore> logger)
 {
-    public static string SessionsDirectory => Path.Combine(Shared.RootDirectory, "Sessions");
+    public static string SessionsDirectory => EndOfService.SessionsDirectory;
 
     public static string FolderFor(ServiceSession session) =>
         Path.Combine(
@@ -184,6 +187,8 @@ public sealed class SessionStore(ILogger<SessionStore> logger)
                 var session = Deserialize(File.ReadAllText(file, Encoding.UTF8));
                 if (
                     session is { Before: not null, After: null }
+                    && (session.MachineTag ?? EndOfService.CurrentMachineTag)
+                        == EndOfService.CurrentMachineTag
                     && nowUtc - session.CreatedAtUtc is var age
                     && age >= TimeSpan.Zero
                     && age <= ResumeWindow

@@ -292,6 +292,41 @@ public sealed class UnstableRule : IDiagnosticRule
     }
 }
 
+/// <summary>
+///     R-GPU-RESETS (version 1.1.2): the graphics driver stopped and Windows restarted it (TDR,
+///     the screen goes black for a moment or the PC freezes) more than twice in 30 days. Seen on
+///     Diego's own PC, several times a day. First the driver, then MPO off.
+/// </summary>
+public sealed class GpuResetsRule : IDiagnosticRule
+{
+    private const int Maximum = 2;
+    private const int Many = 10;
+
+    public string RuleId => RuleIds.GpuResets;
+    public IReadOnlyList<string> PossibleActionIds { get; } =
+    [ActionIds.DriverGpu, ActionIds.MpoOff];
+
+    public RuleResult Evaluate(DiagnosticSnapshot snapshot, ReferenceTables refs)
+    {
+        if (!snapshot.Stability.GpuResets30d.TryGet(out var resets))
+            return RuleResult.NotMeasurable(
+                RuleId,
+                snapshot.Stability.GpuResets30d.Reason,
+                "stability.gpu_resets"
+            );
+        if (resets <= Maximum)
+            return RuleResult.Pass(RuleId);
+        return RuleResult.Found(
+            new Finding(
+                RuleId,
+                resets >= Many ? Severity.High : Severity.Medium,
+                [new("stability.gpu_resets", resets)],
+                [ActionIds.DriverGpu, ActionIds.MpoOff]
+            )
+        );
+    }
+}
+
 /// <summary>R-VBS-ON: VBS or Memory Integrity is on. Information only.</summary>
 public sealed class VbsOnRule : IDiagnosticRule
 {
@@ -360,6 +395,7 @@ public static class DiagnosticRules
         new HddSystemRule(),
         new DiskFreeRule(),
         new UnstableRule(),
+        new GpuResetsRule(),
         new WinCorruptRule(),
         new TrimOffRule(),
         new StartupManyRule(),

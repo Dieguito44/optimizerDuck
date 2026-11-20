@@ -232,6 +232,7 @@ public static class SnapshotFactory
                 Kp41PowerButton30d = Measured<int>.Of(0),
                 BugChecks30d = Measured<int>.Of(0),
                 Minidumps30d = Measured<int>.Of(0),
+                GpuResets30d = Measured<int>.Of(0),
             },
         };
 

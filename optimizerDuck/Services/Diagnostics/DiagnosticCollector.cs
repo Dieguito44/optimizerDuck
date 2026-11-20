@@ -297,6 +297,7 @@ public sealed class DiagnosticCollector(
             Kp41PowerButton30d = stability.Kp41PowerButton,
             BugChecks30d = stability.BugChecks,
             Minidumps30d = stability.Minidumps,
+            GpuResets30d = stability.GpuResets,
             Statuses = new Dictionary<DiagnosticSection, SectionStatus>
             {
                 [DiagnosticSection.Disks] = storage.Status,
@@ -520,6 +521,13 @@ public sealed class DiagnosticService(
     public async Task<DiagnosticReport> RunAsync(
         Measured<double>? idleRamPercent,
         CancellationToken ct = default
+    ) => await RunAsync(idleRamPercent, null, ct).ConfigureAwait(false);
+
+    /// <param name="randomReadIops">The session's small-file reads (R-HDD-SYSTEM fallback, 1.1.2).</param>
+    public async Task<DiagnosticReport> RunAsync(
+        Measured<double>? idleRamPercent,
+        Measured<double>? randomReadIops,
+        CancellationToken ct = default
     )
     {
         var snapshot = await collector.CollectAsync(ct).ConfigureAwait(false);
@@ -527,6 +535,11 @@ public sealed class DiagnosticService(
             snapshot = snapshot with
             {
                 Maintenance = snapshot.Maintenance with { IdleRamPercent = idle },
+            };
+        if (randomReadIops is { } iops)
+            snapshot = snapshot with
+            {
+                SystemVolume = snapshot.SystemVolume with { RandomReadIops = iops },
             };
         var report = DiagnosticReport.Create(
             snapshot,

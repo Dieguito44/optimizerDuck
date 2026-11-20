@@ -177,7 +177,16 @@ public partial class MainWindow : IWindow
                 }
             }
 
-            RootNavigation.Navigate(typeof(DashboardPage));
+            // "Reiniciar y continuar" (1.1.2): straight to the Session page, once.
+            if (Services.Measurements.ContinueAfterRestart.StartedForIt)
+            {
+                Services.Measurements.ContinueAfterRestart.Remove(
+                    Microsoft.Extensions.Logging.Abstractions.NullLogger.Instance
+                );
+                RootNavigation.Navigate(typeof(optimizerDuck.UI.Pages.SessionPage));
+            }
+            else
+                RootNavigation.Navigate(typeof(DashboardPage));
         }
         catch (Exception ex)
         {

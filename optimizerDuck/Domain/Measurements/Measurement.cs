@@ -65,4 +65,10 @@ public sealed record Measurement
 
     /// <summary>Random read, 4 KiB blocks (DiskSpd), in I/O per second.</summary>
     public Measured<double> RandomReadIops { get; init; }
+
+    /// <summary>
+    ///     What Windows was installing while this was measured ("Windows Update", "Microsoft
+    ///     Store"); empty when nothing was seen (version 1.1.2).
+    /// </summary>
+    public IReadOnlyList<string> BackgroundWork { get; init; } = [];
 }
