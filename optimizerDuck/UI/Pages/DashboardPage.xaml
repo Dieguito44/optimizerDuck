@@ -402,7 +402,7 @@
                                 <StackPanel Grid.Row="0">
                                     <ui:TextBlock
                                         FontTypography="BodyStrong"
-                                        Text="{Binding ViewModel.SystemInfo.PrimaryGpu.Name, Converter={StaticResource NullToUnknownTextConverter}, Mode=OneWay}"
+                                        Text="{Binding ViewModel.SystemInfo.PrimaryGpuName, Converter={StaticResource NullToUnknownTextConverter}, Mode=OneWay}"
                                         TextTrimming="CharacterEllipsis" />
                                     <ui:TextBlock
                                         FontTypography="Caption"
@@ -410,10 +410,12 @@
                                         Text="{Binding ViewModel.SystemInfo.PrimaryGpu.Vendor, Converter={StaticResource EnumDisplayConverter}, Mode=OneWay}" />
                                 </StackPanel>
 
+                                <!--  Hidden when Windows reports no graphics card (Hyper-V test, 20/11/2026).  -->
                                 <WrapPanel
                                     Grid.Row="1"
                                     Margin="0,8,0,0"
-                                    Orientation="Horizontal">
+                                    Orientation="Horizontal"
+                                    Visibility="{Binding ViewModel.SystemInfo.PrimaryGpu, Converter={StaticResource NullToVisibilityConverter}, Mode=OneWay}">
                                     <Border
                                         Margin="0,0,4,4"
                                         Padding="6,2"

@@ -159,7 +159,7 @@
 
   <data name="Dashboard.SystemInfo.Cpu.Cores" xml:space="preserve">
 
-    <value>{0} núcleos</value>
+    <value>{0} núcleo(s)</value>
 
   </data>
 
@@ -177,7 +177,7 @@
 
   <data name="Dashboard.SystemInfo.Cpu.Threads" xml:space="preserve">
 
-    <value>{0} Hilos</value>
+    <value>{0} hilo(s)</value>
 
   </data>
 

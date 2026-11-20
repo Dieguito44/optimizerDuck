@@ -345,6 +345,13 @@ public sealed record SystemInfo
     public required MemoryInfo Memory { get; init; }
     public required IReadOnlyList<GpuInfo> Gpus { get; init; }
     public GpuInfo? PrimaryGpu { get; init; }
+
+    /// <summary>
+    ///     The main graphics card's name, null when Windows reports none (a PC without its video
+    ///     driver, a virtual machine). Bound by the Panel, so "Desconocido" shows instead of a
+    ///     broken binding (Hyper-V test, 20/11/2026).
+    /// </summary>
+    public string? PrimaryGpuName => PrimaryGpu?.Name;
     public required FirmwareInfo Firmware { get; init; }
     public required SecurityInfo Security { get; init; }
     public required PowerInfo Power { get; init; }
