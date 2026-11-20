@@ -18,7 +18,21 @@ public partial class NoKeyInRepositoryTests
     public void NoTrackedFile_HoldsAKeyShapedValue()
     {
         var root = RepositoryRoot();
-        string[] extensions = [".cs", ".xaml", ".resx", ".json", ".csproj", ".props", ".targets", ".ps1", ".yml", ".md", ".txt", ".xml"];
+        string[] extensions =
+        [
+            ".cs",
+            ".xaml",
+            ".resx",
+            ".json",
+            ".csproj",
+            ".props",
+            ".targets",
+            ".ps1",
+            ".yml",
+            ".md",
+            ".txt",
+            ".xml",
+        ];
         var offenders = Directory
             .EnumerateFiles(root, "*", SearchOption.AllDirectories)
             .Where(f => extensions.Contains(Path.GetExtension(f), StringComparer.OrdinalIgnoreCase))

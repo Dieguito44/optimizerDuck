@@ -162,12 +162,22 @@ public sealed class SessionStore(ILogger<SessionStore> logger)
     public ServiceSession? LatestUnfinished(DateTimeOffset nowUtc) =>
         LatestUnfinished(SessionsDirectory, nowUtc, logger);
 
-    internal static ServiceSession? LatestUnfinished(string directory, DateTimeOffset nowUtc, ILogger? logger = null)
+    internal static ServiceSession? LatestUnfinished(
+        string directory,
+        DateTimeOffset nowUtc,
+        ILogger? logger = null
+    )
     {
         if (!Directory.Exists(directory))
             return null;
         ServiceSession? best = null;
-        foreach (var file in Directory.EnumerateFiles(directory, "session.json", SearchOption.AllDirectories))
+        foreach (
+            var file in Directory.EnumerateFiles(
+                directory,
+                "session.json",
+                SearchOption.AllDirectories
+            )
+        )
         {
             try
             {
@@ -181,7 +191,8 @@ public sealed class SessionStore(ILogger<SessionStore> logger)
                 )
                     best = session;
             }
-            catch (Exception ex) when (ex is IOException or UnauthorizedAccessException or JsonException)
+            catch (Exception ex)
+                when (ex is IOException or UnauthorizedAccessException or JsonException)
             {
                 logger?.LogWarning("Session file not readable: {File}: {Error}", file, ex.Message);
             }

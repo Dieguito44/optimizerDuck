@@ -8,11 +8,10 @@ using optimizerDuck.Common.Helpers;
 using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Optimization;
 using optimizerDuck.Services.Profiles;
+using optimizerDuck.Services.System;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Extensions;
-
-using optimizerDuck.Services.System;
 
 namespace optimizerDuck.UI.ViewModels.Pages;
 

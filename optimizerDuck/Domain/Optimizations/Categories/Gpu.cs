@@ -361,7 +361,6 @@ public class Gpu : LocalizedObject, IOptimizationCategory
         }
     }
 
-
     /// <summary>
     ///     Turns off Multiplane Overlay (MPO), the usual fix for flicker, black screens and driver
     ///     resets (TDR) on some graphics drivers. On Windows 11 24H2 and later the switch is
@@ -383,7 +382,11 @@ public class Gpu : LocalizedObject, IOptimizationCategory
             RegistryService.Write(
                 context,
                 Environment.OSVersion.Version.Build >= 26100
-                    ? new RegistryItem(@"HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers", "DisableOverlays", 1)
+                    ? new RegistryItem(
+                        @"HKLM\SYSTEM\CurrentControlSet\Control\GraphicsDrivers",
+                        "DisableOverlays",
+                        1
+                    )
                     : new RegistryItem(@"HKLM\SOFTWARE\Microsoft\Windows\Dwm", "OverlayTestMode", 5)
             );
             if (context.Preview is null && System.Windows.Application.Current is App app)

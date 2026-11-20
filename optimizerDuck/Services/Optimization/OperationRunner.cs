@@ -147,10 +147,7 @@ public class OperationRunner(
                 .EnsureSnapshotAsync(cancellationToken)
                 .ConfigureAwait(false);
             var applyResult = await request
-                .Work(
-                    progress,
-                    NewContext(changes, request.RunLogger, snapshot, cancellationToken)
-                )
+                .Work(progress, NewContext(changes, request.RunLogger, snapshot, cancellationToken))
                 .ConfigureAwait(false);
 
             providerError = string.IsNullOrWhiteSpace(applyResult.ErrorMessage)

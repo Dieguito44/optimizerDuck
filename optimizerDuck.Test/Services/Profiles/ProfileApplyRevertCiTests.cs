@@ -89,7 +89,10 @@ public class ProfileApplyRevertCiTests
         ).EnsureSnapshotAsync(TestContext.Current.CancellationToken);
         if (snapshot.Windows.Edition == WindowsEdition.Server)
             foreach (var p in problems.ToList())
-                if (KnownOnWindowsServer.FirstOrDefault(k => p.StartsWith(k.Key + ":")) is { Key: not null } known)
+                if (
+                    KnownOnWindowsServer.FirstOrDefault(k => p.StartsWith(k.Key + ":")) is
+                    { Key: not null } known
+                )
                 {
                     problems.Remove(p);
                     report.Add($"KNOWN {p[..Math.Min(160, p.Length)]} ({known.Value})");

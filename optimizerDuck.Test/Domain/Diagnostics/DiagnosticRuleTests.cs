@@ -307,7 +307,12 @@ public class DiagnosticRuleTests
         {
             Disks =
             [
-                Disk(0, "KINGSTON SA400S37/480GB", StorageMediaType.Ssd, health: DiskHealth.Unhealthy),
+                Disk(
+                    0,
+                    "KINGSTON SA400S37/480GB",
+                    StorageMediaType.Ssd,
+                    health: DiskHealth.Unhealthy
+                ),
             ],
         };
 

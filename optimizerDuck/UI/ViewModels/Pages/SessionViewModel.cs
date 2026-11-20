@@ -11,7 +11,6 @@ using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Diagnostics;
 using optimizerDuck.Services.Measurements;
 using optimizerDuck.Services.Reports;
-
 using optimizerDuck.Services.System;
 
 namespace optimizerDuck.UI.ViewModels.Pages;

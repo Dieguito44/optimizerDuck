@@ -126,7 +126,11 @@ public sealed class SpeedTestService(ILogger<SpeedTestService> logger)
     {
         try
         {
-            using var socket = new Socket(address.AddressFamily, SocketType.Stream, ProtocolType.Tcp)
+            using var socket = new Socket(
+                address.AddressFamily,
+                SocketType.Stream,
+                ProtocolType.Tcp
+            )
             {
                 NoDelay = true,
             };
@@ -137,7 +141,8 @@ public sealed class SpeedTestService(ILogger<SpeedTestService> logger)
             return watch.Elapsed.TotalMilliseconds;
         }
         catch (Exception ex)
-            when (ex is SocketException or OperationCanceledException && !ct.IsCancellationRequested)
+            when (ex is SocketException or OperationCanceledException && !ct.IsCancellationRequested
+            )
         {
             logger.LogDebug(ex, "Latency probe failed");
             return null;

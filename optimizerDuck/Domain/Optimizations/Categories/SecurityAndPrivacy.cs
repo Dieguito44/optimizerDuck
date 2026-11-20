@@ -1070,7 +1070,6 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
         }
     }
 
-
     /// <summary>
     ///     Edge without telemetry, shopping, rewards, recommendations or the first-run screens,
     ///     through its policies (idea from WinUtil, MIT). Edge keeps working; it shows "managed by
@@ -1092,7 +1091,11 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
         {
             RegistryService.Write(
                 context,
-                new RegistryItem(@"HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate", "CreateDesktopShortcutDefault", 0),
+                new RegistryItem(
+                    @"HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate",
+                    "CreateDesktopShortcutDefault",
+                    0
+                ),
                 new RegistryItem(Edge, "DiagnosticData", 0),
                 new RegistryItem(Edge, "PersonalizationReportingEnabled", 0),
                 new RegistryItem(Edge, "UserFeedbackAllowed", 0),

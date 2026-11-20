@@ -466,7 +466,10 @@ public sealed class SessionResumeTests : IDisposable
     private void Write(string name, ServiceSession session)
     {
         var folder = Directory.CreateDirectory(Path.Combine(_dir.FullName, name));
-        File.WriteAllText(Path.Combine(folder.FullName, "session.json"), SessionStore.Serialize(session));
+        File.WriteAllText(
+            Path.Combine(folder.FullName, "session.json"),
+            SessionStore.Serialize(session)
+        );
     }
 
     private static ServiceSession Session(TimeSpan age, bool before, bool after) =>
@@ -475,7 +478,12 @@ public sealed class SessionResumeTests : IDisposable
             CreatedAtUtc = Now - age,
             ClientLabel = "Cliente",
             Before = before ? SessionPersistenceTests.Before() : null,
-            After = after ? SessionPersistenceTests.Before() with { Phase = MeasurementPhase.After } : null,
+            After = after
+                ? SessionPersistenceTests.Before() with
+                {
+                    Phase = MeasurementPhase.After,
+                }
+                : null,
         };
 
     [Fact]
