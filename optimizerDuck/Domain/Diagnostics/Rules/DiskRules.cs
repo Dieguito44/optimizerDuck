@@ -176,6 +176,9 @@ public sealed class SsdWearRule : IDiagnosticRule
 /// <summary>R-HDD-SYSTEM: Windows is installed on a mechanical disk.</summary>
 public sealed class HddSystemRule : IDiagnosticRule
 {
+    /// <summary>Below this many small-file reads per second the disk spins.</summary>
+    public const double MaxHddIops = 1000;
+
     public string RuleId => RuleIds.HddSystem;
     public IReadOnlyList<string> PossibleActionIds { get; } = [ActionIds.HardwareStorage];
 
@@ -183,7 +186,22 @@ public sealed class HddSystemRule : IDiagnosticRule
     {
         var kind = snapshot.SystemVolume.Kind;
         if (kind == StorageMediaType.Unknown)
-            return RuleResult.NotMeasurable(RuleId, NotMeasuredReason.NotReported, "volume.kind");
+        {
+            // Windows did not say (version 1.1.2): the measured small-file reads tell a spinning
+            // disk (a few hundred per second) from a solid-state one (tens of thousands).
+            if (!snapshot.SystemVolume.RandomReadIops.TryGet(out var iops))
+                return RuleResult.NotMeasurable(RuleId, NotMeasuredReason.NotReported, "volume.kind");
+            return iops < MaxHddIops
+                ? RuleResult.Found(
+                    new Finding(
+                        RuleId,
+                        Severity.High,
+                        [new("disk.random_read_iops", (decimal)Math.Round(iops))],
+                        [ActionIds.HardwareStorage]
+                    )
+                )
+                : RuleResult.Pass(RuleId);
+        }
 
         return kind == StorageMediaType.Hdd
             ? RuleResult.Found(

@@ -215,6 +215,13 @@ public sealed record DiskSnapshot
 
 public sealed record SystemVolumeSnapshot
 {
+    /// <summary>
+    ///     Small-file reads per second of the Windows disk, from the session's DiskSpd run
+    ///     (version 1.1.2). A spinning disk does a few hundred, a solid-state one tens of
+    ///     thousands: the fallback when Windows does not say what the disk is.
+    /// </summary>
+    public Measured<double> RandomReadIops { get; init; }
+
     public Measured<long> TotalBytes { get; init; }
     public Measured<long> FreeBytes { get; init; }
     public StorageMediaType Kind { get; init; } = StorageMediaType.Unknown;

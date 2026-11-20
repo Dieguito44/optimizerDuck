@@ -7065,4 +7065,7 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
   <data name="Report.Note.BusyAfter" xml:space="preserve">
     <value>Mientras se medía "después", Windows estaba instalando ({0}): esos números pueden variar.</value>
   </data>
+  <data name="Diagnostic.Evidence.disk.random_read_iops" xml:space="preserve">
+    <value>Lecturas de archivos pequeños por segundo (un SSD hace miles)</value>
+  </data>
 </root>

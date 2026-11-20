@@ -619,7 +619,11 @@ public partial class SessionViewModel(
             );
             StatusText = Loc.Instance["Session.Step.Diagnosis"];
             var report = await Task.Run(() =>
-                diagnosticService.RunAsync(measurement.IdleRamPercent, _cts.Token)
+                diagnosticService.RunAsync(
+                    measurement.IdleRamPercent,
+                    measurement.RandomReadIops,
+                    _cts.Token
+                )
             );
 
             var summary = DiagnosisSummary.From(report);

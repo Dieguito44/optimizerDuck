@@ -602,4 +602,34 @@ public class DiagnosticRuleTests
         if (expected is not null)
             Assert.Equal([ActionIds.DriverGpu, ActionIds.MpoOff], result.Finding!.ActionIds);
     }
+
+    // Version 1.1.2: Windows did not say what the disk is; the measured small-file reads do.
+    [Theory]
+    [InlineData(180.0, true)] // a 7200 rpm disk
+    [InlineData(24000.0, false)] // a SATA SSD
+    public void HddSystem_UsesTheMeasuredReads_WhenWindowsDoesNotSay(double iops, bool hdd)
+    {
+        var snapshot = DiegoPc() with
+        {
+            SystemVolume = DiegoPc().SystemVolume with
+            {
+                Kind = StorageMediaType.Unknown,
+                RandomReadIops = Measured<double>.Of(iops),
+            },
+        };
+
+        var result = Eval(new HddSystemRule(), snapshot);
+
+        Assert.Equal(hdd ? RuleOutcome.Finding : RuleOutcome.Pass, result.Outcome);
+    }
+
+    [Fact]
+    public void HddSystem_WithoutKindOrMeasurement_IsNotMeasurable()
+    {
+        var snapshot = DiegoPc() with
+        {
+            SystemVolume = DiegoPc().SystemVolume with { Kind = StorageMediaType.Unknown },
+        };
+        Assert.Equal(RuleOutcome.NotMeasurable, Eval(new HddSystemRule(), snapshot).Outcome);
+    }
 }

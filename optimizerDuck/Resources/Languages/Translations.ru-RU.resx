@@ -5265,4 +5265,7 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Report.Note.BusyAfter" xml:space="preserve">
     <value>While "after" was measured, Windows was installing ({0}): those figures may vary.</value>
   </data>
+  <data name="Diagnostic.Evidence.disk.random_read_iops" xml:space="preserve">
+    <value>Small-file reads per second (an SSD does thousands)</value>
+  </data>
 </root>
