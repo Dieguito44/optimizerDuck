@@ -28,7 +28,7 @@ public partial class BiosGuideViewModel(SystemInfoService systemInfoService) : V
             "BiosGuide.Board",
             string.IsNullOrWhiteSpace(board)
                 ? Loc.Instance["Report.NotMeasured"]
-                : $"{manufacturer} {board}".Trim(),
+                : BoardName(manufacturer, board),
             system.Firmware.BiosVersion ?? "—"
         ];
 
@@ -40,4 +40,14 @@ public partial class BiosGuideViewModel(SystemInfoService systemInfoService) : V
             : Loc.Instance["BiosGuide.Match.None"];
         OnPropertyChanged(nameof(HasGuide));
     }
+
+    /// <summary>
+    ///     The maker and the board, without repeating the maker when the board's name already
+    ///     starts with it ("ASRock" + "ASRock B450M-HDV" is "ASRock B450M-HDV").
+    /// </summary>
+    internal static string BoardName(string? manufacturer, string board) =>
+        string.IsNullOrWhiteSpace(manufacturer)
+        || board.StartsWith(manufacturer.Trim(), StringComparison.OrdinalIgnoreCase)
+            ? board.Trim()
+            : $"{manufacturer.Trim()} {board.Trim()}";
 }

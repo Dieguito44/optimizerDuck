@@ -114,3 +114,18 @@ public class BiosGuideTests
         }
     }
 }
+
+public class BiosBoardNameTests
+{
+    // Version 1 test (20/11/2026): the BIOS page said "ASRock ASRock B450M-HDV R4.0".
+    [Theory]
+    [InlineData("ASRock", "ASRock B450M-HDV R4.0", "ASRock B450M-HDV R4.0")]
+    [InlineData("ASUSTeK COMPUTER INC.", "PRIME B550M-A", "ASUSTeK COMPUTER INC. PRIME B550M-A")]
+    [InlineData(null, "B450M", "B450M")]
+    [InlineData("", "B450M", "B450M")]
+    public void BoardName_DoesNotRepeatTheMaker(string? maker, string board, string expected) =>
+        Assert.Equal(
+            expected,
+            optimizerDuck.UI.ViewModels.Pages.BiosGuideViewModel.BoardName(maker, board)
+        );
+}

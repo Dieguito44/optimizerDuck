@@ -1,4 +1,5 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using System.Text.RegularExpressions;
+using CommunityToolkit.Mvvm.ComponentModel;
 using optimizerDuck.Common.Extensions;
 using optimizerDuck.Domain.UI;
 using optimizerDuck.Services.Configuration;
@@ -63,4 +64,41 @@ public partial class AppXPackage : LocalizedObject
         };
 
     public bool ShouldVisibleRisk => Risk != AppRisk.Unknown;
+
+    /// <summary>
+    ///     The name without the store's publisher prefix ("5319275A.WhatsAppDesktop" shows as
+    ///     "WhatsAppDesktop"). Microsoft's own packages have no such prefix.
+    /// </summary>
+    public string ShortName => PublisherPrefix().Replace(Name, string.Empty);
+
+    /// <summary>
+    ///     The organization or common name from the certificate subject, without the rest of it
+    ///     ("CN=Adobe Inc., O=Adobe Inc., L=San Jose..." shows as "Adobe Inc."). A common name that
+    ///     is only an identifier (a GUID) is left out.
+    /// </summary>
+    public string PublisherName
+    {
+        get
+        {
+            var organization = SubjectField(Publisher, "O");
+            if (organization.Length > 0)
+                return organization;
+            var common = SubjectField(Publisher, "CN");
+            return Guid.TryParse(common, out _) ? string.Empty : common;
+        }
+    }
+
+    private static string SubjectField(string subject, string field)
+    {
+        foreach (Match m in SubjectPart().Matches(subject))
+            if (m.Groups["k"].Value.Trim().Equals(field, StringComparison.OrdinalIgnoreCase))
+                return m.Groups["v"].Value.Trim().Trim('"');
+        return string.Empty;
+    }
+
+    [GeneratedRegex(@"(?<k>[A-Za-z0-9.]+)=(?<v>""[^""]*""|[^,]*)")]
+    private static partial Regex SubjectPart();
+
+    [GeneratedRegex(@"^[0-9A-F]{8}\.", RegexOptions.IgnoreCase)]
+    private static partial Regex PublisherPrefix();
 }
