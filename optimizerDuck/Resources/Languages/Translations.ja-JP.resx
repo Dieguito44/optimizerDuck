@@ -4654,4 +4654,61 @@ In PowerShell, to wait for it: Start-Process Zentra.exe -ArgumentList &apos;--di
   <data name="Diagnostic.Action.ACT-POWER-MODE" xml:space="preserve">
     <value>Set the power mode to Balanced or Best performance (Settings, System, Power)</value>
   </data>
+  <data name="Stress.Button" xml:space="preserve">
+    <value>Thermal test (90 s)</value>
+  </data>
+  <data name="Stress.Confirm.Title" xml:space="preserve">
+    <value>Short thermal test</value>
+  </data>
+  <data name="Stress.Confirm.Message" xml:space="preserve">
+    <value>{0} s of full load on every CPU core while reading the temperature every second. It stops by itself at {1} °C, if the laptop leaves the charger or if the sensor stops answering, and it does not start on battery. The PC gets hot and the fans speed up: close other work first. It changes no setting.</value>
+  </data>
+  <data name="Stress.Confirm.Start" xml:space="preserve">
+    <value>Start the test</value>
+  </data>
+  <data name="Stress.Idle" xml:space="preserve">
+    <value>Reading the temperature at rest (5 s)...</value>
+  </data>
+  <data name="Stress.Running" xml:space="preserve">
+    <value>Under load: {0} of {1} s, {2} °C</value>
+  </data>
+  <data name="Stress.Summary" xml:space="preserve">
+    <value>At rest {0} °C, highest {1} °C, {2} s of load.</value>
+  </data>
+  <data name="Stress.Throttle.None" xml:space="preserve">
+    <value>The firmware did not slow the CPU down.</value>
+  </data>
+  <data name="Stress.Throttle.Some" xml:space="preserve">
+    <value>The firmware slowed the CPU down {0} times (event 37): check the cooling.</value>
+  </data>
+  <data name="Stress.Throttle.Unknown" xml:space="preserve">
+    <value>Whether the firmware slowed the CPU down could not be read.</value>
+  </data>
+  <data name="Stress.NeedsCharger" xml:space="preserve">
+    <value>Connect the charger: the test does not run on battery.</value>
+  </data>
+  <data name="Stress.Outcome.Completed" xml:space="preserve">
+    <value>Test finished.</value>
+  </data>
+  <data name="Stress.Outcome.StoppedHot" xml:space="preserve">
+    <value>Test stopped: the CPU reached the limit.</value>
+  </data>
+  <data name="Stress.Outcome.OnBattery" xml:space="preserve">
+    <value>Test stopped: the laptop left the charger.</value>
+  </data>
+  <data name="Stress.Outcome.Cancelled" xml:space="preserve">
+    <value>Test cancelled.</value>
+  </data>
+  <data name="Stress.Outcome.NoSensor" xml:space="preserve">
+    <value>Test stopped: the sensor stopped answering.</value>
+  </data>
+  <data name="Latency.Title" xml:space="preserve">
+    <value>Audio crackles or stutters (DPC latency)</value>
+  </data>
+  <data name="Latency.Help" xml:space="preserve">
+    <value>Zentra does not measure DPC latency: measuring it well takes time and its result needs interpreting. LatencyMon (Resplendence Software) measures it and points to the driver at fault. Check its license before using it in a paid service: the site sells technician licenses.</value>
+  </data>
+  <data name="Latency.Button" xml:space="preserve">
+    <value>Open LatencyMon&apos;s page</value>
+  </data>
 </root>

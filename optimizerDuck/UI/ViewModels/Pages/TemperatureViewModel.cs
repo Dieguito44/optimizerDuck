@@ -20,13 +20,24 @@ public partial class TemperatureViewModel(
     SoftwareService softwareService,
     ToolRunPresenter presenter,
     IContentDialogService dialogs,
+    Services.System.SystemInfoService systemInfo,
     ILogger<TemperatureViewModel> logger
 ) : ObservableObject
 {
+    /// <summary>LatencyMon's official page (Resplendence Software, checked 2026-11-19).</summary>
+    public const string LatencyMonUrl = "https://www.resplendence.com/latencymon";
+
+    private CancellationTokenSource? _stressCts;
+
+    [ObservableProperty]
+    [NotifyCanExecuteChangedFor(nameof(CancelStressCommand))]
+    private bool _isStressing;
+
     private static readonly TimeSpan Sampling = TimeSpan.FromSeconds(20);
 
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(MeasureCommand))]
+    [NotifyCanExecuteChangedFor(nameof(StressCommand))]
     private bool _isBusy;
 
     [ObservableProperty]
@@ -91,6 +102,116 @@ public partial class TemperatureViewModel(
                     StatusText += " " + Loc.Instance["Temperature.UninstallFailed"];
             IsBusy = false;
         }
+    }
+
+    /// <summary>
+    ///     Plan F4-02: the short load test, always after a confirmation that says what it does.
+    ///     PawnIO is installed for it and removed afterwards, as for the measurement.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanMeasure))]
+    private async Task StressAsync()
+    {
+        var alreadyInstalled = ThermalService.IsPawnIoInstalled();
+        var answer = await dialogs.ShowSimpleDialogAsync(
+            new SimpleContentDialogCreateOptions
+            {
+                Title = Loc.Instance["Stress.Confirm.Title"],
+                Content =
+                    Loc.Instance[
+                        "Stress.Confirm.Message",
+                        (int)ThermalStressTest.DefaultDuration.TotalSeconds,
+                        (int)ThermalStressTest.DefaultLimitC
+                    ] + (alreadyInstalled ? "" : " " + Loc.Instance["Temperature.Confirm.Message"]),
+                PrimaryButtonText = Loc.Instance["Stress.Confirm.Start"],
+                CloseButtonText = Loc.Instance["Button.Cancel"],
+            }
+        );
+        if (answer != ContentDialogResult.Primary)
+            return;
+
+        IsBusy = true;
+        try
+        {
+            if (
+                !alreadyInstalled
+                && !await RunAsync(softwareService.BuildInstallRequest(SoftwareCatalog.PawnIo))
+            )
+            {
+                StatusText = Loc.Instance["Temperature.InstallFailed"];
+                return;
+            }
+
+            var snapshot = await systemInfo.EnsureSnapshotAsync();
+            var laptop = snapshot.Windows.DeviceKind == Services.System.DeviceKind.Laptop;
+            _stressCts = new CancellationTokenSource();
+            IsStressing = true;
+            StatusText = Loc.Instance["Stress.Idle"];
+            var progress = new Progress<(int Seconds, double Celsius)>(p =>
+                StatusText = Loc.Instance[
+                    "Stress.Running",
+                    p.Seconds,
+                    (int)ThermalStressTest.DefaultDuration.TotalSeconds,
+                    p.Celsius.ToString("0", CultureInfo.CurrentCulture)
+                ]
+            );
+            using var machine = new StressMachine(laptop);
+            var result = await Task.Run(() =>
+                new ThermalStressTest(machine, logger).RunAsync(
+                    ThermalStressTest.DefaultDuration,
+                    ThermalStressTest.DefaultLimitC,
+                    progress,
+                    _stressCts.Token
+                )
+            );
+            StatusText = StressText(result);
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Stress test failed");
+            StatusText = Loc.Instance["Temperature.NoSensor"];
+        }
+        finally
+        {
+            IsStressing = false;
+            _stressCts?.Dispose();
+            _stressCts = null;
+            if (!alreadyInstalled && ThermalService.IsPawnIoInstalled())
+                if (!await RunAsync(softwareService.BuildUninstallRequest(SoftwareCatalog.PawnIo)))
+                    StatusText += " " + Loc.Instance["Temperature.UninstallFailed"];
+            IsBusy = false;
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(IsStressing))]
+    private void CancelStress() => _stressCts?.Cancel();
+
+    /// <summary>Plan F4-03: LatencyMon, opened as the user, not elevated.</summary>
+    [RelayCommand]
+    private void OpenLatencyMon() => Common.Helpers.UnelevatedShell.Open(LatencyMonUrl);
+
+    internal static string StressText(StressResult r)
+    {
+        var c = CultureInfo.CurrentCulture;
+        var summary = Loc.Instance[
+            "Stress.Summary",
+            r.IdleC?.ToString("0", c) ?? "—",
+            r.MaxC?.ToString("0", c) ?? "—",
+            (int)r.Ran.TotalSeconds
+        ];
+        var throttle = r.ThrottleIncidents switch
+        {
+            null => Loc.Instance["Stress.Throttle.Unknown"],
+            0 => Loc.Instance["Stress.Throttle.None"],
+            var n => Loc.Instance["Stress.Throttle.Some", n],
+        };
+        return r.Outcome switch
+        {
+            StressOutcome.NoSensor => Loc.Instance["Temperature.NoSensor"],
+            StressOutcome.OnBattery when r.Ran == TimeSpan.Zero => Loc.Instance[
+                "Stress.NeedsCharger"
+            ],
+            _ => $"{Loc.Instance[$"Stress.Outcome.{r.Outcome}"]} {summary} {throttle}",
+        };
     }
 
     private async Task<bool> RunAsync(Domain.Execution.OperationRequest request)

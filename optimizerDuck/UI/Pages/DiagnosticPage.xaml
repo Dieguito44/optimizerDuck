@@ -92,6 +92,20 @@
                                 Content="{ext:Loc Temperature.Button}"
                                 Cursor="Hand"
                                 Icon="{ui:SymbolIcon Temperature24}" />
+                            <!--  Plan of improvements F4-02: short load test, stops at 95 °C or off the charger.  -->
+                            <ui:Button
+                                Margin="8,0,0,0"
+                                Command="{Binding ViewModel.Temperature.StressCommand}"
+                                Content="{ext:Loc Stress.Button}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon Fire24}" />
+                            <ui:Button
+                                Margin="8,0,0,0"
+                                Appearance="Transparent"
+                                Command="{Binding ViewModel.Temperature.CancelStressCommand}"
+                                Content="{ext:Loc Button.Cancel}"
+                                Cursor="Hand"
+                                Visibility="{Binding ViewModel.Temperature.IsStressing, Converter={StaticResource BooleanToVisibilityConverter}}" />
                             <ui:ProgressRing
                                 Width="20"
                                 Height="20"
@@ -103,6 +117,24 @@
                             Margin="0,6,0,0"
                             Text="{Binding ViewModel.Temperature.StatusText}"
                             TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!--  Plan of improvements F4-03: DPC latency is measured with LatencyMon, not inside Zentra.  -->
+                <Border Style="{StaticResource CardSurfaceStyle}">
+                    <StackPanel>
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Latency.Title}" />
+                        <ui:TextBlock
+                            Margin="0,2,0,8"
+                            Style="{StaticResource CaptionTextStyle}"
+                            Text="{ext:Loc Latency.Help}"
+                            TextWrapping="Wrap" />
+                        <ui:Button
+                            Appearance="Transparent"
+                            Command="{Binding ViewModel.Temperature.OpenLatencyMonCommand}"
+                            Content="{ext:Loc Latency.Button}"
+                            Cursor="Hand"
+                            Icon="{ui:SymbolIcon Open24}" />
                     </StackPanel>
                 </Border>
 

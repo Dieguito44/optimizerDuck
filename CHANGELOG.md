@@ -4,6 +4,19 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 4B: prueba térmica corta y latencia DPC (19/11/2026, PR 18, sobre el PR 17)
+
+- **Prueba térmica (F4-02, riesgo moderado):** botón "Prueba térmica (90 s)" en la tarjeta de Temperatura del Diagnóstico.
+  - **Antes:** confirmación siempre. PawnIO se instala solo para la prueba, con consentimiento, y se quita al final.
+  - **La carga:** pone a trabajar todos los núcleos y lee la temperatura cada segundo.
+  - **Se detiene sola** si llega a 95 °C, si el portátil se desconecta del cargador o si el sensor deja de responder 3 s.
+  - **No empieza** con batería, sin sensor o si ya está en el límite en reposo. Se puede cancelar.
+  - **Resultado:** temperatura en reposo, máxima, segundos de carga y cuántas veces frenó el firmware durante la prueba (evento 37). No cambia ninguna configuración ni toca la temperatura del diagnóstico.
+- **Latencia DPC (F4-03):** Zentra no la mide. Una tarjeta explica cuándo sirve y abre la página oficial de LatencyMon, sin elevar.
+  - Antes de usarlo en un servicio pagado hay que revisar su licencia: el sitio vende licencias para técnicos.
+- **Tests:** 1718 en total, 0 fallos. Las reglas de seguridad se prueban con una máquina simulada.
+- **Sin probar en el PC real:** la prueba térmica, porque calienta el PC.
+
 ### Mejoras, Fase 4A: drivers y energía, solo informar (19/11/2026, PR 17, sobre el PR 16)
 
 Primer bloque de la Fase 4, que es opcional.
