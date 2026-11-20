@@ -83,6 +83,24 @@ public static partial class InteractiveUser
         return folders?.GetValue("Startup") as string ?? string.Empty;
     }
 
+    /// <summary>The client's %LOCALAPPDATA% (plan F3-09: Chrome, Edge and Brave live there).</summary>
+    public static string LocalAppDataFolder() =>
+        ShellFolder("Local AppData", Environment.SpecialFolder.LocalApplicationData);
+
+    /// <summary>The client's %APPDATA% (Firefox profiles live there).</summary>
+    public static string RoamingAppDataFolder() =>
+        ShellFolder("AppData", Environment.SpecialFolder.ApplicationData);
+
+    private static string ShellFolder(string valueName, Environment.SpecialFolder own)
+    {
+        if (RedirectSid is not { } sid)
+            return Environment.GetFolderPath(own);
+        using var folders = Registry.Users.OpenSubKey(
+            $@"{sid}\Software\Microsoft\Windows\CurrentVersion\Explorer\Shell Folders"
+        );
+        return folders?.GetValue(valueName) as string ?? string.Empty;
+    }
+
     /// <summary>Opens a key of the client's HKCU (or the process HKCU in the normal case).</summary>
     public static RegistryKey? OpenCurrentUserKey(string subPath, bool writable = false) =>
         RedirectSid is { } sid

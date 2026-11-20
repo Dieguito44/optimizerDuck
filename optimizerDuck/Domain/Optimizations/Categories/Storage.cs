@@ -146,6 +146,73 @@ public class Storage : LocalizedObject, IOptimizationCategory
     }
 
     /// <summary>
+    ///     ACT-RETRIM (plan of improvements F3-07): tells each SSD which blocks are free, as
+    ///     Windows' weekly "Optimize drives" does. Changes no setting, so there is nothing to
+    ///     revert; it is recorded as irreversible only because it cannot be "undone".
+    /// </summary>
+    [Optimization(
+        Id = "5D2B8E61-3F0A-4C97-A1E4-7B9C0D2E6F13",
+        Risk = OptimizationRisk.Safe,
+        Tags = OptimizationTags.Disk | OptimizationTags.Performance,
+        Condition = typeof(HasSsdVolumeCondition)
+    )]
+    public class RetrimSsds : BaseOptimization
+    {
+        public override async Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            var letters = SsdLetters(context.Snapshot);
+            if (letters.Count == 0)
+            {
+                context.Changes.AddNotApplicable(Name, Loc.Instance[$"{ErrorPrefix}.NoSsd"]);
+                return context.Changes.ToApplyResult();
+            }
+
+            foreach (var letter in letters)
+            {
+                var command = $"Optimize-Volume -DriveLetter {letter} -ReTrim -ErrorAction Stop";
+                // QueryPowerShellAsync has no dry run: in a preview only the command is shown.
+                if (PreviewOnly(context, command))
+                    continue;
+
+                progress.Report(
+                    new ProcessingProgress
+                    {
+                        Message = Loc.Instance[$"{ProgressPrefix}.Volume", letter],
+                        IsIndeterminate = true,
+                    }
+                );
+                var result = await LongRunningShell(context.Logger)
+                    .QueryPowerShellAsync(command, context.Logger, ct: context.CancellationToken);
+                RecordIrreversible(
+                    context,
+                    $"Optimize-Volume -DriveLetter {letter} -ReTrim",
+                    result
+                );
+            }
+            return context.Changes.ToApplyResult();
+        }
+
+        /// <summary>Drive letters of fixed volumes on an SSD or NVMe disk. Only A-Z reach PowerShell.</summary>
+        internal static IReadOnlyList<char> SsdLetters(Services.System.SystemInfo snapshot) =>
+            snapshot
+                .Storage.Volumes.Where(v =>
+                    !v.IsRemovable
+                    && v.MediaType
+                        is Services.System.StorageMediaType.Ssd
+                            or Services.System.StorageMediaType.Nvme
+                )
+                .Select(v => v.DriveLetter.TrimEnd(':', '\\').ToUpperInvariant())
+                .Where(l => l.Length == 1 && l[0] is >= 'A' and <= 'Z')
+                .Select(l => l[0])
+                .Distinct()
+                .Order()
+                .ToList();
+    }
+
+    /// <summary>
     ///     ACT-COMPACTOS: compresses Windows' own files. Only for system disks of 256 GB or less
     ///     (plan section 4). Reverted with <c>compact /CompactOS:never</c>.
     /// </summary>
@@ -372,6 +439,18 @@ public class Storage : LocalizedObject, IOptimizationCategory
             nativeErrorCode: result.ExitCode
         );
     }
+}
+
+/// <summary>ReTrim (plan F3-07) needs at least one fixed SSD or NVMe volume with a drive letter.</summary>
+public sealed class HasSsdVolumeCondition : ConditionBase
+{
+    public override ConditionResult Evaluate(Services.System.SystemInfo snapshot) =>
+        Storage.RetrimSsds.SsdLetters(snapshot).Count > 0
+            ? ConditionResult.Available
+            : ConditionResult.Unsupported(
+                () => Loc.Instance["Condition.HasSsdVolume.Title"],
+                () => Loc.Instance["Condition.HasSsdVolume.Description"]
+            );
 }
 
 /// <summary>Compact OS is only worth it on small system disks (plan: 256 GB or less).</summary>

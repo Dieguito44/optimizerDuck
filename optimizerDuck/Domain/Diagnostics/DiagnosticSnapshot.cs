@@ -111,6 +111,12 @@ public sealed record DiagnosticSnapshot
 
     /// <summary>Windows Update health (improvements 2B). Defaults to not measured.</summary>
     public UpdateHealthSnapshot Updates { get; init; } = new();
+
+    /// <summary>DNS servers of the active adapters (improvements 3C). Defaults to not measured.</summary>
+    public NetworkSnapshot Network { get; init; } = new();
+
+    /// <summary>Browser extensions, search engine and startup (improvements 3C). Defaults to not measured.</summary>
+    public BrowserSnapshot Browsers { get; init; } = new();
 }
 
 public sealed record OsSnapshot
@@ -389,4 +395,62 @@ public sealed record UpdateHealthSnapshot
 
     /// <summary>Windows Update services set to Disabled (wuauserv, BITS, UsoSvc).</summary>
     public Measured<IReadOnlyList<string>> DisabledServices { get; init; }
+}
+
+/// <summary>Where a DNS server is (plan of improvements F3-10).</summary>
+public enum DnsKind
+{
+    /// <summary>This PC (127.0.0.1, ::1): a VPN, a filter or other software answers.</summary>
+    Local,
+
+    /// <summary>The local network, usually the router, which asks the internet provider.</summary>
+    Private,
+
+    /// <summary>A well-known public resolver (Google, Cloudflare, Quad9...).</summary>
+    KnownPublic,
+
+    /// <summary>Anything else: the internet provider's own, a company's, or one to review.</summary>
+    Unknown,
+}
+
+/// <summary>One DNS server of one active adapter. Static = typed by hand, not from the network.</summary>
+public sealed record DnsServer(
+    string Adapter,
+    string Address,
+    bool IsStatic,
+    DnsKind Kind,
+    string? Provider
+);
+
+/// <summary>DNS of the active adapters (plan of improvements F3-10). Read-only.</summary>
+public sealed record NetworkSnapshot
+{
+    public Measured<IReadOnlyList<DnsServer>> DnsServers { get; init; }
+}
+
+/// <summary>One installed browser extension (plan of improvements F3-09).</summary>
+public sealed record BrowserExtension(
+    string Browser,
+    string Id,
+    string Name,
+    bool Enabled,
+    bool FromStore,
+    bool ForcedByPolicy,
+    bool Unpacked,
+    IReadOnlyList<string> BroadPermissions
+);
+
+/// <summary>A browser profile's search engine and startup pages, as hosts only.</summary>
+public sealed record BrowserHome(
+    string Browser,
+    string? SearchHost,
+    bool SearchByPolicy,
+    IReadOnlyList<string> StartupHosts
+);
+
+/// <summary>Chrome, Edge, Brave and Firefox of the person at the PC (plan of improvements F3-09).</summary>
+public sealed record BrowserSnapshot
+{
+    public Measured<IReadOnlyList<BrowserExtension>> Extensions { get; init; }
+    public Measured<IReadOnlyList<BrowserHome>> Homes { get; init; }
 }

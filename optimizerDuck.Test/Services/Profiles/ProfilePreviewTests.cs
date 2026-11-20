@@ -170,8 +170,9 @@ public class ProfilePreviewTests
                 + @"|\b(?!RegistryService\b|ServiceProcessService\b|ScheduledTaskService\b|LocalGroupPolicyService\b)[A-Z]\w*Service\.[A-Z]\w*\("
                 + @"|\bnew\s+[\w.]*Service\("
         );
+        // The first argument: a literal (captured in cmd) or anything else (a variable).
         var psQuery = new Regex(
-            @"QueryPowerShellAsync\(\s*(?://[^\n]*\n\s*)*\$?""(?<cmd>[^""]*)"""
+            @"QueryPowerShellAsync\(\s*(?://[^\n]*\n\s*)*(?:\$?""(?<cmd>[^""]*)""|(?<expr>[^,)\s]+))"
         );
 
         var offenders = new List<string>();
@@ -210,11 +211,12 @@ public class ProfilePreviewTests
                 offenders.Add($"{type.Name}: QueryCMDAsync without PreviewOnly");
             foreach (Match m in psQuery.Matches(body))
             {
+                // A literal Get- only reads. Anything else may write and needs PreviewOnly.
                 var cmd = m.Groups["cmd"].Value.TrimStart('(', '[', 'b', 'o', 'l', ']');
-                if (!cmd.StartsWith("Get-", StringComparison.Ordinal))
-                    offenders.Add(
-                        $"{type.Name}: QueryPowerShellAsync that may write: {m.Groups["cmd"].Value}"
-                    );
+                var readsOnly =
+                    m.Groups["cmd"].Success && cmd.StartsWith("Get-", StringComparison.Ordinal);
+                if (!readsOnly && !body.Contains("PreviewOnly("))
+                    offenders.Add($"{type.Name}: QueryPowerShellAsync that may write: {m.Value}");
             }
         }
 

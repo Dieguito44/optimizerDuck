@@ -40,7 +40,10 @@ public sealed record EvidenceFact(
     decimal? Number = null,
     string? Text = null,
     string? Unit = null,
-    string? Subject = null
+    string? Subject = null,
+    // Names, addresses and hosts read from the client's PC (plan F3-09, F3-10): shown in the
+    // technician's report, never sent to the AI.
+    bool LocalOnly = false
 );
 
 /// <summary>A problem a rule found, with its evidence and the catalog actions that address it.</summary>

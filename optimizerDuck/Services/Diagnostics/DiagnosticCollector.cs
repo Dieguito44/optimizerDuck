@@ -184,6 +184,24 @@ public sealed class DiagnosticCollector(
             TimedOut<bool>(),
             ct
         );
+        // Plan of improvements, block 3C: DNS and browsers, read-only.
+        var dnsTask = Run(
+            "dns",
+            NetworkProbes.ReadDns,
+            ProbeTimeout,
+            Measured<IReadOnlyList<DnsServer>>.Missing(NotMeasuredReason.TimedOut),
+            ct
+        );
+        var browserTask = Run(
+            "browsers",
+            BrowserProbe.Read,
+            ProbeTimeout,
+            (
+                Measured<IReadOnlyList<BrowserExtension>>.Missing(NotMeasuredReason.TimedOut),
+                Measured<IReadOnlyList<BrowserHome>>.Missing(NotMeasuredReason.TimedOut)
+            ),
+            ct
+        );
         var startupTask = CountStartupAppsAsync(ct);
         var imageTask = ReadImageHealthAsync(ct);
         var bootTask = Run(
@@ -216,7 +234,9 @@ public sealed class DiagnosticCollector(
                 uefiCaTask,
                 updatesTask,
                 updateServicesTask,
-                protectionTask
+                protectionTask,
+                dnsTask,
+                browserTask
             )
             .ConfigureAwait(false);
 
@@ -292,6 +312,12 @@ public sealed class DiagnosticCollector(
                 await updatesTask.ConfigureAwait(false),
                 await updateServicesTask.ConfigureAwait(false)
             ),
+            Network = new NetworkSnapshot { DnsServers = await dnsTask.ConfigureAwait(false) },
+            Browsers = new BrowserSnapshot
+            {
+                Extensions = (await browserTask.ConfigureAwait(false)).Item1,
+                Homes = (await browserTask.ConfigureAwait(false)).Item2,
+            },
         };
         logger.LogInformation(
             "Diagnostic snapshot collected: {Disks} disks, {Gpus} GPUs, {Modules} RAM modules",

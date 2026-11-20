@@ -52,6 +52,11 @@ public static class ActionIds
     public const string BiosSecureBoot = "ACT-BIOS-SECUREBOOT";
     public const string SecureBootCertificate = "ACT-SECUREBOOT-CERT";
     public const string WindowsUpdateRestore = "ACT-WU-RESTORE";
+
+    // Plan of improvements, block 3C.
+    public const string Retrim = "ACT-RETRIM";
+    public const string DnsReview = "ACT-DNS-REVIEW";
+    public const string BrowserReview = "ACT-BROWSER-REVIEW";
 }
 
 /// <summary>Who carries out an action.</summary>
@@ -164,6 +169,9 @@ public static class ActionCatalog
         new(ActionIds.BiosSecureBoot, ActionKind.ManualBios, null, None, Rule),
         new(ActionIds.SecureBootCertificate, ActionKind.Manual, null, None, Rule),
         new(ActionIds.WindowsUpdateRestore, ActionKind.Manual, null, None, Rule),
+        new(ActionIds.Retrim, ActionKind.Software, Safe, None, Profile),
+        new(ActionIds.DnsReview, ActionKind.Manual, null, None, Rule),
+        new(ActionIds.BrowserReview, ActionKind.Manual, null, None, Rule),
     }.ToFrozenDictionary(a => a.Id, StringComparer.Ordinal);
 
     /// <summary>
@@ -218,4 +226,9 @@ public static class RuleIds
     public const string UefiCa2023 = "R-UEFI-CA2023";
     public const string UpdateHealth = "R-WU-HEALTH";
     public const string RestoreOff = "R-RESTORE-OFF";
+
+    // Plan of improvements, block 3C.
+    public const string DnsReview = "R-DNS-REVIEW";
+    public const string BrowserExtensions = "R-BROWSER-EXT";
+    public const string BrowserSearch = "R-BROWSER-SEARCH";
 }

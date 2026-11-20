@@ -380,5 +380,9 @@ public static class DiagnosticRules
         new UefiCa2023Rule(),
         new UpdateHealthRule(),
         new RestoreOffRule(),
+        // Plan of improvements, block 3C
+        new DnsReviewRule(),
+        new BrowserExtensionsRule(),
+        new BrowserSearchRule(),
     ];
 }
