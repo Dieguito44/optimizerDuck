@@ -5295,4 +5295,7 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Activity.Irreversible" xml:space="preserve">
     <value>(no way back: {0})</value>
   </data>
+  <data name="Session.Resumed" xml:space="preserve">
+    <value>Session resumed: measured "before" on {0}. Now measure "after".</value>
+  </data>
 </root>

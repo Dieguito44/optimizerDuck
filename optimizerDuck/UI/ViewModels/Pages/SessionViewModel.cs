@@ -52,6 +52,7 @@ public partial class SessionViewModel(
     public override void OnNavigatedTo()
     {
         _ = SuggestProfileAsync();
+        ResumeUnfinishedSession();
         if (!_profileWired)
         {
             _profileWired = true;
@@ -133,6 +134,44 @@ public partial class SessionViewModel(
 
     [RelayCommand(CanExecute = nameof(CanMeasureBefore))]
     private Task MeasureBeforeAsync() => MeasureAsync(MeasurementPhase.Before);
+
+    private bool _resumeChecked;
+    private bool _resuming;
+
+    /// <summary>
+    ///     After the restart the page asks for, picks up the session that was measured "before"
+    ///     and still waits for "after" (Hyper-V test, 20/11/2026: it was lost). Once per run.
+    /// </summary>
+    private void ResumeUnfinishedSession()
+    {
+        if (_resumeChecked || _session is not null || IsBusy)
+            return;
+        _resumeChecked = true;
+        var pending = sessionStore.LatestUnfinished(timeProvider.GetUtcNow());
+        if (pending is null)
+            return;
+        _session = pending;
+        _consent = pending.AiConsent;
+        // The box shows the consent already given, keeping its original time.
+        _resuming = true;
+        try
+        {
+            AiConsentGiven = pending.AiConsent is not null;
+        }
+        finally
+        {
+            _resuming = false;
+        }
+        ClientLabel = pending.ClientLabel ?? string.Empty;
+        ShowWritten(pending.Report);
+        ShowSession();
+        RefreshCommands();
+        StatusText = Loc.Instance[
+            "Session.Resumed",
+            pending.CreatedAtUtc.ToLocalTime().ToString("g", Loc.CurrentCulture)
+        ];
+        logger.LogInformation("Unfinished session {Id} resumed", pending.Id);
+    }
 
     /// <summary>Version 1.1.0: the profile that fits this PC (disk, RAM, games).</summary>
     private async Task SuggestProfileAsync()
@@ -242,6 +281,8 @@ public partial class SessionViewModel(
 
     partial void OnAiConsentGivenChanged(bool value)
     {
+        if (_resuming)
+            return;
         _consent = value ? AiConsent.Accept(timeProvider.GetUtcNow()) : null;
         if (_session is null)
             return;

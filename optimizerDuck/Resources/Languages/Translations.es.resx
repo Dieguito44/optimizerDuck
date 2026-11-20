@@ -7038,4 +7038,7 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
   <data name="Activity.Irreversible" xml:space="preserve">
     <value>(sin vuelta atrás: {0})</value>
   </data>
+  <data name="Session.Resumed" xml:space="preserve">
+    <value>Sesión retomada: medida "antes" el {0}. Ahora mide "después".</value>
+  </data>
 </root>
