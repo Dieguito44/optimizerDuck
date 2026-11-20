@@ -61,7 +61,7 @@ public sealed class CliHost(
 
     public async Task<RestorePointResult> CreateRestorePointAsync()
     {
-        var result = await optimizationService.CreateRestorePointAsync();
+        var result = await optimizationService.CreateRestorePointCoreAsync();
         if (result is RestorePointResult.Success or RestorePointResult.FrequencyLimitReached)
             optimizationService.WasRequestedRestorePoint = true;
         return result;
