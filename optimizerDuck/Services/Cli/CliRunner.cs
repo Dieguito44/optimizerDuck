@@ -133,7 +133,7 @@ public sealed class CliRunner(
         {
             Say(Loc.Instance["Cli.Preset", preset.Name]);
             var changes = (await runner.PreviewAsync(preset, ct))
-                .Where(c => !c.IsAlreadyThere)
+                .Where(c => c.WillChange)
                 .ToList();
             var apps = !options.RemovesApps
                 ? []

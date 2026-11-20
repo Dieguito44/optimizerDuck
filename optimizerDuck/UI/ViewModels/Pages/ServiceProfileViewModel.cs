@@ -282,7 +282,7 @@ public partial class ServiceProfileViewModel(
         IReadOnlyList<Domain.Execution.PlannedChange> preview
     )
     {
-        var changes = preview.Where(c => !c.IsAlreadyThere).ToList();
+        var changes = preview.Where(c => c.WillChange).ToList();
         var panel = new global::System.Windows.Controls.StackPanel { MaxWidth = 640 };
         panel.Children.Add(
             new global::System.Windows.Controls.TextBlock

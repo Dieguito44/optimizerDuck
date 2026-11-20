@@ -67,7 +67,8 @@ public static class ServiceProcessService
                 PlannedChangeKind.Service,
                 item.Name,
                 notFound ? null : current?.ToString(),
-                item.StartupType.ToString()
+                item.StartupType.ToString(),
+                targetMissing: notFound
             );
             return OpResult.Success();
         }

@@ -126,10 +126,11 @@ public class ProfileApplyRevertCiTests
                 }
 
                 var before = await PreviewAsync(optimization, snapshot);
-                if (before.All(c => c.IsAlreadyThere))
+                if (!before.Any(c => c.WillChange))
                 {
-                    report.Add($"SKIP {type.Name}: already as wanted");
-                    continue; // already as the profile wants it: nothing to apply or revert
+                    // Already as wanted, or its services and tasks do not exist on this PC.
+                    report.Add($"SKIP {type.Name}: nothing to change on this PC");
+                    continue;
                 }
 
                 var revertFile = Path.Combine(Shared.RevertDirectory, optimization.Id + ".json");
@@ -139,14 +140,32 @@ public class ProfileApplyRevertCiTests
                         optimization,
                         new Progress<ProcessingProgress>()
                     );
+                    if (applied.Status == OptimizationSuccessResult.NothingToDo)
+                    {
+                        // The client's consent (refused when no one is there to answer), a
+                        // recent pause, or a disk the command does not support.
+                        report.Add($"SKIP {type.Name}: nothing done ({applied.Message})");
+                        continue;
+                    }
                     if (applied.Status != OptimizationSuccessResult.Success)
                     {
-                        problems.Add($"{type.Name}: apply ended {applied.Status}");
+                        problems.Add($"{type.Name}: apply ended {applied.Status}: {Why(applied)}");
+                        if (applied.Status == OptimizationSuccessResult.Failed)
+                            continue;
+                    }
+
+                    if (!File.Exists(revertFile))
+                    {
+                        // Commands that cannot be undone (a cleanup, a re-trim) leave no revert data.
+                        if (before.Where(c => c.WillChange).All(c => !IsComparable(c)))
+                            report.Add($"OK   {type.Name}: applied, not reversible by design");
+                        else
+                            problems.Add($"{type.Name}: applied but saved no revert data");
                         continue;
                     }
 
                     var afterApply = await PreviewAsync(optimization, snapshot);
-                    foreach (var c in afterApply.Where(c => IsComparable(c) && !c.IsAlreadyThere))
+                    foreach (var c in afterApply.Where(c => IsComparable(c) && c.WillChange))
                         problems.Add(
                             $"{type.Name}: not applied {c.Target} = {c.Current}, wanted {c.Next}"
                         );
@@ -162,7 +181,7 @@ public class ProfileApplyRevertCiTests
                         c => c.Target,
                         StringComparer.OrdinalIgnoreCase
                     );
-                    foreach (var c in before.Where(IsComparable))
+                    foreach (var c in before.Where(c => IsComparable(c) && !c.TargetMissing))
                     {
                         var now = afterRevert.TryGetValue(c.Target, out var a) ? a.Current : null;
                         if (!string.Equals(c.Current, now, StringComparison.OrdinalIgnoreCase))
@@ -188,6 +207,19 @@ public class ProfileApplyRevertCiTests
 
         return checkedSettings;
     }
+
+    /// <summary>The result's message plus each failed step, so the report says why.</summary>
+    private static string Why(OptimizationResult result) =>
+        string.Join(
+            " | ",
+            new[] { result.Message, result.Exception?.Message }
+                .Concat(
+                    result.FailedSteps.Select(f =>
+                        $"{f.Description}: {f.Error} {f.ErrorDetail} (code {f.NativeErrorCode})"
+                    )
+                )
+                .Where(m => !string.IsNullOrWhiteSpace(m))
+        );
 
     /// <summary>Commands have no readable "current value"; everything else is compared.</summary>
     private static bool IsComparable(PlannedChange change) =>

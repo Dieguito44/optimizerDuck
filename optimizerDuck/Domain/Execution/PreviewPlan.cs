@@ -12,19 +12,32 @@ public enum PlannedChangeKind
 
 /// <summary>
 ///     One change a primitive would make, with the value it finds now. <see cref="Current" /> is
-///     null when the value does not exist (or cannot be read).
+///     null when the value does not exist (or cannot be read). <see cref="TargetMissing" /> is
+///     true when the service or scheduled task does not exist on this PC: applying skips it as
+///     not applicable, so it is not a change.
 /// </summary>
 public sealed record PlannedChange(
     PlannedChangeKind Kind,
     string Setting,
     string Target,
     string? Current,
-    string Next
+    string Next,
+    bool TargetMissing = false
 )
 {
-    /// <summary>The change would write what is already there.</summary>
+    /// <summary>The value written when a registry value is deleted.</summary>
+    public const string DeleteValue = "(delete)";
+
+    /// <summary>
+    ///     The change would write what is already there, or delete a value that does not exist.
+    /// </summary>
     public bool IsAlreadyThere =>
-        Current is not null && string.Equals(Current, Next, StringComparison.OrdinalIgnoreCase);
+        Current is null
+            ? Next == DeleteValue
+            : string.Equals(Current, Next, StringComparison.OrdinalIgnoreCase);
+
+    /// <summary>Applying would really change this target on this PC.</summary>
+    public bool WillChange => !IsAlreadyThere && !TargetMissing;
 }
 
 /// <summary>
@@ -49,9 +62,17 @@ public sealed class PreviewPlan
         }
     }
 
-    public void Add(PlannedChangeKind kind, string target, string? current, string next)
+    public void Add(
+        PlannedChangeKind kind,
+        string target,
+        string? current,
+        string next,
+        bool targetMissing = false
+    )
     {
         lock (_items)
-            _items.Add(new PlannedChange(kind, CurrentSetting, target, current, next));
+            _items.Add(
+                new PlannedChange(kind, CurrentSetting, target, current, next, targetMissing)
+            );
     }
 }
