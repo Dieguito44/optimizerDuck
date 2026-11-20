@@ -242,14 +242,9 @@ public class DiskCleanupService(ILogger<DiskCleanupService> logger)
         {
             var searchPattern = itemId == "Thumbnails" ? "thumbcache_*" : "*";
             var isRecursive = itemId != "Thumbnails";
-            var options = new EnumerationOptions
-            {
-                IgnoreInaccessible = true,
-                RecurseSubdirectories = isRecursive,
-                ReturnSpecialDirectories = false,
-            };
-
-            var dirInfo = new DirectoryInfo(path);
+            // Plan F1-06: a folder that is itself a link is not measured or cleaned.
+            if (SafeTreeWalk.IsLink(path))
+                return (0, 0);
 
             // Pre-check: only filter .net path if the .net temp directory is a descendant of the
             // scan root
@@ -260,7 +255,9 @@ public class DiskCleanupService(ILogger<DiskCleanupService> logger)
                     StringComparison.OrdinalIgnoreCase
                 );
 
-            foreach (var fileInfo in dirInfo.EnumerateFiles(searchPattern, options))
+            foreach (
+                var fileInfo in SafeTreeWalk.Files(path, searchPattern, isRecursive, () => { })
+            )
                 try
                 {
                     if (needsDotNetFilter)
@@ -305,14 +302,14 @@ public class DiskCleanupService(ILogger<DiskCleanupService> logger)
         long freed = 0;
         var searchPattern = itemId == "Thumbnails" ? "thumbcache_*" : "*";
         var isRecursive = itemId != "Thumbnails";
-        var options = new EnumerationOptions
-        {
-            IgnoreInaccessible = true,
-            RecurseSubdirectories = isRecursive,
-            ReturnSpecialDirectories = false,
-        };
 
-        var dirInfo = new DirectoryInfo(path);
+        // Plan F1-06 (audit Z-03): never through a junction or a symbolic link.
+        if (SafeTreeWalk.IsLink(path))
+        {
+            logger.LogWarning("Cleanup of {ItemId} skipped: {Path} is a link", itemId, path);
+            return 0;
+        }
+        var skippedLinks = 0;
 
         // Pre-check: only filter .net path if the .net temp directory is a descendant of the
         // scan root
@@ -323,7 +320,14 @@ public class DiskCleanupService(ILogger<DiskCleanupService> logger)
                 StringComparison.OrdinalIgnoreCase
             );
 
-        foreach (var fileInfo in dirInfo.EnumerateFiles(searchPattern, options))
+        foreach (
+            var fileInfo in SafeTreeWalk.Files(
+                path,
+                searchPattern,
+                isRecursive,
+                () => skippedLinks++
+            )
+        )
             try
             {
                 if (needsDotNetFilter)
@@ -346,20 +350,10 @@ public class DiskCleanupService(ILogger<DiskCleanupService> logger)
                 // skip locked/inaccessible files
             }
 
-        if (options.RecurseSubdirectories)
+        if (isRecursive)
         {
-            var dirOptions = new EnumerationOptions
-            {
-                IgnoreInaccessible = true,
-                RecurseSubdirectories = true,
-                ReturnSpecialDirectories = false,
-            };
-
-            // Order by descending length to process deepest children first
-            var dirs = dirInfo
-                .EnumerateDirectories("*", dirOptions)
-                .OrderByDescending(d => d.FullName.Length)
-                .ToList();
+            // Deepest children first; links are neither entered nor removed.
+            var dirs = SafeTreeWalk.Directories(path, () => skippedLinks++);
 
             foreach (var dir in dirs)
                 try
@@ -378,6 +372,12 @@ public class DiskCleanupService(ILogger<DiskCleanupService> logger)
                 }
         }
 
+        if (skippedLinks > 0)
+            logger.LogInformation(
+                "Cleanup of {ItemId}: {Count} links (junctions or symbolic links) left alone",
+                itemId,
+                skippedLinks
+            );
         return freed;
     }
 }

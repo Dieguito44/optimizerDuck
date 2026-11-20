@@ -82,6 +82,8 @@ public sealed class ProcessRunner
             UseShellExecute = false,
             CreateNoWindow = true,
         };
+        // Plan F1-05: absolute path, System32 folder, Windows-only PATH.
+        SystemTools.Harden(psi);
 
         var sw = Stopwatch.StartNew();
         try

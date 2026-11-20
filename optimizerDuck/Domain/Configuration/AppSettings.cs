@@ -29,6 +29,9 @@ public sealed class AppSettings
 
         /// <summary>Plan of improvements F4-05: redacted crash reports. Off by default.</summary>
         public bool CrashReports { get; set; } = false;
+
+        /// <summary>Plan of improvements F1-11: Verbose logs, only when someone needs them.</summary>
+        public bool VerboseLogs { get; set; } = false;
     }
 
     public sealed class OptimizeOptions

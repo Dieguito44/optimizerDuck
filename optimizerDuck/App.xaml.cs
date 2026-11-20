@@ -282,16 +282,36 @@ public partial class App : Application
             """
         );
 
+    /// <summary>
+    ///     Plan of improvements F1-11: Information by default; Verbose only on demand
+    ///     (App.VerboseLogs in appsettings.json, or ZENTRA_LOG_VERBOSE=1).
+    /// </summary>
+    internal static readonly Serilog.Core.LoggingLevelSwitch LogLevel = new(
+        Environment.GetEnvironmentVariable("ZENTRA_LOG_VERBOSE") == "1"
+            ? LogEventLevel.Verbose
+            : LogEventLevel.Information
+    );
+
+    /// <summary>Each log file up to 5 MB; 10 files kept at most, so 50 MB in all.</summary>
+    internal const long LogFileBytes = 5 * 1024 * 1024;
+
+    internal const int LogFilesKept = 10;
+
     /// <summary>The app's log configuration. Shared with the key-leak test so it checks the real one.</summary>
     internal static LoggerConfiguration BuildLoggerConfiguration(string logPath) =>
         new LoggerConfiguration()
-            .MinimumLevel.Verbose()
+            .MinimumLevel.ControlledBy(LogLevel)
             .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
             .Enrich.FromLogContext()
+            // Daily files, rolled earlier at 5 MB, the oldest deleted after 10 (plan F1-11).
+            // Secrets are redacted by the formatter in every line.
             .WriteTo.File(
                 new ScopeBlockTextFormatter(),
                 logPath,
-                rollingInterval: RollingInterval.Infinite
+                rollingInterval: RollingInterval.Day,
+                fileSizeLimitBytes: LogFileBytes,
+                rollOnFileSizeLimit: true,
+                retainedFileCountLimit: LogFilesKept
             );
 
     private async Task OnStartupAsync(StartupEventArgs e)
@@ -348,6 +368,8 @@ public partial class App : Application
 
         var appSettings = appOptionsMonitor.CurrentValue;
         Services.Configuration.CrashReport.Enabled = appSettings.App.CrashReports;
+        if (appSettings.App.VerboseLogs)
+            LogLevel.MinimumLevel = LogEventLevel.Verbose;
 
         SmoothScrollBehavior.GlobalEnabled = appSettings.Optimize.SmoothScrolling;
 

@@ -792,10 +792,21 @@ public class StartupManagerService(ILogger<StartupManagerService> logger)
         byte[] data
     )
     {
-        using var approvedKey =
-            rootKey.OpenSubKey(subKeyPath, true) ?? rootKey.CreateSubKey(subKeyPath, true);
+        using var approvedKey = OpenForSetValue(rootKey, subKeyPath);
         approvedKey.SetValue(valueName, data, RegistryValueKind.Binary);
     }
+
+    /// <summary>
+    ///     Plan of improvements F1-04 (as upstream PR #100): an existing key is opened only to read
+    ///     and set values, not with full write access. A missing one is created.
+    /// </summary>
+    internal static RegistryKey OpenForSetValue(RegistryKey rootKey, string subKeyPath) =>
+        rootKey.OpenSubKey(
+            subKeyPath,
+            RegistryKeyPermissionCheck.ReadWriteSubTree,
+            global::System.Security.AccessControl.RegistryRights.ReadKey
+                | global::System.Security.AccessControl.RegistryRights.SetValue
+        ) ?? rootKey.CreateSubKey(subKeyPath, true);
 
     private static OpResult ToggleUwpStartupApp(StartupApp app, bool enable)
     {
@@ -830,9 +841,7 @@ public class StartupManagerService(ILogger<StartupManagerService> logger)
 
         const string approvedSubKeyPath =
             @"Software\Microsoft\Windows\CurrentVersion\Explorer\StartupApproved\StartupFolder";
-        using var approvedKey =
-            rootKey.OpenSubKey(approvedSubKeyPath, true)
-            ?? rootKey.CreateSubKey(approvedSubKeyPath, true);
+        using var approvedKey = OpenForSetValue(rootKey, approvedSubKeyPath);
         if (approvedKey == null)
             return OpResult.Fail(
                 ServiceStrings.Format(ServiceStrings.StartupAppErrorUnsupportedLocation, app.Name)

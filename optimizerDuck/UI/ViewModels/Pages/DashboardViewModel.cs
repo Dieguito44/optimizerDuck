@@ -323,13 +323,21 @@ public partial class DashboardViewModel : ViewModel
 
                 case "TaskManager":
                     Process.Start(
-                        new ProcessStartInfo { FileName = "taskmgr", UseShellExecute = true }
+                        new ProcessStartInfo
+                        {
+                            FileName = Services.System.SystemTools.Resolve("taskmgr"),
+                            UseShellExecute = true,
+                        }
                     );
                     break;
 
                 case "ControlPanel":
                     Process.Start(
-                        new ProcessStartInfo { FileName = "control", UseShellExecute = true }
+                        new ProcessStartInfo
+                        {
+                            FileName = Services.System.SystemTools.Resolve("control"),
+                            UseShellExecute = true,
+                        }
                     );
                     break;
             }
