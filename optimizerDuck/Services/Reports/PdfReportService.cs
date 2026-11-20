@@ -336,11 +336,18 @@ public sealed class PdfReportService(
                 .FontColor(Colors.Grey.Darken1);
         }
 
+        // A technical annex in grey: what Zentra could not measure on this PC is its own limit,
+        // not something wrong with the PC (version 1 test, 20/11/2026).
         if (model.NotMeasured.Count > 0)
         {
             Section(column, "Report.Section.NotMeasured");
+            column
+                .Item()
+                .Text(Loc.Instance["Report.NotMeasured.Note"])
+                .FontSize(8)
+                .FontColor(Colors.Grey.Darken1);
             foreach (var item in model.NotMeasured)
-                column.Item().Text($"• {item}").FontSize(9);
+                column.Item().Text($"• {item}").FontSize(8).FontColor(Colors.Grey.Darken1);
         }
 
         Section(column, "Report.Section.Notes");

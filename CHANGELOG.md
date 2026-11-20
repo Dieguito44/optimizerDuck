@@ -4,6 +4,19 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Prueba en otro PC (20/11/2026, versión 1.0.2)
+
+Diego probó la 1.0.0 en otro PC. El puntaje quedó 52 → 52 y el arranque 55,1 s → 55,1 s. Ese PC ya estaba limpio (104 procesos, 1,4 GB de RAM en reposo, 3 apps de inicio), pero Zentra además medía y mostraba mal varias cosas:
+
+- **Arranque "después":** cuenta solo los arranques posteriores a "Medir antes". Antes repetía la mediana de arranques viejos. Si no se reinició, dice "Reinicia el PC y vuelve a medir".
+- **Disco mecánico:** cuando Windows responde "sin especificar", se usa la velocidad de giro del disco y el disco físico que tiene Windows. En ese PC salía "no medible", y era probablemente el hallazgo más importante.
+- **Indexador:**
+  - Con la búsqueda de Windows apagada, el ajuste "no aplica" en vez de fallar.
+  - Si Windows no confirma la exclusión, la regla se quita, para no dejar nada sin revertir.
+- **Bitácora:** dice por qué falló un ajuste.
+- **PDF:** lo que Zentra no pudo medir ya no sale en naranja entre las advertencias al cliente. Va al final, en gris, como "Anexo técnico: lo que Zentra no pudo medir", con la nota de que son límites de Zentra y no fallas del equipo.
+- **Tests:** 1846, 0 fallos.
+
 ### Clave de la IA incluida en Zentra (20/11/2026, versión 1.0.1)
 
 Decisión de Diego: Zentra es solo suyo, para su servicio, y el informe con IA debe salir en el PC del cliente sin pasar por el PC del técnico.

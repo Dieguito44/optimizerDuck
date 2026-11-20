@@ -4861,8 +4861,11 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Report.Section.BootCulprits" xml:space="preserve">
     <value>Lo que hace lento el arranque</value>
   </data>
+  <data name="Report.NotMeasured.Note" xml:space="preserve">
+    <value>Son límites de Zentra en este PC, no fallas del equipo.</value>
+  </data>
   <data name="Report.Section.NotMeasured" xml:space="preserve">
-    <value>Lo que no se pudo medir</value>
+    <value>Anexo técnico: lo que Zentra no pudo medir</value>
   </data>
   <data name="Report.Section.Notes" xml:space="preserve">
     <value>Notas</value>

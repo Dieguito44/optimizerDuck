@@ -3120,6 +3120,9 @@ Update now to enjoy the latest features, improvements, and bug fixes.</value>
   <data name="Report.Section.BootCulprits" xml:space="preserve">
     <value>What slows down startup</value>
   </data>
+  <data name="Report.NotMeasured.Note" xml:space="preserve">
+    <value>These are Zentra's limits on this PC, not faults of the computer.</value>
+  </data>
   <data name="Report.Section.NotMeasured" xml:space="preserve">
     <value>What could not be measured</value>
   </data>
