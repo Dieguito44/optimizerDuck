@@ -28,7 +28,7 @@ public sealed class AiReportService(
         - Frases cortas, tuteo y español de Colombia. Evita los tecnicismos; si usas uno (BIOS, SSD, RAM), explícalo en pocas palabras.
         - resumen: de 3 a 5 frases sobre cómo estaba el equipo y cómo quedó.
         - prioridades: una por cada acción que valga la pena, de la más importante (1) a la menos importante, sin repetir. La explicación dice qué es, por qué le importa al cliente y quién la hace (campo "quien").
-        - advertencias: lo que el cliente debe saber (riesgos, datos que no se pudieron medir, cosas que dependen de él). Puede ir vacía.
+        - advertencias: lo que el cliente debe saber (riesgos, cosas que dependen de él). Puede ir vacía. Lo que Zentra no pudo medir va aparte en el PDF: no lo pongas aquí, salvo que cambie una recomendación.
         """;
 
     private readonly Func<ClaudeClient> _clientFactory =

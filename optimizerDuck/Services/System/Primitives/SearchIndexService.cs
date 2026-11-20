@@ -112,6 +112,21 @@ public static class SearchIndexService
 
     public static bool IsIndexed(string folder) => Scope().IncludedInCrawlScope(UrlFor(folder));
 
+    /// <summary>Windows Search answers: the service runs and the system index exists.</summary>
+    public static bool IsAvailable()
+    {
+        try
+        {
+            _ = Scope();
+            return true;
+        }
+        catch (Exception ex)
+            when (ex is COMException or InvalidCastException or UnauthorizedAccessException)
+        {
+            return false;
+        }
+    }
+
     /// <summary>Excludes a folder from the index. True when Windows reports it out of scope after.</summary>
     public static bool Exclude(string folder)
     {

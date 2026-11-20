@@ -199,6 +199,55 @@ public sealed class ApiKeyStoreTests : IDisposable
     }
 
     [Fact]
+    public void BuiltInKey_IsUsedOnAClientPc_InMemoryOnly()
+    {
+        // Diego's decision (20/11/2026): his own Zentra carries the key, so the report is written
+        // on the client's PC. It is never written to disk there.
+        var raw = TestKeys.New();
+        ApiKeySecret.TryCreate(raw, out var builtIn);
+        var store = new ApiKeyStore(
+            _dir.FullName,
+            technicianMode: false,
+            NullLogger<ApiKeyStore>.Instance,
+            builtIn
+        );
+
+        Assert.True(store.HasKey);
+        Assert.True(store.IsEmbedded);
+        Assert.True(store.HasEmbeddedKey);
+        Assert.False(File.Exists(BlobPath));
+        using var request = new HttpRequestMessage();
+        store.Current!.ApplyTo(request);
+        Assert.Equal(raw, Assert.Single(request.Headers.GetValues("x-api-key")));
+    }
+
+    [Fact]
+    public void BuiltInKey_StaysAfterForget_AndATypedKeyWins()
+    {
+        ApiKeySecret.TryCreate(TestKeys.New(), out var builtIn);
+        var store = new ApiKeyStore(
+            _dir.FullName,
+            technicianMode: true,
+            NullLogger<ApiKeyStore>.Instance,
+            builtIn
+        );
+        Assert.True(store.IsEmbedded);
+
+        store.Set(TestKeys.New(), remember: false);
+        Assert.False(store.IsEmbedded);
+
+        store.Forget();
+        Assert.True(store.IsEmbedded);
+    }
+
+    [Fact]
+    public void ThisTestBuild_CarriesNoBuiltInKey()
+    {
+        // Only "dotnet publish" on Diego's PC embeds the key; builds and tests never do.
+        Assert.Null(EmbeddedApiKey.TryGet());
+    }
+
+    [Fact]
     public void TechnicianMode_WithoutRememberTicked_WritesNothing()
     {
         NewStore(technician: true).Set(TestKeys.New(), remember: false);

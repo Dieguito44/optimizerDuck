@@ -25,6 +25,30 @@ public class BootTimeProbeTests
         Assert.Equal(expected, BootTimeProbe.Median(values));
     }
 
+    // Version 1 test (20/11/2026): "Medir después" repeated the boots from before the service
+    // (55,1 s -> 55,1 s). Only boots after "Medir antes" count.
+    [Fact]
+    public void After_FiltersEventsByTheirTimeInUtc()
+    {
+        var at = new DateTime(2026, 11, 20, 14, 30, 5, 120, DateTimeKind.Utc);
+        Assert.Equal(
+            " and TimeCreated[@SystemTime>='2026-11-20T14:30:05.120Z']",
+            BootTimeProbe.After(at)
+        );
+        Assert.Equal("", BootTimeProbe.After(null));
+    }
+
+    [Fact]
+    public void AfterTheServiceWithoutARestart_SaysToRestart_InsteadOfRepeatingOldBoots()
+    {
+        // Read-only: this PC has not booted in the future, so there is no boot to time.
+        var result = BootTimeProbe.Read(DateTime.UtcNow.AddMinutes(1));
+
+        Assert.False(result.MedianMs.TryGet(out _));
+        Assert.Equal(0, result.Samples);
+        Assert.Equal(NotMeasuredReason.NeedsRestart, result.MedianMs.Reason);
+    }
+
     [Fact]
     public void PairBoots_MatchesEachStartWithTheFirstLogonBeforeTheNextStart()
     {
@@ -425,5 +449,72 @@ public class ReportBeforeAfterTests
             optimizerDuck.Services.Configuration.Loc.Instance["Report.Note.DiskVaries", 10],
             beforeOnly.Notes
         );
+    }
+}
+
+/// <summary>
+///     Hyper-V test (20/11/2026): the page asks to restart between the profile and "Medir
+///     después", and the restarted Zentra lost the session. It is picked up from disk now.
+/// </summary>
+public sealed class SessionResumeTests : IDisposable
+{
+    private readonly DirectoryInfo _dir = Directory.CreateTempSubdirectory("zentra-sessions-");
+    private static readonly DateTimeOffset Now = new(2026, 11, 20, 18, 0, 0, TimeSpan.Zero);
+
+    public void Dispose() => _dir.Delete(recursive: true);
+
+    private void Write(string name, ServiceSession session)
+    {
+        var folder = Directory.CreateDirectory(Path.Combine(_dir.FullName, name));
+        File.WriteAllText(
+            Path.Combine(folder.FullName, "session.json"),
+            SessionStore.Serialize(session)
+        );
+    }
+
+    private static ServiceSession Session(TimeSpan age, bool before, bool after) =>
+        new()
+        {
+            CreatedAtUtc = Now - age,
+            ClientLabel = "Cliente",
+            Before = before ? SessionPersistenceTests.Before() : null,
+            After = after
+                ? SessionPersistenceTests.Before() with
+                {
+                    Phase = MeasurementPhase.After,
+                }
+                : null,
+        };
+
+    [Fact]
+    public void TheNewestSessionWaitingForAfter_IsPickedUp()
+    {
+        Write("vieja", Session(TimeSpan.FromHours(30), before: true, after: false));
+        var newest = Session(TimeSpan.FromMinutes(20), before: true, after: false);
+        Write("nueva", newest);
+        Write("terminada", Session(TimeSpan.FromMinutes(5), before: true, after: true));
+        Write("sin-medir", Session(TimeSpan.FromMinutes(1), before: false, after: false));
+
+        var resumed = SessionStore.LatestUnfinished(_dir.FullName, Now);
+
+        Assert.Equal(newest.Id, resumed?.Id);
+    }
+
+    [Fact]
+    public void ASessionOlderThanTwoDays_IsNotPickedUp()
+    {
+        Write("vieja", Session(TimeSpan.FromDays(3), before: true, after: false));
+        Assert.Null(SessionStore.LatestUnfinished(_dir.FullName, Now));
+    }
+
+    [Fact]
+    public void ADamagedSessionFile_IsSkipped()
+    {
+        Directory.CreateDirectory(Path.Combine(_dir.FullName, "rota"));
+        File.WriteAllText(Path.Combine(_dir.FullName, "rota", "session.json"), "{ esto no es json");
+        var ok = Session(TimeSpan.FromHours(1), before: true, after: false);
+        Write("buena", ok);
+
+        Assert.Equal(ok.Id, SessionStore.LatestUnfinished(_dir.FullName, Now)?.Id);
     }
 }

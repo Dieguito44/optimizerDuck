@@ -159,4 +159,37 @@ public class UserExperience : LocalizedObject, IOptimizationCategory
             return Task.FromResult(context.Changes.ToApplyResult());
         }
     }
+
+    /// <summary>
+    ///     A blue screen shows the technical details (the stop code parameters) instead of the
+    ///     sad face: useful for the technician (idea from WinUtil, MIT).
+    /// </summary>
+    [Optimization(
+        Id = "7086C15D-4A50-4EC0-A6AE-DA37FAA8F098",
+        Risk = OptimizationRisk.Safe,
+        Tags = OptimizationTags.System
+    )]
+    public class DetailedBlueScreen : BaseOptimization
+    {
+        public override Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            RegistryService.Write(
+                context,
+                new RegistryItem(
+                    @"HKLM\SYSTEM\CurrentControlSet\Control\CrashControl",
+                    "DisplayParameters",
+                    1
+                ),
+                new RegistryItem(
+                    @"HKLM\SYSTEM\CurrentControlSet\Control\CrashControl",
+                    "DisableEmoticon",
+                    1
+                )
+            );
+            return Task.FromResult(context.Changes.ToApplyResult());
+        }
+    }
 }

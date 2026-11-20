@@ -25,6 +25,12 @@ public enum NotMeasuredReason
 
     /// <summary>The value needs an external tool Zentra does not ship yet.</summary>
     RequiresExternalTool,
+
+    /// <summary>
+    ///     Measured after the service, but the PC has not restarted since "Medir antes": there is
+    ///     no new boot to time (version 1 test, 20/11/2026).
+    /// </summary>
+    NeedsRestart,
 }
 
 /// <summary>

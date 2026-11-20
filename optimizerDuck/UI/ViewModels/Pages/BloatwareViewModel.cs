@@ -32,7 +32,7 @@ public partial class BloatwareViewModel : ViewModel
     private string _searchText = string.Empty;
 
     [ObservableProperty]
-    private int _selectedRiskFilterIndex; // 0=All, 1=Safe, 2=Caution
+    private int _selectedRiskFilterIndex = 1; // 0=All, 1=Safe (the service list), 2=Caution
 
     [ObservableProperty]
     private int _selectedSortByIndex; // 0=Name, 1=Publisher, 2=Risk

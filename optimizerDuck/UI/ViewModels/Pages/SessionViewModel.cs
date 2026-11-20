@@ -11,6 +11,7 @@ using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Diagnostics;
 using optimizerDuck.Services.Measurements;
 using optimizerDuck.Services.Reports;
+using optimizerDuck.Services.System;
 
 namespace optimizerDuck.UI.ViewModels.Pages;
 
@@ -26,6 +27,7 @@ public partial class SessionViewModel(
     AiReportService aiReportService,
     ApiKeyStore apiKeyStore,
     ServiceProfileViewModel profile,
+    SystemInfoService systemInfo,
     GameModeViewModel gameMode,
     FollowUpViewModel followUp,
     TimeProvider timeProvider,
@@ -48,6 +50,8 @@ public partial class SessionViewModel(
 
     public override void OnNavigatedTo()
     {
+        _ = SuggestProfileAsync();
+        ResumeUnfinishedSession();
         if (!_profileWired)
         {
             _profileWired = true;
@@ -130,6 +134,57 @@ public partial class SessionViewModel(
     [RelayCommand(CanExecute = nameof(CanMeasureBefore))]
     private Task MeasureBeforeAsync() => MeasureAsync(MeasurementPhase.Before);
 
+    private bool _resumeChecked;
+    private bool _resuming;
+
+    /// <summary>
+    ///     After the restart the page asks for, picks up the session that was measured "before"
+    ///     and still waits for "after" (Hyper-V test, 20/11/2026: it was lost). Once per run.
+    /// </summary>
+    private void ResumeUnfinishedSession()
+    {
+        if (_resumeChecked || _session is not null || IsBusy)
+            return;
+        _resumeChecked = true;
+        var pending = sessionStore.LatestUnfinished(timeProvider.GetUtcNow());
+        if (pending is null)
+            return;
+        _session = pending;
+        _consent = pending.AiConsent;
+        // The box shows the consent already given, keeping its original time.
+        _resuming = true;
+        try
+        {
+            AiConsentGiven = pending.AiConsent is not null;
+        }
+        finally
+        {
+            _resuming = false;
+        }
+        ClientLabel = pending.ClientLabel ?? string.Empty;
+        ShowWritten(pending.Report);
+        ShowSession();
+        RefreshCommands();
+        StatusText = Loc.Instance[
+            "Session.Resumed",
+            pending.CreatedAtUtc.ToLocalTime().ToString("g", Loc.CurrentCulture)
+        ];
+        logger.LogInformation("Unfinished session {Id} resumed", pending.Id);
+    }
+
+    /// <summary>Version 1.1.0: the profile that fits this PC (disk, RAM, games).</summary>
+    private async Task SuggestProfileAsync()
+    {
+        try
+        {
+            Profile.Suggest(await systemInfo.EnsureSnapshotAsync());
+        }
+        catch (Exception ex) when (ex is not OperationCanceledException)
+        {
+            logger.LogWarning(ex, "Could not suggest a profile");
+        }
+    }
+
     [RelayCommand(CanExecute = nameof(CanMeasureAfter))]
     private Task MeasureAfterAsync() => MeasureAsync(MeasurementPhase.After);
 
@@ -174,6 +229,7 @@ public partial class SessionViewModel(
 
     public string KeyStatusText =>
         !apiKeyStore.HasKey ? Loc.Instance["Session.Ai.Key.None"]
+        : apiKeyStore.IsEmbedded ? Loc.Instance["Session.Ai.Key.Embedded"]
         : apiKeyStore.IsRemembered ? Loc.Instance["Session.Ai.Key.Remembered"]
         : Loc.Instance["Session.Ai.Key.InMemory"];
 
@@ -212,6 +268,9 @@ public partial class SessionViewModel(
     public bool IsTechnicianPc => apiKeyStore.IsTechnicianPc;
     public bool IsClientPc => !IsTechnicianPc;
 
+    /// <summary>The file round trip to the technician's PC, only when this Zentra has no key.</summary>
+    public bool ShowsFileExchange => IsClientPc && !apiKeyStore.HasEmbeddedKey;
+
     /// <summary>
     ///     The client's authorization (Ley 1581). Unchecked, nothing about the session goes to the
     ///     AI or to a file for it; the template writes the report.
@@ -221,6 +280,8 @@ public partial class SessionViewModel(
 
     partial void OnAiConsentGivenChanged(bool value)
     {
+        if (_resuming)
+            return;
         _consent = value ? AiConsent.Accept(timeProvider.GetUtcNow()) : null;
         if (_session is null)
             return;
@@ -548,7 +609,12 @@ public partial class SessionViewModel(
             // Measure first: the diagnosis uses the RAM at rest (R-RAM-IDLE-HIGH), and running the
             // diagnosis first would load the PC during the rest measurement.
             var measurement = await Task.Run(() =>
-                measurementService.MeasureAsync(phase, progress, _cts.Token)
+                measurementService.MeasureAsync(
+                    phase,
+                    progress,
+                    _cts.Token,
+                    _session.Before?.CapturedAtUtc
+                )
             );
             StatusText = Loc.Instance["Session.Step.Diagnosis"];
             var report = await Task.Run(() =>

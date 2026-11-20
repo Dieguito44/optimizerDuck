@@ -139,4 +139,19 @@ public class TemplateReportWriterTests
         Assert.Empty(report.Priorities);
         Assert.False(string.IsNullOrWhiteSpace(report.Summary));
     }
+
+    [Fact]
+    public void Template_NeverWarnsTheClientAboutWhatZentraCouldNotMeasure()
+    {
+        // Version 1 test (20/11/2026): the PDF showed "No se pudo medir: ..." in orange among the
+        // warnings. Those are Zentra's limits; they go to the grey annex at the end of the PDF.
+        var payload = AiFixtures.Payload() with
+        {
+            NotMeasured = ["La BIOS más nueva", "El disco"],
+        };
+
+        var report = TemplateReportWriter.Write(payload);
+
+        Assert.Empty(report.Warnings);
+    }
 }

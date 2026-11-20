@@ -39,9 +39,18 @@ public sealed record ServicePreset
     /// <summary>Fragments of package names whose publisher prefix varies (OEM games).</summary>
     public IReadOnlyList<string> AppFragments { get; init; } = [];
 
-    /// <summary>True for the built-in "Servicio estándar", which is not read from a file.</summary>
+    /// <summary>True for the profiles built into Zentra, which are not read from a file.</summary>
     [JsonIgnore]
     public bool IsBuiltIn { get; init; }
+
+    /// <summary>The text key that says who a built-in profile is for.</summary>
+    [JsonIgnore]
+    public string? DescriptionKey { get; init; }
+
+    /// <summary>Who a built-in profile is for; empty for an imported one.</summary>
+    [JsonIgnore]
+    public string Description =>
+        DescriptionKey is null ? string.Empty : Services.Configuration.Loc.Instance[DescriptionKey];
 
     /// <summary>The "Servicio estándar" as a preset: the closed list of <see cref="StandardServiceProfile" />.</summary>
     public static ServicePreset Standard { get; } =
@@ -53,6 +62,36 @@ public sealed record ServicePreset
             Apps = StandardServiceProfile.Apps,
             AppFragments = StandardServiceProfile.ThirdPartyGames,
             IsBuiltIn = true,
+            DescriptionKey = "Profile.Builtin.Standard",
+        };
+
+    /// <summary>The standard profile plus less background work (version 1.1.0).</summary>
+    public static ServicePreset SlowPc { get; } =
+        BuiltIn("Equipo lento", ServiceProfiles.SlowPcExtra, "Profile.Builtin.SlowPc");
+
+    /// <summary>The standard profile plus graphics, USB and network for games (version 1.1.0).</summary>
+    public static ServicePreset Gaming { get; } =
+        BuiltIn("Juegos", ServiceProfiles.GamingExtra, "Profile.Builtin.Gaming");
+
+    /// <summary>The standard profile plus telemetry, Copilot, Recall, Edge and WPBT (version 1.1.0).</summary>
+    public static ServicePreset Privacy { get; } =
+        BuiltIn("Privacidad máxima", ServiceProfiles.PrivacyExtra, "Profile.Builtin.Privacy");
+
+    /// <summary>Every profile built into Zentra, in the order the selector shows them.</summary>
+    public static IReadOnlyList<ServicePreset> BuiltIns { get; } =
+    [Standard, SlowPc, Gaming, Privacy];
+
+    private static ServicePreset BuiltIn(
+        string name,
+        IReadOnlyList<Type> extra,
+        string descriptionKey
+    ) =>
+        Standard with
+        {
+            Name = name,
+            Created = new DateOnly(2026, 11, 20),
+            Settings = Standard.Settings.Concat(extra.Select(IdOf)).Distinct().ToList(),
+            DescriptionKey = descriptionKey,
         };
 
     /// <summary>Whether an installed package is one this preset removes. Protected apps never are.</summary>

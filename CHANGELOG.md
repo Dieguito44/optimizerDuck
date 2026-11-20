@@ -4,6 +4,94 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Prueba completa en un PC virtual con Windows 11 (20/11/2026, versión 1.1.1)
+
+PC de pruebas en Hyper-V en el PC de Diego, con 4 GB de RAM y 2 núcleos. Windows 11 Pro en español de México sin activar, BitLocker cifrado de fábrica y protección del sistema apagada, como un PC de cliente. Las pruebas se manejaron con puntos de control, PowerShell Direct y automatización de la interfaz.
+
+**Qué se probó y qué salió:**
+- **Cada ajuste aplicado y revertido** en Windows 11: 45 de 69 quedan exactamente como estaban, con 0 problemas. Los demás no aplican a esa VM (no tiene gráfica AMD, NVIDIA ni Intel, ni SSD físico) o son de Windows 10.
+- **Recorrido gráfico a 1366×768:** las 12 páginas y las 10 pestañas de Optimizar, sin errores.
+- **Perfil sugerido:** "Equipo lento (tiene 4 GB de RAM)", y quedó elegido.
+- **Sesión completa:** medir antes, aplicar Equipo lento (23 cambiados, 0 fallos, 7 apps quitadas), reiniciar, medir después y el PDF con la IA, redactado con la clave incluida.
+  - Puntaje de 62 a 74, 11 procesos y 10 servicios menos, 1,3 GB más de espacio.
+  - La RAM y las apps de inicio subieron porque la Store instaló Teams y Office durante la prueba.
+- **Experto:** apagar BitLocker (empieza a descifrar) y quitar Edge. Los dos piden confirmación, y al quitar Edge quedan WebView2 y el perfil con los favoritos.
+- **Línea de comandos:** `--preset estandar`, `juegos` y `privacidad` aplicados con 0 fallos.
+
+**Errores que encontró y se corrigieron:**
+- **El perfil no se aplicaba con la protección del sistema apagada** (de fábrica en muchos PCs). Windows 11 lanza el error 0x80070422 y Zentra no llegaba a encender la protección y reintentar.
+- **La sesión se perdía al reiniciar**, que es justo lo que pide la página entre el perfil y "Medir después". Ahora se retoma la de los últimos 2 días.
+- **La línea de comandos no aplicaba ningún perfil:** el punto de restauración abría un diálogo de la ventana y terminaba con código 10.
+- **"Monitor a su frecuencia máxima" fallaba sin pantalla** (sesión remota, monitor apagado) y detenía la vista previa del perfil Juegos.
+- **Panel:** la gráfica mostraba "{DependencyProperty.UnsetValue}" en un PC sin driver de video, y decía "1 núcleos".
+- **Bitácora:** quitar Edge o apagar BitLocker decía "cambios: 0". Ahora se cuentan y se marcan "(sin vuelta atrás)".
+- **CLI:** `--preset` acepta `equipo-lento`, `juegos` y `privacidad`.
+- **Tests:** 1866, 0 fallos.
+
+### Perfiles y pestaña Experto (20/11/2026, versión 1.1.0)
+
+Ideas revisadas contra [WinUtil](https://github.com/ChrisTitusTech/winutil) (licencia MIT). Se tomaron las ideas y los valores del registro, no su código.
+
+- **Perfiles nuevos:** además del **Servicio estándar**, ahora hay **Equipo lento**, **Juegos** y **Privacidad máxima**.
+  - Cada uno es el estándar más sus ajustes, solo Seguros o de Precaución y sin diálogo de confirmación.
+  - Se eligen en Sesión y en Optimizar > Resumen.
+  - "Revertir perfil" revierte lo que se haya aplicado de cualquier perfil.
+- **Perfil sugerido:** Zentra sugiere el perfil según el PC y lo deja elegido, salvo que el técnico ya haya elegido otro.
+  - Windows en un disco mecánico, o 8 GB de RAM o menos → Equipo lento.
+  - Juegos instalados → Juegos.
+- **Ajustes nuevos:**
+  - Edge sin telemetría ni anuncios (Seguro).
+  - Apagar los programas del fabricante desde la BIOS (WPBT, Precaución).
+  - Pantallazo azul con detalles (Seguro).
+  - Apagar MPO (Precaución), para parpadeos y reinicios del driver de video.
+- **Pestaña Experto:** decisión de Diego, que saca de la lista negra todo lo de WinUtil menos quitar OneDrive y bloquear Adobe.
+  - **Quitar Edge:** conserva los favoritos y las contraseñas y no toca WebView2. Pide confirmación "No reversible".
+  - **Apagar BitLocker:** pide confirmación.
+  - **Apagar IPv6.**
+  - **Apagar la búsqueda de Windows.**
+  - **Liberar el almacenamiento reservado.**
+  - **Quitar el aviso de archivos RDP sin firma.**
+  - Todos son Experto y quedan fuera de los perfiles y de "Aplicar seguros".
+  - `BlacklistTests` permite estas excepciones solo en `Expert.cs`, y una regla nueva sigue prohibiendo quitar WebView2.
+- **Tests:** 1857, 0 fallos.
+
+### Prueba en otro PC (20/11/2026, versión 1.0.2)
+
+Diego probó la 1.0.0 en otro PC. El puntaje quedó 52 → 52 y el arranque 55,1 s → 55,1 s. Ese PC ya estaba limpio (104 procesos, 1,4 GB de RAM en reposo, 3 apps de inicio), pero Zentra además medía y mostraba mal varias cosas:
+
+- **Arranque "después":** cuenta solo los arranques posteriores a "Medir antes". Antes repetía la mediana de arranques viejos. Si no se reinició, dice "Reinicia el PC y vuelve a medir".
+- **Disco mecánico:** cuando Windows responde "sin especificar", se usa la velocidad de giro del disco y el disco físico que tiene Windows. En ese PC salía "no medible", y era probablemente el hallazgo más importante.
+- **Indexador:**
+  - Con la búsqueda de Windows apagada, el ajuste "no aplica" en vez de fallar.
+  - Si Windows no confirma la exclusión, la regla se quita, para no dejar nada sin revertir.
+- **Bitácora:** dice por qué falló un ajuste.
+- **PDF:** lo que Zentra no pudo medir ya no sale en naranja entre las advertencias al cliente. Va al final, en gris, como "Anexo técnico: lo que Zentra no pudo medir", con la nota de que son límites de Zentra y no fallas del equipo.
+- **Tests:** 1846, 0 fallos.
+
+### Clave de la IA incluida en Zentra (20/11/2026, versión 1.0.1)
+
+Decisión de Diego: Zentra es solo suyo, para su servicio, y el informe con IA debe salir en el PC del cliente sin pasar por el PC del técnico.
+
+- **Cómo se incluye:** `dotnet publish` en el PC de Diego mete la clave en `Zentra.exe`. Sale de un archivo cifrado con DPAPI fuera del repositorio (`C:\Proyectos\zentra-secretos`) y queda enmascarada.
+  - Nunca está en el código ni en git. El repositorio es público.
+  - Las compilaciones de GitHub y los tests no llevan clave.
+  - Una prueba nueva falla si alguna vez aparece una clave en los archivos del repositorio.
+- **En el PC del cliente:** con la clave incluida, "Redactar informe" usa la IA ahí mismo y no se muestran los botones de exportar e importar archivos. Sigue haciendo falta la casilla de autorización del cliente (Ley 1581).
+- **Riesgo aceptado:** quien desarme el `.exe` puede sacar la clave. Por eso conviene una clave solo para Zentra, con límite de gasto, y cambiarla si una copia de Zentra se pierde.
+
+### Prueba de la versión 1 (20/11/2026, rama pruebas-v1)
+
+Zentra pasa a la **versión 1.0.0** (antes mostraba la 2.29.0 heredada de optimizerDuck). Correcciones de la prueba completa en GitHub y de las etapas 1 y 2 en el PC de Diego:
+
+- **Prueba completa en GitHub:** cada ajuste se aplica y se revierte de verdad en un Windows desechable. Resultado: 37 ajustes quedan exactamente como estaban y no queda ningún problema. Hay 3 limitaciones anotadas que solo pasan en Windows Server.
+- **Motor:** espera los datos del PC antes de aplicar un ajuste. Antes, un ajuste aplicado justo al abrir Zentra veía 0 KB de RAM y fallaba.
+- **Vista previa:** un servicio o una tarea que no existe en el PC, o un valor ya borrado, no cuenta como cambio.
+- **Apps:** empieza en la lista del servicio, no en todas las apps del cliente. Los nombres se ven limpios ("WhatsAppDesktop", "Adobe Inc.").
+- **Velocidad de internet:** la latencia es el tiempo de abrir la conexión. Antes decía 208 ms en una línea de 29 ms.
+- **Disco con un error viejo:** si Windows dice que el disco está sano, ya no se recomienda cambiarlo, solo hacer copia de seguridad.
+- **Textos:** "ASRock ASRock" en la BIOS, "Registry" en inglés en Arranque, y "Elije" corregido a "Elige".
+- **Tests:** 1826, 0 fallos.
+
 ### Rediseño de las demás páginas (19/11/2026, PR 25, sobre el PR 24)
 
 - **El mismo encabezado en todas las páginas:** cuadro con ícono, título y descripción. Antes solo lo tenían Diagnóstico, Sesión, Reparar, Programas y BIOS; ahora también Panel, Apps, Limpieza, Arranque, Tareas, Personalizar y Configuración.

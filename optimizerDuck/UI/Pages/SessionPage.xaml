@@ -1,4 +1,4 @@
-<Page
+﻿<Page
     x:Class="optimizerDuck.UI.Pages.SessionPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -279,6 +279,28 @@
                             Style="{StaticResource CaptionTextStyle}"
                             Text="{ext:Loc Profile.Help}"
                             TextWrapping="Wrap" />
+                        <!--  Version 1.1.0: which profile, and the one suggested for this PC.  -->
+                        <Grid Margin="0,0,0,6" ColumnDefinitions="Auto,*">
+                            <ui:TextBlock
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center"
+                                FontTypography="Body"
+                                Text="{ext:Loc Profile.Selector}" />
+                            <ComboBox
+                                Grid.Column="1"
+                                MinWidth="240"
+                                HorizontalAlignment="Left"
+                                DisplayMemberPath="Name"
+                                IsEnabled="{Binding ViewModel.Profile.IsBusy, Converter={StaticResource InverseBooleanConverter}}"
+                                ItemsSource="{Binding ViewModel.Profile.BuiltInPresets}"
+                                SelectedItem="{Binding ViewModel.Profile.SelectedBuiltIn, Mode=TwoWay}" />
+                        </Grid>
+                        <ui:TextBlock
+                            Margin="0,0,0,6"
+                            FontTypography="Caption"
+                            Foreground="{DynamicResource ZentraBrandBrush}"
+                            Text="{Binding ViewModel.Profile.SuggestionText}"
+                            TextWrapping="Wrap" />
                         <!--  Plan of improvements F3-01: which preset the buttons apply.  -->
                         <ui:TextBlock
                             Margin="0,0,0,6"
@@ -428,7 +450,7 @@
                         </CheckBox>
 
                         <!--  Plan F1-08: on a client's PC there is no key box; the report goes through files.  -->
-                        <StackPanel Visibility="{Binding ViewModel.IsClientPc, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <StackPanel Visibility="{Binding ViewModel.ShowsFileExchange, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <ui:TextBlock
                                 Style="{StaticResource CaptionTextStyle}"
                                 Text="{ext:Loc Session.Ai.ClientHelp}"
@@ -496,6 +518,11 @@
                             Cursor="Hand"
                             Icon="{ui:SymbolIcon DocumentArrowRight24}" />
                         </StackPanel>
+                        <!--  This Zentra carries the key (20/11/2026): say so on the client's PC too.  -->
+                        <ui:TextBlock
+                            Margin="0,6,0,0"
+                            Text="{Binding ViewModel.KeyStatusText}"
+                            Visibility="{Binding ViewModel.IsClientPc, Converter={StaticResource BooleanToVisibilityConverter}}" />
                         <ui:Button
                             Margin="0,10,0,0"
                             Appearance="Primary"

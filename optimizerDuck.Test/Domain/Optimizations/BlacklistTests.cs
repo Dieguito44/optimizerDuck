@@ -166,7 +166,15 @@ public class BlacklistTests
                 $@"({RemoveVerbs})[^;]{{0,250}}?({EdgeNames})|({EdgeNames})[^;]{{0,250}}?({RemoveVerbs})",
                 Options
             ),
-            "Edge and WebView2 are never removed."
+            "Edge and WebView2 are never removed (Edge only in the Experto tab, by Diego's decision)."
+        ),
+        new(
+            "WebView2Removed",
+            new Regex(
+                $@"({RemoveVerbs})[^;]{{0,250}}?(WebView2|EdgeWebView|--msedgewebview)|(WebView2|EdgeWebView|--msedgewebview)[^;]{{0,250}}?({RemoveVerbs})",
+                Options
+            ),
+            "WebView2 is never removed: other apps (Teams, Office, Zentra's own help) need it."
         ),
         new(
             "RamFreeing",
@@ -200,7 +208,21 @@ public class BlacklistTests
         "diagnosticshub.standardcollector.service",
         "WerSvc",
         "PcaSvc",
+        // Diego's decision (20/11/2026): "Apagar la búsqueda de Windows", Risky, in the Experto
+        // tab only, reverted to its previous startup type.
+        "WSearch",
     };
+
+    /// <summary>
+    ///     What Diego took out of the blacklist (20/11/2026): allowed only in the Experto tab's
+    ///     file, where every setting is Risky and outside every profile. The same text anywhere
+    ///     else still fails. WebView2 has its own rule, with no exception.
+    /// </summary>
+    private static readonly (string Rule, string File)[] ApprovedByDiego =
+    [
+        ("BitLockerTurnedOff", @"Domain\Optimizations\Categories\Expert.cs"),
+        ("EdgeOrWebView2Removed", @"Domain\Optimizations\Categories\Expert.cs"),
+    ];
 
     /// <summary>
     ///     Guards that must name what they protect (improvements 2A, F2-04). A hit is allowed only
@@ -269,6 +291,13 @@ public class BlacklistTests
             foreach (Match match in rule.Pattern.Matches(text))
             {
                 if (IsInProtectiveList(ruleName, relative, text, match.Index))
+                    continue;
+                if (
+                    ApprovedByDiego.Any(a =>
+                        a.Rule == ruleName
+                        && relative.Equals(a.File, StringComparison.OrdinalIgnoreCase)
+                    )
+                )
                     continue;
                 var line = text[..match.Index].Count(c => c == '\n') + 1;
                 hits.Add($"{relative}:{line}: {match.Value}");

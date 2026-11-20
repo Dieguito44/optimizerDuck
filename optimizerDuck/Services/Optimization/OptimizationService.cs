@@ -74,92 +74,7 @@ public class OptimizationService(
 
         try
         {
-            // Throttle is the documented frequency setting plus the newest existing point; the
-            // service fails open when that state cannot be read, exactly like the create below.
-            var nowUtc = DateTime.UtcNow;
-            if (await Task.Run(() => _systemRestoreService.IsWithinCreationThrottle(nowUtc)))
-            {
-                _logger.LogWarning("Restore point creation skipped: frequency limit reached.");
-                return RestorePointResult.FrequencyLimitReached;
-            }
-
-            dialogViewModel.ProgressReporter.Report(
-                new ProcessingProgress
-                {
-                    Message = Loc.Instance["RestorePoint.Progress.Creating"],
-                    IsIndeterminate = true,
-                }
-            );
-
-            var first = await Task.Run(() =>
-                _systemRestoreService.CreateRestorePoint(Shared.RestorePointName)
-            );
-
-            if (first.ExceptionText is not null)
-                _logger.LogError("Restore point creation failed: {Message}", first.ExceptionText);
-
-            if (first.Succeeded)
-            {
-                _logger.LogInformation("Restore point created successfully.");
-                return RestorePointResult.Success;
-            }
-
-            if (!SystemRestoreService.IsProtectionDisabledStatus(first.NativeStatus))
-            {
-                _logger.LogError(
-                    "Failed to create restore point: native status 0x{Status:X8}",
-                    first.NativeStatus
-                );
-                return RestorePointResult.Failed;
-            }
-
-            _logger.LogInformation("System Protection is disabled. Enabling...");
-            dialogViewModel.ProgressReporter.Report(
-                new ProcessingProgress
-                {
-                    Message = Loc.Instance["RestorePoint.Progress.Enabling"],
-                    IsIndeterminate = true,
-                }
-            );
-
-            var systemDrive = Environment.GetEnvironmentVariable("SystemDrive") ?? "C:";
-            var enable = await Task.Run(() => _systemRestoreService.EnableProtection(systemDrive));
-            if (!enable.Succeeded)
-            {
-                _logger.LogError(
-                    "Failed to enable System Protection: native status 0x{Status:X8} {Message}",
-                    enable.NativeStatus,
-                    enable.ExceptionText
-                );
-                return RestorePointResult.Failed;
-            }
-
-            dialogViewModel.ProgressReporter.Report(
-                new ProcessingProgress
-                {
-                    Message = Loc.Instance["RestorePoint.Progress.Retrying"],
-                    IsIndeterminate = true,
-                }
-            );
-
-            var retry = await Task.Run(() =>
-                _systemRestoreService.CreateRestorePoint(Shared.RestorePointName)
-            );
-
-            if (retry.ExceptionText is not null)
-                _logger.LogError("Restore point creation failed: {Message}", retry.ExceptionText);
-
-            if (retry.Succeeded)
-            {
-                _logger.LogInformation("Restore point created successfully.");
-                return RestorePointResult.Success;
-            }
-
-            _logger.LogError(
-                "Failed to create restore point after enabling System Protection: native status 0x{Status:X8}",
-                retry.NativeStatus
-            );
-            return RestorePointResult.Failed;
+            return await CreateRestorePointCoreAsync(dialogViewModel.ProgressReporter);
         }
         finally
         {
@@ -168,6 +83,103 @@ public class OptimizationService(
             // continuation here on the UI thread.
             dialog?.Hide();
         }
+    }
+
+    /// <summary>
+    ///     The restore point without any window: the throttle, the create, and turning system
+    ///     protection on and retrying when it is off. The command line uses it directly: there is
+    ///     no dialog host there (Hyper-V test, 20/11/2026: every --preset ended with code 10).
+    /// </summary>
+    public async Task<RestorePointResult> CreateRestorePointCoreAsync(
+        IProgress<ProcessingProgress>? progress = null
+    )
+    {
+        // Throttle is the documented frequency setting plus the newest existing point; the
+        // service fails open when that state cannot be read, exactly like the create below.
+        var nowUtc = DateTime.UtcNow;
+        if (await Task.Run(() => _systemRestoreService.IsWithinCreationThrottle(nowUtc)))
+        {
+            _logger.LogWarning("Restore point creation skipped: frequency limit reached.");
+            return RestorePointResult.FrequencyLimitReached;
+        }
+
+        progress?.Report(
+            new ProcessingProgress
+            {
+                Message = Loc.Instance["RestorePoint.Progress.Creating"],
+                IsIndeterminate = true,
+            }
+        );
+
+        var first = await Task.Run(() =>
+            _systemRestoreService.CreateRestorePoint(Shared.RestorePointName)
+        );
+
+        if (first.ExceptionText is not null)
+            _logger.LogError("Restore point creation failed: {Message}", first.ExceptionText);
+
+        if (first.Succeeded)
+        {
+            _logger.LogInformation("Restore point created successfully.");
+            return RestorePointResult.Success;
+        }
+
+        if (!SystemRestoreService.IsProtectionDisabledStatus(first.NativeStatus))
+        {
+            _logger.LogError(
+                "Failed to create restore point: native status 0x{Status:X8}",
+                first.NativeStatus
+            );
+            return RestorePointResult.Failed;
+        }
+
+        _logger.LogInformation("System Protection is disabled. Enabling...");
+        progress?.Report(
+            new ProcessingProgress
+            {
+                Message = Loc.Instance["RestorePoint.Progress.Enabling"],
+                IsIndeterminate = true,
+            }
+        );
+
+        var systemDrive = Environment.GetEnvironmentVariable("SystemDrive") ?? "C:";
+        var enable = await Task.Run(() => _systemRestoreService.EnableProtection(systemDrive));
+        if (!enable.Succeeded)
+        {
+            _logger.LogError(
+                "Failed to enable System Protection: native status 0x{Status:X8} {Message}",
+                enable.NativeStatus,
+                enable.ExceptionText
+            );
+            return RestorePointResult.Failed;
+        }
+
+        progress?.Report(
+            new ProcessingProgress
+            {
+                Message = Loc.Instance["RestorePoint.Progress.Retrying"],
+                IsIndeterminate = true,
+            }
+        );
+
+        var retry = await Task.Run(() =>
+            _systemRestoreService.CreateRestorePoint(Shared.RestorePointName)
+        );
+
+        if (retry.ExceptionText is not null)
+            _logger.LogError("Restore point creation failed: {Message}", retry.ExceptionText);
+
+        if (retry.Succeeded)
+        {
+            _logger.LogInformation("Restore point created successfully.");
+            return RestorePointResult.Success;
+        }
+
+        _logger.LogError(
+            "Failed to create restore point after enabling System Protection: native status 0x{Status:X8}",
+            retry.NativeStatus
+        );
+        return RestorePointResult.Failed;
     }
 
     /// <summary>

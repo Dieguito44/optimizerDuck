@@ -68,7 +68,9 @@ public static class DisplayModeService
     /// <summary>The dry run (plan F2-03): each monitor's rate now and after. Changes nothing.</summary>
     public static void Preview(OpCall call)
     {
-        foreach (var plan in Plan(DisplayNative.ReadMonitors(), DisplayNative.CurrentMode))
+        if (TryReadMonitors(call) is not { } monitors)
+            return;
+        foreach (var plan in Plan(monitors, DisplayNative.CurrentMode))
             call.Preview?.Add(
                 PlannedChangeKind.Command,
                 plan.Monitor.FriendlyName ?? plan.Monitor.GdiName ?? "monitor",
@@ -77,9 +79,35 @@ public static class DisplayModeService
             );
     }
 
+    /// <summary>
+    ///     The monitors, or null when Windows does not give the display configuration: no screen
+    ///     attached to the session (a remote or headless session, the monitor off). Found in the
+    ///     Hyper-V test, 20/11/2026: it threw and stopped the whole profile preview.
+    /// </summary>
+    private static List<RawMonitor>? TryReadMonitors(OpCall call)
+    {
+        try
+        {
+            return DisplayNative.ReadMonitors();
+        }
+        catch (InvalidOperationException ex)
+        {
+            call.Logger.LogWarning("[DISPLAY] Monitors not readable: {Error}", ex.Message);
+            return null;
+        }
+    }
+
     public static async Task ApplyAsync(OpCall call)
     {
-        var plans = Plan(DisplayNative.ReadMonitors(), DisplayNative.CurrentMode);
+        if (TryReadMonitors(call) is not { } monitors)
+        {
+            call.Changes.AddNotApplicable(
+                ServiceStrings.DisplayName,
+                ServiceStrings.DisplayNotReadable
+            );
+            return;
+        }
+        var plans = Plan(monitors, DisplayNative.CurrentMode);
         if (plans.Count == 0)
         {
             call.Changes.AddSkip(ServiceStrings.DisplayName, ServiceStrings.DisplayAlreadyAtMax);

@@ -104,9 +104,9 @@ public class StartupManagerService(ILogger<StartupManagerService> logger)
                         publisher = app.Location switch
                         {
                             StartupAppLocation.UserStartupFolder
-                            or StartupAppLocation.CommonStartupFolder => "Folder Shortcut",
+                            or StartupAppLocation.CommonStartupFolder => string.Empty,
                             StartupAppLocation.UwpStartupTask => app.Publisher, // preset from package identity
-                            _ => "Registry",
+                            _ => string.Empty, // the location badge already says where it starts from
                         };
 
                     app.Publisher = publisher;

@@ -365,11 +365,9 @@ public static class TemplateReportWriter
             );
         }
 
-        var warnings = payload
-            .NotMeasured.Take(5)
-            .Select(n => Loc.Instance["Ai.Template.NotMeasured", n])
-            .ToList();
-
-        return new AiReport(string.Join(" ", summary), priorities, warnings);
+        // What could not be measured is a limit of Zentra, not a problem of the client's PC: it
+        // goes to the technical annex at the end of the PDF, never among the warnings in orange
+        // (version 1 test, 20/11/2026).
+        return new AiReport(string.Join(" ", summary), priorities, []);
     }
 }

@@ -1069,4 +1069,76 @@ public class SecurityAndPrivacy : LocalizedObject, IOptimizationCategory
             return context.Changes.ToApplyResult();
         }
     }
+
+    /// <summary>
+    ///     Edge without telemetry, shopping, rewards, recommendations or the first-run screens,
+    ///     through its policies (idea from WinUtil, MIT). Edge keeps working; it shows "managed by
+    ///     your organization", as with the background setting. Collections are left alone.
+    /// </summary>
+    [Optimization(
+        Id = "BC1A637C-BBF0-492B-8E4A-2CE27A1BB933",
+        Risk = OptimizationRisk.Safe,
+        Tags = OptimizationTags.Privacy
+    )]
+    public class DisableEdgeTelemetryAndAds : BaseOptimization
+    {
+        private const string Edge = @"HKLM\SOFTWARE\Policies\Microsoft\Edge";
+
+        public override Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            RegistryService.Write(
+                context,
+                new RegistryItem(
+                    @"HKLM\SOFTWARE\Policies\Microsoft\EdgeUpdate",
+                    "CreateDesktopShortcutDefault",
+                    0
+                ),
+                new RegistryItem(Edge, "DiagnosticData", 0),
+                new RegistryItem(Edge, "PersonalizationReportingEnabled", 0),
+                new RegistryItem(Edge, "UserFeedbackAllowed", 0),
+                new RegistryItem(Edge, "ShowRecommendationsEnabled", 0),
+                new RegistryItem(Edge, "HideFirstRunExperience", 1),
+                new RegistryItem(Edge, "EdgeShoppingAssistantEnabled", 0),
+                new RegistryItem(Edge, "ShowMicrosoftRewards", 0),
+                new RegistryItem(Edge, "MicrosoftEdgeInsiderPromotionEnabled", 0),
+                new RegistryItem(Edge, "WebWidgetAllowed", 0),
+                new RegistryItem(Edge, "AlternateErrorPagesEnabled", 0),
+                new RegistryItem(Edge, "ConfigureDoNotTrack", 1)
+            );
+            context.Logger.LogInformation("Edge telemetry and promotions turned off by policy");
+            return Task.FromResult(context.Changes.ToApplyResult());
+        }
+    }
+
+    /// <summary>
+    ///     Stops the firmware from running programs at every boot (Windows Platform Binary Table):
+    ///     some makers use it to install their apps without asking. Some laptops use it for their
+    ///     anti-theft service, which stops working (idea from WinUtil, MIT).
+    /// </summary>
+    [Optimization(
+        Id = "16220A2E-B535-473B-9B7A-1491B8F509CE",
+        Risk = OptimizationRisk.Moderate,
+        Tags = OptimizationTags.Security | OptimizationTags.System
+    )]
+    public class DisableWpbt : BaseOptimization
+    {
+        public override Task<ApplyResult> ApplyAsync(
+            IProgress<ProcessingProgress> progress,
+            OptimizationContext context
+        )
+        {
+            RegistryService.Write(
+                context,
+                new RegistryItem(
+                    @"HKLM\SYSTEM\CurrentControlSet\Control\Session Manager",
+                    "DisableWpbtExecution",
+                    1
+                )
+            );
+            return Task.FromResult(context.Changes.ToApplyResult());
+        }
+    }
 }

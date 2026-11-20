@@ -19,6 +19,8 @@ public sealed record BootTimeResult(
 ///     Reads boot times from the event log (plan phase 3). First choice: Diagnostics-Performance
 ///     event 100. Plan B when Windows does not log it: kernel start (Kernel-General 12) to user
 ///     logon (Winlogon 7001). Median of the last 3 boots in 30 days. Read-only.
+///     "Medir después" passes the time of "Medir antes": only the boots after it count, so the
+///     result never repeats the boots from before the service (it showed 55,1 s -> 55,1 s).
 /// </summary>
 public static class BootTimeProbe
 {
@@ -26,9 +28,12 @@ public static class BootTimeProbe
     private const long ThirtyDaysMs = 30L * 24 * 60 * 60 * 1000;
     private const int MaxSamples = 3;
 
-    public static BootTimeResult Read()
+    public static BootTimeResult Read() => Read(null);
+
+    /// <param name="bootsAfterUtc">Only boots after this moment count; null for the last 30 days.</param>
+    public static BootTimeResult Read(DateTime? bootsAfterUtc)
     {
-        var event100 = ReadEvent100();
+        var event100 = ReadEvent100(bootsAfterUtc);
         var culprits = ReadCulprits();
         if (event100.Count > 0)
             return new BootTimeResult(
@@ -38,7 +43,9 @@ public static class BootTimeProbe
                 culprits
             );
 
-        var planB = ReadKernelToLogon(out var reason);
+        var planB = ReadKernelToLogon(bootsAfterUtc, out var reason);
+        if (planB.Count == 0 && bootsAfterUtc is not null)
+            reason = NotMeasuredReason.NeedsRestart;
         return planB.Count > 0
             ? new BootTimeResult(
                 Measured<int>.Of(Median(planB)),
@@ -90,10 +97,23 @@ public static class BootTimeProbe
         return result;
     }
 
-    private static List<int> ReadEvent100()
+    /// <summary>The XPath condition for events after a moment (UTC), or nothing.</summary>
+    internal static string After(DateTime? utc) =>
+        utc is { } t
+            ? $" and TimeCreated[@SystemTime>='{t.ToUniversalTime():yyyy-MM-ddTHH:mm:ss.fffZ}']"
+            : "";
+
+    private static List<int> ReadEvent100(DateTime? bootsAfterUtc)
     {
         var values = new List<int>();
-        foreach (var data in ReadEvents(PerformanceLog, "EventID=100", MaxSamples, out _))
+        foreach (
+            var data in ReadEvents(
+                PerformanceLog,
+                "EventID=100" + After(bootsAfterUtc),
+                MaxSamples,
+                out _
+            )
+        )
             if (int.TryParse(data.GetValueOrDefault("BootTime"), out var ms) && ms > 0)
                 values.Add(ms);
         return values;
@@ -126,7 +146,10 @@ public static class BootTimeProbe
             .ToList();
     }
 
-    private static List<int> ReadKernelToLogon(out NotMeasuredReason reason)
+    private static List<int> ReadKernelToLogon(
+        DateTime? bootsAfterUtc,
+        out NotMeasuredReason reason
+    )
     {
         var starts = new List<DateTime>();
         foreach (
@@ -156,6 +179,8 @@ public static class BootTimeProbe
             .Select(e => e.Time)
             .ToList();
 
+        if (bootsAfterUtc is { } after)
+            starts.RemoveAll(s => s < after.ToUniversalTime());
         return PairBoots(starts, logons).ToList();
     }
 

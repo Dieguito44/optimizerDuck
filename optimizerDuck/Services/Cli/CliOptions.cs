@@ -1,3 +1,5 @@
+using optimizerDuck.Services.Profiles;
+
 namespace optimizerDuck.Services.Cli;
 
 /// <summary>What Zentra.exe returns in CLI mode (plan of improvements F3-02).</summary>
@@ -79,12 +81,30 @@ public sealed record CliOptions
     /// <summary>Deletes the follow-up task and its copy of Zentra (plan F3-05). Alone.</summary>
     public bool RemoveFollowUp { get; init; }
 
-    public bool UsesStandardPreset => PresetPath is { } p && StandardNames.Contains(p);
+    public bool UsesStandardPreset =>
+        BuiltInPreset is { } p && ReferenceEquals(p, ServicePreset.Standard);
 
-    private static readonly HashSet<string> StandardNames = new(
-        ["estandar", "estándar", "standard"],
+    /// <summary>
+    ///     A profile built into Zentra named instead of a file (version 1.1.0): "estandar",
+    ///     "equipo-lento", "juegos" or "privacidad". Null when the argument is a file.
+    /// </summary>
+    public ServicePreset? BuiltInPreset =>
+        PresetPath is { } p && BuiltInNames.TryGetValue(p, out var preset) ? preset : null;
+
+    private static readonly Dictionary<string, ServicePreset> BuiltInNames = new(
         StringComparer.OrdinalIgnoreCase
-    );
+    )
+    {
+        ["estandar"] = ServicePreset.Standard,
+        ["estándar"] = ServicePreset.Standard,
+        ["standard"] = ServicePreset.Standard,
+        ["equipo-lento"] = ServicePreset.SlowPc,
+        ["lento"] = ServicePreset.SlowPc,
+        ["juegos"] = ServicePreset.Gaming,
+        ["gaming"] = ServicePreset.Gaming,
+        ["privacidad"] = ServicePreset.Privacy,
+        ["privacy"] = ServicePreset.Privacy,
+    };
 
     /// <summary>True when Zentra was started with CLI arguments instead of to show its window.</summary>
     public static bool IsCliInvocation(IReadOnlyList<string> args) =>

@@ -149,4 +149,54 @@ public sealed class SessionStore(ILogger<SessionStore> logger)
 
     public static ServiceSession? Deserialize(string json) =>
         JsonConvert.DeserializeObject<ServiceSession>(json, MeasuredJsonConverter.Settings);
+
+    /// <summary>How long a session waits for its "after" measurement across restarts.</summary>
+    public static readonly TimeSpan ResumeWindow = TimeSpan.FromDays(2);
+
+    /// <summary>
+    ///     The newest session measured "before" and not yet "after", from the last two days. The
+    ///     Session page asks to restart the PC between the profile and "Medir después"; without
+    ///     this, the restarted Zentra started an empty session and the "before" was lost (Hyper-V
+    ///     test, 20/11/2026).
+    /// </summary>
+    public ServiceSession? LatestUnfinished(DateTimeOffset nowUtc) =>
+        LatestUnfinished(SessionsDirectory, nowUtc, logger);
+
+    internal static ServiceSession? LatestUnfinished(
+        string directory,
+        DateTimeOffset nowUtc,
+        ILogger? logger = null
+    )
+    {
+        if (!Directory.Exists(directory))
+            return null;
+        ServiceSession? best = null;
+        foreach (
+            var file in Directory.EnumerateFiles(
+                directory,
+                "session.json",
+                SearchOption.AllDirectories
+            )
+        )
+        {
+            try
+            {
+                var session = Deserialize(File.ReadAllText(file, Encoding.UTF8));
+                if (
+                    session is { Before: not null, After: null }
+                    && nowUtc - session.CreatedAtUtc is var age
+                    && age >= TimeSpan.Zero
+                    && age <= ResumeWindow
+                    && (best is null || session.CreatedAtUtc > best.CreatedAtUtc)
+                )
+                    best = session;
+            }
+            catch (Exception ex)
+                when (ex is IOException or UnauthorizedAccessException or JsonException)
+            {
+                logger?.LogWarning("Session file not readable: {File}: {Error}", file, ex.Message);
+            }
+        }
+        return best;
+    }
 }

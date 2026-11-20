@@ -272,7 +272,7 @@
                                         <!--  Top row  -->
                                         <DockPanel LastChildFill="False">
                                             <!--  App Name  -->
-                                            <ui:TextBlock FontTypography="BodyStrong" Text="{Binding Name}" />
+                                            <ui:TextBlock FontTypography="BodyStrong" Text="{Binding ShortName}" />
 
                                             <Border
                                                 Margin="8,0,0,0"
@@ -300,7 +300,7 @@
                                             Margin="0,2,0,0"
                                             FontTypography="Body"
                                             Foreground="{DynamicResource TextFillColorDisabledBrush}"
-                                            Text="{Binding Publisher}"
+                                            Text="{Binding PublisherName}"
                                             TextTrimming="CharacterEllipsis" />
 
                                         <!--  Install location  -->

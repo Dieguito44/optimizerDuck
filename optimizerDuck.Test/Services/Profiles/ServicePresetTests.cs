@@ -26,8 +26,9 @@ public class ServicePresetTests
         })
         .ToList();
 
+    // Settings behind the confirmation dialog are refused for another reason (F1-09).
     private static IOptimization FirstWith(OptimizationRisk risk) =>
-        Catalog.First(o => o.Risk == risk);
+        Catalog.First(o => o.Risk == risk && o.Confirmation == OptimizationConfirmation.None);
 
     private static string Json(
         string settings = "[]",

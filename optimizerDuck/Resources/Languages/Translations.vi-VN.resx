@@ -2601,6 +2601,9 @@ Cập nhật ngay để trải nghiệm các tính năng mới, cải tiến và
   <data name="Diagnostic.Reason.NotInReferenceTable" xml:space="preserve">
     <value>Not in the Zentra reference table yet</value>
   </data>
+  <data name="Diagnostic.Reason.NeedsRestart" xml:space="preserve">
+    <value>Restart the PC and measure again</value>
+  </data>
   <data name="Diagnostic.Reason.RequiresExternalTool" xml:space="preserve">
     <value>Needs a tool Zentra does not include yet</value>
   </data>
@@ -3051,6 +3054,9 @@ Cập nhật ngay để trải nghiệm các tính năng mới, cải tiến và
   <data name="Report.Section.BootCulprits" xml:space="preserve">
     <value>What slows down startup</value>
   </data>
+  <data name="Report.NotMeasured.Note" xml:space="preserve">
+    <value>These are Zentra's limits on this PC, not faults of the computer.</value>
+  </data>
   <data name="Report.Section.NotMeasured" xml:space="preserve">
     <value>What could not be measured</value>
   </data>
@@ -3329,6 +3335,9 @@ Cập nhật ngay để trải nghiệm các tính năng mới, cải tiến và
   </data>
   <data name="Session.Ai.Key.None" xml:space="preserve">
     <value>No key: the report will use the template.</value>
+  </data>
+  <data name="Session.Ai.Key.Embedded" xml:space="preserve">
+    <value>Zentra's built-in key: the report is written right here with the AI, with the client's authorization.</value>
   </data>
   <data name="Session.Ai.Key.InMemory" xml:space="preserve">
     <value>Key loaded in memory. It is erased when Zentra closes.</value>
@@ -5112,5 +5121,116 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   </data>
   <data name="Settings.Header.Description" xml:space="preserve">
     <value>Language, theme, crash reports and advanced options.</value>
+  </data>
+  <data name="Optimizer.Expert" xml:space="preserve">
+    <value>Expert</value>
+  </data>
+  <data name="Optimizer.Expert.RemoveEdge.Name" xml:space="preserve">
+    <value>Remove Microsoft Edge</value>
+  </data>
+  <data name="Optimizer.Expert.RemoveEdge.ShortDescription" xml:space="preserve">
+    <value>Uninstalls Edge with its own uninstaller. Keeps the client's favorites and passwords and does not touch WebView2, which other apps need. Windows Update may put it back; to reinstall it: winget install Microsoft.Edge.</value>
+  </data>
+  <data name="Optimizer.Expert.RemoveEdge.Error.NotInstalled" xml:space="preserve">
+    <value>Edge is not installed.</value>
+  </data>
+  <data name="Optimizer.Expert.DisableBitLocker.Name" xml:space="preserve">
+    <value>Turn off BitLocker</value>
+  </data>
+  <data name="Optimizer.Expert.DisableBitLocker.ShortDescription" xml:space="preserve">
+    <value>Decrypts the Windows drive; it continues in the background and can take a while. Zentra does not turn it back on: that is done in Settings, Privacy and security, Device encryption, with a new recovery key. Only with the client's authorization.</value>
+  </data>
+  <data name="Optimizer.Expert.DisableBitLocker.Error.NotAvailable" xml:space="preserve">
+    <value>BitLocker is not available on this PC.</value>
+  </data>
+  <data name="Optimizer.Expert.DisableIpv6.Name" xml:space="preserve">
+    <value>Turn off IPv6</value>
+  </data>
+  <data name="Optimizer.Expert.DisableIpv6.ShortDescription" xml:space="preserve">
+    <value>Turns off IPv6 on the network adapters and in Windows; applies after a restart. Microsoft does not recommend it: some games, internet providers and features need it. Can be reverted.</value>
+  </data>
+  <data name="Optimizer.Expert.DisableSearchIndexing.Name" xml:space="preserve">
+    <value>Turn off Windows Search (indexer)</value>
+  </data>
+  <data name="Optimizer.Expert.DisableSearchIndexing.ShortDescription" xml:space="preserve">
+    <value>Stops and disables the search service. The disk works less (useful on mechanical disks), but searching files in Explorer and Start becomes much slower. Can be reverted.</value>
+  </data>
+  <data name="Optimizer.Expert.DisableReservedStorage.Name" xml:space="preserve">
+    <value>Free the reserved storage</value>
+  </data>
+  <data name="Optimizer.Expert.DisableReservedStorage.ShortDescription" xml:space="preserve">
+    <value>Frees the 7 to 10 GB Windows keeps for updates. Only worth it on small disks; turn it back on before a big Windows update. Can be reverted.</value>
+  </data>
+  <data name="Optimizer.Expert.DisableReservedStorage.Error.NotAvailable" xml:space="preserve">
+    <value>This Windows does not allow changing the reserved storage now (an update may be pending).</value>
+  </data>
+  <data name="Optimizer.Expert.DisableUnsignedRdpWarning.Name" xml:space="preserve">
+    <value>Remove the unsigned RDP file warning</value>
+  </data>
+  <data name="Optimizer.Expert.DisableUnsignedRdpWarning.ShortDescription" xml:space="preserve">
+    <value>Removes the warning when opening unsigned remote desktop (.rdp) files. That warning protects against phishing: use it only on a technician's PC that opens its own .rdp files. Can be reverted.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DisableEdgeTelemetryAndAds.Name" xml:space="preserve">
+    <value>Edge without telemetry or ads</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DisableEdgeTelemetryAndAds.ShortDescription" xml:space="preserve">
+    <value>Turns off Edge diagnostic data, shopping, Rewards, recommendations and the welcome screens. Edge keeps working and shows "Managed by your organization".</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DisableWpbt.Name" xml:space="preserve">
+    <value>Turn off the maker's programs from the BIOS (WPBT)</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DisableWpbt.ShortDescription" xml:space="preserve">
+    <value>Stops the BIOS from installing the maker's programs at every boot without asking. On some laptops it also turns off their anti-theft service.</value>
+  </data>
+  <data name="Optimizer.UserExperience.DetailedBlueScreen.Name" xml:space="preserve">
+    <value>Blue screen with details</value>
+  </data>
+  <data name="Optimizer.UserExperience.DetailedBlueScreen.ShortDescription" xml:space="preserve">
+    <value>If Windows crashes, the blue screen shows the technical details of the error instead of the sad face. Useful for diagnosis.</value>
+  </data>
+  <data name="Optimizer.Gpu.DisableMultiplaneOverlay.Name" xml:space="preserve">
+    <value>Turn off MPO (Multiplane Overlay)</value>
+  </data>
+  <data name="Optimizer.Gpu.DisableMultiplaneOverlay.ShortDescription" xml:space="preserve">
+    <value>Fixes flicker, black screens and video driver resets on some graphics cards. Applies after a restart. Use it only if the PC has those symptoms.</value>
+  </data>
+  <data name="Preset.Current.BuiltIn" xml:space="preserve">
+    <value>Profile: {0}. {1}</value>
+  </data>
+  <data name="Profile.Builtin.Standard" xml:space="preserve">
+    <value>For everyone: privacy, ads, AI, junk apps and storage.</value>
+  </data>
+  <data name="Profile.Builtin.SlowPc" xml:space="preserve">
+    <value>The standard one plus less background work: visual effects, background apps and browsers, rarely used services and the indexer. For old PCs, mechanical disks or little RAM.</value>
+  </data>
+  <data name="Profile.Builtin.Gaming" xml:space="preserve">
+    <value>The standard one plus high-performance graphics for games, the monitor at its highest refresh rate, graphics settings by maker, USB and network without power saving.</value>
+  </data>
+  <data name="Profile.Builtin.Privacy" xml:space="preserve">
+    <value>The standard one plus full telemetry, error reports, Copilot, Recall, Edge without telemetry and the maker's programs from the BIOS.</value>
+  </data>
+  <data name="Profile.Suggested" xml:space="preserve">
+    <value>Suggested for this PC: {0} ({1}).</value>
+  </data>
+  <data name="Profile.Reason.Hdd" xml:space="preserve">
+    <value>Windows is on a mechanical disk</value>
+  </data>
+  <data name="Profile.Reason.LowRam" xml:space="preserve">
+    <value>it has {0} GB of RAM</value>
+  </data>
+  <data name="Profile.Reason.Games" xml:space="preserve">
+    <value>it has games installed</value>
+  </data>
+  <data name="Profile.Reason.Default" xml:space="preserve">
+    <value>nothing special was found</value>
+  </data>
+  <data name="Profile.Selector" xml:space="preserve">
+    <value>Profile</value>
+  </data>
+  <data name="Activity.Irreversible" xml:space="preserve">
+    <value>(no way back: {0})</value>
+  </data>
+  <data name="Session.Resumed" xml:space="preserve">
+    <value>Session resumed: measured "before" on {0}. Now measure "after".</value>
   </data>
 </root>

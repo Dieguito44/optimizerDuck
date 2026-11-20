@@ -1,6 +1,8 @@
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Net.Http;
+using System.Net.Sockets;
 using Microsoft.Extensions.Logging;
 using optimizerDuck.Common.Helpers;
 
@@ -29,12 +31,15 @@ public sealed class SpeedTestService(ILogger<SpeedTestService> logger)
         using var client = HttpClientFactory.CreateClient(TimeSpan.FromSeconds(60), logger);
 
         progress?.Report("latency");
-        var latency = await MedianAsync(
-            Enumerable
-                .Range(0, LatencyProbes)
-                .Select(_ => (Func<Task<double?>>)(() => LatencyAsync(client, ct))),
-            ct
-        );
+        var address = await ResolveAsync(ct);
+        var latency = address is null
+            ? null
+            : await MedianAsync(
+                Enumerable
+                    .Range(0, LatencyProbes)
+                    .Select(_ => (Func<Task<double?>>)(() => LatencyAsync(address, ct))),
+                ct
+            );
 
         progress?.Report("download");
         var download = await MedianAsync(
@@ -96,21 +101,47 @@ public sealed class SpeedTestService(ILogger<SpeedTestService> logger)
     internal static double Mbps(long bytes, TimeSpan elapsed) =>
         elapsed.TotalSeconds <= 0 ? 0 : bytes * 8 / elapsed.TotalSeconds / 1_000_000;
 
-    private async Task<double?> LatencyAsync(HttpClient client, CancellationToken ct)
+    /// <summary>The address of the test server, resolved once so DNS is not timed as latency.</summary>
+    private async Task<IPAddress?> ResolveAsync(CancellationToken ct)
     {
         try
         {
+            var addresses = await Dns.GetHostAddressesAsync(Host, ct);
+            return addresses.FirstOrDefault(a => a.AddressFamily == AddressFamily.InterNetwork)
+                ?? addresses.FirstOrDefault();
+        }
+        catch (SocketException ex)
+        {
+            logger.LogDebug(ex, "Could not resolve {Host}", Host);
+            return null;
+        }
+    }
+
+    /// <summary>
+    ///     One round trip: the time to open a TCP connection to the server (version 1 test,
+    ///     20/11/2026). Timing a whole HTTPS request added Cloudflare's own processing: it said
+    ///     208 ms on a line whose round trip was 29 ms.
+    /// </summary>
+    private async Task<double?> LatencyAsync(IPAddress address, CancellationToken ct)
+    {
+        try
+        {
+            using var socket = new Socket(
+                address.AddressFamily,
+                SocketType.Stream,
+                ProtocolType.Tcp
+            )
+            {
+                NoDelay = true,
+            };
+            using var timeout = CancellationTokenSource.CreateLinkedTokenSource(ct);
+            timeout.CancelAfter(TimeSpan.FromSeconds(5));
             var watch = Stopwatch.StartNew();
-            using var response = await client.GetAsync(
-                Down + "0",
-                HttpCompletionOption.ResponseHeadersRead,
-                ct
-            );
-            response.EnsureSuccessStatusCode();
+            await socket.ConnectAsync(address, 443, timeout.Token);
             return watch.Elapsed.TotalMilliseconds;
         }
         catch (Exception ex)
-            when (ex is HttpRequestException or TaskCanceledException && !ct.IsCancellationRequested
+            when (ex is SocketException or OperationCanceledException && !ct.IsCancellationRequested
             )
         {
             logger.LogDebug(ex, "Latency probe failed");

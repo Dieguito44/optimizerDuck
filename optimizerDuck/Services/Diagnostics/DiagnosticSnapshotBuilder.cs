@@ -13,6 +13,12 @@ public sealed record DiskProbeRow
     /// <summary>MSFT_PhysicalDisk.MediaType: 3 HDD, 4 SSD, 5 SCM, 0 unspecified.</summary>
     public int? MediaType { get; init; }
 
+    /// <summary>
+    ///     MSFT_PhysicalDisk.SpindleSpeed in RPM: above 0 only on a spinning disk; 0 for solid
+    ///     state, 0xFFFFFFFF when unknown. Used when MediaType says "unspecified".
+    /// </summary>
+    public long? SpindleSpeed { get; init; }
+
     /// <summary>MSFT_PhysicalDisk.BusType: 11 SATA, 17 NVMe, 7 USB, ...</summary>
     public int? BusType { get; init; }
     public long? SizeBytes { get; init; }
@@ -119,7 +125,7 @@ public static class DiagnosticSnapshotBuilder
             Gpus = gpus,
             IntegratedGraphicsOnly = IntegratedOnly(gpus),
             Disks = disks,
-            SystemVolume = BuildSystemVolume(info.Storage),
+            SystemVolume = BuildSystemVolume(info.Storage, disks),
             Config = new ConfigSnapshot
             {
                 PowerPlan = MapPowerPlan(info.Power.SchemeId),
@@ -254,7 +260,7 @@ public static class DiagnosticSnapshotBuilder
                     (row.ReadErrorsUncorrected ?? 0) + (row.WriteErrorsUncorrected ?? 0)
                 );
 
-        var kind = MapMediaType(row.MediaType, row.BusType);
+        var kind = MapMediaType(row.MediaType, row.BusType, row.SpindleSpeed);
 
         // NVMe drives report "Percentage Used" from their health log, so Windows' Wear is real.
         // On SATA, Windows does not decode the vendor SMART attributes and reports 0 even on a
@@ -293,12 +299,23 @@ public static class DiagnosticSnapshotBuilder
         };
     }
 
-    internal static StorageMediaType MapMediaType(int? mediaType, int? busType) =>
+    internal static StorageMediaType MapMediaType(
+        int? mediaType,
+        int? busType,
+        long? spindleSpeed = null
+    ) =>
         mediaType switch
         {
             3 => StorageMediaType.Hdd,
             4 or 5 => busType == 17 ? StorageMediaType.Nvme : StorageMediaType.Ssd,
             _ => busType == 17 ? StorageMediaType.Nvme : StorageMediaType.Unknown,
+        } switch
+        {
+            // Windows says "unspecified" on some controllers (version 1 test, 20/11/2026: a PC
+            // that took 55 s to boot showed "Windows en un disco mecánico: no medible"). A disk
+            // that reports a rotation speed is a spinning one.
+            StorageMediaType.Unknown when spindleSpeed is > 0 and < 100_000 => StorageMediaType.Hdd,
+            var known => known,
         };
 
     internal static Measured<string> MapBus(int? busType) =>
@@ -316,7 +333,10 @@ public static class DiagnosticSnapshotBuilder
             _ => Measured<string>.Of("Other"),
         };
 
-    private static SystemVolumeSnapshot BuildSystemVolume(StorageInfo storage)
+    private static SystemVolumeSnapshot BuildSystemVolume(
+        StorageInfo storage,
+        IReadOnlyList<DiskSnapshot> disks
+    )
     {
         var volume = storage.Volumes.FirstOrDefault(v => v.IsSystemDrive);
         if (volume is null || volume.TotalBytes <= 0)
@@ -330,9 +350,21 @@ public static class DiagnosticSnapshotBuilder
         {
             TotalBytes = Measured<long>.Of(volume.TotalBytes),
             FreeBytes = Measured<long>.Of(volume.FreeBytes),
-            Kind = volume.MediaType,
+            Kind = SystemKind(volume.MediaType, disks),
         };
     }
+
+    /// <summary>
+    ///     The kind of the disk Windows is on: the volume's own answer (seek penalty), or, when
+    ///     that query fails, the physical disk that holds Windows.
+    /// </summary>
+    internal static StorageMediaType SystemKind(
+        StorageMediaType volumeKind,
+        IReadOnlyList<DiskSnapshot> disks
+    ) =>
+        volumeKind != StorageMediaType.Unknown
+            ? volumeKind
+            : disks.FirstOrDefault(d => d.IsSystem)?.Kind ?? StorageMediaType.Unknown;
 
     internal static Measured<PowerPlanKind> MapPowerPlan(Guid? scheme)
     {

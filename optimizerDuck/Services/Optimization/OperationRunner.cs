@@ -64,9 +64,15 @@ public class OperationRunner(
         var record = ChangeRecord.From(changes, request.Subject, result.Status.ToString());
         ChangeRecordStore.TryWrite(record, _logger);
 
-        // The activity log at the bottom of the window (redesign): one line per run.
+        // The activity log at the bottom of the window (redesign): one line per run. A failure
+        // says why (version 1 test, 20/11/2026: "falló" alone left nothing to go on).
         ActivityLog.Add(
-            Loc.Instance[$"Activity.{result.Status}", request.DisplayName, record.ChangedCount],
+            ActivityLine(
+                result,
+                request.DisplayName,
+                record.ChangedCount,
+                record.CountOf(ChangeKind.Irreversible)
+            ),
             result.Status switch
             {
                 OptimizationSuccessResult.Success => ActivityKind.Good,
@@ -77,6 +83,35 @@ public class OperationRunner(
         );
 
         return result;
+    }
+
+    /// <param name="irreversible">
+    ///     Steps that changed the PC with no way back (removing Edge, BitLocker, DISM). They count
+    ///     as changes and are flagged: "cambios: 0" hid them (Hyper-V test, 20/11/2026).
+    /// </param>
+    internal static string ActivityLine(
+        OptimizationResult result,
+        string name,
+        int changed,
+        int irreversible = 0
+    )
+    {
+        var line = Loc.Instance[$"Activity.{result.Status}", name, changed + irreversible];
+        if (irreversible > 0)
+            line += " " + Loc.Instance["Activity.Irreversible", irreversible];
+        if (
+            result.Status
+            is not (OptimizationSuccessResult.Failed or OptimizationSuccessResult.PartialSuccess)
+        )
+            return line;
+        var why = result
+            .FailedSteps.Select(f => f.Error)
+            .FirstOrDefault(e => !string.IsNullOrWhiteSpace(e));
+        if (string.IsNullOrWhiteSpace(why))
+            why = result.Message;
+        return string.IsNullOrWhiteSpace(why) || line.Contains(why, StringComparison.Ordinal)
+            ? line
+            : $"{line} ({why.Trim().TrimEnd('.')})";
     }
 
     private async Task<OptimizationResult> RunCoreAsync(
@@ -105,8 +140,14 @@ public class OperationRunner(
         Exception? exception = null;
         try
         {
+            // The PC's facts (RAM, GPU, disks) must be loaded before a setting reads them: with
+            // the empty snapshot, a setting applied before the first scan finished saw 0 KB of RAM
+            // and failed ("Invalid RAM: 0", version 1 test, 20/11/2026).
+            var snapshot = await systemInfoService
+                .EnsureSnapshotAsync(cancellationToken)
+                .ConfigureAwait(false);
             var applyResult = await request
-                .Work(progress, NewContext(changes, request.RunLogger, cancellationToken))
+                .Work(progress, NewContext(changes, request.RunLogger, snapshot, cancellationToken))
                 .ConfigureAwait(false);
 
             providerError = string.IsNullOrWhiteSpace(applyResult.ErrorMessage)
@@ -253,6 +294,7 @@ public class OperationRunner(
     private OptimizationContext NewContext(
         ChangeSet changes,
         ILogger runLogger,
+        SystemInfo snapshot,
         CancellationToken cancellationToken
     )
     {
@@ -261,7 +303,7 @@ public class OperationRunner(
             Changes = changes,
             Logger = runLogger,
             CancellationToken = cancellationToken,
-            Snapshot = systemInfoService.Snapshot,
+            Snapshot = snapshot,
             StreamService = streamService,
             Shell = shellService,
             PowerPlans = powerPlanService,

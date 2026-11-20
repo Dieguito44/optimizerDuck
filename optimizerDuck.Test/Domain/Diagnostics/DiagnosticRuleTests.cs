@@ -296,6 +296,28 @@ public class DiagnosticRuleTests
 
         var result = Eval(new SsdHealthRule(), snapshot);
         Assert.Equal(Severity.High, result.Finding!.Severity);
+        // A lifetime counter: back up and watch it; replacing is for a disk Windows calls unhealthy.
+        Assert.Equal([ActionIds.Backup], result.Finding.ActionIds);
+    }
+
+    [Fact]
+    public void SsdHealth_UnhealthyDisk_IsCriticalAndRecommendsReplacing()
+    {
+        var snapshot = DiegoPc() with
+        {
+            Disks =
+            [
+                Disk(
+                    0,
+                    "KINGSTON SA400S37/480GB",
+                    StorageMediaType.Ssd,
+                    health: DiskHealth.Unhealthy
+                ),
+            ],
+        };
+
+        var result = Eval(new SsdHealthRule(), snapshot);
+        Assert.Equal(Severity.Critical, result.Finding!.Severity);
         Assert.Equal([ActionIds.Backup, ActionIds.HardwareReplaceSsd], result.Finding.ActionIds);
     }
 

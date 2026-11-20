@@ -34,12 +34,32 @@
                         Foreground="{DynamicResource ZentraBrandBrush}"
                         Symbol="ShieldCheckmark24" />
                     <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Optimize.Standard.Title}" />
+                        <Grid ColumnDefinitions="Auto,*">
+                            <ui:TextBlock
+                                Margin="0,0,10,0"
+                                VerticalAlignment="Center"
+                                FontTypography="BodyStrong"
+                                Text="{ext:Loc Profile.Selector}" />
+                            <ComboBox
+                                Grid.Column="1"
+                                MinWidth="240"
+                                HorizontalAlignment="Left"
+                                DisplayMemberPath="Name"
+                                IsEnabled="{Binding ViewModel.Profile.IsBusy, Converter={StaticResource InverseBooleanConverter}}"
+                                ItemsSource="{Binding ViewModel.Profile.BuiltInPresets}"
+                                SelectedItem="{Binding ViewModel.Profile.SelectedBuiltIn, Mode=TwoWay}" />
+                        </Grid>
+                        <ui:TextBlock
+                            Margin="0,6,0,0"
+                            FontTypography="Caption"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{Binding ViewModel.Profile.PresetText}"
+                            TextWrapping="Wrap" />
                         <ui:TextBlock
                             Margin="0,2,0,0"
                             FontTypography="Caption"
-                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                            Text="{ext:Loc Optimize.Standard.Description}"
+                            Foreground="{DynamicResource ZentraBrandBrush}"
+                            Text="{Binding ViewModel.Profile.SuggestionText}"
                             TextWrapping="Wrap" />
                         <ui:TextBlock
                             Margin="0,4,0,0"

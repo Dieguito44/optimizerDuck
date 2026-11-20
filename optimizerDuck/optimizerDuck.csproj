@@ -20,8 +20,8 @@
         <Authors>Dieguito44; fatDuck (optimizerDuck)</Authors>
         <ApplicationIcon>Logo.ico</ApplicationIcon>
         <Company>Dieguito44</Company>
-        <FileVersion>2.29.0</FileVersion>
-        <Version>2.29.0</Version>
+        <FileVersion>1.1.1</FileVersion>
+        <Version>1.1.1</Version>
         <Product>Zentra</Product>
         <Copyright>Copyright (C) 2026 Dieguito44. Based on optimizerDuck, Copyright (C) 2025-2026 fatDuck. GPL v3.</Copyright>
         <AssemblyTitle>Zentra</AssemblyTitle>
@@ -133,4 +133,24 @@
             <DependentUpon>Translations.resx</DependentUpon>
         </Compile>
     </ItemGroup>
+
+    <!--
+        The Claude API key, only in "dotnet publish" on Diego's PC (20/11/2026, see
+        Services/Ai/EmbeddedApiKey.cs). It comes from a DPAPI file outside the repository and is
+        written masked under obj/. GitHub builds, tests and plain builds carry no key.
+    -->
+    <PropertyGroup>
+        <ZentraKeyFile Condition="'$(ZentraKeyFile)' == ''"
+            >$(MSBuildProjectDirectory)\..\..\zentra-secretos\clave-api.dpapi</ZentraKeyFile>
+    </PropertyGroup>
+    <Target
+        Name="ZentraEmbedApiKey"
+        BeforeTargets="CoreCompile"
+        Condition="'$(_IsPublishing)' == 'true' And '$(GITHUB_ACTIONS)' != 'true' And Exists('$(ZentraKeyFile)')"
+    >
+        <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\tools\embed-api-key.ps1&quot; -KeyFile &quot;$(ZentraKeyFile)&quot; -OutFile &quot;$(IntermediateOutputPath)EmbeddedApiKey.g.cs&quot;" />
+        <ItemGroup>
+            <Compile Include="$(IntermediateOutputPath)EmbeddedApiKey.g.cs" />
+        </ItemGroup>
+    </Target>
 </Project>

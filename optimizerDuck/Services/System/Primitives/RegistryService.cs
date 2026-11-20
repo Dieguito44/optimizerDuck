@@ -600,7 +600,7 @@ public static class RegistryService
                 TryReadValue(item, out var current, call.Logger) && current is not null
                     ? DisplayValue(current)
                     : null,
-                "(delete)"
+                PlannedChange.DeleteValue
             );
             return OpResult.Success();
         }

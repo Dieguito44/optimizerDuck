@@ -97,11 +97,13 @@ public static class ScheduledTaskService
     {
         if (call.Preview is { } plan)
         {
+            var state = GetTaskEnabledState(fullPath);
             plan.Add(
                 PlannedChangeKind.Task,
                 fullPath,
-                GetTaskEnabledState(fullPath).ToString(),
-                IsProtectedTask(fullPath) ? "(protected: unchanged)" : "Disabled"
+                state.ToString(),
+                IsProtectedTask(fullPath) ? "(protected: unchanged)" : "Disabled",
+                targetMissing: state == TaskEnabledState.NotFound
             );
             return OpResult.Success();
         }
@@ -226,11 +228,13 @@ public static class ScheduledTaskService
     {
         if (call.Preview is { } plan)
         {
+            var state = GetTaskEnabledState(fullPath);
             plan.Add(
                 PlannedChangeKind.Task,
                 fullPath,
-                GetTaskEnabledState(fullPath).ToString(),
-                "Enabled"
+                state.ToString(),
+                "Enabled",
+                targetMissing: state == TaskEnabledState.NotFound
             );
             return OpResult.Success();
         }

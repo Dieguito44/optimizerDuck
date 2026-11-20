@@ -42,16 +42,21 @@ public sealed class MeasurementService(
     public static readonly TimeSpan IdleWindow = TimeSpan.FromSeconds(60);
     private static readonly TimeSpan SampleEvery = TimeSpan.FromSeconds(2);
 
+    /// <param name="bootsAfterUtc">
+    ///     For "Medir después": when "Medir antes" ran. Only later boots are timed.
+    /// </param>
     public async Task<Measurement> MeasureAsync(
         MeasurementPhase phase,
         IProgress<MeasurementProgress>? progress,
-        CancellationToken ct
+        CancellationToken ct,
+        DateTimeOffset? bootsAfterUtc = null
     )
     {
         var captured = timeProvider.GetUtcNow();
 
         progress?.Report(new(MeasurementStep.Boot));
-        var boot = await Task.Run(BootTimeProbe.Read, ct).ConfigureAwait(false);
+        var after = phase == MeasurementPhase.After ? bootsAfterUtc?.UtcDateTime : null;
+        var boot = await Task.Run(() => BootTimeProbe.Read(after), ct).ConfigureAwait(false);
 
         await WaitForIdleAsync(progress, ct).ConfigureAwait(false);
         progress?.Report(new(MeasurementStep.IdleRam, (int)IdleWindow.TotalSeconds));

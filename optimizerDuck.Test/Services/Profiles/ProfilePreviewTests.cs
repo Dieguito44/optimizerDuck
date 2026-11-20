@@ -24,6 +24,32 @@ public class ProfilePreviewTests
     private const string TestKey = @"HKCU\Software\ZentraTests\Preview";
 
     [Fact]
+    public async Task MissingTargets_InPreview_AreNotCountedAsChanges()
+    {
+        // Version 1 test (20/11/2026): a service, a task or a value to delete that does not exist
+        // on this PC is skipped when applying, so the preview must not list it as a change.
+        var plan = new PreviewPlan { CurrentSetting = "Test" };
+        var call = new OpCall { Logger = NullLogger.Instance, Preview = plan };
+
+        await ServiceProcessService.ChangeServiceStartupTypeAsync(
+            call,
+            new ServiceItem("ZentraNoSuchService", ServiceStartupType.Manual)
+        );
+        ScheduledTaskService.DisableTask(call, @"\ZentraTests\NoSuchTask");
+        RegistryService.DeleteValue(call, new RegistryItem(TestKey, "NoSuchValue"));
+        RegistryService.Write(call, new RegistryItem(TestKey, "Value", 1));
+
+        Assert.Equal(4, plan.Items.Count);
+        Assert.True(plan.Items[0].TargetMissing);
+        Assert.True(plan.Items[1].TargetMissing);
+        Assert.True(plan.Items[2].IsAlreadyThere);
+        Assert.Equal(
+            [TestKey + @"\Value"],
+            plan.Items.Where(c => c.WillChange).Select(c => c.Target)
+        );
+    }
+
+    [Fact]
     public void RegistryWrite_InPreview_DescribesAndDoesNotWrite()
     {
         var plan = new PreviewPlan { CurrentSetting = "Test" };

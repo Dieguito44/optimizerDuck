@@ -1,0 +1,47 @@
+name: Pruebas completas
+
+# The heavy test for version 1, on GitHub's disposable runner (elevated), never on a technician's PC:
+# every setting is applied and reverted for real, plus every test that needs administrator.
+# Runs on demand and on pushes to "pruebas-*" branches.
+on:
+  workflow_dispatch:
+  push:
+    branches: [ 'pruebas-*' ]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  completas:
+    runs-on: windows-latest
+    timeout-minutes: 120
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 10.0.x
+          cache: true
+          cache-dependency-path: |
+            optimizerDuck/optimizerDuck.csproj
+            optimizerDuck.Test/optimizerDuck.Test.csproj
+
+      - name: Build
+        run: dotnet build optimizerDuck.slnx --configuration Release
+
+      - name: Test (every setting applied and reverted)
+        env:
+          ZENTRA_SANDBOX: '1'
+          ZENTRA_SANDBOX_REPORT: ${{ github.workspace }}\ajustes.txt
+        run: dotnet run --project optimizerDuck.Test/optimizerDuck.Test.csproj --configuration Release --no-build -- -longRunning 60 -parallel none
+
+      - name: Report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: informe-ajustes
+          path: ajustes.txt
+          if-no-files-found: warn

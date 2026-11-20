@@ -1,7 +1,9 @@
 using System.IO;
+using System.Reflection;
 using Microsoft.Extensions.Logging.Abstractions;
 using optimizerDuck.Common.Helpers;
 using optimizerDuck.Domain.Abstractions;
+using optimizerDuck.Domain.Attributes;
 using optimizerDuck.Domain.Execution;
 using optimizerDuck.Domain.Optimizations.Models;
 using optimizerDuck.Domain.UI;
@@ -38,16 +40,99 @@ public class ProfileApplyRevertCiTests
                 "Applies real changes: runs only on the disposable GitHub runner, elevated."
             );
 
+        var problems = new List<string>();
+        var checkedSettings = await ApplyAndRevertAsync(
+            StandardServiceProfile.Settings,
+            problems,
+            []
+        );
+
+        Assert.True(checkedSettings > 0, "No profile setting could be checked on this runner.");
+        Assert.True(problems.Count == 0, string.Join(Environment.NewLine, problems));
+    }
+
+    /// <summary>
+    ///     The same check for every setting Zentra has, not only the profile's, on a real Windows 11:
+    ///     only inside Windows Sandbox (ZENTRA_SANDBOX=1, elevated), which is thrown away afterwards.
+    ///     Settings behind the "No reversible" dialog are left out. One line per setting goes to
+    ///     ZENTRA_SANDBOX_REPORT when set. Added for the version 1 test (20/11/2026).
+    /// </summary>
+    [Fact]
+    public async Task EverySetting_AppliesAndRevertsToTheExactPreviousState_InTheSandbox()
+    {
+        if (
+            Environment.GetEnvironmentVariable("ZENTRA_SANDBOX") != "1"
+            || !Environment.IsPrivilegedProcess
+        )
+            Assert.Skip("Applies every setting for real: only inside Windows Sandbox, elevated.");
+
+        var types = typeof(BaseOptimization)
+            .Assembly.GetTypes()
+            .Where(t =>
+                !t.IsAbstract
+                && typeof(BaseOptimization).IsAssignableFrom(t)
+                && t.GetCustomAttribute<OptimizationAttribute>() is { } a
+                && a.Confirmation == OptimizationConfirmation.None
+                && t.DeclaringType?.Name != "Debug" // the Debug category exists only in Debug builds
+            )
+            .OrderBy(t => t.DeclaringType?.Name)
+            .ThenBy(t => t.Name)
+            .ToList();
+        var problems = new List<string>();
+        var report = new List<string>();
+        var checkedSettings = await ApplyAndRevertAsync(types, problems, report);
+
+        // GitHub's runner is Windows Server, which Zentra does not serve: what fails only there
+        // stays in the report as KNOWN, with its reason, and does not fail the run.
+        var snapshot = await new SystemInfoService(
+            NullLogger<SystemInfoService>.Instance
+        ).EnsureSnapshotAsync(TestContext.Current.CancellationToken);
+        if (snapshot.Windows.Edition == WindowsEdition.Server)
+            foreach (var p in problems.ToList())
+                if (
+                    KnownOnWindowsServer.FirstOrDefault(k => p.StartsWith(k.Key + ":")) is
+                    { Key: not null } known
+                )
+                {
+                    problems.Remove(p);
+                    report.Add($"KNOWN {p[..Math.Min(160, p.Length)]} ({known.Value})");
+                }
+
+        if (Environment.GetEnvironmentVariable("ZENTRA_SANDBOX_REPORT") is { Length: > 0 } path)
+            File.WriteAllLines(
+                path,
+                [
+                    $"settings: {types.Count}, checked: {checkedSettings}, problems: {problems.Count}",
+                    .. report,
+                    "--- problems",
+                    .. problems,
+                ]
+            );
+        Assert.True(problems.Count == 0, string.Join(Environment.NewLine, problems));
+    }
+
+    private static readonly Dictionary<string, string> KnownOnWindowsServer = new()
+    {
+        ["WeeklyRestorePoints"] = "Windows Server has no System Restore",
+        ["DisablePowerSaving"] =
+            "the USB AutomaticSurpriseRemoval key does not exist on Windows Server and its parent is protected; on Windows 11 it exists and administrators can write it",
+    };
+
+    private static async Task<int> ApplyAndRevertAsync(
+        IEnumerable<Type> types,
+        List<string> problems,
+        List<string> report
+    )
+    {
         var snapshot = await new SystemInfoService(
             NullLogger<SystemInfoService>.Instance
         ).RefreshAsync(TestContext.Current.CancellationToken);
-        var problems = new List<string>();
         var checkedSettings = 0;
 
         await RunInStaThreadAsync(async () =>
         {
             var service = CreateService();
-            foreach (var type in StandardServiceProfile.Settings)
+            foreach (var type in types)
             {
                 var optimization = (BaseOptimization)Activator.CreateInstance(type)!;
                 optimization.OwnerType = type.DeclaringType;
@@ -58,11 +143,28 @@ public class ProfileApplyRevertCiTests
                     NullLogger.Instance
                 );
                 if (condition.IsBlocking)
+                {
+                    report.Add($"SKIP {type.Name}: not for this PC ({condition.Title})");
                     continue; // not for this Windows (the runner is Windows Server)
+                }
 
-                var before = await PreviewAsync(optimization, snapshot);
-                if (before.All(c => c.IsAlreadyThere))
-                    continue; // already as the profile wants it: nothing to apply or revert
+                IReadOnlyList<PlannedChange> before;
+                try
+                {
+                    before = await PreviewAsync(optimization, snapshot);
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    // A preview that throws is a defect of its own, and must not hide the others.
+                    problems.Add($"{type.Name}: preview threw {ex.GetType().Name}: {ex.Message}");
+                    continue;
+                }
+                if (!before.Any(c => c.WillChange))
+                {
+                    // Already as wanted, or its services and tasks do not exist on this PC.
+                    report.Add($"SKIP {type.Name}: nothing to change on this PC");
+                    continue;
+                }
 
                 var revertFile = Path.Combine(Shared.RevertDirectory, optimization.Id + ".json");
                 try
@@ -71,14 +173,32 @@ public class ProfileApplyRevertCiTests
                         optimization,
                         new Progress<ProcessingProgress>()
                     );
+                    if (applied.Status == OptimizationSuccessResult.NothingToDo)
+                    {
+                        // The client's consent (refused when no one is there to answer), a
+                        // recent pause, or a disk the command does not support.
+                        report.Add($"SKIP {type.Name}: nothing done ({applied.Message})");
+                        continue;
+                    }
                     if (applied.Status != OptimizationSuccessResult.Success)
                     {
-                        problems.Add($"{type.Name}: apply ended {applied.Status}");
+                        problems.Add($"{type.Name}: apply ended {applied.Status}: {Why(applied)}");
+                        if (applied.Status == OptimizationSuccessResult.Failed)
+                            continue;
+                    }
+
+                    if (!File.Exists(revertFile))
+                    {
+                        // Commands that cannot be undone (a cleanup, a re-trim) leave no revert data.
+                        if (before.Where(c => c.WillChange).All(c => !IsComparable(c)))
+                            report.Add($"OK   {type.Name}: applied, not reversible by design");
+                        else
+                            problems.Add($"{type.Name}: applied but saved no revert data");
                         continue;
                     }
 
                     var afterApply = await PreviewAsync(optimization, snapshot);
-                    foreach (var c in afterApply.Where(c => IsComparable(c) && !c.IsAlreadyThere))
+                    foreach (var c in afterApply.Where(c => IsComparable(c) && c.WillChange))
                         problems.Add(
                             $"{type.Name}: not applied {c.Target} = {c.Current}, wanted {c.Next}"
                         );
@@ -94,7 +214,7 @@ public class ProfileApplyRevertCiTests
                         c => c.Target,
                         StringComparer.OrdinalIgnoreCase
                     );
-                    foreach (var c in before.Where(IsComparable))
+                    foreach (var c in before.Where(c => IsComparable(c) && !c.TargetMissing))
                     {
                         var now = afterRevert.TryGetValue(c.Target, out var a) ? a.Current : null;
                         if (!string.Equals(c.Current, now, StringComparison.OrdinalIgnoreCase))
@@ -103,6 +223,12 @@ public class ProfileApplyRevertCiTests
                             );
                     }
                     checkedSettings++;
+                    report.Add($"OK   {type.Name}: applied and reverted ({before.Count} values)");
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    // One setting that throws must not hide the others.
+                    problems.Add($"{type.Name}: threw {ex.GetType().Name}: {ex.Message}");
                 }
                 finally
                 {
@@ -112,9 +238,21 @@ public class ProfileApplyRevertCiTests
             }
         });
 
-        Assert.True(checkedSettings > 0, "No profile setting could be checked on this runner.");
-        Assert.True(problems.Count == 0, string.Join(Environment.NewLine, problems));
+        return checkedSettings;
     }
+
+    /// <summary>The result's message plus each failed step, so the report says why.</summary>
+    private static string Why(OptimizationResult result) =>
+        string.Join(
+            " | ",
+            new[] { result.Message, result.Exception?.Message }
+                .Concat(
+                    result.FailedSteps.Select(f =>
+                        $"{f.Description}: {f.Error} {f.ErrorDetail} (code {f.NativeErrorCode})"
+                    )
+                )
+                .Where(m => !string.IsNullOrWhiteSpace(m))
+        );
 
     /// <summary>Commands have no readable "current value"; everything else is compared.</summary>
     private static bool IsComparable(PlannedChange change) =>
