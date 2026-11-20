@@ -126,6 +126,15 @@
                                 Content="{ext:Loc Session.Button.After}"
                                 Cursor="Hand"
                                 Icon="{ui:SymbolIcon CheckmarkCircle24}" />
+                            <!--  Version 1.1.2: restart and come back here for "Medir después".  -->
+                            <ui:Button
+                                Margin="0,6,0,0"
+                                HorizontalAlignment="Stretch"
+                                Appearance="Secondary"
+                                Command="{Binding ViewModel.RestartAndContinueCommand}"
+                                Content="{ext:Loc Session.Button.RestartContinue}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon ArrowSync24}" />
                             <StackPanel
                                 Margin="0,8,0,0"
                                 Orientation="Horizontal"

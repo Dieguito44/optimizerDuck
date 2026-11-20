@@ -10,6 +10,7 @@ using optimizerDuck.Services.Ai;
 using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Diagnostics;
 using optimizerDuck.Services.Measurements;
+using Wpf.Ui.Extensions;
 using optimizerDuck.Services.Reports;
 
 using optimizerDuck.Services.System;
@@ -32,6 +33,7 @@ public partial class SessionViewModel(
     GameModeViewModel gameMode,
     FollowUpViewModel followUp,
     TimeProvider timeProvider,
+    Wpf.Ui.IContentDialogService dialogService,
     ILogger<SessionViewModel> logger
 ) : ViewModel
 {
@@ -188,6 +190,34 @@ public partial class SessionViewModel(
 
     [RelayCommand(CanExecute = nameof(CanMeasureAfter))]
     private Task MeasureAfterAsync() => MeasureAsync(MeasurementPhase.After);
+
+    private bool CanRestartAndContinue() => !IsBusy && _session?.Before is not null && _session.After is null;
+
+    /// <summary>
+    ///     Version 1.1.2: restarts the PC and opens Zentra on this page afterwards, where the
+    ///     session is picked up for "Medir después".
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanRestartAndContinue))]
+    private async Task RestartAndContinueAsync()
+    {
+        var answer = await dialogService.ShowSimpleDialogAsync(
+            new global::Wpf.Ui.SimpleContentDialogCreateOptions
+            {
+                Title = Loc.Instance["Session.Restart.Title"],
+                Content = Loc.Instance["Session.Restart.Message"],
+                PrimaryButtonText = Loc.Instance["Session.Restart.Confirm"],
+                CloseButtonText = Loc.Instance["Button.Cancel"],
+            }
+        );
+        if (answer != Wpf.Ui.Controls.ContentDialogResult.Primary)
+            return;
+        if (_session is not null)
+            sessionStore.Save(_session);
+        if (!await Task.Run(() => ContinueAfterRestart.ScheduleAndRestart(logger)))
+            ErrorText = Loc.Instance["Session.Restart.Failed"];
+        else
+            StatusText = Loc.Instance["Session.Restart.Scheduled"];
+    }
 
     [RelayCommand(CanExecute = nameof(IsBusy))]
     private void Cancel() => _cts?.Cancel();
@@ -699,6 +729,7 @@ public partial class SessionViewModel(
     private void RefreshCommands()
     {
         MeasureAfterCommand.NotifyCanExecuteChanged();
+        RestartAndContinueCommand.NotifyCanExecuteChanged();
         GeneratePdfCommand.NotifyCanExecuteChanged();
         WriteReportCommand.NotifyCanExecuteChanged();
         ExportAiRequestCommand.NotifyCanExecuteChanged();

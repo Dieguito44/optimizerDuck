@@ -5278,4 +5278,22 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Profile.Startup.Restored" xml:space="preserve">
     <value>Startup apps turned back on: {0}</value>
   </data>
+  <data name="Session.Button.RestartContinue" xml:space="preserve">
+    <value>Restart and continue</value>
+  </data>
+  <data name="Session.Restart.Title" xml:space="preserve">
+    <value>Restart the PC now?</value>
+  </data>
+  <data name="Session.Restart.Message" xml:space="preserve">
+    <value>The PC restarts in 15 seconds. When you sign in to Windows again, Zentra opens on its own in Session with this session ready for "Measure after". Save first whatever the client has open.</value>
+  </data>
+  <data name="Session.Restart.Confirm" xml:space="preserve">
+    <value>Restart</value>
+  </data>
+  <data name="Session.Restart.Scheduled" xml:space="preserve">
+    <value>The PC restarts in 15 seconds; Zentra opens on its own afterwards.</value>
+  </data>
+  <data name="Session.Restart.Failed" xml:space="preserve">
+    <value>The restart could not be scheduled. Restart by hand and open Zentra: the session is picked up on its own.</value>
+  </data>
 </root>
