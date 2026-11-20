@@ -41,9 +41,19 @@ public static class BackgroundWorkProbe
         var seen = new HashSet<string>(StringComparer.Ordinal);
         var window =
             $"TimeCreated[@SystemTime>='{fromUtc:yyyy-MM-ddTHH:mm:ss.fffZ}' and @SystemTime<='{toUtc:yyyy-MM-ddTHH:mm:ss.fffZ}']";
-        if (Any("System", $"*[System[Provider[@Name='Microsoft-Windows-WindowsUpdateClient'] and (EventID=19 or EventID=43) and {window}]]"))
+        if (
+            Any(
+                "System",
+                $"*[System[Provider[@Name='Microsoft-Windows-WindowsUpdateClient'] and (EventID=19 or EventID=43) and {window}]]"
+            )
+        )
             seen.Add(WindowsUpdate);
-        if (Any("Microsoft-Windows-AppXDeploymentServer/Operational", $"*[System[(EventID=400) and {window}]]"))
+        if (
+            Any(
+                "Microsoft-Windows-AppXDeploymentServer/Operational",
+                $"*[System[(EventID=400) and {window}]]"
+            )
+        )
             seen.Add(Store);
         return seen;
     }

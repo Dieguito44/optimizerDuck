@@ -69,7 +69,14 @@ public class Expert : LocalizedObject, IOptimizationCategory
                 .GetDirectories(EdgeApplicationFolder)
                 .Select(d => Path.Combine(d, "Installer", "setup.exe"))
                 .Where(File.Exists)
-                .OrderBy(p => Version.TryParse(Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(p))), out var v) ? v : new Version())
+                .OrderBy(p =>
+                    Version.TryParse(
+                        Path.GetFileName(Path.GetDirectoryName(Path.GetDirectoryName(p))),
+                        out var v
+                    )
+                        ? v
+                        : new Version()
+                )
                 .LastOrDefault();
         }
 
@@ -113,7 +120,10 @@ public class Expert : LocalizedObject, IOptimizationCategory
                 Storage.RecordIrreversible(
                     context,
                     command,
-                    result with { ExitCode = removed ? 0 : (result.ExitCode == 0 ? 1 : result.ExitCode) }
+                    result with
+                    {
+                        ExitCode = removed ? 0 : (result.ExitCode == 0 ? 1 : result.ExitCode),
+                    }
                 );
             }
             finally
@@ -125,7 +135,10 @@ public class Expert : LocalizedObject, IOptimizationCategory
                     }
                     catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
                     {
-                        context.Logger.LogWarning("Could not delete the Edge stub: {Error}", ex.Message);
+                        context.Logger.LogWarning(
+                            "Could not delete the Edge stub: {Error}",
+                            ex.Message
+                        );
                     }
             }
             return context.Changes.ToApplyResult();
@@ -204,8 +217,10 @@ public class Expert : LocalizedObject, IOptimizationCategory
                 ct: context.CancellationToken
             );
             foreach (
-                var adapter in (bound.Stdout ?? "")
-                    .Split('\n', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)
+                var adapter in (bound.Stdout ?? "").Split(
+                    '\n',
+                    StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries
+                )
             )
                 await context.Shell.PowerShellAsync(
                     $"Disable-NetAdapterBinding -Name {Quote(adapter)} -ComponentID ms_tcpip6 -ErrorAction Stop",

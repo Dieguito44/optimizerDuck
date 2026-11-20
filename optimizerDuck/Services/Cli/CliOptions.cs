@@ -81,7 +81,8 @@ public sealed record CliOptions
     /// <summary>Deletes the follow-up task and its copy of Zentra (plan F3-05). Alone.</summary>
     public bool RemoveFollowUp { get; init; }
 
-    public bool UsesStandardPreset => BuiltInPreset is { } p && ReferenceEquals(p, ServicePreset.Standard);
+    public bool UsesStandardPreset =>
+        BuiltInPreset is { } p && ReferenceEquals(p, ServicePreset.Standard);
 
     /// <summary>
     ///     A profile built into Zentra named instead of a file (version 1.1.0): "estandar",

@@ -10,10 +10,9 @@ using optimizerDuck.Services.Ai;
 using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Diagnostics;
 using optimizerDuck.Services.Measurements;
-using Wpf.Ui.Extensions;
 using optimizerDuck.Services.Reports;
-
 using optimizerDuck.Services.System;
+using Wpf.Ui.Extensions;
 
 namespace optimizerDuck.UI.ViewModels.Pages;
 
@@ -195,7 +194,10 @@ public partial class SessionViewModel(
     public bool IsUsbMode => EndOfService.IsUsbMode;
 
     public string StorageText =>
-        Loc.Instance[IsUsbMode ? "Session.Storage.Usb" : "Session.Storage.Local", EndOfService.SessionsDirectory];
+        Loc.Instance[
+            IsUsbMode ? "Session.Storage.Usb" : "Session.Storage.Local",
+            EndOfService.SessionsDirectory
+        ];
 
     /// <summary>
     ///     Version 1.1.2: removes Zentra from the client's PC (the unpacked copy that carries the
@@ -215,11 +217,14 @@ public partial class SessionViewModel(
             new global::Wpf.Ui.SimpleContentDialogCreateOptions
             {
                 Title = Loc.Instance["Session.End.Title"],
-                Content = Loc.Instance[
-                    "Session.End.Message",
-                    plan.CopySessionsTo ?? EndOfService.SessionsDirectory,
-                    plan.Exe is null ? Loc.Instance["Session.End.ExeStays"] : Loc.Instance["Session.End.ExeGoes"]
-                ] + (FollowUp.IsScheduled ? "\n\n" + Loc.Instance["Session.End.FollowUp"] : ""),
+                Content =
+                    Loc.Instance[
+                        "Session.End.Message",
+                        plan.CopySessionsTo ?? EndOfService.SessionsDirectory,
+                        plan.Exe is null
+                            ? Loc.Instance["Session.End.ExeStays"]
+                            : Loc.Instance["Session.End.ExeGoes"]
+                    ] + (FollowUp.IsScheduled ? "\n\n" + Loc.Instance["Session.End.FollowUp"] : ""),
                 PrimaryButtonText = Loc.Instance["Session.End.Confirm"],
                 CloseButtonText = Loc.Instance["Button.Cancel"],
             }
@@ -240,7 +245,8 @@ public partial class SessionViewModel(
         }
     }
 
-    private bool CanRestartAndContinue() => !IsBusy && _session?.Before is not null && _session.After is null;
+    private bool CanRestartAndContinue() =>
+        !IsBusy && _session?.Before is not null && _session.After is null;
 
     /// <summary>
     ///     Version 1.1.2: restarts the PC and opens Zentra on this page afterwards, where the

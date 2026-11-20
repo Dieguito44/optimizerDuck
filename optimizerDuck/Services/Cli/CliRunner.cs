@@ -133,9 +133,7 @@ public sealed class CliRunner(
         if (preset is not null)
         {
             Say(Loc.Instance["Cli.Preset", preset.Name]);
-            var changes = (await runner.PreviewAsync(preset, ct))
-                .Where(c => c.WillChange)
-                .ToList();
+            var changes = (await runner.PreviewAsync(preset, ct)).Where(c => c.WillChange).ToList();
             var apps = !options.RemovesApps
                 ? []
                 : (await runner.AppsToRemoveAsync(preset)).Select(a => a.Name).ToList();

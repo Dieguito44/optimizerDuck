@@ -423,11 +423,23 @@ public class ReportBeforeAfterTests
             },
         };
 
-        var model = SessionReportModel.Build(session, [], _ => null, Now, CultureInfo.InvariantCulture);
+        var model = SessionReportModel.Build(
+            session,
+            [],
+            _ => null,
+            Now,
+            CultureInfo.InvariantCulture
+        );
 
         var loc = optimizerDuck.Services.Configuration.Loc.Instance;
-        Assert.Contains(loc["Report.Note.BusyAfter", "Microsoft Store, Windows Update"], model.Notes);
-        Assert.DoesNotContain(model.Notes, n => n.StartsWith(loc["Report.Note.BusyBefore", ""][..20]));
+        Assert.Contains(
+            loc["Report.Note.BusyAfter", "Microsoft Store, Windows Update"],
+            model.Notes
+        );
+        Assert.DoesNotContain(
+            model.Notes,
+            n => n.StartsWith(loc["Report.Note.BusyBefore", ""][..20])
+        );
     }
 
     [Fact]
@@ -435,7 +447,10 @@ public class ReportBeforeAfterTests
     {
         // Read-only, on this PC: the logs either answer or are skipped, never an exception.
         var now = DateTime.UtcNow;
-        var seen = optimizerDuck.Services.Measurements.BackgroundWorkProbe.InstalledBetween(now.AddDays(-7), now);
+        var seen = optimizerDuck.Services.Measurements.BackgroundWorkProbe.InstalledBetween(
+            now.AddDays(-7),
+            now
+        );
         Assert.All(seen, s => Assert.Contains(s, new[] { "Windows Update", "Microsoft Store" }));
         Assert.NotNull(optimizerDuck.Services.Measurements.BackgroundWorkProbe.RunningNow());
     }
@@ -498,7 +513,10 @@ public sealed class SessionResumeTests : IDisposable
     private void Write(string name, ServiceSession session)
     {
         var folder = Directory.CreateDirectory(Path.Combine(_dir.FullName, name));
-        File.WriteAllText(Path.Combine(folder.FullName, "session.json"), SessionStore.Serialize(session));
+        File.WriteAllText(
+            Path.Combine(folder.FullName, "session.json"),
+            SessionStore.Serialize(session)
+        );
     }
 
     private static ServiceSession Session(TimeSpan age, bool before, bool after) =>
@@ -507,7 +525,12 @@ public sealed class SessionResumeTests : IDisposable
             CreatedAtUtc = Now - age,
             ClientLabel = "Cliente",
             Before = before ? SessionPersistenceTests.Before() : null,
-            After = after ? SessionPersistenceTests.Before() with { Phase = MeasurementPhase.After } : null,
+            After = after
+                ? SessionPersistenceTests.Before() with
+                {
+                    Phase = MeasurementPhase.After,
+                }
+                : null,
         };
 
     [Fact]

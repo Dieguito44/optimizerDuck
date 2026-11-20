@@ -18,7 +18,10 @@ public class EndOfServiceTests
         var script = EndOfService.Script(plan, 4242);
 
         Assert.Contains("PID eq 4242", script);
-        Assert.Contains(@"rmdir /s /q ""C:\Users\ana\AppData\Local\Temp\.net\Zentra\abc123""", script);
+        Assert.Contains(
+            @"rmdir /s /q ""C:\Users\ana\AppData\Local\Temp\.net\Zentra\abc123""",
+            script
+        );
         Assert.Contains(@"rmdir /s /q ""C:\Users\ana\AppData\Local\Zentra""", script);
         Assert.Contains(@"del /f /q ""C:\Users\ana\Desktop\Zentra.exe""", script);
         Assert.DoesNotContain("ProgramData", script); // revert data and history stay
@@ -28,8 +31,16 @@ public class EndOfServiceTests
     [Fact]
     public void FromAUsbStick_TheExeIsNotDeleted()
     {
-        var plan = new EndOfService.CleanupPlan(null, @"C:\Users\ana\AppData\Local\Zentra", null, null);
-        Assert.DoesNotContain("del /f /q \"", EndOfService.Script(plan, 1).Replace("del /f /q \"%~f0\"", ""));
+        var plan = new EndOfService.CleanupPlan(
+            null,
+            @"C:\Users\ana\AppData\Local\Zentra",
+            null,
+            null
+        );
+        Assert.DoesNotContain(
+            "del /f /q \"",
+            EndOfService.Script(plan, 1).Replace("del /f /q \"%~f0\"", "")
+        );
     }
 
     [Theory]

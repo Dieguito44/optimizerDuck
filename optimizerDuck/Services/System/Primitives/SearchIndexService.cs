@@ -120,7 +120,8 @@ public static class SearchIndexService
             _ = Scope();
             return true;
         }
-        catch (Exception ex) when (ex is COMException or InvalidCastException or UnauthorizedAccessException)
+        catch (Exception ex)
+            when (ex is COMException or InvalidCastException or UnauthorizedAccessException)
         {
             return false;
         }

@@ -101,7 +101,10 @@ public static class DisplayModeService
     {
         if (TryReadMonitors(call) is not { } monitors)
         {
-            call.Changes.AddNotApplicable(ServiceStrings.DisplayName, ServiceStrings.DisplayNotReadable);
+            call.Changes.AddNotApplicable(
+                ServiceStrings.DisplayName,
+                ServiceStrings.DisplayNotReadable
+            );
             return;
         }
         var plans = Plan(monitors, DisplayNative.CurrentMode);

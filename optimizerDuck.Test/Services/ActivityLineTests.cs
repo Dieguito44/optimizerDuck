@@ -17,7 +17,10 @@ public class ActivityLineTests
         var result = new OptimizationResult
         {
             Status = OptimizationSuccessResult.Failed,
-            FailedSteps = [new Change { Name = "x", Error = "La búsqueda de Windows no está disponible." }],
+            FailedSteps =
+            [
+                new Change { Name = "x", Error = "La búsqueda de Windows no está disponible." },
+            ],
         };
 
         var line = OperationRunner.ActivityLine(result, "Carpetas grandes", 0);

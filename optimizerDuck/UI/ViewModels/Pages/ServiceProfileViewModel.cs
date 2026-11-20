@@ -8,11 +8,10 @@ using optimizerDuck.Common.Helpers;
 using optimizerDuck.Services.Configuration;
 using optimizerDuck.Services.Optimization;
 using optimizerDuck.Services.Profiles;
+using optimizerDuck.Services.System;
 using Wpf.Ui;
 using Wpf.Ui.Controls;
 using Wpf.Ui.Extensions;
-
-using optimizerDuck.Services.System;
 
 namespace optimizerDuck.UI.ViewModels.Pages;
 
@@ -296,17 +295,26 @@ public partial class ServiceProfileViewModel(
     /// </summary>
     private async Task ReviewStartupAppsAsync()
     {
-        var apps = (await startupManager.GetStartupAppsAsync()).Where(a => a.IsEnabled).OrderBy(a => a.Name).ToList();
+        var apps = (await startupManager.GetStartupAppsAsync())
+            .Where(a => a.IsEnabled)
+            .OrderBy(a => a.Name)
+            .ToList();
         if (apps.Count == 0)
             return;
 
         var list = new global::System.Windows.Controls.StackPanel();
-        var boxes = new List<(global::System.Windows.Controls.CheckBox Box, Domain.Optimizations.Models.StartupManager.StartupApp App)>();
+        var boxes =
+            new List<(
+                global::System.Windows.Controls.CheckBox Box,
+                Domain.Optimizations.Models.StartupManager.StartupApp App
+            )>();
         foreach (var app in apps)
         {
             var box = new global::System.Windows.Controls.CheckBox
             {
-                Content = string.IsNullOrWhiteSpace(app.Publisher) ? app.Name : $"{app.Name}  ({app.Publisher})",
+                Content = string.IsNullOrWhiteSpace(app.Publisher)
+                    ? app.Name
+                    : $"{app.Name}  ({app.Publisher})",
                 IsChecked = StartupSuggestions.IsSuggested(app.Name, app.Command),
                 Margin = new Thickness(0, 2, 0, 2),
             };
@@ -326,7 +334,11 @@ public partial class ServiceProfileViewModel(
             new global::System.Windows.Controls.ScrollViewer
             {
                 MaxHeight = 320,
-                VerticalScrollBarVisibility = global::System.Windows.Controls.ScrollBarVisibility.Auto,
+                VerticalScrollBarVisibility = global::System
+                    .Windows
+                    .Controls
+                    .ScrollBarVisibility
+                    .Auto,
                 Content = list,
             }
         );
@@ -338,7 +350,10 @@ public partial class ServiceProfileViewModel(
             CloseButtonText = Loc.Instance["Profile.Startup.Keep"],
             DefaultButton = ContentDialogButton.Close,
         };
-        if (await dialogService.ShowAsync(dialog, CancellationToken.None) != ContentDialogResult.Primary)
+        if (
+            await dialogService.ShowAsync(dialog, CancellationToken.None)
+            != ContentDialogResult.Primary
+        )
             return;
 
         var disabled = new List<StartupSuggestions.DisabledApp>();
@@ -370,14 +385,24 @@ public partial class ServiceProfileViewModel(
         {
             var app = apps.FirstOrDefault(a =>
                 a.Location == d.Location
-                && string.Equals(StartupSuggestions.KeyOf(a), d.Key, StringComparison.OrdinalIgnoreCase)
+                && string.Equals(
+                    StartupSuggestions.KeyOf(a),
+                    d.Key,
+                    StringComparison.OrdinalIgnoreCase
+                )
             );
-            if (app is { IsEnabled: false } && (await startupManager.ToggleStartupApp(app, true)).Ok)
+            if (
+                app is { IsEnabled: false }
+                && (await startupManager.ToggleStartupApp(app, true)).Ok
+            )
                 restored++;
         }
         StartupSuggestions.ClearDisabled();
         if (restored > 0)
-            Services.UI.ActivityLog.Add(Loc.Instance["Profile.Startup.Restored", restored], Services.UI.ActivityKind.Good);
+            Services.UI.ActivityLog.Add(
+                Loc.Instance["Profile.Startup.Restored", restored],
+                Services.UI.ActivityKind.Good
+            );
     }
 
     [RelayCommand(CanExecute = nameof(CanRun))]

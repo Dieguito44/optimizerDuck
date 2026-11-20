@@ -179,8 +179,8 @@ internal static partial class DiagnosticProbes
         var gpuResets =
             displayResets.Total.TryGet(out var d) && liveKernel.Total.TryGet(out var l)
                 ? Measured<int>.Of(Math.Max(d, l))
-                : displayResets.Total.HasValue ? displayResets.Total
-                : liveKernel.Total;
+            : displayResets.Total.HasValue ? displayResets.Total
+            : liveKernel.Total;
 
         var status =
             kp41.Total.HasValue && bugChecks.Total.HasValue && minidumps.HasValue

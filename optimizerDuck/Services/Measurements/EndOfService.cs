@@ -27,7 +27,8 @@ public static class EndOfService
         try
         {
             var root = Path.GetPathRoot(path);
-            return !string.IsNullOrEmpty(root) && new DriveInfo(root).DriveType == DriveType.Removable;
+            return !string.IsNullOrEmpty(root)
+                && new DriveInfo(root).DriveType == DriveType.Removable;
         }
         catch (Exception ex) when (ex is ArgumentException or IOException)
         {
@@ -37,7 +38,9 @@ public static class EndOfService
 
     /// <summary>Where the sessions live: next to Zentra.exe on the stick, or in the user's data.</summary>
     public static string SessionsDirectory =>
-        IsUsbMode ? Path.Combine(Shared.ExeDir, UsbSessionsFolder) : Path.Combine(Shared.RootDirectory, "Sessions");
+        IsUsbMode
+            ? Path.Combine(Shared.ExeDir, UsbSessionsFolder)
+            : Path.Combine(Shared.RootDirectory, "Sessions");
 
     /// <summary>
     ///     An anonymous tag of this PC (12 hex characters of the SHA-256 of Windows' MachineGuid),
@@ -51,25 +54,38 @@ public static class EndOfService
         {
             using var key = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Microsoft\Cryptography");
             return key?.GetValue("MachineGuid") is string guid
-                ? Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes("Zentra:" + guid)))[..12]
+                ? Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes("Zentra:" + guid)))[
+                    ..12
+                ]
                 : null;
         }
-        catch (Exception ex) when (ex is global::System.Security.SecurityException or UnauthorizedAccessException or IOException)
+        catch (Exception ex)
+            when (ex
+                    is global::System.Security.SecurityException
+                        or UnauthorizedAccessException
+                        or IOException
+            )
         {
             return null;
         }
     });
 
     /// <summary>What "Terminar servicio" deletes from this PC.</summary>
-    public sealed record CleanupPlan(string? ExtractedCopy, string UserData, string? Exe, string? CopySessionsTo);
+    public sealed record CleanupPlan(
+        string? ExtractedCopy,
+        string UserData,
+        string? Exe,
+        string? CopySessionsTo
+    );
 
     public static CleanupPlan Plan()
     {
         // The single file unpacks under %TEMP%\.net\Zentra\<hash>: only that folder, nothing else.
         var baseDir = AppContext.BaseDirectory.TrimEnd('\\');
         var temp = Path.GetTempPath().TrimEnd('\\');
-        var extracted =
-            baseDir.StartsWith(temp + @"\.net\", StringComparison.OrdinalIgnoreCase) ? baseDir : null;
+        var extracted = baseDir.StartsWith(temp + @"\.net\", StringComparison.OrdinalIgnoreCase)
+            ? baseDir
+            : null;
         var usb = IsUsbMode;
         return new CleanupPlan(
             extracted,
@@ -81,7 +97,8 @@ public static class EndOfService
 
     /// <summary>A path the cleanup script can quote safely in cmd.</summary>
     internal static bool IsSafeForCmd(string? path) =>
-        !string.IsNullOrWhiteSpace(path) && path.IndexOfAny(['"', '%', '&', '^', '|', '<', '>', '!']) < 0;
+        !string.IsNullOrWhiteSpace(path)
+        && path.IndexOfAny(['"', '%', '&', '^', '|', '<', '>', '!']) < 0;
 
     /// <summary>The cmd script that waits for Zentra to close and deletes the plan (pure, for tests).</summary>
     internal static string Script(CleanupPlan plan, int pid)
@@ -89,7 +106,9 @@ public static class EndOfService
         var sb = new StringBuilder();
         sb.AppendLine("@echo off");
         sb.AppendLine(":wait");
-        sb.AppendLine($"tasklist /FI \"PID eq {pid}\" | find \"{pid}\" >nul && (timeout /t 1 /nobreak >nul & goto wait)");
+        sb.AppendLine(
+            $"tasklist /FI \"PID eq {pid}\" | find \"{pid}\" >nul && (timeout /t 1 /nobreak >nul & goto wait)"
+        );
         if (IsSafeForCmd(plan.ExtractedCopy))
             sb.AppendLine($"rmdir /s /q \"{plan.ExtractedCopy}\"");
         if (IsSafeForCmd(plan.UserData))
@@ -121,7 +140,11 @@ public static class EndOfService
         File.WriteAllText(script, Script(plan, Environment.ProcessId), Encoding.ASCII);
         var cmd = Path.Combine(Environment.SystemDirectory, "cmd.exe");
         using var p = Process.Start(
-            new ProcessStartInfo(cmd, $"/c \"{script}\"") { UseShellExecute = false, CreateNoWindow = true }
+            new ProcessStartInfo(cmd, $"/c \"{script}\"")
+            {
+                UseShellExecute = false,
+                CreateNoWindow = true,
+            }
         );
         logger.LogInformation("End of service: cleanup started");
         return p is not null;

@@ -303,7 +303,8 @@ public sealed class GpuResetsRule : IDiagnosticRule
     private const int Many = 10;
 
     public string RuleId => RuleIds.GpuResets;
-    public IReadOnlyList<string> PossibleActionIds { get; } = [ActionIds.DriverGpu, ActionIds.MpoOff];
+    public IReadOnlyList<string> PossibleActionIds { get; } =
+    [ActionIds.DriverGpu, ActionIds.MpoOff];
 
     public RuleResult Evaluate(DiagnosticSnapshot snapshot, ReferenceTables refs)
     {

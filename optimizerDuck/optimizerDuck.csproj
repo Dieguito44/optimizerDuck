@@ -140,12 +140,14 @@
         written masked under obj/. GitHub builds, tests and plain builds carry no key.
     -->
     <PropertyGroup>
-        <ZentraKeyFile Condition="'$(ZentraKeyFile)' == ''">$(MSBuildProjectDirectory)\..\..\zentra-secretos\clave-api.dpapi</ZentraKeyFile>
+        <ZentraKeyFile Condition="'$(ZentraKeyFile)' == ''"
+            >$(MSBuildProjectDirectory)\..\..\zentra-secretos\clave-api.dpapi</ZentraKeyFile>
     </PropertyGroup>
     <Target
         Name="ZentraEmbedApiKey"
         BeforeTargets="CoreCompile"
-        Condition="'$(_IsPublishing)' == 'true' And '$(GITHUB_ACTIONS)' != 'true' And Exists('$(ZentraKeyFile)')">
+        Condition="'$(_IsPublishing)' == 'true' And '$(GITHUB_ACTIONS)' != 'true' And Exists('$(ZentraKeyFile)')"
+    >
         <Exec Command="powershell -NoProfile -ExecutionPolicy Bypass -File &quot;$(MSBuildProjectDirectory)\..\tools\embed-api-key.ps1&quot; -KeyFile &quot;$(ZentraKeyFile)&quot; -OutFile &quot;$(IntermediateOutputPath)EmbeddedApiKey.g.cs&quot;" />
         <ItemGroup>
             <Compile Include="$(IntermediateOutputPath)EmbeddedApiKey.g.cs" />

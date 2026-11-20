@@ -75,7 +75,10 @@ public static class ServiceProfiles
         if (info.Memory.TotalKB is > 0 and <= SlowPcMaxRamKb)
             return (
                 ServicePreset.SlowPc,
-                Loc.Instance["Profile.Reason.LowRam", Math.Round(info.Memory.TotalKB / 1024.0 / 1024.0)]
+                Loc.Instance[
+                    "Profile.Reason.LowRam",
+                    Math.Round(info.Memory.TotalKB / 1024.0 / 1024.0)
+                ]
             );
         if ((gameLibraries ?? SafeGameLibraries()).Count > 0)
             return (ServicePreset.Gaming, Loc.Instance["Profile.Reason.Games"]);
@@ -89,7 +92,11 @@ public static class ServiceProfiles
             return GameLibraries.Folders();
         }
         catch (Exception ex)
-            when (ex is global::System.IO.IOException or UnauthorizedAccessException or global::System.Security.SecurityException)
+            when (ex
+                    is global::System.IO.IOException
+                        or UnauthorizedAccessException
+                        or global::System.Security.SecurityException
+            )
         {
             return [];
         }

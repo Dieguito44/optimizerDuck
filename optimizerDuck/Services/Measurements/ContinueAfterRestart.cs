@@ -21,7 +21,8 @@ public static class ContinueAfterRestart
     internal const string TaskName = "Continuar sesion";
 
     /// <summary>Whether this run was started by the scheduled task.</summary>
-    public static bool StartedForIt => Environment.GetCommandLineArgs().Contains(Switch, StringComparer.OrdinalIgnoreCase);
+    public static bool StartedForIt =>
+        Environment.GetCommandLineArgs().Contains(Switch, StringComparer.OrdinalIgnoreCase);
 
     /// <summary>The PowerShell that registers the one-time start (pure, for tests).</summary>
     internal static string RegisterCommand(string exePath, string user)
@@ -42,17 +43,27 @@ public static class ContinueAfterRestart
         if (exe is null)
             return false;
         var user = WindowsIdentity.GetCurrent().Name;
-        var encoded = Convert.ToBase64String(global::System.Text.Encoding.Unicode.GetBytes(RegisterCommand(exe, user)));
-        if (Run("powershell.exe", $"-NoProfile -NonInteractive -EncodedCommand {encoded}", logger) != 0)
+        var encoded = Convert.ToBase64String(
+            global::System.Text.Encoding.Unicode.GetBytes(RegisterCommand(exe, user))
+        );
+        if (
+            Run("powershell.exe", $"-NoProfile -NonInteractive -EncodedCommand {encoded}", logger)
+            != 0
+        )
             return false;
         logger.LogInformation("Continue-after-restart scheduled; restarting");
-        return Run("shutdown.exe", "/r /t 15 /c \"Zentra: el PC se reinicia y la sesión continúa al volver.\"", logger) == 0;
+        return Run(
+                "shutdown.exe",
+                "/r /t 15 /c \"Zentra: el PC se reinicia y la sesión continúa al volver.\"",
+                logger
+            ) == 0;
     }
 
     /// <summary>Deletes the one-time start (called when Zentra opens with <see cref="Switch" />).</summary>
     public static void Remove(ILogger logger)
     {
-        var cmd = $"Unregister-ScheduledTask -TaskPath '{TaskPath}' -TaskName '{TaskName}' -Confirm:$false -ErrorAction SilentlyContinue";
+        var cmd =
+            $"Unregister-ScheduledTask -TaskPath '{TaskPath}' -TaskName '{TaskName}' -Confirm:$false -ErrorAction SilentlyContinue";
         var encoded = Convert.ToBase64String(global::System.Text.Encoding.Unicode.GetBytes(cmd));
         Run("powershell.exe", $"-NoProfile -NonInteractive -EncodedCommand {encoded}", logger);
     }
@@ -62,7 +73,13 @@ public static class ContinueAfterRestart
         try
         {
             using var p = Process.Start(
-                new ProcessStartInfo(Path.Combine(Environment.SystemDirectory, tool == "powershell.exe" ? @"WindowsPowerShell\v1.0\powershell.exe" : tool), arguments)
+                new ProcessStartInfo(
+                    Path.Combine(
+                        Environment.SystemDirectory,
+                        tool == "powershell.exe" ? @"WindowsPowerShell\v1.0\powershell.exe" : tool
+                    ),
+                    arguments
+                )
                 {
                     UseShellExecute = false,
                     CreateNoWindow = true,
@@ -73,7 +90,8 @@ public static class ContinueAfterRestart
             p.WaitForExit(60_000);
             return p.HasExited ? p.ExitCode : -1;
         }
-        catch (Exception ex) when (ex is global::System.ComponentModel.Win32Exception or IOException)
+        catch (Exception ex)
+            when (ex is global::System.ComponentModel.Win32Exception or IOException)
         {
             logger.LogWarning("{Tool} failed: {Error}", tool, ex.Message);
             return -1;

@@ -160,7 +160,6 @@ public class UserExperience : LocalizedObject, IOptimizationCategory
         }
     }
 
-
     /// <summary>
     ///     A blue screen shows the technical details (the stop code parameters) instead of the
     ///     sad face: useful for the technician (idea from WinUtil, MIT).
@@ -179,8 +178,16 @@ public class UserExperience : LocalizedObject, IOptimizationCategory
         {
             RegistryService.Write(
                 context,
-                new RegistryItem(@"HKLM\SYSTEM\CurrentControlSet\Control\CrashControl", "DisplayParameters", 1),
-                new RegistryItem(@"HKLM\SYSTEM\CurrentControlSet\Control\CrashControl", "DisableEmoticon", 1)
+                new RegistryItem(
+                    @"HKLM\SYSTEM\CurrentControlSet\Control\CrashControl",
+                    "DisplayParameters",
+                    1
+                ),
+                new RegistryItem(
+                    @"HKLM\SYSTEM\CurrentControlSet\Control\CrashControl",
+                    "DisableEmoticon",
+                    1
+                )
             );
             return Task.FromResult(context.Changes.ToApplyResult());
         }

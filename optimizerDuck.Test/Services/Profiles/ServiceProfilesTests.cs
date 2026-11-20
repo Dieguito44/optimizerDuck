@@ -94,9 +94,20 @@ public class ServiceProfilesTests
         {
             Storage = new StorageInfo
             {
-                Volumes = [new StorageVolume { DriveLetter = "C:", IsSystemDrive = true, MediaType = disk }],
+                Volumes =
+                [
+                    new StorageVolume
+                    {
+                        DriveLetter = "C:",
+                        IsSystemDrive = true,
+                        MediaType = disk,
+                    },
+                ],
             },
-            Memory = SystemInfo.Unknown.Memory with { TotalBytes = (long)(ramGb * 1024 * 1024 * 1024) },
+            Memory = SystemInfo.Unknown.Memory with
+            {
+                TotalBytes = (long)(ramGb * 1024 * 1024 * 1024),
+            },
         };
 
     [Fact]
@@ -109,13 +120,22 @@ public class ServiceProfilesTests
 
     [Fact]
     public void Suggest_SlowPc_For8GbOrLess() =>
-        Assert.Same(ServicePreset.SlowPc, ServiceProfiles.Suggest(Pc(StorageMediaType.Ssd, 7.9), []).Preset);
+        Assert.Same(
+            ServicePreset.SlowPc,
+            ServiceProfiles.Suggest(Pc(StorageMediaType.Ssd, 7.9), []).Preset
+        );
 
     [Fact]
     public void Suggest_Gaming_WhenThereAreGames() =>
-        Assert.Same(ServicePreset.Gaming, ServiceProfiles.Suggest(Pc(StorageMediaType.Nvme, 16), ["D:\\Steam"]).Preset);
+        Assert.Same(
+            ServicePreset.Gaming,
+            ServiceProfiles.Suggest(Pc(StorageMediaType.Nvme, 16), ["D:\\Steam"]).Preset
+        );
 
     [Fact]
     public void Suggest_Standard_Otherwise() =>
-        Assert.Same(ServicePreset.Standard, ServiceProfiles.Suggest(Pc(StorageMediaType.Nvme, 16), []).Preset);
+        Assert.Same(
+            ServicePreset.Standard,
+            ServiceProfiles.Suggest(Pc(StorageMediaType.Nvme, 16), []).Preset
+        );
 }

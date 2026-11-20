@@ -70,7 +70,12 @@ public class BloatwareServiceTests
     // Version 1 test (20/11/2026): the Apps page showed raw package names and whole certificate
     // subjects ("CN=Adobe Inc., OU=..., SERIALNUMBER=..."), which made the client's apps hard to tell apart.
     [Theory]
-    [InlineData("5319275A.WhatsAppDesktop", "CN=24803D75-212C-471A-BC57-9EF86AB91435", "WhatsAppDesktop", "")]
+    [InlineData(
+        "5319275A.WhatsAppDesktop",
+        "CN=24803D75-212C-471A-BC57-9EF86AB91435",
+        "WhatsAppDesktop",
+        ""
+    )]
     [InlineData(
         "AdobeAcrobatDCCoreApp",
         "CN=Adobe Inc., OU=Acrobat DC, O=Adobe Inc., L=San Jose, S=ca, C=US",

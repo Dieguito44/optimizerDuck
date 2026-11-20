@@ -27,10 +27,7 @@ public class DiskKindTests
         long? spindle,
         StorageMediaType expected
     ) =>
-        Assert.Equal(
-            expected,
-            DiagnosticSnapshotBuilder.MapMediaType(mediaType, busType, spindle)
-        );
+        Assert.Equal(expected, DiagnosticSnapshotBuilder.MapMediaType(mediaType, busType, spindle));
 
     [Fact]
     public void SystemKind_FallsBackToThePhysicalDiskThatHoldsWindows()

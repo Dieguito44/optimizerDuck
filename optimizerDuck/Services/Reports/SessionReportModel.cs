@@ -187,7 +187,13 @@ public sealed record SessionReportModel
             && session.After?.SequentialReadMiBps.HasValue == true
         )
             notes.Add(Loc.Instance["Report.Note.DiskVaries", (int)(DiskNoise * 100)]);
-        foreach (var (measurement, key) in new[] { (session.Before, "Report.Note.BusyBefore"), (session.After, "Report.Note.BusyAfter") })
+        foreach (
+            var (measurement, key) in new[]
+            {
+                (session.Before, "Report.Note.BusyBefore"),
+                (session.After, "Report.Note.BusyAfter"),
+            }
+        )
             if (measurement?.BackgroundWork is { Count: > 0 } work)
                 notes.Add(Loc.Instance[key, string.Join(", ", work)]);
         notes.Add(Loc.Instance["Report.Note.NotMeasured"]);

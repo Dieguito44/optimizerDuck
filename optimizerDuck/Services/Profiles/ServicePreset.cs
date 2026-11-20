@@ -78,9 +78,14 @@ public sealed record ServicePreset
         BuiltIn("Privacidad máxima", ServiceProfiles.PrivacyExtra, "Profile.Builtin.Privacy");
 
     /// <summary>Every profile built into Zentra, in the order the selector shows them.</summary>
-    public static IReadOnlyList<ServicePreset> BuiltIns { get; } = [Standard, SlowPc, Gaming, Privacy];
+    public static IReadOnlyList<ServicePreset> BuiltIns { get; } =
+    [Standard, SlowPc, Gaming, Privacy];
 
-    private static ServicePreset BuiltIn(string name, IReadOnlyList<Type> extra, string descriptionKey) =>
+    private static ServicePreset BuiltIn(
+        string name,
+        IReadOnlyList<Type> extra,
+        string descriptionKey
+    ) =>
         Standard with
         {
             Name = name,
