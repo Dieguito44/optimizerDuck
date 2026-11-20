@@ -145,7 +145,17 @@ public class ProfileApplyRevertCiTests
                     continue; // not for this Windows (the runner is Windows Server)
                 }
 
-                var before = await PreviewAsync(optimization, snapshot);
+                IReadOnlyList<PlannedChange> before;
+                try
+                {
+                    before = await PreviewAsync(optimization, snapshot);
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    // A preview that throws is a defect of its own, and must not hide the others.
+                    problems.Add($"{type.Name}: preview threw {ex.GetType().Name}: {ex.Message}");
+                    continue;
+                }
                 if (!before.Any(c => c.WillChange))
                 {
                     // Already as wanted, or its services and tasks do not exist on this PC.

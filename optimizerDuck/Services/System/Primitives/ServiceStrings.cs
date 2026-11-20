@@ -73,6 +73,10 @@ public static class ServiceStrings
 
     // Display modes (Zentra phase 6B)
     public const string DisplayName = "Display";
+
+    /// <summary>No screen in this session: the display configuration cannot be read.</summary>
+    public const string DisplayNotReadable =
+        "The monitors could not be read (no screen in this session, a remote session or the monitor off)";
     public const string DisplayAlreadyAtMax =
         "Every monitor already runs at its maximum refresh rate";
     public const string DisplayErrorNotSupported = "The graphics driver does not accept that mode";
