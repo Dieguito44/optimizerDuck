@@ -92,6 +92,45 @@
                         OnContent="{ext:Loc Common.Toggle.On}" />
                 </ui:CardControl>
 
+                <!--  Plan of improvements F4-05: crash reports without personal data, off by default; never sent by Zentra.  -->
+                <ui:CardControl Margin="0,0,0,4" Icon="{ui:SymbolIcon Bug24}">
+                    <ui:CardControl.Header>
+                        <StackPanel>
+                            <ui:TextBlock
+                                Margin="0"
+                                FontTypography="BodyStrong"
+                                Text="{ext:Loc CrashReport.Title}"
+                                TextWrapping="Wrap" />
+                            <ui:TextBlock
+                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                Text="{ext:Loc CrashReport.Description}"
+                                TextWrapping="Wrap" />
+                            <WrapPanel Margin="0,6,0,0" Orientation="Horizontal">
+                                <ui:Button
+                                    Margin="0,0,8,0"
+                                    Appearance="Transparent"
+                                    Command="{Binding ViewModel.CopyLatestCrashReportCommand}"
+                                    Content="{ext:Loc CrashReport.Copy}"
+                                    Cursor="Hand"
+                                    Icon="{ui:SymbolIcon Copy24}" />
+                                <ui:Button
+                                    Appearance="Transparent"
+                                    Command="{Binding ViewModel.OpenCrashReportsCommand}"
+                                    Content="{ext:Loc CrashReport.Folder}"
+                                    Cursor="Hand"
+                                    Icon="{ui:SymbolIcon FolderOpen24}" />
+                            </WrapPanel>
+                            <ui:TextBlock Text="{Binding ViewModel.CrashReportStatus}" TextWrapping="Wrap" />
+                        </StackPanel>
+                    </ui:CardControl.Header>
+                    <ui:ToggleSwitch
+                        Command="{Binding ViewModel.ToggleCrashReportsCommand}"
+                        Cursor="Hand"
+                        IsChecked="{Binding ViewModel.CrashReports, Mode=OneWay}"
+                        OffContent="{ext:Loc Common.Toggle.Off}"
+                        OnContent="{ext:Loc Common.Toggle.On}" />
+                </ui:CardControl>
+
                 <StackPanel Style="{StaticResource SettingsSectionStyle}">
                     <ui:TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{ext:Loc Settings.Optimize.Header}" />
 

@@ -259,6 +259,8 @@ public partial class App : Application
                 $"crash_{DateTime.Now:yyyy-MM-dd_HH-mm-ss-fff}.log"
             );
             File.WriteAllText(crashFile, CrashText(category, ex));
+            // Plan F4-05: also a report without personal data, only if the technician turned it on.
+            Services.Configuration.CrashReport.TryWrite(category, ex);
         }
         catch
         {
@@ -345,6 +347,7 @@ public partial class App : Application
         WmiHelper.Initialize();
 
         var appSettings = appOptionsMonitor.CurrentValue;
+        Services.Configuration.CrashReport.Enabled = appSettings.App.CrashReports;
 
         SmoothScrollBehavior.GlobalEnabled = appSettings.Optimize.SmoothScrolling;
 

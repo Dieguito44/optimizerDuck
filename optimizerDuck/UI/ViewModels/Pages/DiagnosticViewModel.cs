@@ -34,6 +34,7 @@ public sealed record FindingItem(FindingView View, Brush SeverityBrush)
 public partial class DiagnosticViewModel(
     DiagnosticService diagnosticService,
     TemperatureViewModel temperature,
+    ServiceToolsViewModel tools,
     Wpf.Ui.INavigationService navigationService,
     ILogger<DiagnosticViewModel> logger
 ) : ViewModel
@@ -42,6 +43,9 @@ public partial class DiagnosticViewModel(
 
     /// <summary>The "Measure temperature" card (phase 6B).</summary>
     public TemperatureViewModel Temperature { get; } = temperature;
+
+    /// <summary>Internet speed and warranty (plan of improvements F4-06 and F4-07).</summary>
+    public ServiceToolsViewModel Tools { get; } = tools;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(CanRun))]

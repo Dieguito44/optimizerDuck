@@ -4,6 +4,24 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 4C: reportes de fallos, velocidad y garantía (19/11/2026, PR 19, sobre el PR 18)
+
+Cierra la Fase 4.
+
+- **Reportes de fallos (F4-05):** opción en Configuración, **apagada por defecto**.
+  - **Encendida:** cada fallo deja además un reporte con la versión, Windows, la excepción y la pila. No lleva el nombre del usuario ni del PC, la carpeta del usuario, correos, direcciones IP ni claves.
+  - **Zentra nunca lo envía:** "Copiar el último reporte" lo pone en el portapapeles y el técnico lo manda por donde quiera. Así no se crea una transferencia automática de datos (Ley 1581).
+  - **Por qué no un issue de GitHub:** el fork tiene los issues apagados, y activarlos es decisión de Diego.
+  - **Límite conocido:** una IP privada que empiece por `10.0.` se conserva, porque se confunde con la versión de Windows.
+- **Velocidad de internet (F4-06):** tarjeta en Diagnóstico que mide bajada, subida y latencia contra la prueba pública de Cloudflare (speed.cloudflare.com).
+  - **Consentimiento:** antes de medir dice que Cloudflare verá la IP pública y que gasta unos 45 MB de bajada y 10 MB de subida.
+  - **Resultado:** cada cifra es la mediana de varias pruebas. Si el servicio no responde, la prueba es "no medible".
+- **Garantía (F4-07):** las APIs de los fabricantes piden claves, así que Zentra no las consulta.
+  - **Qué hace:** muestra marca, modelo y serial, copia el serial y abre la página oficial de garantía (Lenovo, HP, Dell, ASUS) para pegarlo ahí. El serial no va en la dirección ni en el informe.
+  - **PC armado por partes:** si no tiene serial, Zentra lo dice.
+- **Tests:** 1737 en total, 0 fallos.
+- **Sin probar en el PC real:** la prueba de velocidad, porque gasta datos y expone la IP.
+
 ### Mejoras, Fase 4B: prueba térmica corta y latencia DPC (19/11/2026, PR 18, sobre el PR 17)
 
 - **Prueba térmica (F4-02, riesgo moderado):** botón "Prueba térmica (90 s)" en la tarjeta de Temperatura del Diagnóstico.

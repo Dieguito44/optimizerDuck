@@ -81,6 +81,9 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<BiosGuideViewModel>();
         services.AddSingleton<BiosGuidePage>();
         services.AddSingleton<TemperatureViewModel>();
+        // Plan of improvements F4-06 and F4-07.
+        services.AddSingleton<optimizerDuck.Services.Diagnostics.SpeedTestService>();
+        services.AddSingleton<ServiceToolsViewModel>();
         services.AddSingleton<OptimizeViewModel>();
         services.AddSingleton<OptimizePage>();
         services.AddSingleton<SettingsViewModel>();

@@ -26,6 +26,9 @@ public sealed class AppSettings
         public ApplicationTheme Theme { get; set; } = ApplicationTheme.Dark;
 
         public bool LegalAccepted { get; set; } = false;
+
+        /// <summary>Plan of improvements F4-05: redacted crash reports. Off by default.</summary>
+        public bool CrashReports { get; set; } = false;
     }
 
     public sealed class OptimizeOptions
