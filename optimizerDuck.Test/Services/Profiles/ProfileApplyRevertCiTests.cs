@@ -82,6 +82,19 @@ public class ProfileApplyRevertCiTests
         var report = new List<string>();
         var checkedSettings = await ApplyAndRevertAsync(types, problems, report);
 
+        // GitHub's runner is Windows Server, which Zentra does not serve: what fails only there
+        // stays in the report as KNOWN, with its reason, and does not fail the run.
+        var snapshot = await new SystemInfoService(
+            NullLogger<SystemInfoService>.Instance
+        ).EnsureSnapshotAsync(TestContext.Current.CancellationToken);
+        if (snapshot.Windows.Edition == WindowsEdition.Server)
+            foreach (var p in problems.ToList())
+                if (KnownOnWindowsServer.FirstOrDefault(k => p.StartsWith(k.Key + ":")) is { Key: not null } known)
+                {
+                    problems.Remove(p);
+                    report.Add($"KNOWN {p[..Math.Min(160, p.Length)]} ({known.Value})");
+                }
+
         if (Environment.GetEnvironmentVariable("ZENTRA_SANDBOX_REPORT") is { Length: > 0 } path)
             File.WriteAllLines(
                 path,
@@ -94,6 +107,13 @@ public class ProfileApplyRevertCiTests
             );
         Assert.True(problems.Count == 0, string.Join(Environment.NewLine, problems));
     }
+
+    private static readonly Dictionary<string, string> KnownOnWindowsServer = new()
+    {
+        ["WeeklyRestorePoints"] = "Windows Server has no System Restore",
+        ["DisablePowerSaving"] =
+            "the USB AutomaticSurpriseRemoval key does not exist on Windows Server and its parent is protected; on Windows 11 it exists and administrators can write it",
+    };
 
     private static async Task<int> ApplyAndRevertAsync(
         IEnumerable<Type> types,

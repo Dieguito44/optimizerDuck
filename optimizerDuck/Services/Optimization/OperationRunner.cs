@@ -105,8 +105,17 @@ public class OperationRunner(
         Exception? exception = null;
         try
         {
+            // The PC's facts (RAM, GPU, disks) must be loaded before a setting reads them: with
+            // the empty snapshot, a setting applied before the first scan finished saw 0 KB of RAM
+            // and failed ("Invalid RAM: 0", version 1 test, 20/11/2026).
+            var snapshot = await systemInfoService
+                .EnsureSnapshotAsync(cancellationToken)
+                .ConfigureAwait(false);
             var applyResult = await request
-                .Work(progress, NewContext(changes, request.RunLogger, cancellationToken))
+                .Work(
+                    progress,
+                    NewContext(changes, request.RunLogger, snapshot, cancellationToken)
+                )
                 .ConfigureAwait(false);
 
             providerError = string.IsNullOrWhiteSpace(applyResult.ErrorMessage)
@@ -253,6 +262,7 @@ public class OperationRunner(
     private OptimizationContext NewContext(
         ChangeSet changes,
         ILogger runLogger,
+        SystemInfo snapshot,
         CancellationToken cancellationToken
     )
     {
@@ -261,7 +271,7 @@ public class OperationRunner(
             Changes = changes,
             Logger = runLogger,
             CancellationToken = cancellationToken,
-            Snapshot = systemInfoService.Snapshot,
+            Snapshot = snapshot,
             StreamService = streamService,
             Shell = shellService,
             PowerPlans = powerPlanService,

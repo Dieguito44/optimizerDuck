@@ -14,6 +14,11 @@ internal static class TestRunner
     /// <param name="revertManager">The revert store the runs persist into.</param>
     /// <param name="logger">The logger the runs report to, or nothing when omitted.</param>
     /// <returns>The run lifecycle the application's graph would inject.</returns>
+    /// <summary>One scan of the PC for every test run: the runner loads it before each setting.</summary>
+    private static readonly SystemInfoService SharedSystemInfo = new(
+        NullLogger<SystemInfoService>.Instance
+    );
+
     internal static OperationRunner New(
         RevertManager revertManager,
         ILogger<OperationRunner>? logger = null
@@ -21,7 +26,7 @@ internal static class TestRunner
     {
         return new OperationRunner(
             revertManager,
-            new SystemInfoService(NullLogger<SystemInfoService>.Instance),
+            SharedSystemInfo,
             new StreamService(NullLogger<StreamService>.Instance),
             new ShellService(new ProcessRunner(120_000)),
             new PowerPlanService(NullLogger<PowerPlanService>.Instance),
