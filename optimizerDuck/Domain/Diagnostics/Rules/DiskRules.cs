@@ -85,16 +85,19 @@ public sealed class SsdHealthRule : IDiagnosticRule
         // Critical when Windows itself calls a disk unhealthy. Uncorrected errors alone are a
         // lifetime counter (one old error stays forever): High, "watch it and back up"
         // (plan F2-07, audit Z-20).
-        var severity = evidence.Any(e => e.Key == "disk.health")
-            ? Severity.Critical
-            : Severity.High;
+        // Replacing the disk is recommended only then: Windows called both disks of the version 1
+        // test PC Healthy, and one old read error had the report telling the client to buy a disk.
+        var unhealthy = evidence.Any(e => e.Key == "disk.health");
+        var severity = unhealthy ? Severity.Critical : Severity.High;
         return evidence.Count > 0
             ? RuleResult.Found(
                 new Finding(
                     RuleId,
                     severity,
                     evidence,
-                    [ActionIds.Backup, ActionIds.HardwareReplaceSsd]
+                    unhealthy
+                        ? [ActionIds.Backup, ActionIds.HardwareReplaceSsd]
+                        : [ActionIds.Backup]
                 ),
                 [.. unmeasured]
             )
