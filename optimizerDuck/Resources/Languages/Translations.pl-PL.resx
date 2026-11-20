@@ -5112,4 +5112,13 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Profile.Confirm.MessageNoApps" xml:space="preserve">
     <value>A restore point is created first. Then {0} settings are applied; each one can be reverted.</value>
   </data>
+  <data name="Session.Step.Done.Chip" xml:space="preserve">
+    <value>Done</value>
+  </data>
+  <data name="Diagnostic.Tools.Title" xml:space="preserve">
+    <value>Extra measurements</value>
+  </data>
+  <data name="Settings.Header.Description" xml:space="preserve">
+    <value>Language, theme, crash reports and advanced options.</value>
+  </data>
 </root>

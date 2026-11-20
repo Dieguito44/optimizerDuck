@@ -6911,4 +6911,13 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
   <data name="Profile.Confirm.MessageNoApps" xml:space="preserve">
     <value>Primero se crea un punto de restauración. Luego se aplican {0} ajustes; cada uno se puede revertir.</value>
   </data>
+  <data name="Session.Step.Done.Chip" xml:space="preserve">
+    <value>Hecho</value>
+  </data>
+  <data name="Diagnostic.Tools.Title" xml:space="preserve">
+    <value>Mediciones extra</value>
+  </data>
+  <data name="Settings.Header.Description" xml:space="preserve">
+    <value>Idioma, tema, reportes de fallos y opciones avanzadas.</value>
+  </data>
 </root>
