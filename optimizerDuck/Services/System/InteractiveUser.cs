@@ -66,7 +66,14 @@ public static partial class InteractiveUser
     /// </summary>
     public static RegistryKey CurrentUserRoot() =>
         RedirectSid is { } sid
-            ? Registry.Users.OpenSubKey(sid, writable: true) ?? Registry.CurrentUser
+            // Plan F1-04: the root only needs to read and to create or open subkeys; the
+            // subkeys are opened with the rights each write needs.
+            ? Registry.Users.OpenSubKey(
+                sid,
+                RegistryKeyPermissionCheck.ReadWriteSubTree,
+                global::System.Security.AccessControl.RegistryRights.ReadKey
+                    | global::System.Security.AccessControl.RegistryRights.CreateSubKey
+            ) ?? Registry.CurrentUser
             : Registry.CurrentUser;
 
     /// <summary>

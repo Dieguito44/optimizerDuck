@@ -109,13 +109,16 @@ public static class LongConsoleRunner
     {
         using var process = new Process
         {
-            StartInfo = new ProcessStartInfo(fileName, arguments)
-            {
-                UseShellExecute = false,
-                RedirectStandardOutput = true,
-                RedirectStandardError = true,
-                CreateNoWindow = true,
-            },
+            // Plan F1-05: absolute path, System32 folder, Windows-only PATH.
+            StartInfo = Services.System.SystemTools.Harden(
+                new ProcessStartInfo(fileName, arguments)
+                {
+                    UseShellExecute = false,
+                    RedirectStandardOutput = true,
+                    RedirectStandardError = true,
+                    CreateNoWindow = true,
+                }
+            ),
         };
 
         process.Start();

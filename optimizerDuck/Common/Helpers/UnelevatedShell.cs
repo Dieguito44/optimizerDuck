@@ -58,7 +58,10 @@ public static class UnelevatedShell
             // Not elevated (tests, development): the normal shell call is already the user's.
             Process.Start(
                 select
-                    ? new ProcessStartInfo("explorer.exe", Arguments(target, select: true))
+                    ? new ProcessStartInfo(
+                        Services.System.SystemTools.Resolve("explorer"),
+                        Arguments(target, select: true)
+                    )
                     : new ProcessStartInfo(target) { UseShellExecute = true }
             );
             return;

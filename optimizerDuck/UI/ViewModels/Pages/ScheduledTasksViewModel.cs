@@ -89,7 +89,14 @@ public partial class ScheduledTasksViewModel : ViewModel
     {
         try
         {
-            Process.Start(new ProcessStartInfo("taskschd.msc") { UseShellExecute = true });
+            Process.Start(
+                new ProcessStartInfo(
+                    System.IO.Path.Combine(Environment.SystemDirectory, "taskschd.msc")
+                )
+                {
+                    UseShellExecute = true,
+                }
+            );
         }
         catch (Exception ex)
         {

@@ -4,6 +4,26 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 1A: procesos y archivos endurecidos (19/11/2026, PR 20, sobre el PR 19)
+
+Primer bloque de la Fase 1 (bloqueantes legales y de seguridad).
+
+- **Mínimo privilegio en el registro (F1-04):**
+  - El PR #100 de upstream y su versión para `DeleteValue` ya estaban en Zentra.
+  - Quedaban el Gestor de Inicio, que abría claves con escritura completa, y la raíz `HKEY_USERS\<SID>` del cliente. Ahora piden solo leer y poner valores, o crear subclaves.
+- **Rutas absolutas (F1-05, auditoría Z-05):** `SystemTools` da la ruta absoluta de cada herramienta de Windows. Un nombre que no conoce se rechaza; no se busca en el PATH.
+  - **Cada proceso hijo** arranca en System32, con un PATH y un `PSModulePath` que solo tienen carpetas de Windows. Así un `compact` o un módulo de PowerShell plantado por otro usuario no se ejecuta como administrador.
+  - **winget** sale del paquete App Installer, no del alias en la carpeta del usuario, y solo si lo firmó Microsoft.
+  - **Verificado en el PC de Diego:** winget 1.29 corre desde su paquete y el PATH del hijo es solo Windows.
+- **Limpieza sin enlaces (F1-06, auditoría Z-03):** comprobé que la recursión de .NET 10 **sí** sigue los junctions. Un enlace dentro de `%TEMP%` hacía que la limpieza, elevada, borrara archivos de otra carpeta.
+  - Ahora la limpieza nunca baja por un enlace ni lo borra, no limpia una carpeta que sea un enlace y registra cuántos dejó.
+  - Lo prueba un test con un junction real.
+- **Logs (F1-11):**
+  - **Nivel:** Information por defecto. Verbose solo con `App.VerboseLogs` o `ZENTRA_LOG_VERBOSE=1`.
+  - **Rotación:** un archivo por día y uno nuevo al pasar de 5 MB. Se guardan 10 como máximo, así que ocupan 50 MB a lo sumo.
+  - **Secretos:** se siguen redactando en cada línea.
+- **Tests:** 1753 en total, 0 fallos. Un test impide lanzar procesos por un nombre suelto.
+
 ### Mejoras, Fase 4C: reportes de fallos, velocidad y garantía (19/11/2026, PR 19, sobre el PR 18)
 
 Cierra la Fase 4.

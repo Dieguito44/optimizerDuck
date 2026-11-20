@@ -115,7 +115,13 @@ public sealed class KeyLeakSentinelTests : IDisposable
         var files = Directory
             .EnumerateFiles(_root.FullName, "*", SearchOption.AllDirectories)
             .ToList();
-        Assert.Contains(files, f => f.EndsWith("zentra.log"));
+        // Daily log files since F1-11: zentra20261119.log.
+        Assert.Contains(
+            files,
+            f =>
+                Path.GetFileName(f).StartsWith("zentra", StringComparison.Ordinal)
+                && f.EndsWith(".log")
+        );
         Assert.Contains(files, f => f.EndsWith("informe.pdf"));
         Assert.DoesNotContain(files, f => f.Contains("dpapi"));
         Assert.All(files, f => Assert.False(Contains(f, raw), $"Key found in {f}"));

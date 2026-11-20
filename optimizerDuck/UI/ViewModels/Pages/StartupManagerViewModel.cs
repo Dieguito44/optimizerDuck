@@ -121,7 +121,14 @@ public partial class StartupManagerViewModel : ViewModel
     {
         try
         {
-            Process.Start(new ProcessStartInfo("taskschd.msc") { UseShellExecute = true });
+            Process.Start(
+                new ProcessStartInfo(
+                    System.IO.Path.Combine(Environment.SystemDirectory, "taskschd.msc")
+                )
+                {
+                    UseShellExecute = true,
+                }
+            );
         }
         catch (Exception ex)
         {
@@ -161,7 +168,7 @@ public partial class StartupManagerViewModel : ViewModel
             Process.Start(
                 new ProcessStartInfo
                 {
-                    FileName = "explorer.exe",
+                    FileName = Services.System.SystemTools.Resolve("explorer"),
                     Arguments = $"/select,\"{safePath}\"",
                     UseShellExecute = false,
                 }

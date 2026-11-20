@@ -61,7 +61,10 @@ public class SecretRedactorTests
                 logger.Warning($"Interpolated {key}");
             }
 
-            var text = File.ReadAllText(path);
+            // Daily log files since F1-11 (log20261119.txt): read every one.
+            var text = string.Concat(
+                Directory.GetFiles(dir.FullName, "log*.txt").Select(File.ReadAllText)
+            );
             Assert.DoesNotContain(key, text);
             Assert.Contains("Boom", text); // positive control: the log was written
         }
