@@ -7047,4 +7047,16 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
   <data name="Irreversible.Why.RemoveEdge" xml:space="preserve">
     <value>Zentra no lo vuelve a instalar. Se reinstala con winget install Microsoft.Edge o desde microsoft.com/edge. Se conservan los favoritos y las contraseñas, y WebView2 no se toca.</value>
   </data>
+  <data name="Diagnostic.Rule.R-GPU-RESETS.Title" xml:space="preserve">
+    <value>La gráfica se reinicia</value>
+  </data>
+  <data name="Diagnostic.Rule.R-GPU-RESETS.Description" xml:space="preserve">
+    <value>El driver de video se detuvo y Windows lo reinició más de 2 veces en 30 días: la pantalla se pone negra un momento o el PC se congela. Primero hay que actualizar el driver de la gráfica; si sigue, apagar MPO.</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-MPO-OFF" xml:space="preserve">
+    <value>Apagar MPO (Multiplane Overlay)</value>
+  </data>
+  <data name="Diagnostic.Evidence.stability.gpu_resets" xml:space="preserve">
+    <value>Reinicios del driver de video (30 días)</value>
+  </data>
 </root>

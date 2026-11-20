@@ -582,4 +582,24 @@ public class DiagnosticRuleTests
             );
         }
     }
+
+    // Version 1.1.2: the graphics driver resets (TDR) seen on Diego's PC.
+    [Theory]
+    [InlineData(0, null)]
+    [InlineData(2, null)]
+    [InlineData(3, Severity.Medium)]
+    [InlineData(25, Severity.High)]
+    public void GpuResets_AreAFindingAfterTwoIn30Days(int resets, Severity? expected)
+    {
+        var snapshot = DiegoPc() with
+        {
+            Stability = DiegoPc().Stability with { GpuResets30d = Measured<int>.Of(resets) },
+        };
+
+        var result = Eval(new GpuResetsRule(), snapshot);
+
+        Assert.Equal(expected, result.Finding?.Severity);
+        if (expected is not null)
+            Assert.Equal([ActionIds.DriverGpu, ActionIds.MpoOff], result.Finding!.ActionIds);
+    }
 }

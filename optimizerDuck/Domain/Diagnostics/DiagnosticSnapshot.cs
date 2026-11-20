@@ -245,6 +245,9 @@ public sealed record StabilitySnapshot
 
     /// <summary>Minidump files written in the last 30 days.</summary>
     public Measured<int> Minidumps30d { get; init; }
+
+    /// <summary>Graphics driver resets (TDR) in the last 30 days (version 1.1.2).</summary>
+    public Measured<int> GpuResets30d { get; init; }
 }
 
 /// <summary>Defender's potentially unwanted app blocking (MSFT_MpPreference.PUAProtection).</summary>

@@ -146,7 +146,11 @@ internal static partial class DiagnosticProbes
         Measured<int> BugChecks,
         Measured<int> Minidumps,
         SectionStatus Status
-    );
+    )
+    {
+        /// <summary>Graphics driver resets (TDR) in the last 30 days (version 1.1.2).</summary>
+        public Measured<int> GpuResets { get; init; }
+    }
 
     public static StabilityProbeResult ReadStability(DateTimeOffset now)
     {
@@ -159,6 +163,24 @@ internal static partial class DiagnosticProbes
             null
         );
         var minidumps = CountMinidumps(now);
+        // The graphics driver stopped and Windows restarted it (TDR): "Display" 4101 in System,
+        // and the LiveKernelEvent 141/117 reports in Application. Diego's PC had several a day.
+        var displayResets = CountEvents(
+            $"*[System[Provider[@Name='Display'] and (EventID=4101) and TimeCreated[timediff(@SystemTime) <= {ThirtyDaysMs}]]]",
+            null
+        );
+        // Filtered in the query: Diego's PC had about 5,000 of these reports in 30 days, and
+        // reading each one took seconds; the query alone takes about 200 ms.
+        var liveKernel = CountEvents(
+            $"*[System[Provider[@Name='Windows Error Reporting'] and (EventID=1001) and TimeCreated[timediff(@SystemTime) <= {ThirtyDaysMs}]] and EventData[Data='LiveKernelEvent'] and EventData[Data='141' or Data='117' or Data='1a1']]",
+            null,
+            "Application"
+        );
+        var gpuResets =
+            displayResets.Total.TryGet(out var d) && liveKernel.Total.TryGet(out var l)
+                ? Measured<int>.Of(Math.Max(d, l))
+                : displayResets.Total.HasValue ? displayResets.Total
+                : liveKernel.Total;
 
         var status =
             kp41.Total.HasValue && bugChecks.Total.HasValue && minidumps.HasValue
@@ -170,17 +192,21 @@ internal static partial class DiagnosticProbes
             bugChecks.Total,
             minidumps,
             status
-        );
+        )
+        {
+            GpuResets = gpuResets,
+        };
     }
 
     private static (Measured<int> Total, Measured<int> Flagged) CountEvents(
         string xpath,
-        Func<EventRecord, bool>? flag
+        Func<EventRecord, bool>? flag,
+        string log = "System"
     )
     {
         try
         {
-            var query = new EventLogQuery("System", PathType.LogName, xpath);
+            var query = new EventLogQuery(log, PathType.LogName, xpath);
             using var reader = new EventLogReader(query);
             int total = 0,
                 flagged = 0;

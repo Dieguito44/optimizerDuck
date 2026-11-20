@@ -59,6 +59,7 @@ public sealed record DiagnosticProbeData
     public Measured<int> Kp41PowerButton30d { get; init; }
     public Measured<int> BugChecks30d { get; init; }
     public Measured<int> Minidumps30d { get; init; }
+    public Measured<int> GpuResets30d { get; init; }
 
     public IReadOnlyDictionary<DiagnosticSection, SectionStatus> Statuses { get; init; } =
         new Dictionary<DiagnosticSection, SectionStatus>();
@@ -141,6 +142,7 @@ public static class DiagnosticSnapshotBuilder
                 Kp41PowerButton30d = probes.Kp41PowerButton30d,
                 BugChecks30d = probes.BugChecks30d,
                 Minidumps30d = probes.Minidumps30d,
+                GpuResets30d = probes.GpuResets30d,
             },
         };
     }

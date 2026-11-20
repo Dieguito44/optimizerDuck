@@ -297,6 +297,7 @@ public sealed class DiagnosticCollector(
             Kp41PowerButton30d = stability.Kp41PowerButton,
             BugChecks30d = stability.BugChecks,
             Minidumps30d = stability.Minidumps,
+            GpuResets30d = stability.GpuResets,
             Statuses = new Dictionary<DiagnosticSection, SectionStatus>
             {
                 [DiagnosticSection.Disks] = storage.Status,

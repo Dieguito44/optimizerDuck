@@ -17,7 +17,7 @@ public class ActionCatalogTests
     [Fact]
     public void Catalog_HoldsThe41ActionsOfThePlan()
     {
-        Assert.Equal(50, ActionCatalog.All.Count); // 41 of the plan + 3 of 2B + 3 of 3C + 3 of 4A
+        Assert.Equal(51, ActionCatalog.All.Count); // 41 of the plan + 3 of 2B + 3 of 3C + 3 of 4A + MPO (1.1.2)
         Assert.All(ActionCatalog.All.Keys, id => Assert.Matches(@"^ACT-[A-Z0-9-]+$", id));
     }
 
@@ -78,7 +78,7 @@ public class ActionCatalogTests
             )
             .ToHashSet();
         Assert.Equal(ruleTypes, DiagnosticRules.All.Select(r => r.GetType()).ToHashSet());
-        Assert.Equal(39, ids.Count); // 19 of phases 2-4, 10 of phase 6B, 4 of 2B, 3 of 3C, 3 of 4A
+        Assert.Equal(40, ids.Count); // 19 of phases 2-4, 10 of phase 6B, 4 of 2B, 3 of 3C, 3 of 4A, GPU resets (1.1.2)
     }
 }
 

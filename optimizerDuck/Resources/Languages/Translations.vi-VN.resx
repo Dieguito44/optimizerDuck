@@ -5239,4 +5239,16 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Irreversible.Why.RemoveEdge" xml:space="preserve">
     <value>Zentra does not reinstall it. It is reinstalled with winget install Microsoft.Edge or from microsoft.com/edge. Favorites and passwords are kept, and WebView2 is not touched.</value>
   </data>
+  <data name="Diagnostic.Rule.R-GPU-RESETS.Title" xml:space="preserve">
+    <value>The graphics card keeps resetting</value>
+  </data>
+  <data name="Diagnostic.Rule.R-GPU-RESETS.Description" xml:space="preserve">
+    <value>The video driver stopped and Windows restarted it more than twice in 30 days: the screen goes black for a moment or the PC freezes. First update the graphics driver; if it keeps happening, turn off MPO.</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-MPO-OFF" xml:space="preserve">
+    <value>Turn off MPO (Multiplane Overlay)</value>
+  </data>
+  <data name="Diagnostic.Evidence.stability.gpu_resets" xml:space="preserve">
+    <value>Video driver resets (30 days)</value>
+  </data>
 </root>
