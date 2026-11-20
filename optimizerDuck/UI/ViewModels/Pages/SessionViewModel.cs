@@ -44,8 +44,22 @@ public partial class SessionViewModel(
     /// <summary>The "Seguimiento" card (plan of improvements F3-05).</summary>
     public FollowUpViewModel FollowUp { get; } = followUp;
 
+    private bool _profileWired;
+
     public override void OnNavigatedTo()
     {
+        if (!_profileWired)
+        {
+            _profileWired = true;
+            Profile.PropertyChanged += (_, e) =>
+            {
+                if (e.PropertyName == nameof(ServiceProfileViewModel.IsBusy))
+                {
+                    MeasureBeforeCommand.NotifyCanExecuteChanged();
+                    MeasureAfterCommand.NotifyCanExecuteChanged();
+                }
+            };
+        }
         _ = GameMode.RefreshAsync();
         FollowUp.Refresh();
     }
@@ -90,9 +104,12 @@ public partial class SessionViewModel(
 
     public ObservableCollection<MetricRow> Metrics { get; } = [];
 
-    private bool CanMeasureBefore() => !IsBusy;
+    // The profile card and the measurements never run at the same time.
+    partial void OnIsBusyChanged(bool value) => Profile.IsSessionBusy = value;
 
-    private bool CanMeasureAfter() => !IsBusy && _session?.Before is not null;
+    private bool CanMeasureBefore() => !IsBusy && !Profile.IsBusy;
+
+    private bool CanMeasureAfter() => !IsBusy && !Profile.IsBusy && _session?.Before is not null;
 
     private bool CanGeneratePdf() => !IsBusy && _session?.Before is not null;
 

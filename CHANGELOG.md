@@ -4,6 +4,21 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Correcciones de las pruebas en el PC de Diego y en Windows Sandbox (19/11/2026, PR 23, sobre el PR 22)
+
+Probamos la versión completa en el PC de Diego (solo lectura) y en Windows Sandbox, donde Claude manejó Zentra. Guía y resultados en `Pruebas-Zentra-2026-11-19.md`. Las cuatro primeras correcciones ya están en el PR 22; estas son las demás.
+
+- **DiskSpd sin el runtime de Visual C++:** el `diskspd.exe` que compilamos dependía de `vcruntime140.dll` y `msvcp140.dll`. En un Windows limpio fallaba con `0xC0000135` y la lectura del disco salía "no medible". Ahora lleva el runtime adentro (`/MT`); un test lo comprueba y verifica su SHA-256 en `BUILD.txt`.
+- **Perfil y mediciones nunca a la vez:** "Aplicar perfil" se deshabilita mientras se mide, y "Medir" mientras se aplica el perfil.
+- **Modo juego avanzado:** el informe ya no recomienda apagar la integridad de memoria cuando ya está apagada.
+- **Guía de BIOS:** en una placa sin guía ya no muestra la de la ASRock de Diego "como referencia"; dice que hay que buscar el manual del fabricante.
+- **ResetBase hecho:** la tarjeta muestra "Hecho el … · no reversible" aunque no haya datos de reversión.
+- **Seguimiento:** la tarea llama a `cmd.exe` por su ruta absoluta (F1-05).
+- **Historial de Programas:** cada programa tiene su propio registro; antes cada instalación borraba la anterior del historial y del PDF.
+- **Optimizar:** el código interno (GUID) ya no se ve arriba del título; queda como texto emergente.
+- **Textos:** "Aplicado hace 15 segundos" (decía "Aplicado en 15 hace segundos"), "núcleos", "módulo(s)", "repetición".
+- **Tests:** 1799 en total, 0 fallos.
+
 ### Mejoras, Fase 1C: consentimiento, clave fuera del PC del cliente y acciones irreversibles (19/11/2026, PR 22, sobre el PR 21)
 
 - **Consentimiento Ley 1581 (F1-07, auditoría Z-10):** la tarjeta de IA tiene una casilla obligatoria.

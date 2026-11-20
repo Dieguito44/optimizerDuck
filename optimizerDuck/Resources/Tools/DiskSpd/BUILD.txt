@@ -3,7 +3,11 @@
 Source: https://github.com/microsoft/diskspd (MIT, see LICENSE.txt)
 Commit: 5e7025b (DISKSPD 2.3)
 Build:  MSBuild, Release x64, MSVC toolset v145 (Visual Studio 2026), 2026-11-19
-SHA256: 9BDD3446FBE05E1C651FFE79D7181BB1097F44D1EB3AD6027F1CC52C48425810
+        Static C/C++ runtime (/MT, set with the _CL_ environment variable), so it runs on
+        PCs without the Visual C++ Redistributable. The first build (/MD) failed there with
+        0xC0000135 (found in the Windows Sandbox tests).
+        Command: set _CL_=/MT; MSBuild diskspd.sln -t:CmdRequestCreator:Rebuild -p:Configuration=Release -p:Platform=x64
+SHA256: EF248C79420D4A399F0C33309805E14AA59B5C72261C41EC52CCD84965E7F9FC
 
 The Microsoft-signed DiskSpd release binary is NOT used: it ships under a Microsoft EULA
 that does not allow redistribution.

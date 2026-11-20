@@ -46,7 +46,8 @@
                         <ui:TextBlock
                             Margin="0,8,0,0"
                             Style="{StaticResource CaptionTextStyle}"
-                            TextWrapping="Wrap">
+                            TextWrapping="Wrap"
+                            Visibility="{Binding ViewModel.HasGuide, Converter={StaticResource BooleanToVisibilityConverter}}">
                             <Run Text="{ext:Loc BiosGuide.Source}" />
                             <Run Text="{Binding ViewModel.Guide.ManualUrl, Mode=OneWay}" />
                             <Run Text="(" /><Run Text="{Binding ViewModel.Guide.ManualDate, Mode=OneWay}" /><Run Text=")" />

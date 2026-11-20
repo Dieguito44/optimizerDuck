@@ -4904,4 +4904,10 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Preset.Problem.NeedsConfirmation" xml:space="preserve">
     <value>"{0}" cannot be fully undone; it is applied by hand in Optimize, with its own confirmation.</value>
   </data>
+  <data name="BiosGuide.Match.None" xml:space="preserve">
+    <value>There is no guide for this motherboard yet. Look for its manual on the manufacturer's site: menus and names change from one brand to another.</value>
+  </data>
+  <data name="Optimizer.UI.State.DoneIrreversible" xml:space="preserve">
+    <value>Done on {0} · not reversible</value>
+  </data>
 </root>

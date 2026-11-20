@@ -119,8 +119,19 @@ public class DiskBenchmarkTests
             var tool = Path.Combine(dir.FullName, "optimizerDuck", "Resources", "Tools", "DiskSpd");
             if (Directory.Exists(tool))
             {
-                Assert.True(File.Exists(Path.Combine(tool, "diskspd.exe")));
+                var exe = Path.Combine(tool, "diskspd.exe");
+                Assert.True(File.Exists(exe));
                 Assert.Contains("MIT", File.ReadAllText(Path.Combine(tool, "LICENSE.txt")));
+
+                // Found in the Windows Sandbox tests: built with /MD it needed the Visual C++
+                // Redistributable and failed with 0xC0000135 on a clean Windows. It must carry
+                // its runtime (/MT), and BUILD.txt must name the exact binary shipped.
+                var bytes = File.ReadAllBytes(exe);
+                var text = System.Text.Encoding.ASCII.GetString(bytes);
+                Assert.DoesNotContain("VCRUNTIME140", text, StringComparison.OrdinalIgnoreCase);
+                Assert.DoesNotContain("MSVCP140", text, StringComparison.OrdinalIgnoreCase);
+                var sha = Convert.ToHexString(System.Security.Cryptography.SHA256.HashData(bytes));
+                Assert.Contains(sha, File.ReadAllText(Path.Combine(tool, "BUILD.txt")));
                 return;
             }
         }

@@ -159,7 +159,7 @@
 
   <data name="Dashboard.SystemInfo.Cpu.Cores" xml:space="preserve">
 
-    <value>{0} Nucleos</value>
+    <value>{0} núcleos</value>
 
   </data>
 
@@ -171,7 +171,7 @@
 
   <data name="Dashboard.SystemInfo.Ram.Modules" xml:space="preserve">
 
-    <value>{0} Modulo(s)</value>
+    <value>{0} módulo(s)</value>
 
   </data>
 
@@ -355,37 +355,37 @@
 
   <data name="Common.AppliedSecondsAgo" xml:space="preserve">
 
-    <value>Aplicado en {0} hace segundos</value>
+    <value>Aplicado hace {0} segundos</value>
 
   </data>
 
   <data name="Common.AppliedMinutesAgo" xml:space="preserve">
 
-    <value>Aplicado en {0} hace minutos</value>
+    <value>Aplicado hace {0} minutos</value>
 
   </data>
 
   <data name="Common.AppliedHoursAgo" xml:space="preserve">
 
-    <value>Aplicado en {0} hace horas</value>
+    <value>Aplicado hace {0} horas</value>
 
   </data>
 
   <data name="Common.AppliedDaysAgo" xml:space="preserve">
 
-    <value>Aplicado en {0} hace días</value>
+    <value>Aplicado hace {0} días</value>
 
   </data>
 
   <data name="Common.AppliedMonthsAgo" xml:space="preserve">
 
-    <value>Aplicado en {0} hace meses</value>
+    <value>Aplicado hace {0} meses</value>
 
   </data>
 
   <data name="Common.AppliedYearsAgo" xml:space="preserve">
 
-    <value>Aplicado en {0} hace años</value>
+    <value>Aplicado hace {0} años</value>
 
   </data>
 
@@ -1006,7 +1006,7 @@
 
   <data name="Optimizer.Performance.KeyboardLatencyOptimization.Name" xml:space="preserve">
 
-    <value>Optimizar repeticion del teclado</value>
+    <value>Optimizar repetición del teclado</value>
 
   </data>
 
@@ -6694,5 +6694,11 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
   </data>
   <data name="Preset.Problem.NeedsConfirmation" xml:space="preserve">
     <value>"{0}" no se puede deshacer del todo; se aplica a mano en Optimizar, con su propia confirmación.</value>
+  </data>
+  <data name="BiosGuide.Match.None" xml:space="preserve">
+    <value>Todavía no hay guía para esta placa base. Busca su manual en la página del fabricante: los menús y los nombres cambian de una marca a otra.</value>
+  </data>
+  <data name="Optimizer.UI.State.DoneIrreversible" xml:space="preserve">
+    <value>Hecho el {0} · no reversible</value>
   </data>
 </root>

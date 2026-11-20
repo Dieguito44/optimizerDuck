@@ -525,6 +525,19 @@ public class DiagnosticRuleTests
         var result = Eval(new VbsOnRule(), DiegoPc());
         Assert.Equal(Severity.Info, result.Finding!.Severity);
         Assert.Contains(result.Finding.Evidence, e => e.Key == "os.hvci" && e.Text == "off");
+        // Memory Integrity is already off: nothing to turn off (found in the Sandbox tests).
+        Assert.Empty(result.Finding.ActionIds);
+    }
+
+    [Fact]
+    public void VbsOn_WithMemoryIntegrityOn_OffersTheAdvancedGameMode()
+    {
+        var pc = DiegoPc();
+        var snapshot = pc with { Os = pc.Os with { Hvci = Measured<bool>.Of(true) } };
+        Assert.Equal(
+            [ActionIds.GameModeAdvanced],
+            Eval(new VbsOnRule(), snapshot).Finding!.ActionIds
+        );
     }
 
     [Fact]
