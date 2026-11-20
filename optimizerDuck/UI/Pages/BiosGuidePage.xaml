@@ -17,10 +17,15 @@
     mc:Ignorable="d">
 
     <Grid RowDefinitions="Auto,*">
-        <StackPanel Style="{StaticResource PageHeaderStyle}">
-            <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc BiosGuide.Header.Title}" />
-            <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc BiosGuide.Header.Description}" />
-        </StackPanel>
+        <Grid ColumnDefinitions="Auto,*" Style="{StaticResource PageHeaderGridStyle}">
+            <Border Style="{StaticResource PageIconTileStyle}">
+                <ui:SymbolIcon Style="{StaticResource PageIconStyle}" Symbol="DeveloperBoard24" />
+            </Border>
+            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc BiosGuide.Header.Title}" />
+                <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc BiosGuide.Header.Description}" />
+            </StackPanel>
+        </Grid>
 
         <ScrollViewer
             Grid.Row="1"

@@ -157,58 +157,11 @@ public partial class App : Application
     }
 
     /// <summary>
-    ///     Applies the duck-yellow accent palette tuned for the given theme. Light
-    ///     uses deeper honey tones so accent text and fills stay readable on white;
-    ///     dark keeps the brighter golden tones. Centralized so startup and theme
-    ///     switches always use the same palettes.
+    ///     Applies Zentra's palette (the logo's teal over slate surfaces) for the given theme.
+    ///     Centralized so startup and theme switches always use the same palette.
     /// </summary>
-    internal static void ApplyAccentFor(ApplicationTheme theme)
-    {
-        if (theme == ApplicationTheme.Dark)
-        {
-            ApplicationAccentColorManager.Apply(
-                systemAccent: Color.FromRgb(216, 155, 29),
-                primaryAccent: Color.FromRgb(235, 193, 94),
-                secondaryAccent: Color.FromRgb(255, 247, 200),
-                tertiaryAccent: Color.FromRgb(255, 243, 131)
-            );
-            RefreshToggleSwitchBrushes();
-            return;
-        }
-
-        ApplicationAccentColorManager.Apply(
-            systemAccent: Color.FromRgb(138, 94, 0),
-            primaryAccent: Color.FromRgb(138, 94, 0),
-            secondaryAccent: Color.FromRgb(122, 88, 0),
-            tertiaryAccent: Color.FromRgb(110, 75, 0)
-        );
-        RefreshToggleSwitchBrushes();
-    }
-
-    private static void RefreshToggleSwitchBrushes()
-    {
-        var app = Application.Current;
-        if (app == null)
-            return;
-
-        Color GetColor(string key, Color fallback) =>
-            app.Resources[key] is Color color ? color : fallback;
-
-        var primary = GetColor("SystemAccentColorPrimary", Color.FromRgb(235, 193, 94));
-        var secondary = GetColor("AccentFillColorSecondary", Color.FromRgb(255, 247, 200));
-        var tertiary = GetColor("AccentFillColorTertiary", Color.FromRgb(255, 243, 131));
-        var knobOn = GetColor("TextOnAccentFillColorPrimary", Colors.White);
-
-        app.Resources["ToggleSwitchFillOn"] = new SolidColorBrush(primary);
-        app.Resources["ToggleSwitchFillOnPointerOver"] = new SolidColorBrush(secondary);
-        app.Resources["ToggleSwitchFillOnPressed"] = new SolidColorBrush(tertiary);
-        app.Resources["ToggleSwitchStrokeOn"] = new SolidColorBrush(primary);
-        app.Resources["ToggleSwitchStrokeOnPointerOver"] = new SolidColorBrush(secondary);
-        app.Resources["ToggleSwitchStrokeOnPressed"] = new SolidColorBrush(tertiary);
-        app.Resources["ToggleSwitchKnobFillOn"] = new SolidColorBrush(knobOn);
-        app.Resources["ToggleSwitchKnobFillOnPointerOver"] = new SolidColorBrush(knobOn);
-        app.Resources["ToggleSwitchKnobFillOnPressed"] = new SolidColorBrush(knobOn);
-    }
+    internal static void ApplyAccentFor(ApplicationTheme theme) =>
+        UI.Styles.ZentraTheme.Apply(theme);
 
     private static async Task SafeFireAndForgetAsync(Func<Task> taskFactory)
     {

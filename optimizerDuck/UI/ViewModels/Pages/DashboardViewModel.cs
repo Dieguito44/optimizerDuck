@@ -6,9 +6,12 @@ using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using Microsoft.Extensions.Logging;
 using optimizerDuck.Common.Helpers;
+using optimizerDuck.Domain.Diagnostics;
 using optimizerDuck.Resources.Languages;
 using optimizerDuck.Services.Configuration;
+using optimizerDuck.Services.Diagnostics;
 using optimizerDuck.Services.System;
+using optimizerDuck.UI.Pages;
 using Wpf.Ui;
 using Wpf.Ui.Appearance;
 using Wpf.Ui.Controls;
@@ -67,14 +70,44 @@ public partial class DashboardViewModel : ViewModel
     private string _powerPlanText = Loc.Instance["Common.Unknown"];
     private bool _updateNotified;
 
+    // ----- Zentra health card ------------------------------------------------------------
+
+    [ObservableProperty]
+    private bool _hasDiagnosis;
+
+    [ObservableProperty]
+    private int _healthScore;
+
+    [ObservableProperty]
+    private Brush _healthBrush = Brushes.Gray;
+
+    [ObservableProperty]
+    private string _healthTitle = string.Empty;
+
+    [ObservableProperty]
+    private string _healthDetail = string.Empty;
+
+    [ObservableProperty]
+    private string _healthActionText = string.Empty;
+
+    /// <summary>The PC's name, so the technician sees whose PC this is at a glance.</summary>
+    public string MachineName { get; } = Environment.MachineName;
+
+    private readonly DiagnosticService _diagnosticService;
+    private readonly INavigationService _navigationService;
+
     public DashboardViewModel(
         SystemInfoService systemInfoService,
         ISnackbarService snackbarService,
         ILogger<DashboardViewModel> logger,
         UpdaterService updaterService,
-        IContentDialogService contentDialogService
+        IContentDialogService contentDialogService,
+        DiagnosticService diagnosticService,
+        INavigationService navigationService
     )
     {
+        _diagnosticService = diagnosticService;
+        _navigationService = navigationService;
         _systemInfoService = systemInfoService;
         _snackbarService = snackbarService;
         _logger = logger;
@@ -137,6 +170,7 @@ public partial class DashboardViewModel : ViewModel
     public override async Task OnNavigatedToAsync()
     {
         await base.OnNavigatedToAsync();
+        RefreshHealth();
 
         if (IsLoading)
             return;
@@ -213,57 +247,68 @@ public partial class DashboardViewModel : ViewModel
         }
     }
 
+    /// <summary>Opens one of the service steps: "Diagnostic", "Session" or "Repair".</summary>
     [RelayCommand]
-    private void OpenAction(string action)
+    private void GoTo(string page)
     {
-        try
+        var target = page switch
         {
-            switch (action)
-            {
-                case "Discord":
-                    Process.Start(
-                        new ProcessStartInfo
-                        {
-                            FileName = Shared.DiscordInviteURL,
-                            UseShellExecute = true,
-                        }
-                    );
-                    break;
-
-                case "GitHub":
-                    Process.Start(
-                        new ProcessStartInfo
-                        {
-                            FileName = Shared.GitHubRepoURL,
-                            UseShellExecute = true,
-                        }
-                    );
-                    break;
-
-                case "Support":
-                case "Contribute":
-                    Process.Start(
-                        new ProcessStartInfo
-                        {
-                            FileName = Shared.ContributeURL,
-                            UseShellExecute = true,
-                        }
-                    );
-                    break;
-            }
-        }
-        catch (Exception ex)
-        {
-            _snackbarService.Show(
-                Loc.Instance["Snackbar.OpenFailed.Title"],
-                Loc.Instance["Snackbar.OpenFailed.Message"],
-                ControlAppearance.Danger,
-                new SymbolIcon { Symbol = SymbolRegular.ErrorCircle24, Filled = true },
-                TimeSpan.FromSeconds(5)
-            );
-            _logger.LogError(ex, "Failed to open {Action} link", action);
-        }
+            "Diagnostic" => typeof(DiagnosticPage),
+            "Session" => typeof(SessionPage),
+            "Repair" => typeof(RepairPage),
+            _ => null,
+        };
+        if (target is not null)
+            _navigationService.Navigate(target);
     }
+
+    /// <summary>Health card: the score of the last diagnosis of this run, if there is one.</summary>
+    private void RefreshHealth()
+    {
+        var report = _diagnosticService.LastReport;
+        HasDiagnosis = report is not null;
+        if (report is null)
+        {
+            HealthScore = 0;
+            HealthTitle = Loc.Instance["Dashboard.Health.None.Title"];
+            HealthDetail = Loc.Instance["Dashboard.Health.None.Detail"];
+            HealthActionText = Loc.Instance["Dashboard.Health.None.Action"];
+            return;
+        }
+
+        var score = report.Score.Score;
+        var findings = report.Findings.ToList();
+        var critical = findings.Count(f => f.Severity == Severity.Critical);
+        HealthScore = score;
+        HealthBrush = HealthBrushFor(score);
+        HealthTitle = Loc.Instance[
+            score switch
+            {
+                >= 85 => "Dashboard.Health.Good",
+                >= 60 => "Dashboard.Health.Fair",
+                _ => "Dashboard.Health.Poor",
+            }
+        ];
+        HealthDetail = Loc.Instance[
+            "Dashboard.Health.Detail",
+            findings.Count,
+            critical,
+            report.Snapshot.CapturedAtUtc.ToLocalTime().ToString("t", CultureInfo.CurrentCulture)
+        ];
+        HealthActionText = Loc.Instance["Dashboard.Health.Action"];
+    }
+
+    /// <summary>Good, fair and poor, in the Zentra palette of the active theme.</summary>
+    private static Brush HealthBrushFor(int score) =>
+        global::System.Windows.Application.Current?.TryFindResource(
+            score switch
+            {
+                >= 85 => "ZentraGoodBrush",
+                >= 60 => "ZentraWarningBrush",
+                _ => "ZentraCriticalBrush",
+            }
+        ) as Brush
+        ?? Brushes.Gray;
 
     [RelayCommand]
     private void Run(string action)

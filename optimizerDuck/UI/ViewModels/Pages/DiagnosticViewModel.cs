@@ -13,6 +13,9 @@ namespace optimizerDuck.UI.ViewModels.Pages;
 /// <summary>One finding card on the diagnosis page.</summary>
 public sealed record FindingItem(FindingView View, Brush SeverityBrush)
 {
+    /// <summary>The severity color, faint, behind the severity label.</summary>
+    public Brush SeverityTintBrush { get; } = UI.Styles.ZentraBrushes.Tint(SeverityBrush);
+
     public string Title => View.Title;
     public string Description => View.Description;
     public string SeverityText => View.SeverityText;
@@ -31,6 +34,7 @@ public sealed record FindingItem(FindingView View, Brush SeverityBrush)
 public partial class DiagnosticViewModel(
     DiagnosticService diagnosticService,
     TemperatureViewModel temperature,
+    Wpf.Ui.INavigationService navigationService,
     ILogger<DiagnosticViewModel> logger
 ) : ViewModel
 {
@@ -109,11 +113,9 @@ public partial class DiagnosticViewModel(
     [RelayCommand(CanExecute = nameof(IsRunning))]
     private void Cancel() => _cts?.Cancel();
 
-    /// <summary>The AI report and PDF arrive in phase 5; the button stays visible but disabled.</summary>
-    [RelayCommand(CanExecute = nameof(CanGenerateReport))]
-    private static void GenerateReport() { }
-
-    private static bool CanGenerateReport() => false;
+    /// <summary>The AI report and the client PDF are made on the Session page.</summary>
+    [RelayCommand]
+    private void GoToSession() => navigationService.Navigate(typeof(UI.Pages.SessionPage));
 
     private void Show(DiagnosticReport report)
     {
@@ -145,28 +147,8 @@ public partial class DiagnosticViewModel(
         OnPropertyChanged(nameof(HasNoFindings));
     }
 
-    private static Brush BrushForScore(int score) =>
-        score switch
-        {
-            >= 85 => Frozen(0x2E, 0xA0, 0x43),
-            >= 60 => Frozen(0xD9, 0x8E, 0x04),
-            _ => Frozen(0xD1, 0x34, 0x38),
-        };
+    private static Brush BrushForScore(int score) => UI.Styles.ZentraBrushes.ForScore(score);
 
     private static Brush BrushForSeverity(Severity severity) =>
-        severity switch
-        {
-            Severity.Critical => Frozen(0xD1, 0x34, 0x38),
-            Severity.High => Frozen(0xE0, 0x6C, 0x00),
-            Severity.Medium => Frozen(0xD9, 0x8E, 0x04),
-            Severity.Low => Frozen(0x2B, 0x88, 0xD8),
-            _ => Frozen(0x7A, 0x7A, 0x7A),
-        };
-
-    private static SolidColorBrush Frozen(byte r, byte g, byte b)
-    {
-        var brush = new SolidColorBrush(Color.FromRgb(r, g, b));
-        brush.Freeze();
-        return brush;
-    }
+        UI.Styles.ZentraBrushes.ForSeverity(severity);
 }

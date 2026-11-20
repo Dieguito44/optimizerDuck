@@ -2970,13 +2970,13 @@ Mettez à jour pour profiter des dernières fonctionnalités, améliorations et 
     <value>Only saved on this PC and printed on the PDF. It is never sent to the AI.</value>
   </data>
   <data name="Session.Button.Before" xml:space="preserve">
-    <value>1. Measure before</value>
+    <value>Measure before</value>
   </data>
   <data name="Session.Button.After" xml:space="preserve">
-    <value>2. Measure after</value>
+    <value>Measure after</value>
   </data>
   <data name="Session.Button.Pdf" xml:space="preserve">
-    <value>3. Create PDF</value>
+    <value>Create PDF</value>
   </data>
   <data name="Session.Button.Folder" xml:space="preserve">
     <value>Open folder</value>
@@ -2988,7 +2988,7 @@ Mettez à jour pour profiter des dernières fonctionnalités, améliorations et 
     <value>New session</value>
   </data>
   <data name="Session.Steps.Help" xml:space="preserve">
-    <value>Each measurement runs the diagnosis and takes about 2 minutes (more right after logon). Apply the optimizations between step 1 and step 2, and restart the PC before measuring after.</value>
+    <value>Each measurement runs the diagnosis and takes about 2 minutes (more right after logon). Apply the profile and any other optimizations between step 1 and step 3, and restart the PC before measuring after.</value>
   </data>
   <data name="Session.Step.Diagnosis" xml:space="preserve">
     <value>Running the diagnosis...</value>
@@ -4036,5 +4036,68 @@ How to undo it: on the Session page press Turn the protection back on and restar
   </data>
   <data name="Optimizer.Performance.AdvancedGameMode.Error.Locked" xml:space="preserve">
     <value>Memory Integrity is locked by the firmware (UEFI) or managed by a policy on this PC; it cannot be turned off from here.</value>
+  </data>
+  <data name="Dashboard.Header.Subtitle" xml:space="preserve">
+    <value>Optimization service for {0}</value>
+  </data>
+  <data name="Dashboard.Steps.Diagnostic.Title" xml:space="preserve">
+    <value>1. Diagnose</value>
+  </data>
+  <data name="Dashboard.Steps.Diagnostic.Description" xml:space="preserve">
+    <value>Find what slows the PC down, with evidence.</value>
+  </data>
+  <data name="Dashboard.Steps.Session.Title" xml:space="preserve">
+    <value>2. Session</value>
+  </data>
+  <data name="Dashboard.Steps.Session.Description" xml:space="preserve">
+    <value>Measure before, apply the profile, measure after and write the PDF.</value>
+  </data>
+  <data name="Dashboard.Steps.Repair.Title" xml:space="preserve">
+    <value>3. Repair</value>
+  </data>
+  <data name="Dashboard.Steps.Repair.Description" xml:space="preserve">
+    <value>Repair Windows and free up space if the diagnosis asks for it.</value>
+  </data>
+  <data name="Dashboard.Health.None.Title" xml:space="preserve">
+    <value>No diagnosis yet</value>
+  </data>
+  <data name="Dashboard.Health.None.Detail" xml:space="preserve">
+    <value>Start the service with a diagnosis: it reads the PC without changing anything.</value>
+  </data>
+  <data name="Dashboard.Health.None.Action" xml:space="preserve">
+    <value>Start service</value>
+  </data>
+  <data name="Dashboard.Health.Good" xml:space="preserve">
+    <value>PC health: good</value>
+  </data>
+  <data name="Dashboard.Health.Fair" xml:space="preserve">
+    <value>PC health: fair</value>
+  </data>
+  <data name="Dashboard.Health.Poor" xml:space="preserve">
+    <value>PC health: poor</value>
+  </data>
+  <data name="Dashboard.Health.Detail" xml:space="preserve">
+    <value>{0} findings, {1} critical. Diagnosed at {2}.</value>
+  </data>
+  <data name="Dashboard.Health.Action" xml:space="preserve">
+    <value>View diagnosis</value>
+  </data>
+  <data name="Diagnostic.Button.ToSession" xml:space="preserve">
+    <value>Continue in Session</value>
+  </data>
+  <data name="Diagnostic.Button.ToSession.Tooltip" xml:space="preserve">
+    <value>The AI report and the client PDF are made on the Session page.</value>
+  </data>
+  <data name="Session.Step.Before" xml:space="preserve">
+    <value>Measure before</value>
+  </data>
+  <data name="Session.Step.Profile" xml:space="preserve">
+    <value>Standard service</value>
+  </data>
+  <data name="Session.Step.After" xml:space="preserve">
+    <value>Measure after</value>
+  </data>
+  <data name="Session.Step.Report" xml:space="preserve">
+    <value>Client report</value>
   </data>
 </root>

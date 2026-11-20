@@ -35,7 +35,10 @@
                                   {Binding ViewModel.LatestVersion}}"
                 Severity="Warning" />
             <Grid ColumnDefinitions="*,Auto">
-                <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Dashboard.Header.Title}" />
+                <StackPanel>
+                    <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Dashboard.Header.Title}" />
+                    <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc Dashboard.Header.Subtitle, {Binding ViewModel.MachineName}}" />
+                </StackPanel>
 
                 <WrapPanel
                     Grid.Column="1"
@@ -50,86 +53,138 @@
                         Cursor="Hand"
                         Icon="{ui:SymbolIcon Apps24}" />
                     <ui:Button
-                        Appearance="Primary"
+                        Appearance="Secondary"
                         Command="{Binding ViewModel.RefreshCommand}"
                         Content="{ext:Loc Dashboard.Header.Menu.Refresh}"
                         Cursor="Hand"
-                        Foreground="{DynamicResource AccentButtonForeground}"
                         Icon="{ui:SymbolIcon ArrowClockwise24}" />
                 </WrapPanel>
             </Grid>
         </StackPanel>
 
-        <!--  Action Cards  -->
-        <UniformGrid
-            Grid.Row="1"
-            Margin="0,0,0,24"
-            Columns="3">
-            <ui:CardAction
-                Margin="0,0,12,0"
-                Padding="16,14"
-                VerticalAlignment="Stretch"
-                Command="{Binding ViewModel.OpenActionCommand}"
-                CommandParameter="Discord"
-                Cursor="Hand">
-                <ui:CardAction.Icon>
-                    <ui:ImageIcon Height="25" Source="pack://application:,,,/Resources/Images/DiscordLogo.png" />
-                </ui:CardAction.Icon>
-                <StackPanel>
-                    <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Dashboard.Actions.Discord.Title}" />
-                    <ui:TextBlock
-                        FontTypography="Caption"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="{ext:Loc Dashboard.Actions.Discord.Description}"
-                        TextWrapping="Wrap" />
-                </StackPanel>
-            </ui:CardAction>
+        <!--  Zentra service: PC health from the last diagnosis, then the three steps of the service.  -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,24">
+            <Border
+                Padding="20,18"
+                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                BorderBrush="{DynamicResource ZentraBrandGradientBrush}"
+                BorderThickness="1.5"
+                CornerRadius="{StaticResource CornerRadiusLarge}">
+                <Grid ColumnDefinitions="Auto,*,Auto">
+                    <Grid Width="76" Height="76">
+                        <Ellipse Stroke="{DynamicResource ZentraStrokeBrush}" StrokeThickness="6" />
+                        <ui:ProgressRing
+                            Width="76"
+                            Height="76"
+                            Foreground="{Binding ViewModel.HealthBrush}"
+                            IsIndeterminate="False"
+                            Progress="{Binding ViewModel.HealthScore}"
+                            Visibility="{Binding ViewModel.HasDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <ui:TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="22"
+                            FontWeight="SemiBold"
+                            Text="{Binding ViewModel.HealthScore}"
+                            Visibility="{Binding ViewModel.HasDiagnosis, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                        <ui:SymbolIcon
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="30"
+                            Foreground="{DynamicResource ZentraBrandBrush}"
+                            Symbol="Stethoscope24"
+                            Visibility="{Binding ViewModel.HasDiagnosis, Converter={StaticResource InverseBooleanToVisibilityConverter}}" />
+                    </Grid>
 
-            <ui:CardAction
-                Margin="0,0,12,0"
-                Padding="16,14"
-                VerticalAlignment="Stretch"
-                Command="{Binding ViewModel.OpenActionCommand}"
-                CommandParameter="GitHub"
-                Cursor="Hand">
-                <ui:CardAction.Icon>
-                    <ui:ImageIcon Height="40" Source="{Binding ViewModel.CurrentApplicationTheme, Converter={StaticResource ThemeToGitHubIconConverter}}" />
-                </ui:CardAction.Icon>
-                <StackPanel>
-                    <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Dashboard.Actions.GitHub.Title}" />
-                    <ui:TextBlock
-                        FontTypography="Caption"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="{ext:Loc Dashboard.Actions.GitHub.Description}"
-                        TextWrapping="Wrap" />
-                </StackPanel>
-            </ui:CardAction>
+                    <StackPanel
+                        Grid.Column="1"
+                        Margin="18,0"
+                        VerticalAlignment="Center">
+                        <ui:TextBlock
+                            FontTypography="Subtitle"
+                            Text="{Binding ViewModel.HealthTitle}"
+                            TextWrapping="Wrap" />
+                        <ui:TextBlock
+                            Margin="0,4,0,0"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{Binding ViewModel.HealthDetail}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
 
-            <ui:CardAction
-                Margin="0"
-                Padding="16,14"
-                VerticalAlignment="Stretch"
-                BorderThickness="1"
-                Command="{Binding ViewModel.OpenActionCommand}"
-                CommandParameter="Contribute"
-                Cursor="Hand">
-                <ui:CardAction.Icon>
-                    <ui:SymbolIcon
-                        Filled="True"
-                        Foreground="{DynamicResource SystemFillColorCautionBrush}"
-                        Symbol="Star24" />
-                </ui:CardAction.Icon>
+                    <ui:Button
+                        Grid.Column="2"
+                        VerticalAlignment="Center"
+                        Appearance="Primary"
+                        Command="{Binding ViewModel.GoToCommand}"
+                        CommandParameter="Diagnostic"
+                        Content="{Binding ViewModel.HealthActionText}"
+                        Cursor="Hand"
+                        Icon="{ui:SymbolIcon Stethoscope24}" />
+                </Grid>
+            </Border>
 
-                <StackPanel>
-                    <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Dashboard.Actions.SupportMe.Title}" />
-                    <ui:TextBlock
-                        FontTypography="Caption"
-                        Foreground="{DynamicResource TextFillColorSecondaryBrush}"
-                        Text="{ext:Loc Dashboard.Actions.SupportMe.Description}"
-                        TextWrapping="Wrap" />
-                </StackPanel>
-            </ui:CardAction>
-        </UniformGrid>
+            <UniformGrid Margin="0,12,0,0" Columns="3">
+                <ui:CardAction
+                    Margin="0,0,12,0"
+                    Padding="16,14"
+                    VerticalAlignment="Stretch"
+                    Command="{Binding ViewModel.GoToCommand}"
+                    CommandParameter="Diagnostic"
+                    Cursor="Hand">
+                    <ui:CardAction.Icon>
+                        <ui:SymbolIcon Foreground="{DynamicResource ZentraBrandBrush}" Symbol="Stethoscope24" />
+                    </ui:CardAction.Icon>
+                    <StackPanel>
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Dashboard.Steps.Diagnostic.Title}" />
+                        <ui:TextBlock
+                            FontTypography="Caption"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{ext:Loc Dashboard.Steps.Diagnostic.Description}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardAction>
+
+                <ui:CardAction
+                    Margin="0,0,12,0"
+                    Padding="16,14"
+                    VerticalAlignment="Stretch"
+                    Command="{Binding ViewModel.GoToCommand}"
+                    CommandParameter="Session"
+                    Cursor="Hand">
+                    <ui:CardAction.Icon>
+                        <ui:SymbolIcon Foreground="{DynamicResource ZentraBrandBrush}" Symbol="ClipboardTaskListLtr24" />
+                    </ui:CardAction.Icon>
+                    <StackPanel>
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Dashboard.Steps.Session.Title}" />
+                        <ui:TextBlock
+                            FontTypography="Caption"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{ext:Loc Dashboard.Steps.Session.Description}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardAction>
+
+                <ui:CardAction
+                    Margin="0"
+                    Padding="16,14"
+                    VerticalAlignment="Stretch"
+                    Command="{Binding ViewModel.GoToCommand}"
+                    CommandParameter="Repair"
+                    Cursor="Hand">
+                    <ui:CardAction.Icon>
+                        <ui:SymbolIcon Foreground="{DynamicResource ZentraBrandBrush}" Symbol="WrenchScrewdriver24" />
+                    </ui:CardAction.Icon>
+                    <StackPanel>
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Dashboard.Steps.Repair.Title}" />
+                        <ui:TextBlock
+                            FontTypography="Caption"
+                            Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                            Text="{ext:Loc Dashboard.Steps.Repair.Description}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
+                </ui:CardAction>
+            </UniformGrid>
+        </StackPanel>
 
         <ScrollViewer
             Grid.Row="2"
