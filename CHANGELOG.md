@@ -4,6 +4,31 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 1C: consentimiento, clave fuera del PC del cliente y acciones irreversibles (19/11/2026, PR 22, sobre el PR 21)
+
+- **Consentimiento Ley 1581 (F1-07, auditoría Z-10):** la tarjeta de IA tiene una casilla obligatoria.
+  - **El texto dice** quién recibe los datos (Anthropic, PBC, en EE. UU.), para qué (redactar el informe) y por cuánto tiempo. Según la política de Anthropic, los borra dentro de 30 días, salvo las excepciones que lista. También dice que es voluntario.
+  - **Sin la casilla** no se envía nada y el informe sale con la plantilla. El servicio lo comprueba; no depende solo de la pantalla.
+  - **session.json guarda** la versión del texto aceptado y la hora. Si el texto cambia, un consentimiento viejo ya no vale.
+  - **Minimización:** el paquete ya salía de una lista cerrada de campos. Ahora además cada texto pasa por un redactor que quita el usuario, el nombre del PC, el dominio, la etiqueta del cliente, el serial de la BIOS, las rutas personales, los correos y las IP. Es el mismo redactor de los informes de fallos (F4-05).
+- **La clave no toca el PC del cliente (F1-08, auditoría Z-32), opción (a):**
+  - **En el PC del cliente** no hay caja para la clave, y `ApiKeyStore` la rechaza si llega. "Exportar datos para la IA" guarda `zentra-ia-solicitud.json` en la carpeta de la sesión: el paquete anónimo, su SHA-256 y el consentimiento.
+  - **En tu PC** (Zentra con `--equipo-tecnico`), "Escribir desde archivo" lee la solicitud, comprueba su huella y su consentimiento, llama a la IA y guarda `zentra-ia-informe.json` al lado.
+  - **De vuelta en el PC del cliente,** "Importar informe" solo lo acepta si es de esta sesión y de estos mismos datos. Si se midió otra vez después de exportar, se rechaza. Además el texto pasa otra vez por las mismas revisiones que si Zentra hubiera llamado a la IA.
+- **Confirmar lo irreversible (F1-09, auditorías Z-06 y Z-07):**
+  - **ResetBase** pide un diálogo "No reversible". **Compact OS** pide uno "Difícil de revertir": sí se revierte, pero tarda y necesita espacio.
+  - **El motor lo exige:** sin la confirmación, `OptimizationService` no lo ejecuta. Un preset no puede incluir esos ajustes, ni con `allowRisky`.
+  - **Quitar apps:** el diálogo de Bloatware y el del perfil dicen "No reversible". Desinstalar un programa en Programas ahora pide confirmación.
+  - **CLI:** las apps del preset solo se quitan con `--remove-apps`. `--keep-apps` sigue aceptado, y ya es lo normal.
+  - **Puntos de restauración:** Zentra no tiene ninguna función que los borre, así que no hubo nada que confirmar.
+- **Tests:** 1793 en total, 0 fallos.
+  - Sin consentimiento no hay llamada.
+  - El redactor y el paquete limpio.
+  - La ida y vuelta por archivos, y su rechazo por otra sesión, otros datos, un archivo editado, un informe que no pasa las revisiones o un archivo enorme.
+  - La clave rechazada en el PC del cliente.
+  - El motor que no corre lo irreversible sin confirmación, los presets y el CLI.
+- **Sin probar en pantalla:** la casilla, los botones nuevos, los diálogos y la ida y vuelta con dos PCs reales. Para probar la IA en tu PC tienes que pegar la clave en la app.
+
 ### Mejoras, Fase 1B: estado protegido y diario de intención (19/11/2026, PR 21, sobre el PR 20)
 
 - **Estado protegido (F1-02, auditoría Z-02):** los datos de reversión, el historial y el diario pasan de `%LOCALAPPDATA%\Zentra` a `%ProgramData%\Zentra\Estado`.
