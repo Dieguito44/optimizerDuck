@@ -5254,4 +5254,10 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Diagnostic.Evidence.stability.gpu_resets" xml:space="preserve">
     <value>Video driver resets (30 days)</value>
   </data>
+  <data name="Report.Note.BusyBefore" xml:space="preserve">
+    <value>While "before" was measured, Windows was installing ({0}): those figures may vary.</value>
+  </data>
+  <data name="Report.Note.BusyAfter" xml:space="preserve">
+    <value>While "after" was measured, Windows was installing ({0}): those figures may vary.</value>
+  </data>
 </root>

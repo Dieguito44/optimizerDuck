@@ -7059,4 +7059,10 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
   <data name="Diagnostic.Evidence.stability.gpu_resets" xml:space="preserve">
     <value>Reinicios del driver de video (30 días)</value>
   </data>
+  <data name="Report.Note.BusyBefore" xml:space="preserve">
+    <value>Mientras se medía "antes", Windows estaba instalando ({0}): esos números pueden variar.</value>
+  </data>
+  <data name="Report.Note.BusyAfter" xml:space="preserve">
+    <value>Mientras se medía "después", Windows estaba instalando ({0}): esos números pueden variar.</value>
+  </data>
 </root>

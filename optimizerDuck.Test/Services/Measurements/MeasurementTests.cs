@@ -409,6 +409,38 @@ public class ReportBeforeAfterTests
     }
 
     [Fact]
+    public void Report_SaysWhenWindowsWasInstallingDuringAMeasurement()
+    {
+        // Version 1.1.2: in the Hyper-V test the Store installed Teams between "antes" and "después".
+        var session = new ServiceSession
+        {
+            CreatedAtUtc = Now,
+            Before = SessionPersistenceTests.Before(),
+            After = SessionPersistenceTests.Before() with
+            {
+                Phase = MeasurementPhase.After,
+                BackgroundWork = ["Microsoft Store", "Windows Update"],
+            },
+        };
+
+        var model = SessionReportModel.Build(session, [], _ => null, Now, CultureInfo.InvariantCulture);
+
+        var loc = optimizerDuck.Services.Configuration.Loc.Instance;
+        Assert.Contains(loc["Report.Note.BusyAfter", "Microsoft Store, Windows Update"], model.Notes);
+        Assert.DoesNotContain(model.Notes, n => n.StartsWith(loc["Report.Note.BusyBefore", ""][..20]));
+    }
+
+    [Fact]
+    public void BackgroundWorkProbe_ReadsWithoutFailing()
+    {
+        // Read-only, on this PC: the logs either answer or are skipped, never an exception.
+        var now = DateTime.UtcNow;
+        var seen = optimizerDuck.Services.Measurements.BackgroundWorkProbe.InstalledBetween(now.AddDays(-7), now);
+        Assert.All(seen, s => Assert.Contains(s, new[] { "Windows Update", "Microsoft Store" }));
+        Assert.NotNull(optimizerDuck.Services.Measurements.BackgroundWorkProbe.RunningNow());
+    }
+
+    [Fact]
     public void Report_NamesThePreset_AndWarnsThatDiskReadsVary()
     {
         var session = new ServiceSession
