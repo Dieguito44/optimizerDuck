@@ -36,8 +36,16 @@
                 Severity="Warning" />
             <Grid ColumnDefinitions="*,Auto">
                 <StackPanel>
-                    <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Dashboard.Header.Title}" />
-                    <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc Dashboard.Header.Subtitle, {Binding ViewModel.MachineName}}" />
+                    <!--  Same header as the rest of Zentra (redesign, 19/11/2026): icon tile, title, description.  -->
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Border Style="{StaticResource PageIconTileStyle}">
+                            <ui:SymbolIcon Style="{StaticResource PageIconStyle}" Symbol="Home24" />
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Dashboard.Header.Title}" />
+                            <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc Dashboard.Header.Subtitle, {Binding ViewModel.MachineName}}" />
+                        </StackPanel>
+                    </Grid>
                 </StackPanel>
 
                 <WrapPanel

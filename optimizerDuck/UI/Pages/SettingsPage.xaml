@@ -25,7 +25,16 @@
 
     <ScrollViewer>
         <StackPanel>
-            <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Settings.Header.Title}" />
+            <!--  Same header as the rest of Zentra (redesign, 19/11/2026): icon tile, title, description.  -->
+            <Grid Margin="0,0,0,16" ColumnDefinitions="Auto,*">
+                <Border Style="{StaticResource PageIconTileStyle}">
+                    <ui:SymbolIcon Style="{StaticResource PageIconStyle}" Symbol="Settings24" />
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Settings.Header.Title}" />
+                    <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc Settings.Header.Description}" />
+                </StackPanel>
+            </Grid>
 
             <StackPanel Style="{StaticResource SettingsSectionStyle}">
                 <ui:TextBlock Style="{StaticResource SectionHeaderStyle}" Text="{ext:Loc Settings.Appearance.Header}" />

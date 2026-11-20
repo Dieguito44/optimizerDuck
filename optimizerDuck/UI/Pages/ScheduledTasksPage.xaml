@@ -27,8 +27,16 @@
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 <StackPanel Grid.Column="0">
-                    <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc ScheduledTasks.Header.Title}" />
-                    <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc ScheduledTasks.Header.Description}" />
+                    <!--  Same header as the rest of Zentra (redesign, 19/11/2026): icon tile, title, description.  -->
+                    <Grid ColumnDefinitions="Auto,*">
+                        <Border Style="{StaticResource PageIconTileStyle}">
+                            <ui:SymbolIcon Style="{StaticResource PageIconStyle}" Symbol="TabDesktopArrowClockwise24" />
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                            <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc ScheduledTasks.Header.Title}" />
+                            <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc ScheduledTasks.Header.Description}" />
+                        </StackPanel>
+                    </Grid>
                 </StackPanel>
                 <WrapPanel
                     Grid.Column="1"

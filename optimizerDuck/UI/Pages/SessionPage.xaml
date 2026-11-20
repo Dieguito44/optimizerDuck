@@ -43,7 +43,10 @@
                 <!--  Client label (local only)  -->
                 <Border Style="{StaticResource CardSurfaceStyle}">
                     <StackPanel>
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Session.Client.Title}" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Margin="0,0,8,0" FontSize="18" Foreground="{DynamicResource ZentraBrandBrush}" Symbol="Person24" />
+                            <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Session.Client.Title}" />
+                        </StackPanel>
                         <ui:TextBox
                             Margin="0,6,0,4"
                             IsEnabled="{Binding ViewModel.IsIdle}"
@@ -74,6 +77,13 @@
                                 Content="{ext:Loc Session.Button.Before}"
                                 Cursor="Hand"
                                 Icon="{ui:SymbolIcon Timer24}" />
+                            <StackPanel
+                                Margin="0,8,0,0"
+                                Orientation="Horizontal"
+                                Visibility="{Binding ViewModel.HasBefore, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ui:SymbolIcon Margin="0,0,5,0" FontSize="14" Foreground="{DynamicResource ZentraGoodBrush}" Symbol="CheckmarkCircle24" />
+                                <TextBlock FontSize="12" Foreground="{DynamicResource ZentraGoodBrush}" Text="{ext:Loc Session.Step.Done.Chip}" />
+                            </StackPanel>
                         </StackPanel>
                     </Border>
 
@@ -116,6 +126,13 @@
                                 Content="{ext:Loc Session.Button.After}"
                                 Cursor="Hand"
                                 Icon="{ui:SymbolIcon CheckmarkCircle24}" />
+                            <StackPanel
+                                Margin="0,8,0,0"
+                                Orientation="Horizontal"
+                                Visibility="{Binding ViewModel.HasAfter, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ui:SymbolIcon Margin="0,0,5,0" FontSize="14" Foreground="{DynamicResource ZentraGoodBrush}" Symbol="CheckmarkCircle24" />
+                                <TextBlock FontSize="12" Foreground="{DynamicResource ZentraGoodBrush}" Text="{ext:Loc Session.Step.Done.Chip}" />
+                            </StackPanel>
                         </StackPanel>
                     </Border>
 
@@ -137,6 +154,13 @@
                                 Content="{ext:Loc Session.Button.Pdf}"
                                 Cursor="Hand"
                                 Icon="{ui:SymbolIcon DocumentPdf24}" />
+                            <StackPanel
+                                Margin="0,8,0,0"
+                                Orientation="Horizontal"
+                                Visibility="{Binding ViewModel.HasPdf, Converter={StaticResource BooleanToVisibilityConverter}}">
+                                <ui:SymbolIcon Margin="0,0,5,0" FontSize="14" Foreground="{DynamicResource ZentraGoodBrush}" Symbol="CheckmarkCircle24" />
+                                <TextBlock FontSize="12" Foreground="{DynamicResource ZentraGoodBrush}" Text="{ext:Loc Session.Step.Done.Chip}" />
+                            </StackPanel>
                         </StackPanel>
                     </Border>
                 </UniformGrid>
@@ -176,6 +200,67 @@
                     Margin="0,0,0,8"
                     Style="{StaticResource CaptionTextStyle}"
                     Text="{ext:Loc Session.Steps.Help}" />
+
+                <!--  Progress  -->
+                <StackPanel Margin="0,0,0,12" Visibility="{Binding ViewModel.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <ui:ProgressRing Width="28" Height="28" HorizontalAlignment="Left" IsIndeterminate="True" />
+                </StackPanel>
+                <ui:TextBlock
+                    Margin="0,0,0,12"
+                    Text="{Binding ViewModel.StatusText}"
+                    TextWrapping="Wrap" />
+                <ui:TextBlock
+                    Margin="0,0,0,12"
+                    Foreground="{DynamicResource ZentraCriticalBrush}"
+                    Text="{Binding ViewModel.ErrorText}"
+                    TextWrapping="Wrap" />
+
+                <!--  Scores and metrics  -->
+                <StackPanel Visibility="{Binding ViewModel.HasMetrics, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border Style="{StaticResource CardSurfaceStyle}">
+                        <StackPanel Orientation="Horizontal">
+                            <StackPanel Margin="0,0,32,0">
+                                <ui:TextBlock Style="{StaticResource CaptionTextStyle}" Text="{ext:Loc Session.Score.Before}" />
+                                <TextBlock
+                                    FontSize="40"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
+                                    Text="{Binding ViewModel.ScoreBeforeText}" />
+                            </StackPanel>
+                            <StackPanel>
+                                <ui:TextBlock Style="{StaticResource CaptionTextStyle}" Text="{ext:Loc Session.Score.After}" />
+                                <TextBlock
+                                    FontSize="40"
+                                    FontWeight="SemiBold"
+                                    Foreground="{DynamicResource ZentraBrandBrush}"
+                                    Text="{Binding ViewModel.ScoreAfterText}" />
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <Border Style="{StaticResource CardSurfaceStyle}">
+                        <StackPanel>
+                            <Grid Margin="0,0,0,6" ColumnDefinitions="3*,2*,2*,2*">
+                                <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Report.Col.Metric}" />
+                                <ui:TextBlock Grid.Column="1" FontTypography="BodyStrong" Text="{ext:Loc Report.Col.Before}" />
+                                <ui:TextBlock Grid.Column="2" FontTypography="BodyStrong" Text="{ext:Loc Report.Col.After}" />
+                                <ui:TextBlock Grid.Column="3" FontTypography="BodyStrong" Text="{ext:Loc Report.Col.Change}" />
+                            </Grid>
+                            <ItemsControl ItemsSource="{Binding ViewModel.Metrics}">
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid Margin="0,3" ColumnDefinitions="3*,2*,2*,2*">
+                                            <ui:TextBlock Text="{Binding Name}" />
+                                            <ui:TextBlock Grid.Column="1" Text="{Binding Before}" />
+                                            <ui:TextBlock Grid.Column="2" Text="{Binding After}" />
+                                            <ui:TextBlock Grid.Column="3" Text="{Binding Difference}" />
+                                        </Grid>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
 
                 <!--  "Servicio estándar" profile (phase 6): between the "before" and "after" measurements.  -->
                 <Border Style="{StaticResource CardSurfaceStyle}">
@@ -255,7 +340,10 @@
                 <!--  Plan of improvements F3-05: diagnosis-only follow-up at 7 and 30 days.  -->
                 <Border Style="{StaticResource CardSurfaceStyle}">
                     <StackPanel>
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc FollowUp.Title}" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Margin="0,0,8,0" FontSize="18" Foreground="{DynamicResource ZentraBrandBrush}" Symbol="CalendarClock24" />
+                            <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc FollowUp.Title}" />
+                        </StackPanel>
                         <ui:TextBlock
                             Margin="0,2,0,8"
                             Style="{StaticResource CaptionTextStyle}"
@@ -321,7 +409,10 @@
                 <!--  Report with AI (phase 5). The key is read from a plain WPF PasswordBox, never bound.  -->
                 <Border Style="{StaticResource CardSurfaceStyle}">
                     <StackPanel>
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Session.Ai.Title}" />
+                        <StackPanel Orientation="Horizontal">
+                            <ui:SymbolIcon Margin="0,0,8,0" FontSize="18" Foreground="{DynamicResource ZentraBrandBrush}" Symbol="Sparkle24" />
+                            <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Session.Ai.Title}" />
+                        </StackPanel>
                         <ui:TextBlock
                             Margin="0,2,0,8"
                             Style="{StaticResource CaptionTextStyle}"
@@ -443,66 +534,6 @@
                     </StackPanel>
                 </Border>
 
-                <!--  Progress  -->
-                <StackPanel Margin="0,0,0,12" Visibility="{Binding ViewModel.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <ui:ProgressRing Width="28" Height="28" HorizontalAlignment="Left" IsIndeterminate="True" />
-                </StackPanel>
-                <ui:TextBlock
-                    Margin="0,0,0,12"
-                    Text="{Binding ViewModel.StatusText}"
-                    TextWrapping="Wrap" />
-                <ui:TextBlock
-                    Margin="0,0,0,12"
-                    Foreground="{DynamicResource ZentraCriticalBrush}"
-                    Text="{Binding ViewModel.ErrorText}"
-                    TextWrapping="Wrap" />
-
-                <!--  Scores and metrics  -->
-                <StackPanel Visibility="{Binding ViewModel.HasMetrics, Converter={StaticResource BooleanToVisibilityConverter}}">
-                    <Border Style="{StaticResource CardSurfaceStyle}">
-                        <StackPanel Orientation="Horizontal">
-                            <StackPanel Margin="0,0,32,0">
-                                <ui:TextBlock Style="{StaticResource CaptionTextStyle}" Text="{ext:Loc Session.Score.Before}" />
-                                <TextBlock
-                                    FontSize="40"
-                                    FontWeight="SemiBold"
-                                    Foreground="{DynamicResource TextFillColorPrimaryBrush}"
-                                    Text="{Binding ViewModel.ScoreBeforeText}" />
-                            </StackPanel>
-                            <StackPanel>
-                                <ui:TextBlock Style="{StaticResource CaptionTextStyle}" Text="{ext:Loc Session.Score.After}" />
-                                <TextBlock
-                                    FontSize="40"
-                                    FontWeight="SemiBold"
-                                    Foreground="{DynamicResource ZentraBrandBrush}"
-                                    Text="{Binding ViewModel.ScoreAfterText}" />
-                            </StackPanel>
-                        </StackPanel>
-                    </Border>
-
-                    <Border Style="{StaticResource CardSurfaceStyle}">
-                        <StackPanel>
-                            <Grid Margin="0,0,0,6" ColumnDefinitions="3*,2*,2*,2*">
-                                <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Report.Col.Metric}" />
-                                <ui:TextBlock Grid.Column="1" FontTypography="BodyStrong" Text="{ext:Loc Report.Col.Before}" />
-                                <ui:TextBlock Grid.Column="2" FontTypography="BodyStrong" Text="{ext:Loc Report.Col.After}" />
-                                <ui:TextBlock Grid.Column="3" FontTypography="BodyStrong" Text="{ext:Loc Report.Col.Change}" />
-                            </Grid>
-                            <ItemsControl ItemsSource="{Binding ViewModel.Metrics}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Grid Margin="0,3" ColumnDefinitions="3*,2*,2*,2*">
-                                            <ui:TextBlock Text="{Binding Name}" />
-                                            <ui:TextBlock Grid.Column="1" Text="{Binding Before}" />
-                                            <ui:TextBlock Grid.Column="2" Text="{Binding After}" />
-                                            <ui:TextBlock Grid.Column="3" Text="{Binding Difference}" />
-                                        </Grid>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </StackPanel>
-                    </Border>
-                </StackPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

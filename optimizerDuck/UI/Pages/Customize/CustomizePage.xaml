@@ -25,8 +25,16 @@
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Row="0" Style="{StaticResource PageHeaderStyle}">
-            <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Customize.Title}" />
-            <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc Customize.Description}" />
+            <!--  Same header as the rest of Zentra (redesign, 19/11/2026): icon tile, title, description.  -->
+            <Grid ColumnDefinitions="Auto,*">
+                <Border Style="{StaticResource PageIconTileStyle}">
+                    <ui:SymbolIcon Style="{StaticResource PageIconStyle}" Symbol="Sparkle24" />
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc Customize.Title}" />
+                    <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc Customize.Description}" />
+                </StackPanel>
+            </Grid>
         </StackPanel>
 
         <ui:VirtualizingItemsControl

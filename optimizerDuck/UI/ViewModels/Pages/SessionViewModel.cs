@@ -98,6 +98,20 @@ public partial class SessionViewModel(
     [ObservableProperty]
     private string? _lastPdfPath;
 
+    partial void OnLastPdfPathChanged(string? value) => OnPropertyChanged(nameof(HasPdf));
+
+    // The "done" chips of the steps (redesign, 19/11/2026).
+    public bool HasBefore => _session?.Before is not null;
+    public bool HasAfter => _session?.After is not null;
+    public bool HasPdf => LastPdfPath is not null;
+
+    private void RefreshSteps()
+    {
+        OnPropertyChanged(nameof(HasBefore));
+        OnPropertyChanged(nameof(HasAfter));
+        OnPropertyChanged(nameof(HasPdf));
+    }
+
     public bool IsIdle => !IsBusy;
 
     public bool HasMetrics => Metrics.Count > 0;
@@ -126,6 +140,7 @@ public partial class SessionViewModel(
     private void NewSession()
     {
         _session = null;
+        RefreshSteps();
         AiConsentGiven = false;
         LastPdfPath = null;
         ScoreBeforeText = ScoreAfterText = "—";
@@ -593,6 +608,7 @@ public partial class SessionViewModel(
 
     private void ShowSession()
     {
+        RefreshSteps();
         if (_session is null)
             return;
         ScoreBeforeText = _session.DiagnosisBefore?.Score.Score.ToString() ?? "—";

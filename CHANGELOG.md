@@ -4,6 +4,18 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Rediseño de las demás páginas (19/11/2026, PR 25, sobre el PR 24)
+
+- **El mismo encabezado en todas las páginas:** cuadro con ícono, título y descripción. Antes solo lo tenían Diagnóstico, Sesión, Reparar, Programas y BIOS; ahora también Panel, Apps, Limpieza, Arranque, Tareas, Personalizar y Configuración.
+- **Diagnóstico:** el puntaje y los hallazgos quedan arriba, apenas termina el diagnóstico. Las 4 herramientas (temperatura y prueba térmica, velocidad de internet, garantía, LatencyMon) bajan a una sección "Mediciones extra", como tarjetas con ícono, resultado y botones.
+- **Sesión:**
+  - El progreso, el estado y la tabla antes/después suben justo debajo de los 4 pasos; antes quedaban al final de la página.
+  - Los pasos 1, 3 y 4 muestran "Hecho" cuando se completan.
+  - Cliente, Seguimiento e Informe con IA llevan ícono en su título.
+- **Programas:** una tarjeta por programa con ícono, licencia, estado y botones abajo.
+- **Probado en Windows Sandbox con capturas:** las 13 páginas, un diagnóstico y una medición "antes". De paso se vio que DiskSpd ya mide el disco en un Windows limpio (30.554 MB/s; antes "no medible").
+- **Tests:** 1808, 0 fallos.
+
 ### Rediseño de la interfaz (19/11/2026, PR 24, sobre el PR 23)
 
 Diego aprobó el diseño desde una maqueta interactiva, hecha a partir de una captura de referencia. De la referencia se tomaron el orden y el estilo. No se copiaron sus funciones de la lista negra (activador MAS, apagar Smart App Control, interruptor de Defender), ni los botones de Office y Adobe, ni WinUtil.

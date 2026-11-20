@@ -77,104 +77,6 @@
             HorizontalScrollBarVisibility="Disabled"
             VerticalScrollBarVisibility="Auto">
             <StackPanel Margin="0,0,0,24">
-                <!--  CPU temperature (phase 6B): PawnIO is installed only for the measurement  -->
-                <Border Style="{StaticResource CardSurfaceStyle}">
-                    <StackPanel>
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Temperature.Title}" />
-                        <ui:TextBlock
-                            Margin="0,2,0,8"
-                            Style="{StaticResource CaptionTextStyle}"
-                            Text="{ext:Loc Temperature.Help}"
-                            TextWrapping="Wrap" />
-                        <StackPanel Orientation="Horizontal">
-                            <ui:Button
-                                Command="{Binding ViewModel.Temperature.MeasureCommand}"
-                                Content="{ext:Loc Temperature.Button}"
-                                Cursor="Hand"
-                                Icon="{ui:SymbolIcon Temperature24}" />
-                            <!--  Plan of improvements F4-02: short load test, stops at 95 °C or off the charger.  -->
-                            <ui:Button
-                                Margin="8,0,0,0"
-                                Command="{Binding ViewModel.Temperature.StressCommand}"
-                                Content="{ext:Loc Stress.Button}"
-                                Cursor="Hand"
-                                Icon="{ui:SymbolIcon Fire24}" />
-                            <ui:Button
-                                Margin="8,0,0,0"
-                                Appearance="Transparent"
-                                Command="{Binding ViewModel.Temperature.CancelStressCommand}"
-                                Content="{ext:Loc Button.Cancel}"
-                                Cursor="Hand"
-                                Visibility="{Binding ViewModel.Temperature.IsStressing, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                            <ui:ProgressRing
-                                Width="20"
-                                Height="20"
-                                Margin="12,0,0,0"
-                                IsIndeterminate="True"
-                                Visibility="{Binding ViewModel.Temperature.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                        </StackPanel>
-                        <ui:TextBlock
-                            Margin="0,6,0,0"
-                            Text="{Binding ViewModel.Temperature.StatusText}"
-                            TextWrapping="Wrap" />
-                    </StackPanel>
-                </Border>
-
-                <!--  Plan of improvements F4-06: internet speed, after consent (Cloudflare sees the IP).  -->
-                <Border Style="{StaticResource CardSurfaceStyle}">
-                    <StackPanel>
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Speed.Title}" />
-                        <ui:TextBlock
-                            Margin="0,2,0,8"
-                            Style="{StaticResource CaptionTextStyle}"
-                            Text="{ext:Loc Speed.Help}"
-                            TextWrapping="Wrap" />
-                        <ui:Button
-                            Command="{Binding ViewModel.Tools.SpeedTestCommand}"
-                            Content="{ext:Loc Speed.Button}"
-                            Cursor="Hand"
-                            Icon="{ui:SymbolIcon TopSpeed24}" />
-                        <ui:TextBlock Margin="0,6,0,0" Text="{Binding ViewModel.Tools.SpeedText}" TextWrapping="Wrap" />
-                    </StackPanel>
-                </Border>
-
-                <!--  Plan of improvements F4-07: the manufacturer's own warranty page, serial copied.  -->
-                <Border Style="{StaticResource CardSurfaceStyle}">
-                    <StackPanel>
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Warranty.Title}" />
-                        <ui:TextBlock
-                            Margin="0,2,0,8"
-                            Style="{StaticResource CaptionTextStyle}"
-                            Text="{ext:Loc Warranty.Help}"
-                            TextWrapping="Wrap" />
-                        <ui:Button
-                            Appearance="Transparent"
-                            Command="{Binding ViewModel.Tools.WarrantyCommand}"
-                            Content="{ext:Loc Warranty.Button}"
-                            Cursor="Hand"
-                            Icon="{ui:SymbolIcon ShieldCheckmark24}" />
-                        <ui:TextBlock Margin="0,6,0,0" Text="{Binding ViewModel.Tools.WarrantyText}" TextWrapping="Wrap" />
-                    </StackPanel>
-                </Border>
-
-                <!--  Plan of improvements F4-03: DPC latency is measured with LatencyMon, not inside Zentra.  -->
-                <Border Style="{StaticResource CardSurfaceStyle}">
-                    <StackPanel>
-                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Latency.Title}" />
-                        <ui:TextBlock
-                            Margin="0,2,0,8"
-                            Style="{StaticResource CaptionTextStyle}"
-                            Text="{ext:Loc Latency.Help}"
-                            TextWrapping="Wrap" />
-                        <ui:Button
-                            Appearance="Transparent"
-                            Command="{Binding ViewModel.Temperature.OpenLatencyMonCommand}"
-                            Content="{ext:Loc Latency.Button}"
-                            Cursor="Hand"
-                            Icon="{ui:SymbolIcon Open24}" />
-                    </StackPanel>
-                </Border>
-
                 <!--  Error  -->
                 <ui:InfoBar
                     Margin="0,0,0,12"
@@ -318,6 +220,188 @@
                         </ItemsControl>
                     </StackPanel>
                 </StackPanel>
+
+                <!--  Redesign (19/11/2026): the extra measurements as tool cards, after the result.  -->
+                <ui:TextBlock
+                    Margin="0,20,0,10"
+                    FontTypography="Subtitle"
+                    Text="{ext:Loc Diagnostic.Tools.Title}" />
+                <WrapPanel Margin="0,0,-12,0" ItemWidth="420" Orientation="Horizontal">
+                    <Border
+                        Margin="0,0,12,12"
+                        Padding="16,14"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Style="{StaticResource CardIconTileStyle}">
+                                    <ui:SymbolIcon Style="{StaticResource CardIconStyle}" Symbol="Temperature24" />
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Temperature.Title}" TextWrapping="Wrap" />
+                                    <ui:TextBlock
+                                        Margin="0,3,0,0"
+                                        Style="{StaticResource CaptionTextStyle}"
+                                        Text="{ext:Loc Temperature.Help}" />
+                                </StackPanel>
+                            </Grid>
+                            <ui:TextBlock
+                                Grid.Row="1"
+                                Margin="0,10,0,0"
+                                Text="{Binding ViewModel.Temperature.StatusText}"
+                                TextWrapping="Wrap" />
+                            <WrapPanel
+                                Grid.Row="2"
+                                Margin="0,12,0,0"
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal">
+                                <ui:ProgressRing
+                                    Width="20"
+                                    Height="20"
+                                    VerticalAlignment="Center"
+                                    IsIndeterminate="True"
+                                    Visibility="{Binding ViewModel.Temperature.IsBusy, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                <ui:Button
+                                    Margin="8,0,0,0"
+                                    Appearance="Transparent"
+                                    Command="{Binding ViewModel.Temperature.CancelStressCommand}"
+                                    Content="{ext:Loc Button.Cancel}"
+                                    Cursor="Hand"
+                                    Visibility="{Binding ViewModel.Temperature.IsStressing, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                <ui:Button
+                                    Margin="8,0,0,0"
+                                    Command="{Binding ViewModel.Temperature.StressCommand}"
+                                    Content="{ext:Loc Stress.Button}"
+                                    Cursor="Hand"
+                                    Icon="{ui:SymbolIcon Fire24}" />
+                                <ui:Button
+                                    Margin="8,0,0,0"
+                                    Appearance="Primary"
+                                    Command="{Binding ViewModel.Temperature.MeasureCommand}"
+                                    Content="{ext:Loc Temperature.Button}"
+                                    Cursor="Hand"
+                                    Icon="{ui:SymbolIcon Temperature24}" />
+                            </WrapPanel>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,12,12"
+                        Padding="16,14"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Style="{StaticResource CardIconTileStyle}">
+                                    <ui:SymbolIcon Style="{StaticResource CardIconStyle}" Symbol="TopSpeed24" />
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Speed.Title}" TextWrapping="Wrap" />
+                                    <ui:TextBlock
+                                        Margin="0,3,0,0"
+                                        Style="{StaticResource CaptionTextStyle}"
+                                        Text="{ext:Loc Speed.Help}" />
+                                </StackPanel>
+                            </Grid>
+                            <ui:TextBlock
+                                Grid.Row="1"
+                                Margin="0,10,0,0"
+                                Text="{Binding ViewModel.Tools.SpeedText}"
+                                TextWrapping="Wrap" />
+                            <WrapPanel
+                                Grid.Row="2"
+                                Margin="0,12,0,0"
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal">
+                                <ui:Button
+                                    Margin="8,0,0,0"
+                                    Appearance="Primary"
+                                    Command="{Binding ViewModel.Tools.SpeedTestCommand}"
+                                    Content="{ext:Loc Speed.Button}"
+                                    Cursor="Hand"
+                                    Icon="{ui:SymbolIcon TopSpeed24}" />
+                            </WrapPanel>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,12,12"
+                        Padding="16,14"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Style="{StaticResource CardIconTileStyle}">
+                                    <ui:SymbolIcon Style="{StaticResource CardIconStyle}" Symbol="ShieldCheckmark24" />
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Warranty.Title}" TextWrapping="Wrap" />
+                                    <ui:TextBlock
+                                        Margin="0,3,0,0"
+                                        Style="{StaticResource CaptionTextStyle}"
+                                        Text="{ext:Loc Warranty.Help}" />
+                                </StackPanel>
+                            </Grid>
+                            <ui:TextBlock
+                                Grid.Row="1"
+                                Margin="0,10,0,0"
+                                Text="{Binding ViewModel.Tools.WarrantyText}"
+                                TextWrapping="Wrap" />
+                            <WrapPanel
+                                Grid.Row="2"
+                                Margin="0,12,0,0"
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal">
+                                <ui:Button
+                                    Margin="8,0,0,0"
+                                    Appearance="Primary"
+                                    Command="{Binding ViewModel.Tools.WarrantyCommand}"
+                                    Content="{ext:Loc Warranty.Button}"
+                                    Cursor="Hand"
+                                    Icon="{ui:SymbolIcon Open24}" />
+                            </WrapPanel>
+                        </Grid>
+                    </Border>
+                    <Border
+                        Margin="0,0,12,12"
+                        Padding="16,14"
+                        Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                        BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                        BorderThickness="1"
+                        CornerRadius="8">
+                        <Grid RowDefinitions="Auto,*,Auto">
+                            <Grid ColumnDefinitions="Auto,*">
+                                <Border Style="{StaticResource CardIconTileStyle}">
+                                    <ui:SymbolIcon Style="{StaticResource CardIconStyle}" Symbol="Speaker224" />
+                                </Border>
+                                <StackPanel Grid.Column="1">
+                                    <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Latency.Title}" TextWrapping="Wrap" />
+                                    <ui:TextBlock
+                                        Margin="0,3,0,0"
+                                        Style="{StaticResource CaptionTextStyle}"
+                                        Text="{ext:Loc Latency.Help}" />
+                                </StackPanel>
+                            </Grid>
+                            <WrapPanel
+                                Grid.Row="2"
+                                Margin="0,12,0,0"
+                                HorizontalAlignment="Right"
+                                Orientation="Horizontal">
+                                <ui:Button
+                                    Margin="8,0,0,0"
+                                    Appearance="Primary"
+                                    Command="{Binding ViewModel.Temperature.OpenLatencyMonCommand}"
+                                    Content="{ext:Loc Latency.Button}"
+                                    Cursor="Hand"
+                                    Icon="{ui:SymbolIcon Open24}" />
+                            </WrapPanel>
+                        </Grid>
+                    </Border>
+                </WrapPanel>
             </StackPanel>
         </ScrollViewer>
     </Grid>

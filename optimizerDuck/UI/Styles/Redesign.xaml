@@ -63,4 +63,33 @@
 
     <!--  Monospaced text for the activity log and the tool output.  -->
     <FontFamily x:Key="LogFontFamily">Cascadia Mono, Consolas, Courier New</FontFamily>
+
+    <!--  The icon square of a tool card (Repair, Diagnostic, Session...).  -->
+    <Style x:Key="CardIconTileStyle" TargetType="{x:Type Border}">
+        <Setter Property="Width" Value="38" />
+        <Setter Property="Height" Value="38" />
+        <Setter Property="Margin" Value="0,0,12,0" />
+        <Setter Property="VerticalAlignment" Value="Top" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorSecondaryBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+    </Style>
+
+    <Style x:Key="CardIconStyle" TargetType="{x:Type ui:SymbolIcon}">
+        <Setter Property="FontSize" Value="19" />
+        <Setter Property="HorizontalAlignment" Value="Center" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Foreground" Value="{DynamicResource ZentraBrandBrush}" />
+    </Style>
+
+    <!--  A section card with an icon and a title on top (Session page).  -->
+    <Style x:Key="SectionCardStyle" TargetType="{x:Type Border}">
+        <Setter Property="Margin" Value="0,0,0,12" />
+        <Setter Property="Padding" Value="16,14" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="BorderThickness" Value="1" />
+        <Setter Property="Background" Value="{DynamicResource CardBackgroundFillColorDefaultBrush}" />
+        <Setter Property="BorderBrush" Value="{DynamicResource CardStrokeColorDefaultBrush}" />
+    </Style>
 </ResourceDictionary>

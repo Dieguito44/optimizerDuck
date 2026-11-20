@@ -45,8 +45,16 @@
     <Grid VerticalAlignment="Stretch" RowDefinitions="Auto,*">
         <!--  Header  -->
         <StackPanel Style="{StaticResource PageHeaderStyle}">
-            <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc DiskCleanup.Header.Title}" />
-            <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc DiskCleanup.Header.Description}" />
+            <!--  Same header as the rest of Zentra (redesign, 19/11/2026): icon tile, title, description.  -->
+            <Grid ColumnDefinitions="Auto,*">
+                <Border Style="{StaticResource PageIconTileStyle}">
+                    <ui:SymbolIcon Style="{StaticResource PageIconStyle}" Symbol="HardDrive20" />
+                </Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                    <ui:TextBlock Style="{StaticResource PageTitleStyle}" Text="{ext:Loc DiskCleanup.Header.Title}" />
+                    <ui:TextBlock Style="{StaticResource PageDescriptionStyle}" Text="{ext:Loc DiskCleanup.Header.Description}" />
+                </StackPanel>
+            </Grid>
         </StackPanel>
 
         <!--  Loading State  -->

@@ -60,39 +60,72 @@
                     </StackPanel>
                 </Border>
 
-                <ItemsControl ItemsSource="{Binding ViewModel.Items}">
+                <!--  Redesign (19/11/2026): one card per program, status and buttons at the bottom.  -->
+                <ItemsControl Margin="0,0,-12,0" ItemsSource="{Binding ViewModel.Items}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel ItemWidth="420" Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
                     <ItemsControl.ItemTemplate>
                         <DataTemplate>
-                            <Border Style="{StaticResource CardSurfaceStyle}">
-                                <Grid ColumnDefinitions="*,Auto">
-                                    <StackPanel>
-                                        <ui:TextBlock FontTypography="BodyStrong" Text="{Binding Name}" />
-                                        <ui:TextBlock Margin="0,2,0,0" Text="{Binding Description}" TextWrapping="Wrap" />
-                                        <ui:TextBlock
-                                            Margin="0,4,0,0"
-                                            Style="{StaticResource CaptionTextStyle}"
-                                            Text="{Binding Details}" />
-                                        <ui:TextBlock Margin="0,4,0,0" Text="{Binding StatusText}" />
-                                    </StackPanel>
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center" Orientation="Horizontal">
-                                        <ui:Button
-                                            Margin="8,0,0,0"
-                                            Appearance="Primary"
-                                            Command="{Binding DataContext.ViewModel.InstallCommand, ElementName=Root}"
-                                            CommandParameter="{Binding}"
-                                            Content="{ext:Loc Software.Button.Install}"
-                                            Cursor="Hand"
-                                            Icon="{ui:SymbolIcon ArrowDownload24}"
-                                            Visibility="{Binding CanInstall, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                        <ui:Button
-                                            Margin="8,0,0,0"
-                                            Command="{Binding DataContext.ViewModel.UninstallCommand, ElementName=Root}"
-                                            CommandParameter="{Binding}"
-                                            Content="{ext:Loc Software.Button.Uninstall}"
-                                            Cursor="Hand"
-                                            Icon="{ui:SymbolIcon Delete24}"
-                                            Visibility="{Binding CanUninstall, Converter={StaticResource BooleanToVisibilityConverter}}" />
-                                    </StackPanel>
+                            <Border
+                                Margin="0,0,12,12"
+                                Padding="16,14"
+                                Background="{DynamicResource CardBackgroundFillColorDefaultBrush}"
+                                BorderBrush="{DynamicResource CardStrokeColorDefaultBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8">
+                                <Grid RowDefinitions="Auto,*,Auto">
+                                    <Grid ColumnDefinitions="Auto,*">
+                                        <Border Style="{StaticResource CardIconTileStyle}">
+                                            <ui:SymbolIcon Style="{StaticResource CardIconStyle}" Symbol="AppsAddIn24" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1">
+                                            <ui:TextBlock FontTypography="BodyStrong" Text="{Binding Name}" />
+                                            <ui:TextBlock
+                                                Margin="0,2,0,0"
+                                                Style="{StaticResource CaptionTextStyle}"
+                                                Text="{Binding Description}" />
+                                            <ui:TextBlock
+                                                Margin="0,4,0,0"
+                                                FontSize="11"
+                                                Foreground="{DynamicResource TextFillColorTertiaryBrush}"
+                                                Text="{Binding Details}"
+                                                TextWrapping="Wrap" />
+                                        </StackPanel>
+                                    </Grid>
+                                    <Grid
+                                        Grid.Row="2"
+                                        Margin="0,12,0,0"
+                                        ColumnDefinitions="*,Auto">
+                                        <Border HorizontalAlignment="Left" Style="{StaticResource StatusChipStyle}">
+                                            <TextBlock
+                                                FontSize="12"
+                                                Foreground="{DynamicResource TextFillColorSecondaryBrush}"
+                                                Text="{Binding StatusText}"
+                                                TextTrimming="CharacterEllipsis" />
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Orientation="Horizontal">
+                                            <ui:Button
+                                                Margin="8,0,0,0"
+                                                Appearance="Primary"
+                                                Command="{Binding DataContext.ViewModel.InstallCommand, ElementName=Root}"
+                                                CommandParameter="{Binding}"
+                                                Content="{ext:Loc Software.Button.Install}"
+                                                Cursor="Hand"
+                                                Icon="{ui:SymbolIcon ArrowDownload24}"
+                                                Visibility="{Binding CanInstall, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                            <ui:Button
+                                                Margin="8,0,0,0"
+                                                Command="{Binding DataContext.ViewModel.UninstallCommand, ElementName=Root}"
+                                                CommandParameter="{Binding}"
+                                                Content="{ext:Loc Software.Button.Uninstall}"
+                                                Cursor="Hand"
+                                                Icon="{ui:SymbolIcon Delete24}"
+                                                Visibility="{Binding CanUninstall, Converter={StaticResource BooleanToVisibilityConverter}}" />
+                                        </StackPanel>
+                                    </Grid>
                                 </Grid>
                             </Border>
                         </DataTemplate>
