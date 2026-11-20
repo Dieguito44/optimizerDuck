@@ -4098,4 +4098,76 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="ScheduledTasks.Protected" xml:space="preserve">
     <value>Not changed: {0} keeps Windows updated, protected or recoverable (Windows Update, Defender, restore points or BitLocker). Zentra never disables, deletes or replaces it.</value>
   </data>
+  <data name="Diagnostic.Rule.R-SECURE-PLATFORM.Title" xml:space="preserve">
+    <value>Secure Boot or TPM missing</value>
+  </data>
+  <data name="Diagnostic.Rule.R-SECURE-PLATFORM.Description" xml:space="preserve">
+    <value>Secure Boot stops malicious software from loading before Windows; the TPM 2.0 chip keeps BitLocker and Windows Hello keys and is required by Windows 11. Both are turned on in the BIOS.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-UEFI-CA2023.Title" xml:space="preserve">
+    <value>Secure Boot certificate 2023 not applied yet</value>
+  </data>
+  <data name="Diagnostic.Rule.R-UEFI-CA2023.Description" xml:space="preserve">
+    <value>The Secure Boot certificates from 2011 expire in 2026. Windows Update installs the new &quot;Windows UEFI CA 2023&quot; by itself; this PC does not have it yet. Zentra does not touch the firmware: keep Windows up to date and check Microsoft&apos;s guide.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-WU-HEALTH.Title" xml:space="preserve">
+    <value>Windows Update is not working well</value>
+  </data>
+  <data name="Diagnostic.Rule.R-WU-HEALTH.Description" xml:space="preserve">
+    <value>The PC is not getting Windows security patches: a Windows Update service is disabled, an update keeps failing, or there has been no Windows update for weeks. Microsoft Store apps and Defender definitions are not counted.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RESTORE-OFF.Title" xml:space="preserve">
+    <value>System protection is off</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RESTORE-OFF.Description" xml:space="preserve">
+    <value>Without system protection Windows cannot create restore points, so a bad driver or update cannot be undone and the service cannot start with a safety net.</value>
+  </data>
+  <data name="Diagnostic.Evidence.platform.secure_boot" xml:space="preserve">
+    <value>Secure Boot</value>
+  </data>
+  <data name="Diagnostic.Evidence.platform.tpm" xml:space="preserve">
+    <value>TPM</value>
+  </data>
+  <data name="Diagnostic.Evidence.platform.uefi_ca2023" xml:space="preserve">
+    <value>Windows UEFI CA 2023 certificate</value>
+  </data>
+  <data name="Diagnostic.Evidence.update.disabled_services" xml:space="preserve">
+    <value>Disabled update services</value>
+  </data>
+  <data name="Diagnostic.Evidence.update.stuck" xml:space="preserve">
+    <value>Updates failing over and over (30 days)</value>
+  </data>
+  <data name="Diagnostic.Evidence.update.days_since_success" xml:space="preserve">
+    <value>Last Windows update installed</value>
+  </data>
+  <data name="Diagnostic.Evidence.backup.system_protection" xml:space="preserve">
+    <value>System protection</value>
+  </data>
+  <data name="Diagnostic.Evidence.battery.cycles" xml:space="preserve">
+    <value>Charge cycles</value>
+  </data>
+  <data name="Diagnostic.Value.none" xml:space="preserve">
+    <value>none</value>
+  </data>
+  <data name="Diagnostic.Value.missing" xml:space="preserve">
+    <value>not applied</value>
+  </data>
+  <data name="Diagnostic.Unit.d" xml:space="preserve">
+    <value>days</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-BIOS-SECUREBOOT" xml:space="preserve">
+    <value>Turn on Secure Boot and the TPM (fTPM / PTT) in the BIOS</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-SECUREBOOT-CERT" xml:space="preserve">
+    <value>Install the pending Windows updates and check Microsoft&apos;s Secure Boot certificate guide</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-WU-RESTORE" xml:space="preserve">
+    <value>Set the Windows Update services back to their default start type and run Windows Update</value>
+  </data>
+  <data name="Optimizer.Storage.WeeklyRestorePoints.Protection" xml:space="preserve">
+    <value>Turn on system protection on {0}</value>
+  </data>
+  <data name="Optimizer.Storage.WeeklyRestorePoints.ProtectionFailed" xml:space="preserve">
+    <value>Windows did not turn system protection on.</value>
+  </data>
 </root>

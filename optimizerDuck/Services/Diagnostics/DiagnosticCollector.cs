@@ -30,6 +30,25 @@ public sealed class DiagnosticCollector(
     private static readonly TimeSpan ImageHealthTimeout = TimeSpan.FromSeconds(60);
 
     private static readonly TimeSpan ProbeTimeout = TimeSpan.FromSeconds(10);
+
+    /// <summary>The battery report (powercfg) takes a few seconds more than a WMI read.</summary>
+    private static readonly TimeSpan BatteryTimeout = TimeSpan.FromSeconds(35);
+
+    private static UpdateHealthSnapshot UpdateHealth(
+        Measured<UpdateHistory> history,
+        Measured<IReadOnlyList<string>> disabledServices
+    ) =>
+        new()
+        {
+            DaysSinceSuccess = history.TryGet(out var h)
+                ? Measured<int>.Of(h.DaysSinceKbSuccess)
+                : Measured<int>.Missing(history.Reason),
+            StuckUpdates = history.TryGet(out var s)
+                ? Measured<int>.Of(s.StuckKbUpdates)
+                : Measured<int>.Missing(history.Reason),
+            DisabledServices = disabledServices,
+        };
+
     private static readonly TimeSpan StartupTimeout = TimeSpan.FromSeconds(20);
 
     public async Task<DiagnosticSnapshot> CollectAsync(CancellationToken ct = default)
@@ -106,9 +125,38 @@ public sealed class DiagnosticCollector(
         var temperatureTask = ReadTemperatureAsync(now, ct);
         var batteryTask = Run(
             "battery",
-            MaintenanceProbes.ReadBatteryCapacityPercent,
+            PlatformProbes.ReadBattery,
+            BatteryTimeout,
+            (TimedOut<int>(), TimedOut<int>()),
+            ct
+        );
+        var tpmTask = Run("tpm", PlatformProbes.ReadTpmVersion, ProbeTimeout, TimedOut<int>(), ct);
+        var uefiCaTask = Run(
+            "uefi ca 2023",
+            PlatformProbes.ReadUefiCa2023,
             ProbeTimeout,
             TimedOut<int>(),
+            ct
+        );
+        var updatesTask = Run(
+            "windows update",
+            () => PlatformProbes.ReadUpdateHistory(now.LocalDateTime),
+            ProbeTimeout,
+            Measured<UpdateHistory>.Missing(NotMeasuredReason.TimedOut),
+            ct
+        );
+        var updateServicesTask = Run(
+            "update services",
+            PlatformProbes.ReadDisabledUpdateServices,
+            ProbeTimeout,
+            Measured<IReadOnlyList<string>>.Missing(NotMeasuredReason.TimedOut),
+            ct
+        );
+        var protectionTask = Run(
+            "system protection",
+            PlatformProbes.ReadSystemProtection,
+            ProbeTimeout,
+            TimedOut<bool>(),
             ct
         );
         var wiredTask = Run(
@@ -158,7 +206,12 @@ public sealed class DiagnosticCollector(
                 batteryTask,
                 wiredTask,
                 restoreTask,
-                oneDriveTask
+                oneDriveTask,
+                tpmTask,
+                uefiCaTask,
+                updatesTask,
+                updateServicesTask,
+                protectionTask
             )
             .ConfigureAwait(false);
 
@@ -216,13 +269,24 @@ public sealed class DiagnosticCollector(
             {
                 WingetUpgrades = await wingetTask.ConfigureAwait(false),
                 PuaProtection = await puaTask.ConfigureAwait(false),
-                BatteryCapacityPercent = await batteryTask.ConfigureAwait(false),
+                BatteryCapacityPercent = (await batteryTask.ConfigureAwait(false)).Item1,
+                BatteryCycles = (await batteryTask.ConfigureAwait(false)).Item2,
                 WiredLinkMbps = (await wiredTask.ConfigureAwait(false)).Item1,
                 WiredMaxMbps = (await wiredTask.ConfigureAwait(false)).Item2,
                 RestorePoints = await restoreTask.ConfigureAwait(false),
                 OneDriveConfigured = await oneDriveTask.ConfigureAwait(false),
+                SystemProtectionOn = await protectionTask.ConfigureAwait(false),
                 IdleRamPercent = Measured<double>.Missing(NotMeasuredReason.NotReported),
             },
+            Platform = new PlatformSnapshot
+            {
+                TpmVersion = await tpmTask.ConfigureAwait(false),
+                UefiCa2023 = await uefiCaTask.ConfigureAwait(false),
+            },
+            Updates = UpdateHealth(
+                await updatesTask.ConfigureAwait(false),
+                await updateServicesTask.ConfigureAwait(false)
+            ),
         };
         logger.LogInformation(
             "Diagnostic snapshot collected: {Disks} disks, {Gpus} GPUs, {Modules} RAM modules",

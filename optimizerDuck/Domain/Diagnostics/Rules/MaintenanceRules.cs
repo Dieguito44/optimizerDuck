@@ -77,14 +77,15 @@ public sealed class BatteryRule : IDiagnosticRule
                 ? RuleResult.NotApplicable(RuleId)
                 : RuleResult.NotMeasurable(RuleId, battery.Reason, "battery.capacity");
 
+        // Charge cycles (battery report, plan F2-12) are evidence the client understands; they
+        // do not decide the finding, the capacity does.
+        List<EvidenceFact> evidence = [new("battery.capacity", percent, Unit: "%")];
+        if (snapshot.Maintenance.BatteryCycles.TryGet(out var cycles))
+            evidence.Add(new("battery.cycles", cycles));
+
         return percent < MinPercent
             ? RuleResult.Found(
-                new Finding(
-                    RuleId,
-                    Severity.High,
-                    [new("battery.capacity", percent, Unit: "%")],
-                    [ActionIds.HardwareBattery]
-                )
+                new Finding(RuleId, Severity.High, evidence, [ActionIds.HardwareBattery])
             )
             : RuleResult.Pass(RuleId);
     }

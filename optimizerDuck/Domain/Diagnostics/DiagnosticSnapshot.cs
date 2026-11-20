@@ -105,6 +105,12 @@ public sealed record DiagnosticSnapshot
 
     /// <summary>CPU temperature and throttling (phase 6B). Defaults to not measured.</summary>
     public ThermalSnapshot Thermal { get; init; } = new();
+
+    /// <summary>TPM and the Secure Boot certificate (improvements 2B). Defaults to not measured.</summary>
+    public PlatformSnapshot Platform { get; init; } = new();
+
+    /// <summary>Windows Update health (improvements 2B). Defaults to not measured.</summary>
+    public UpdateHealthSnapshot Updates { get; init; } = new();
 }
 
 public sealed record OsSnapshot
@@ -265,6 +271,12 @@ public sealed record MaintenanceSnapshot
 
     /// <summary>OneDrive signed in with a folder on this PC.</summary>
     public Measured<bool> OneDriveConfigured { get; init; }
+
+    /// <summary>System Restore on (improvements 2B, F2-14).</summary>
+    public Measured<bool> SystemProtectionOn { get; init; }
+
+    /// <summary>Battery charge cycles from the battery report (improvements 2B, F2-12).</summary>
+    public Measured<int> BatteryCycles { get; init; }
 }
 
 /// <summary>How a monitor is connected (DISPLAYCONFIG_VIDEO_OUTPUT_TECHNOLOGY, grouped).</summary>
@@ -351,4 +363,30 @@ public sealed record ThermalSnapshot
 
     /// <summary>Firmware throttling events (Kernel-Processor-Power 37) in the last 7 days.</summary>
     public Measured<int> FirmwareThrottling7d { get; init; }
+}
+
+/// <summary>Platform security (improvements 2B, F2-11). Secure Boot itself is in the OS section.</summary>
+public sealed record PlatformSnapshot
+{
+    /// <summary>2 for TPM 2.0, 1 for TPM 1.2, 0 for none (or off in the firmware).</summary>
+    public Measured<int> TpmVersion { get; init; }
+
+    /// <summary>
+    ///     "Windows UEFI CA 2023" in the Secure Boot database: 0 not yet, 1 in the database,
+    ///     2 in the database and booting with the 2023 boot manager.
+    /// </summary>
+    public Measured<int> UefiCa2023 { get; init; }
+}
+
+/// <summary>Windows Update health (improvements 2B, F2-13). Only updates with a KB number.</summary>
+public sealed record UpdateHealthSnapshot
+{
+    /// <summary>Days since the last successful Windows update; 90 means none in 90 days.</summary>
+    public Measured<int> DaysSinceSuccess { get; init; }
+
+    /// <summary>Updates that failed 3 times or more in 30 days without a later success.</summary>
+    public Measured<int> StuckUpdates { get; init; }
+
+    /// <summary>Windows Update services set to Disabled (wuauserv, BITS, UsoSvc).</summary>
+    public Measured<IReadOnlyList<string>> DisabledServices { get; init; }
 }

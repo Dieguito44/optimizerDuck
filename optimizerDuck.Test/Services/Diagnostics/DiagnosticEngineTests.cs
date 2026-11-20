@@ -17,7 +17,7 @@ public class ActionCatalogTests
     [Fact]
     public void Catalog_HoldsThe41ActionsOfThePlan()
     {
-        Assert.Equal(41, ActionCatalog.All.Count);
+        Assert.Equal(44, ActionCatalog.All.Count); // 41 of the plan + 3 manual steps of block 2B
         Assert.All(ActionCatalog.All.Keys, id => Assert.Matches(@"^ACT-[A-Z0-9-]+$", id));
     }
 
@@ -78,7 +78,7 @@ public class ActionCatalogTests
             )
             .ToHashSet();
         Assert.Equal(ruleTypes, DiagnosticRules.All.Select(r => r.GetType()).ToHashSet());
-        Assert.Equal(29, ids.Count); // 19 of phases 2-4, 10 of phase 6B
+        Assert.Equal(33, ids.Count); // 19 of phases 2-4, 10 of phase 6B, 4 of improvements 2B
     }
 }
 

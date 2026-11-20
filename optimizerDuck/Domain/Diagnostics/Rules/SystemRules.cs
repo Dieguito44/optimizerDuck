@@ -376,5 +376,9 @@ public static class DiagnosticRules
         new Net100MRule(),
         new RamIdleHighRule(),
         new BackupNoneRule(),
+        new SecurePlatformRule(),
+        new UefiCa2023Rule(),
+        new UpdateHealthRule(),
+        new RestoreOffRule(),
     ];
 }
