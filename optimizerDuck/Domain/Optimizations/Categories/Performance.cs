@@ -462,6 +462,16 @@ public class Performance : LocalizedObject, IOptimizationCategory
                 return Task.FromResult(context.Changes.ToApplyResult());
             }
 
+            if (!SearchIndexService.IsAvailable())
+            {
+                // Windows Search is off or missing: there is no index to relieve.
+                context.Changes.AddNotApplicable(
+                    Name,
+                    Loc.Instance[$"{ErrorPrefix}.SearchUnavailable"]
+                );
+                return Task.FromResult(context.Changes.ToApplyResult());
+            }
+
             foreach (var folder in SearchIndexService.LargeFolders())
             {
                 try
@@ -477,6 +487,16 @@ public class Performance : LocalizedObject, IOptimizationCategory
                         continue;
                     }
                     var ok = SearchIndexService.Exclude(folder);
+                    if (!ok)
+                    {
+                        // Windows did not confirm it: take the rule back out, so nothing is left
+                        // behind that a revert would not know about.
+                        context.Logger.LogWarning(
+                            "Index exclusion of {Folder} not confirmed; rule removed",
+                            folder
+                        );
+                        SearchIndexService.RemoveExclusion(folder);
+                    }
                     context.Changes.Add(
                         Name,
                         folder,

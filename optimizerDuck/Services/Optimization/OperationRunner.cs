@@ -64,9 +64,10 @@ public class OperationRunner(
         var record = ChangeRecord.From(changes, request.Subject, result.Status.ToString());
         ChangeRecordStore.TryWrite(record, _logger);
 
-        // The activity log at the bottom of the window (redesign): one line per run.
+        // The activity log at the bottom of the window (redesign): one line per run. A failure
+        // says why (version 1 test, 20/11/2026: "falló" alone left nothing to go on).
         ActivityLog.Add(
-            Loc.Instance[$"Activity.{result.Status}", request.DisplayName, record.ChangedCount],
+            ActivityLine(result, request.DisplayName, record.ChangedCount),
             result.Status switch
             {
                 OptimizationSuccessResult.Success => ActivityKind.Good,
@@ -77,6 +78,24 @@ public class OperationRunner(
         );
 
         return result;
+    }
+
+    internal static string ActivityLine(OptimizationResult result, string name, int changed)
+    {
+        var line = Loc.Instance[$"Activity.{result.Status}", name, changed];
+        if (
+            result.Status
+            is not (OptimizationSuccessResult.Failed or OptimizationSuccessResult.PartialSuccess)
+        )
+            return line;
+        var why = result
+            .FailedSteps.Select(f => f.Error)
+            .FirstOrDefault(e => !string.IsNullOrWhiteSpace(e));
+        if (string.IsNullOrWhiteSpace(why))
+            why = result.Message;
+        return string.IsNullOrWhiteSpace(why) || line.Contains(why, StringComparison.Ordinal)
+            ? line
+            : $"{line} ({why.Trim().TrimEnd('.')})";
     }
 
     private async Task<OptimizationResult> RunCoreAsync(

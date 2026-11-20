@@ -176,7 +176,8 @@ public class CliRunnerTests
         public Task<(Measurement Measurement, DiagnosisSummary Diagnosis)> MeasureAsync(
             MeasurementPhase phase,
             IProgress<string> progress,
-            CancellationToken ct
+            CancellationToken ct,
+            DateTimeOffset? bootsAfterUtc = null
         )
         {
             calls.Add("measure:" + phase);

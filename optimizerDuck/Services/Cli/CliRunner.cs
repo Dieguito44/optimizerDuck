@@ -32,7 +32,8 @@ public interface ICliHost
     Task<(Measurement Measurement, DiagnosisSummary Diagnosis)> MeasureAsync(
         MeasurementPhase phase,
         IProgress<string> progress,
-        CancellationToken ct
+        CancellationToken ct,
+        DateTimeOffset? bootsAfterUtc = null
     );
 
     /// <summary>The folder and client of the next follow-up check, or null when none is due (plan F3-05).</summary>
@@ -335,7 +336,8 @@ public sealed class CliRunner(
         var (measurement, diagnosis) = await host.MeasureAsync(
             phase,
             new SyncProgress<string>(Say),
-            ct
+            ct,
+            session.Before?.CapturedAtUtc
         );
         Say(Loc.Instance["Cli.Score", diagnosis.Score.Score]);
         return phase == MeasurementPhase.Before

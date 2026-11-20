@@ -25,6 +25,30 @@ public class BootTimeProbeTests
         Assert.Equal(expected, BootTimeProbe.Median(values));
     }
 
+    // Version 1 test (20/11/2026): "Medir después" repeated the boots from before the service
+    // (55,1 s -> 55,1 s). Only boots after "Medir antes" count.
+    [Fact]
+    public void After_FiltersEventsByTheirTimeInUtc()
+    {
+        var at = new DateTime(2026, 11, 20, 14, 30, 5, 120, DateTimeKind.Utc);
+        Assert.Equal(
+            " and TimeCreated[@SystemTime>='2026-11-20T14:30:05.120Z']",
+            BootTimeProbe.After(at)
+        );
+        Assert.Equal("", BootTimeProbe.After(null));
+    }
+
+    [Fact]
+    public void AfterTheServiceWithoutARestart_SaysToRestart_InsteadOfRepeatingOldBoots()
+    {
+        // Read-only: this PC has not booted in the future, so there is no boot to time.
+        var result = BootTimeProbe.Read(DateTime.UtcNow.AddMinutes(1));
+
+        Assert.False(result.MedianMs.TryGet(out _));
+        Assert.Equal(0, result.Samples);
+        Assert.Equal(NotMeasuredReason.NeedsRestart, result.MedianMs.Reason);
+    }
+
     [Fact]
     public void PairBoots_MatchesEachStartWithTheFirstLogonBeforeTheNextStart()
     {

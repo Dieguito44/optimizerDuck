@@ -552,7 +552,12 @@ public partial class SessionViewModel(
             // Measure first: the diagnosis uses the RAM at rest (R-RAM-IDLE-HIGH), and running the
             // diagnosis first would load the PC during the rest measurement.
             var measurement = await Task.Run(() =>
-                measurementService.MeasureAsync(phase, progress, _cts.Token)
+                measurementService.MeasureAsync(
+                    phase,
+                    progress,
+                    _cts.Token,
+                    _session.Before?.CapturedAtUtc
+                )
             );
             StatusText = Loc.Instance["Session.Step.Diagnosis"];
             var report = await Task.Run(() =>

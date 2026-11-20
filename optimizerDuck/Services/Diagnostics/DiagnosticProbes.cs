@@ -39,7 +39,7 @@ internal static partial class DiagnosticProbes
         // counter (reachable only through the association, never by enumerating its class)
         // cannot be read.
         var rows = WmiHelper.Query(
-            "SELECT ObjectId, DeviceId, FriendlyName, MediaType, BusType, Size, HealthStatus FROM MSFT_PhysicalDisk",
+            "SELECT ObjectId, DeviceId, FriendlyName, MediaType, BusType, SpindleSpeed, Size, HealthStatus FROM MSFT_PhysicalDisk",
             static items =>
                 items
                     .Select(mo =>
@@ -52,6 +52,7 @@ internal static partial class DiagnosticProbes
                             Model = WmiHelper.GetString(mo, "FriendlyName"),
                             MediaType = WmiHelper.GetInt(mo, "MediaType"),
                             BusType = WmiHelper.GetInt(mo, "BusType"),
+                            SpindleSpeed = WmiHelper.GetLong(mo, "SpindleSpeed"),
                             SizeBytes = WmiHelper.GetLong(mo, "Size"),
                             HealthStatus = WmiHelper.GetInt(mo, "HealthStatus"),
                         };

@@ -70,7 +70,8 @@ public sealed class CliHost(
     public async Task<(Measurement Measurement, DiagnosisSummary Diagnosis)> MeasureAsync(
         MeasurementPhase phase,
         IProgress<string> progress,
-        CancellationToken ct
+        CancellationToken ct,
+        DateTimeOffset? bootsAfterUtc = null
     )
     {
         // Measure first, then diagnose: the diagnosis uses the RAM at rest (as the Session page does).
@@ -87,7 +88,8 @@ public sealed class CliHost(
                         lastStep = p.Step.ToString();
                         progress.Report(Loc.Instance[$"Session.Step.{p.Step}", p.SecondsLeft]);
                     }),
-                    ct
+                    ct,
+                    bootsAfterUtc
                 ),
             ct
         );

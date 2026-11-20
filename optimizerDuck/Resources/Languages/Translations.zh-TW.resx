@@ -2604,6 +2604,9 @@
   <data name="Diagnostic.Reason.NotInReferenceTable" xml:space="preserve">
     <value>Not in the Zentra reference table yet</value>
   </data>
+  <data name="Diagnostic.Reason.NeedsRestart" xml:space="preserve">
+    <value>Restart the PC and measure again</value>
+  </data>
   <data name="Diagnostic.Reason.RequiresExternalTool" xml:space="preserve">
     <value>Needs a tool Zentra does not include yet</value>
   </data>

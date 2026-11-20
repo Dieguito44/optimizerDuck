@@ -4408,6 +4408,9 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
   <data name="Diagnostic.Reason.NotInReferenceTable" xml:space="preserve">
     <value>Aún no está en la tabla de referencia de Zentra</value>
   </data>
+  <data name="Diagnostic.Reason.NeedsRestart" xml:space="preserve">
+    <value>Reinicia el PC y vuelve a medir</value>
+  </data>
   <data name="Diagnostic.Reason.RequiresExternalTool" xml:space="preserve">
     <value>Requiere una herramienta que Zentra aún no incluye</value>
   </data>
