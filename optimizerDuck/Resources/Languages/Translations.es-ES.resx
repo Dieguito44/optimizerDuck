@@ -5899,4 +5899,7 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   <data name="Session.Step.Report" xml:space="preserve">
     <value>Informe del cliente</value>
   </data>
+  <data name="ScheduledTasks.Protected" xml:space="preserve">
+    <value>No se cambió: {0} mantiene Windows actualizado, protegido o recuperable (Windows Update, Defender, puntos de restauración o BitLocker). Zentra nunca la deshabilita, borra ni reemplaza.</value>
+  </data>
 </root>

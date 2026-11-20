@@ -38,6 +38,13 @@ public sealed class RamXmpRule : IDiagnosticRule
         var evidence = new List<EvidenceFact>();
         var unmeasured = new List<string>();
         var slow = false;
+        var slowByTable = false;
+        var skippedOnLaptop = false;
+
+        // Laptops rarely offer XMP in the BIOS and their CPU often caps the RAM speed, so the
+        // SMBIOS speed alone proves nothing there (plan F2-07, audit Z-12). Only a kit from the
+        // reference table still counts on a laptop.
+        var laptop = snapshot.Os.DeviceKind.TryGet(out var kind) && kind == DeviceKind.Laptop;
 
         foreach (var module in modules)
         {
@@ -57,6 +64,11 @@ public sealed class RamXmpRule : IDiagnosticRule
             }
             else if (module.ReportedMTps.TryGet(out var reported) && reported > configured)
             {
+                if (laptop)
+                {
+                    skippedOnLaptop = true;
+                    continue;
+                }
                 rated = reported;
                 source = "smbios";
             }
@@ -70,19 +82,31 @@ public sealed class RamXmpRule : IDiagnosticRule
             evidence.Add(new("ram.configured_mts", configured, Unit: "MT/s", Subject: subject));
             evidence.Add(new("ram.rated_mts", rated, source, "MT/s", subject));
             if (configured < rated.Value * Tolerance)
+            {
                 slow = true;
+                slowByTable |= source == "table";
+            }
         }
 
         if (evidence.Count == 0)
-            return RuleResult.NotMeasurable(
-                RuleId,
-                NotMeasuredReason.NotInReferenceTable,
-                [.. unmeasured]
-            );
+            return skippedOnLaptop && unmeasured.Count == 0
+                ? RuleResult.NotApplicable(RuleId)
+                : RuleResult.NotMeasurable(
+                    RuleId,
+                    NotMeasuredReason.NotInReferenceTable,
+                    [.. unmeasured]
+                );
 
+        // A rated speed from the kit table is proof: High. From SMBIOS only it is a strong
+        // hint on a desktop: Medium.
         return slow
             ? RuleResult.Found(
-                new Finding(RuleId, Severity.High, evidence, [ActionIds.BiosXmp]),
+                new Finding(
+                    RuleId,
+                    slowByTable ? Severity.High : Severity.Medium,
+                    evidence,
+                    [ActionIds.BiosXmp]
+                ),
                 [.. unmeasured]
             )
             : RuleResult.Pass(RuleId, [.. unmeasured]);

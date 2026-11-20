@@ -202,6 +202,51 @@ public class BlacklistTests
         "PcaSvc",
     };
 
+    /// <summary>
+    ///     Guards that must name what they protect (improvements 2A, F2-04). A hit is allowed only
+    ///     for that rule, in that file, and between the start marker and the end of that list:
+    ///     anywhere else, the same text still fails. Adding an entry needs the same care as
+    ///     growing <see cref="DisabledServicesAllowList" />.
+    /// </summary>
+    private static readonly (string Rule, string File, string StartMarker)[] ProtectiveLists =
+    [
+        (
+            "WindowsUpdateTurnedOff",
+            @"Services\System\Primitives\ScheduledTaskService.cs",
+            "string[] ProtectedTaskPrefixes ="
+        ),
+    ];
+
+    /// <summary>Whether a match falls inside a protective list allowed for this rule.</summary>
+    private static bool IsInProtectiveList(
+        string ruleName,
+        string relativeFile,
+        string text,
+        int index
+    )
+    {
+        foreach (var (rule, file, marker) in ProtectiveLists)
+        {
+            if (rule != ruleName || !relativeFile.Equals(file, StringComparison.OrdinalIgnoreCase))
+                continue;
+            var start = text.IndexOf(marker, StringComparison.Ordinal);
+            if (start < 0)
+                continue;
+            var end = text.IndexOf("];", start, StringComparison.Ordinal);
+            if (index > start && end > index)
+                return true;
+        }
+        return false;
+    }
+
+    [Fact]
+    public void ProtectiveLists_StillExist()
+    {
+        // If the guard moves or is renamed, the exception must be revisited, not silently unused.
+        foreach (var (_, file, marker) in ProtectiveLists)
+            Assert.Contains(marker, File.ReadAllText(Path.Combine(AppSourceDirectory, file)));
+    }
+
     public static TheoryData<string> RuleNames()
     {
         var data = new TheoryData<string>();
@@ -220,10 +265,13 @@ public class BlacklistTests
         foreach (var file in AppSourceFiles())
         {
             var text = File.ReadAllText(file);
+            var relative = Path.GetRelativePath(AppSourceDirectory, file);
             foreach (Match match in rule.Pattern.Matches(text))
             {
+                if (IsInProtectiveList(ruleName, relative, text, match.Index))
+                    continue;
                 var line = text[..match.Index].Count(c => c == '\n') + 1;
-                hits.Add($"{Path.GetRelativePath(AppSourceDirectory, file)}:{line}: {match.Value}");
+                hits.Add($"{relative}:{line}: {match.Value}");
             }
         }
 
@@ -356,7 +404,7 @@ public class BlacklistTests
     [InlineData("Microsoft.UI.Xaml.2.8")]
     [InlineData("Microsoft.NET.Native.Framework.2.2")]
     [InlineData("Microsoft.WindowsCalculator")]
-    [InlineData("Microsoft.WindowsPhotos")]
+    [InlineData("Microsoft.Windows.Photos")]
     [InlineData("microsoft.microsoftedge.stable")]
     public void IsProtectedApp_BlocksPackagesThatAreNeverRemoved(string packageName)
     {

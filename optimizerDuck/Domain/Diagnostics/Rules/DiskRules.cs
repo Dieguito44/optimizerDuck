@@ -82,11 +82,17 @@ public sealed class SsdHealthRule : IDiagnosticRule
         if (!measuredAny)
             return RuleResult.NotMeasurable(RuleId, NotMeasuredReason.NotReported, [.. unmeasured]);
 
+        // Critical when Windows itself calls a disk unhealthy. Uncorrected errors alone are a
+        // lifetime counter (one old error stays forever): High, "watch it and back up"
+        // (plan F2-07, audit Z-20).
+        var severity = evidence.Any(e => e.Key == "disk.health")
+            ? Severity.Critical
+            : Severity.High;
         return evidence.Count > 0
             ? RuleResult.Found(
                 new Finding(
                     RuleId,
-                    Severity.Critical,
+                    severity,
                     evidence,
                     [ActionIds.Backup, ActionIds.HardwareReplaceSsd]
                 ),

@@ -169,7 +169,7 @@ public static class Shared
     {
         // Core Utilities (default handlers for common file types)
         "Microsoft.WindowsCalculator",
-        "Microsoft.WindowsPhotos",
+        "Microsoft.Windows.Photos", // real package name (Microsoft.WindowsPhotos does not exist)
         "Microsoft.MSPaint",
         "Microsoft.Paint",
         "Microsoft.WindowsNotepad",
@@ -272,7 +272,7 @@ public static class Shared
         "Microsoft.DesktopAppInstaller",
         "Microsoft.SecHealthUI",
         "Microsoft.WindowsCalculator",
-        "Microsoft.WindowsPhotos",
+        "Microsoft.Windows.Photos", // real package name (Microsoft.WindowsPhotos does not exist)
     };
 
     /// <summary>Package name prefixes and fragments that are always protected.</summary>

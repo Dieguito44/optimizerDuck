@@ -123,6 +123,17 @@ public static class ThermalService
     }
 
     /// <summary>
+    ///     Throttling incidents: Windows logs event 37 once per logical processor, so one
+    ///     incident on a 12-thread CPU is 12 events. Events in the same minute are one incident
+    ///     (plan F2-07, audit Z-12).
+    /// </summary>
+    internal static int CountIncidents(IEnumerable<DateTime> eventTimes) =>
+        eventTimes
+            .Select(t => new DateTime(t.Ticks - t.Ticks % TimeSpan.TicksPerMinute, t.Kind))
+            .Distinct()
+            .Count();
+
+    /// <summary>
     ///     "The speed of processor N is being limited by system firmware" events
     ///     (Kernel-Processor-Power 37) in the last <paramref name="days" /> days.
     /// </summary>
@@ -137,13 +148,12 @@ public static class ThermalService
                 $"*[System[Provider[@Name='Microsoft-Windows-Kernel-Processor-Power'] and (EventID=37) and TimeCreated[@SystemTime>='{since}']]]"
             );
             using var reader = new EventLogReader(query);
-            var count = 0;
+            var times = new List<DateTime>();
             while (reader.ReadEvent() is { } e)
-            {
-                e.Dispose();
-                count++;
-            }
-            return Measured<int>.Of(count);
+                using (e)
+                    if (e.TimeCreated is { } time)
+                        times.Add(time);
+            return Measured<int>.Of(CountIncidents(times));
         }
         catch (Exception ex) when (ex is EventLogException or UnauthorizedAccessException)
         {

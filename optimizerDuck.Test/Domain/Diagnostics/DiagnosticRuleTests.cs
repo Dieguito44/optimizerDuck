@@ -71,6 +71,19 @@ public class DiagnosticRuleTests
 
         Assert.Equal(RuleOutcome.Finding, result.Outcome);
         Assert.Contains(result.Finding!.Evidence, e => e.Text == "smbios" && e.Number == 3200);
+        Assert.Equal(Severity.Medium, result.Finding.Severity); // SMBIOS alone is a hint, not proof
+    }
+
+    [Fact]
+    public void RamXmp_OnALaptopTheSmbiosSpeedIsNotEvaluated()
+    {
+        var snapshot = WithModules(Module("A", configured: 2666, reported: 3200, part: "X"));
+        snapshot = snapshot with
+        {
+            Os = snapshot.Os with { DeviceKind = Measured<DeviceKind>.Of(DeviceKind.Laptop) },
+        };
+
+        Assert.Equal(RuleOutcome.NotApplicable, Eval(new RamXmpRule(), snapshot).Outcome);
     }
 
     [Theory]
@@ -264,17 +277,17 @@ public class DiagnosticRuleTests
     }
 
     [Fact]
-    public void SsdHealth_DevelopmentPcA400WithOneReadError_IsCritical()
+    public void SsdHealth_DevelopmentPcA400WithOneReadError_IsHigh()
     {
         var result = Eval(new SsdHealthRule(), DiegoPc());
-        Assert.Equal(Severity.Critical, result.Finding!.Severity);
+        Assert.Equal(Severity.High, result.Finding!.Severity);
         var fact = Assert.Single(result.Finding.Evidence);
         Assert.Equal("KINGSTON SA400S37/480GB", fact.Subject);
         Assert.Equal(1, fact.Number);
     }
 
     [Fact]
-    public void SsdHealth_UncorrectedErrors_AreCritical()
+    public void SsdHealth_UncorrectedErrorsAlone_AreHigh()
     {
         var snapshot = DiegoPc() with
         {
@@ -282,7 +295,7 @@ public class DiagnosticRuleTests
         };
 
         var result = Eval(new SsdHealthRule(), snapshot);
-        Assert.Equal(Severity.Critical, result.Finding!.Severity);
+        Assert.Equal(Severity.High, result.Finding!.Severity);
         Assert.Equal([ActionIds.Backup, ActionIds.HardwareReplaceSsd], result.Finding.ActionIds);
     }
 
@@ -486,6 +499,24 @@ public class DiagnosticRuleTests
             },
         };
         Assert.Equal(outcome, Eval(new UnstableRule(), snapshot).Outcome);
+    }
+
+    [Theory]
+    [InlineData(0, Severity.Medium)] // could be power cuts
+    [InlineData(1, Severity.High)] // blue screens: the PC itself
+    public void Unstable_IsHighOnlyWithBlueScreens(int bugChecks, Severity expected)
+    {
+        var pc = DiegoPc();
+        var snapshot = pc with
+        {
+            Stability = pc.Stability with
+            {
+                Kp41Count30d = Measured<int>.Of(5),
+                Kp41PowerButton30d = Measured<int>.Of(0),
+                BugChecks30d = Measured<int>.Of(bugChecks),
+            },
+        };
+        Assert.Equal(expected, Eval(new UnstableRule(), snapshot).Finding!.Severity);
     }
 
     [Fact]

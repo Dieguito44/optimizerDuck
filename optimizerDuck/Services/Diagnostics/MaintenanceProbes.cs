@@ -33,6 +33,13 @@ public static partial class MaintenanceProbes
             );
             if (result.TimedOut)
                 return Measured<int>.Missing(NotMeasuredReason.TimedOut);
+            // A failed run (no network, broken source) is "not measurable", never "0 outdated"
+            // (audit Z-18). A normal listing exits with 0, with or without upgrades.
+            if (result.ExitCode != 0)
+            {
+                logger.LogWarning("winget upgrade failed with exit code {Code}", result.ExitCode);
+                return Measured<int>.Missing(NotMeasuredReason.QueryFailed);
+            }
             return CountUpgradeRows(result.Output) is { } count
                 ? Measured<int>.Of(count)
                 : Measured<int>.Missing(NotMeasuredReason.QueryFailed);

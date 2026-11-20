@@ -35,9 +35,19 @@ public sealed class ThermalRule : IDiagnosticRule
             evidence.Add(new("cpu.throttling", events));
 
         string[] missing = hasTemp ? (hasEvents ? [] : ["cpu.throttling"]) : ["cpu.temperature"];
+
+        // A measured temperature of 90 °C or more is High. Throttling events alone are only a
+        // possible heat problem (a weak charger or a firmware power limit logs them too):
+        // Medium (plan F2-07, audit Z-12).
+        var hot = hasTemp && celsius >= HotCelsius;
         return evidence.Count > 0
             ? RuleResult.Found(
-                new Finding(RuleId, Severity.High, evidence, [ActionIds.HardwareClean]),
+                new Finding(
+                    RuleId,
+                    hot ? Severity.High : Severity.Medium,
+                    evidence,
+                    [ActionIds.HardwareClean]
+                ),
                 missing
             )
             : RuleResult.Pass(RuleId, missing);

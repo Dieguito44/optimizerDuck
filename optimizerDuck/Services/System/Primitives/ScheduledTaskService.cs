@@ -20,6 +20,45 @@ namespace optimizerDuck.Services.System.Primitives;
 public static class ScheduledTaskService
 {
     /// <summary>
+    ///     Task folders that keep Windows secure, updated and recoverable (plan section 1,
+    ///     audit Z-16). Their tasks are never disabled or deleted, from any page: the guard
+    ///     lives here, not in the UI, so no caller can skip it.
+    /// </summary>
+    private static readonly string[] ProtectedTaskPrefixes =
+    [
+        @"\Microsoft\Windows\UpdateOrchestrator\",
+        @"\Microsoft\Windows\WindowsUpdate\",
+        @"\Microsoft\Windows\WaaSMedic\",
+        @"\Microsoft\Windows\InstallService\",
+        @"\Microsoft\Windows\Windows Defender\",
+        @"\Microsoft\Windows\ExploitGuard\",
+        @"\Microsoft\Windows\SystemRestore\",
+        @"\Microsoft\Windows\BitLocker\",
+        @"\Microsoft\Windows\TPM\",
+        @"\MicrosoftEdgeUpdate",
+    ];
+
+    /// <summary>Whether a task belongs to Windows Update, Defender, restore or BitLocker.</summary>
+    public static bool IsProtectedTask(string? fullPath)
+    {
+        if (string.IsNullOrWhiteSpace(fullPath))
+            return false;
+        var path = fullPath.StartsWith('\\') ? fullPath : "\\" + fullPath;
+        return ProtectedTaskPrefixes.Any(p =>
+            path.StartsWith(p, StringComparison.OrdinalIgnoreCase)
+        );
+    }
+
+    /// <summary>Records why a protected task was left alone and returns the refusal.</summary>
+    private static OpResult RefuseProtected(OpCall? call, string fullPath)
+    {
+        var reason = Loc.Instance["ScheduledTasks.Protected", fullPath];
+        call?.Logger.LogWarning("Refused to change protected task {Path}", fullPath);
+        call?.Changes.AddRefused(ServiceStrings.ScheduledTaskName, reason);
+        return OpResult.Fail(reason);
+    }
+
+    /// <summary>
     ///     Reads whether a scheduled task exists and is enabled.
     /// </summary>
     /// <param name="fullPath">The full path of the task.</param>
@@ -57,6 +96,8 @@ public static class ScheduledTaskService
     public static OpResult DisableTask(OpCall call, string fullPath)
     {
         ArgumentNullException.ThrowIfNull(call);
+        if (IsProtectedTask(fullPath))
+            return RefuseProtected(call, fullPath);
 
         var description = ServiceStrings.Format(
             ServiceStrings.ScheduledTaskDescriptionDisable,
@@ -447,6 +488,9 @@ public static class ScheduledTaskService
     /// <returns>The outcome of the delete request. No revert step.</returns>
     public static OpResult DeleteTask(OpCall? call, string fullPath)
     {
+        if (IsProtectedTask(fullPath))
+            return RefuseProtected(call, fullPath);
+
         var description = ServiceStrings.Format(
             "Delete scheduled task: {0} (cannot be undone)",
             fullPath
@@ -499,6 +543,10 @@ public static class ScheduledTaskService
             string.IsNullOrWhiteSpace(folderPath) || folderPath == "\\"
                 ? $"\\{model.Name}"
                 : $"{folderPath.TrimEnd('\\')}\\{model.Name}";
+        // Registering overwrites a task with the same name: never inside a protected folder.
+        if (IsProtectedTask(displayPath))
+            return RefuseProtected(call, displayPath);
+
         var description = ServiceStrings.Format(
             "Register scheduled task: {0} (overwrites existing task, cannot be undone)",
             displayPath

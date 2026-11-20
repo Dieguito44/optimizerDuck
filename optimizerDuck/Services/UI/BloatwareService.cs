@@ -35,6 +35,17 @@ public class BloatwareService(
     private static readonly string[] SupportedImageExtensions = [".png", ".jpg", ".jpeg", ".ico"];
 
     /// <summary>
+    ///     Zentra's label for an app (plan 6.2, audit Z-15): "Safe", which the Bloatware page
+    ///     selects in one click, is only what the standard service profile removes. Anything
+    ///     else optimizerDuck called safe (Movies and TV, Sticky Notes with the client's notes,
+    ///     Teams, OneNote, streaming apps...) becomes "Caution": the technician asks first.
+    /// </summary>
+    public static AppRisk ZentraRisk(string packageName, AppRisk upstreamRisk) =>
+        Profiles.StandardServiceProfile.IsProfileApp(packageName) ? AppRisk.Safe
+        : upstreamRisk == AppRisk.Safe ? AppRisk.Caution
+        : upstreamRisk;
+
+    /// <summary>
     ///     Gets all removable AppX packages on the system.
     /// </summary>
     /// <returns>A list of <see cref="AppXPackage" />.</returns>
@@ -84,6 +95,8 @@ public class BloatwareService(
             }
 
             var apps = ParsePackages(result.Stdout);
+            foreach (var app in apps)
+                app.Risk = ZentraRisk(app.Name, app.Risk);
 
             // Hard block: protected packages (Edge, WebView2, Store...) are never offered.
             var hidden = apps.RemoveAll(app => Shared.IsProtectedApp(app.Name));
