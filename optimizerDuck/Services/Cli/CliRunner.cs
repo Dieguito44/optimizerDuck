@@ -289,8 +289,8 @@ public sealed class CliRunner(
     private async Task<ServicePreset?> LoadPresetAsync(CliOptions options)
     {
         ServicePreset preset;
-        if (options.UsesStandardPreset)
-            preset = ServicePreset.Standard;
+        if (options.BuiltInPreset is { } builtIn)
+            preset = builtIn;
         else
         {
             var path = options.PresetPath!;

@@ -22,6 +22,22 @@ public class CliOptionsTests
 {
     private static CliOptions? Parse(params string[] args) => CliOptions.Parse(args, out _);
 
+    [Theory]
+    [InlineData("estandar", "Servicio estándar")]
+    [InlineData("equipo-lento", "Equipo lento")]
+    [InlineData("juegos", "Juegos")]
+    [InlineData("privacidad", "Privacidad máxima")]
+    public void BuiltInProfiles_CanBeNamed(string arg, string expected)
+    {
+        // Version 1.1.0: every profile of the selector also works from the command line.
+        var o = Parse("--preset", arg, "--silent")!;
+        Assert.Equal(expected, o.BuiltInPreset!.Name);
+    }
+
+    [Fact]
+    public void APresetFile_IsNotABuiltInProfile() =>
+        Assert.Null(Parse("--preset", @"C:\presets\juegos.json")!.BuiltInPreset);
+
     [Fact]
     public void FullCommand_IsRead()
     {
