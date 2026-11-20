@@ -333,7 +333,7 @@ public sealed class ProfileOperations(
             StreamService = stream,
             Shell = shell,
             PowerPlans = powerPlans,
-            Logger = logger,
+            Logger = new PreviewLogger(logger),
             Preview = plan,
         };
         try

@@ -30,6 +30,21 @@ public class ProtectedFolderCiTests
         {
             Assert.True(ProtectedFolder.Ensure(usersCanRead: true, root, state));
 
+            // The outer folder too: %ProgramData% gives Users "Write" and it would be inherited.
+            var rootAcl = new DirectoryInfo(root).GetAccessControl();
+            Assert.True(rootAcl.AreAccessRulesProtected);
+            Assert.All(
+                rootAcl
+                    .GetAccessRules(true, true, typeof(SecurityIdentifier))
+                    .Cast<FileSystemAccessRule>()
+                    .Where(r =>
+                        ((SecurityIdentifier)r.IdentityReference).IsWellKnown(
+                            WellKnownSidType.BuiltinUsersSid
+                        )
+                    ),
+                r => Assert.Equal(0, (int)(r.FileSystemRights & FileSystemRights.Write))
+            );
+
             var acl = new DirectoryInfo(state).GetAccessControl();
             Assert.True(
                 ((SecurityIdentifier)acl.GetOwner(typeof(SecurityIdentifier))!).IsWellKnown(
