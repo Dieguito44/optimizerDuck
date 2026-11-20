@@ -5326,4 +5326,22 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Diagnostic.Evidence.disk.random_read_iops" xml:space="preserve">
     <value>Small-file reads per second (an SSD does thousands)</value>
   </data>
+  <data name="Profile.Startup.Title" xml:space="preserve">
+    <value>Apps that start with Windows</value>
+  </data>
+  <data name="Profile.Startup.Message" xml:space="preserve">
+    <value>These apps start on their own when the PC turns on and slow it down. Zentra checked the ones that rarely need to start on their own; uncheck the ones the client wants to keep. They can still be opened by hand, and "Revert profile" turns them back on.</value>
+  </data>
+  <data name="Profile.Startup.Disable" xml:space="preserve">
+    <value>Disable the checked ones</value>
+  </data>
+  <data name="Profile.Startup.Keep" xml:space="preserve">
+    <value>Leave them as they are</value>
+  </data>
+  <data name="Profile.Startup.Done" xml:space="preserve">
+    <value>Startup apps disabled: {0}. They are turned back on in Startup or with "Revert profile".</value>
+  </data>
+  <data name="Profile.Startup.Restored" xml:space="preserve">
+    <value>Startup apps turned back on: {0}</value>
+  </data>
 </root>

@@ -7068,4 +7068,22 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
   <data name="Diagnostic.Evidence.disk.random_read_iops" xml:space="preserve">
     <value>Lecturas de archivos pequeños por segundo (un SSD hace miles)</value>
   </data>
+  <data name="Profile.Startup.Title" xml:space="preserve">
+    <value>Apps que arrancan con Windows</value>
+  </data>
+  <data name="Profile.Startup.Message" xml:space="preserve">
+    <value>Estas apps arrancan solas al encender el PC y lo hacen más lento. Zentra marcó las que casi nunca hace falta que arranquen solas; desmarca las que el cliente quiera conservar. Se siguen pudiendo abrir a mano, y "Revertir perfil" las vuelve a activar.</value>
+  </data>
+  <data name="Profile.Startup.Disable" xml:space="preserve">
+    <value>Desactivar las marcadas</value>
+  </data>
+  <data name="Profile.Startup.Keep" xml:space="preserve">
+    <value>Dejarlas como están</value>
+  </data>
+  <data name="Profile.Startup.Done" xml:space="preserve">
+    <value>Apps de inicio desactivadas: {0}. Se vuelven a activar en Arranque o con "Revertir perfil".</value>
+  </data>
+  <data name="Profile.Startup.Restored" xml:space="preserve">
+    <value>Apps de inicio activadas de nuevo: {0}</value>
+  </data>
 </root>

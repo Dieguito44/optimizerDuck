@@ -24,6 +24,7 @@ public partial class ServiceProfileViewModel(
     ServiceProfileRunner runner,
     OptimizationService optimizationService,
     IContentDialogService dialogService,
+    optimizerDuck.Services.UI.StartupManagerService startupManager,
     ILogger<ServiceProfileViewModel> logger
 ) : ObservableObject
 {
@@ -270,6 +271,11 @@ public partial class ServiceProfileViewModel(
                 CancellationToken.None
             );
             Show(result, applied: true);
+            if (ReferenceEquals(preset, ServicePreset.SlowPc))
+            {
+                IsBusy = false;
+                await ReviewStartupAppsAsync();
+            }
         }
         catch (Exception ex)
         {
@@ -282,6 +288,96 @@ public partial class ServiceProfileViewModel(
             if (Application.Current is App app)
                 app.HasPendingChanges = true;
         }
+    }
+
+    /// <summary>
+    ///     Version 1.1.2: after "Equipo lento", the enabled startup apps, the non-essential ones
+    ///     pre-checked. Disabled ones are remembered, so "Revertir perfil" turns them back on.
+    /// </summary>
+    private async Task ReviewStartupAppsAsync()
+    {
+        var apps = (await startupManager.GetStartupAppsAsync()).Where(a => a.IsEnabled).OrderBy(a => a.Name).ToList();
+        if (apps.Count == 0)
+            return;
+
+        var list = new global::System.Windows.Controls.StackPanel();
+        var boxes = new List<(global::System.Windows.Controls.CheckBox Box, Domain.Optimizations.Models.StartupManager.StartupApp App)>();
+        foreach (var app in apps)
+        {
+            var box = new global::System.Windows.Controls.CheckBox
+            {
+                Content = string.IsNullOrWhiteSpace(app.Publisher) ? app.Name : $"{app.Name}  ({app.Publisher})",
+                IsChecked = StartupSuggestions.IsSuggested(app.Name, app.Command),
+                Margin = new Thickness(0, 2, 0, 2),
+            };
+            boxes.Add((box, app));
+            list.Children.Add(box);
+        }
+        var panel = new global::System.Windows.Controls.StackPanel { MaxWidth = 600 };
+        panel.Children.Add(
+            new global::System.Windows.Controls.TextBlock
+            {
+                Text = Loc.Instance["Profile.Startup.Message"],
+                TextWrapping = TextWrapping.Wrap,
+                Margin = new Thickness(0, 0, 0, 10),
+            }
+        );
+        panel.Children.Add(
+            new global::System.Windows.Controls.ScrollViewer
+            {
+                MaxHeight = 320,
+                VerticalScrollBarVisibility = global::System.Windows.Controls.ScrollBarVisibility.Auto,
+                Content = list,
+            }
+        );
+        var dialog = new ContentDialog
+        {
+            Title = Loc.Instance["Profile.Startup.Title"],
+            Content = panel,
+            PrimaryButtonText = Loc.Instance["Profile.Startup.Disable"],
+            CloseButtonText = Loc.Instance["Profile.Startup.Keep"],
+            DefaultButton = ContentDialogButton.Close,
+        };
+        if (await dialogService.ShowAsync(dialog, CancellationToken.None) != ContentDialogResult.Primary)
+            return;
+
+        var disabled = new List<StartupSuggestions.DisabledApp>();
+        foreach (var (box, app) in boxes.Where(b => b.Box.IsChecked == true))
+        {
+            var r = await startupManager.ToggleStartupApp(app, false);
+            if (r.Ok)
+                disabled.Add(new(app.Name, app.Location, StartupSuggestions.KeyOf(app)));
+            else
+                Problems.Add(app.Name);
+        }
+        if (disabled.Count == 0)
+            return;
+        StartupSuggestions.SaveDisabled(disabled);
+        StatusText = Loc.Instance["Profile.Startup.Done", disabled.Count];
+        Services.UI.ActivityLog.Add(StatusText, Services.UI.ActivityKind.Good);
+        logger.LogInformation("Profile: {Count} startup apps disabled", disabled.Count);
+    }
+
+    /// <summary>Turns back on the startup apps the profile disabled.</summary>
+    private async Task RestoreStartupAppsAsync()
+    {
+        var disabled = StartupSuggestions.LoadDisabled();
+        if (disabled.Count == 0)
+            return;
+        var apps = await startupManager.GetStartupAppsAsync();
+        var restored = 0;
+        foreach (var d in disabled)
+        {
+            var app = apps.FirstOrDefault(a =>
+                a.Location == d.Location
+                && string.Equals(StartupSuggestions.KeyOf(a), d.Key, StringComparison.OrdinalIgnoreCase)
+            );
+            if (app is { IsEnabled: false } && (await startupManager.ToggleStartupApp(app, true)).Ok)
+                restored++;
+        }
+        StartupSuggestions.ClearDisabled();
+        if (restored > 0)
+            Services.UI.ActivityLog.Add(Loc.Instance["Profile.Startup.Restored", restored], Services.UI.ActivityKind.Good);
     }
 
     [RelayCommand(CanExecute = nameof(CanRun))]
@@ -316,6 +412,7 @@ public partial class ServiceProfileViewModel(
             };
             var result = await runner.RevertAsync(everyProfile, progress, CancellationToken.None);
             Show(result, applied: false);
+            await RestoreStartupAppsAsync();
         }
         catch (Exception ex)
         {
