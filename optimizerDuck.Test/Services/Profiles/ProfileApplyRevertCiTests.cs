@@ -1,7 +1,9 @@
 using System.IO;
+using System.Reflection;
 using Microsoft.Extensions.Logging.Abstractions;
 using optimizerDuck.Common.Helpers;
 using optimizerDuck.Domain.Abstractions;
+using optimizerDuck.Domain.Attributes;
 using optimizerDuck.Domain.Execution;
 using optimizerDuck.Domain.Optimizations.Models;
 using optimizerDuck.Domain.UI;
@@ -38,16 +40,76 @@ public class ProfileApplyRevertCiTests
                 "Applies real changes: runs only on the disposable GitHub runner, elevated."
             );
 
+        var problems = new List<string>();
+        var checkedSettings = await ApplyAndRevertAsync(
+            StandardServiceProfile.Settings,
+            problems,
+            []
+        );
+
+        Assert.True(checkedSettings > 0, "No profile setting could be checked on this runner.");
+        Assert.True(problems.Count == 0, string.Join(Environment.NewLine, problems));
+    }
+
+    /// <summary>
+    ///     The same check for every setting Zentra has, not only the profile's, on a real Windows 11:
+    ///     only inside Windows Sandbox (ZENTRA_SANDBOX=1, elevated), which is thrown away afterwards.
+    ///     Settings behind the "No reversible" dialog are left out. One line per setting goes to
+    ///     ZENTRA_SANDBOX_REPORT when set. Added for the version 1 test (20/11/2026).
+    /// </summary>
+    [Fact]
+    public async Task EverySetting_AppliesAndRevertsToTheExactPreviousState_InTheSandbox()
+    {
+        if (
+            Environment.GetEnvironmentVariable("ZENTRA_SANDBOX") != "1"
+            || !Environment.IsPrivilegedProcess
+        )
+            Assert.Skip("Applies every setting for real: only inside Windows Sandbox, elevated.");
+
+        var types = typeof(BaseOptimization)
+            .Assembly.GetTypes()
+            .Where(t =>
+                !t.IsAbstract
+                && typeof(BaseOptimization).IsAssignableFrom(t)
+                && t.GetCustomAttribute<OptimizationAttribute>() is { } a
+                && a.Confirmation == OptimizationConfirmation.None
+                && t.DeclaringType?.Name != "Debug" // the Debug category exists only in Debug builds
+            )
+            .OrderBy(t => t.DeclaringType?.Name)
+            .ThenBy(t => t.Name)
+            .ToList();
+        var problems = new List<string>();
+        var report = new List<string>();
+        var checkedSettings = await ApplyAndRevertAsync(types, problems, report);
+
+        if (Environment.GetEnvironmentVariable("ZENTRA_SANDBOX_REPORT") is { Length: > 0 } path)
+            File.WriteAllLines(
+                path,
+                [
+                    $"settings: {types.Count}, checked: {checkedSettings}, problems: {problems.Count}",
+                    .. report,
+                    "--- problems",
+                    .. problems,
+                ]
+            );
+        Assert.True(problems.Count == 0, string.Join(Environment.NewLine, problems));
+    }
+
+    private static async Task<int> ApplyAndRevertAsync(
+        IEnumerable<Type> types,
+        List<string> problems,
+        List<string> report
+    )
+    {
         var snapshot = await new SystemInfoService(
             NullLogger<SystemInfoService>.Instance
         ).RefreshAsync(TestContext.Current.CancellationToken);
-        var problems = new List<string>();
         var checkedSettings = 0;
 
         await RunInStaThreadAsync(async () =>
         {
             var service = CreateService();
-            foreach (var type in StandardServiceProfile.Settings)
+            foreach (var type in types)
             {
                 var optimization = (BaseOptimization)Activator.CreateInstance(type)!;
                 optimization.OwnerType = type.DeclaringType;
@@ -58,11 +120,17 @@ public class ProfileApplyRevertCiTests
                     NullLogger.Instance
                 );
                 if (condition.IsBlocking)
+                {
+                    report.Add($"SKIP {type.Name}: not for this PC ({condition.Title})");
                     continue; // not for this Windows (the runner is Windows Server)
+                }
 
                 var before = await PreviewAsync(optimization, snapshot);
                 if (before.All(c => c.IsAlreadyThere))
+                {
+                    report.Add($"SKIP {type.Name}: already as wanted");
                     continue; // already as the profile wants it: nothing to apply or revert
+                }
 
                 var revertFile = Path.Combine(Shared.RevertDirectory, optimization.Id + ".json");
                 try
@@ -103,6 +171,12 @@ public class ProfileApplyRevertCiTests
                             );
                     }
                     checkedSettings++;
+                    report.Add($"OK   {type.Name}: applied and reverted ({before.Count} values)");
+                }
+                catch (Exception ex) when (ex is not OperationCanceledException)
+                {
+                    // One setting that throws must not hide the others.
+                    problems.Add($"{type.Name}: threw {ex.GetType().Name}: {ex.Message}");
                 }
                 finally
                 {
@@ -112,8 +186,7 @@ public class ProfileApplyRevertCiTests
             }
         });
 
-        Assert.True(checkedSettings > 0, "No profile setting could be checked on this runner.");
-        Assert.True(problems.Count == 0, string.Join(Environment.NewLine, problems));
+        return checkedSettings;
     }
 
     /// <summary>Commands have no readable "current value"; everything else is compared.</summary>
