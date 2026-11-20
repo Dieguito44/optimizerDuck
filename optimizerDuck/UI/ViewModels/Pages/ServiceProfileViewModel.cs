@@ -163,24 +163,26 @@ public partial class ServiceProfileViewModel(
                         + Environment.NewLine
                         + Loc.Instance["Profile.Confirm.AppsIrreversible"];
 
-            var answer = await dialogService.ShowSimpleDialogAsync(
-                new SimpleContentDialogCreateOptions
-                {
-                    Title = Loc.Instance["Profile.Confirm.Title"],
-                    Content = PreviewContent(
-                        (preset.IsBuiltIn ? "" : Loc.Instance["Preset.Confirm.Name", preset.Name])
-                            + Loc.Instance[
-                                "Profile.Confirm.Message",
-                                settings.Count,
-                                apps.Count,
-                                appNames
-                            ],
-                        preview
-                    ),
-                    PrimaryButtonText = Loc.Instance["Profile.Confirm.Apply"],
-                    CloseButtonText = Loc.Instance["Button.Cancel"],
-                }
-            );
+            // Plan F1-09: the profile removes apps, which cannot be undone, so Cancel is the default
+            // button (Enter never applies it). Found in the Sandbox tests (19/11/2026).
+            var confirm = new ContentDialog
+            {
+                Title = Loc.Instance["Profile.Confirm.Title"],
+                Content = PreviewContent(
+                    (preset.IsBuiltIn ? "" : Loc.Instance["Preset.Confirm.Name", preset.Name])
+                        + Loc.Instance[
+                            "Profile.Confirm.Message",
+                            settings.Count,
+                            apps.Count,
+                            appNames
+                        ],
+                    preview
+                ),
+                PrimaryButtonText = Loc.Instance["Profile.Confirm.Apply"],
+                CloseButtonText = Loc.Instance["Button.Cancel"],
+                DefaultButton = ContentDialogButton.Close,
+            };
+            var answer = await dialogService.ShowAsync(confirm, CancellationToken.None);
             if (answer != ContentDialogResult.Primary)
                 return;
 

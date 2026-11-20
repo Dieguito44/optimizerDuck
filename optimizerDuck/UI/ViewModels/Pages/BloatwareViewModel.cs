@@ -232,6 +232,7 @@ public partial class BloatwareViewModel : ViewModel
             PrimaryButtonText = Loc.Instance["Irreversible.Yes"],
             CloseButtonText = Loc.Instance["Button.Cancel"],
         };
+        IrreversibleConfirmation.MakeSafe(askForConfirmationDialog);
 
         var result = await _contentDialogService.ShowAsync(
             askForConfirmationDialog,
