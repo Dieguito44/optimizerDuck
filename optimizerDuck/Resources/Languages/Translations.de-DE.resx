@@ -5356,4 +5356,34 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Session.Restart.Failed" xml:space="preserve">
     <value>The restart could not be scheduled. Restart by hand and open Zentra: the session is picked up on its own.</value>
   </data>
+  <data name="Session.Storage.Usb" xml:space="preserve">
+    <value>USB mode: sessions are saved in {0}.</value>
+  </data>
+  <data name="Session.Storage.Local" xml:space="preserve">
+    <value>Sessions are saved on this PC ({0}).</value>
+  </data>
+  <data name="Session.Button.End" xml:space="preserve">
+    <value>End service</value>
+  </data>
+  <data name="Session.End.Title" xml:space="preserve">
+    <value>End the service and remove Zentra from this PC?</value>
+  </data>
+  <data name="Session.End.Message" xml:space="preserve">
+    <value>Zentra closes and deletes from this PC its unpacked copy (it carries the AI key), its logs and its settings. Sessions and PDFs stay in {0}. {1} Revert data and restore points are kept: if you come back with Zentra, "Revert" still works.</value>
+  </data>
+  <data name="Session.End.ExeStays" xml:space="preserve">
+    <value>Zentra.exe stays on your USB stick.</value>
+  </data>
+  <data name="Session.End.ExeGoes" xml:space="preserve">
+    <value>Zentra.exe is deleted from this PC too.</value>
+  </data>
+  <data name="Session.End.FollowUp" xml:space="preserve">
+    <value>Note: a follow-up is scheduled, which leaves a copy of Zentra (with the key) on this PC. If you do not want to leave it, first "Remove follow-up".</value>
+  </data>
+  <data name="Session.End.Confirm" xml:space="preserve">
+    <value>End and remove Zentra</value>
+  </data>
+  <data name="Session.End.TechnicianPc" xml:space="preserve">
+    <value>This is your technician PC: Zentra is not removed here.</value>
+  </data>
 </root>

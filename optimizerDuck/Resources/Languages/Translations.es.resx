@@ -7104,4 +7104,34 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
   <data name="Session.Restart.Failed" xml:space="preserve">
     <value>No se pudo programar el reinicio. Reinicia a mano y abre Zentra: la sesión se retoma sola.</value>
   </data>
+  <data name="Session.Storage.Usb" xml:space="preserve">
+    <value>Modo USB: las sesiones se guardan en {0}.</value>
+  </data>
+  <data name="Session.Storage.Local" xml:space="preserve">
+    <value>Las sesiones se guardan en este PC ({0}).</value>
+  </data>
+  <data name="Session.Button.End" xml:space="preserve">
+    <value>Terminar servicio</value>
+  </data>
+  <data name="Session.End.Title" xml:space="preserve">
+    <value>¿Terminar el servicio y quitar Zentra de este PC?</value>
+  </data>
+  <data name="Session.End.Message" xml:space="preserve">
+    <value>Zentra se cierra y borra de este PC su copia descomprimida (lleva la clave de la IA), sus registros y su configuración. Las sesiones y los PDF quedan en {0}. {1} Se conservan los datos para revertir y los puntos de restauración: si vuelves con Zentra, "Revertir" sigue funcionando.</value>
+  </data>
+  <data name="Session.End.ExeStays" xml:space="preserve">
+    <value>Zentra.exe se queda en tu USB.</value>
+  </data>
+  <data name="Session.End.ExeGoes" xml:space="preserve">
+    <value>Zentra.exe también se borra de este PC.</value>
+  </data>
+  <data name="Session.End.FollowUp" xml:space="preserve">
+    <value>Ojo: hay un seguimiento programado, que deja una copia de Zentra (con la clave) en este PC. Si no quieres dejarla, primero "Quitar seguimiento".</value>
+  </data>
+  <data name="Session.End.Confirm" xml:space="preserve">
+    <value>Terminar y quitar Zentra</value>
+  </data>
+  <data name="Session.End.TechnicianPc" xml:space="preserve">
+    <value>Este es tu PC de técnico: aquí no se quita Zentra.</value>
+  </data>
 </root>

@@ -42,7 +42,8 @@ public static class StartupSuggestions
     /// <summary>One app the profile disabled: enough to find it again and turn it back on.</summary>
     public sealed record DisabledApp(string Name, StartupAppLocation Location, string Key);
 
-    private static string StorePath => Path.Combine(Shared.RootDirectory, "profile-startup-disabled.json");
+    // With the revert data: it must survive "Terminar servicio", which deletes the user's data.
+    private static string StorePath => Path.Combine(Shared.StateDirectory, "profile-startup-disabled.json");
 
     public static IReadOnlyList<DisabledApp> LoadDisabled()
     {
