@@ -23,6 +23,7 @@ public sealed class DisplayConfirmWindow : Window
         _secondsLeft = (int)timeout.TotalSeconds;
         Title = Loc.Instance["DisplayConfirm.Title"];
         Topmost = true;
+        ThemedWindow.Apply(this);
         ResizeMode = ResizeMode.NoResize;
         SizeToContent = SizeToContent.WidthAndHeight;
         WindowStartupLocation = WindowStartupLocation.CenterScreen;

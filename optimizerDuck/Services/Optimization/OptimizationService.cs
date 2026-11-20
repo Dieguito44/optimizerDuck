@@ -185,9 +185,38 @@ public class OptimizationService(
         IOptimization optimization,
         IProgress<ProcessingProgress> progress,
         CancellationToken cancellationToken = default
+    ) => ApplyAsync(optimization, progress, confirmed: false, cancellationToken);
+
+    /// <param name="optimization">The optimization to apply.</param>
+    /// <param name="progress">An <see cref="IProgress{T}"/> to report application progress.</param>
+    /// <param name="confirmed">
+    ///     Plan F1-09: the technician said yes in the "No reversible" dialog. A setting that needs
+    ///     it and does not have it is refused here, so no caller can run it by mistake.
+    /// </param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    public Task<OptimizationResult> ApplyAsync(
+        IOptimization optimization,
+        IProgress<ProcessingProgress> progress,
+        bool confirmed,
+        CancellationToken cancellationToken = default
     )
     {
         ArgumentNullException.ThrowIfNull(optimization);
+
+        if (optimization.Confirmation != OptimizationConfirmation.None && !confirmed)
+        {
+            _logger.LogWarning(
+                "Refused {Key}: it needs the technician's confirmation",
+                optimization.OptimizationKey
+            );
+            return Task.FromResult(
+                new OptimizationResult
+                {
+                    Status = OptimizationSuccessResult.Failed,
+                    Message = Loc.Instance["Irreversible.NotConfirmed", optimization.Name],
+                }
+            );
+        }
 
         return runner.RunAsync(
             new OperationRequest(

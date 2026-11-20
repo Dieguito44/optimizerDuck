@@ -105,9 +105,23 @@ public partial class SoftwareViewModel(
     private Task InstallAsync(SoftwareItem? item) =>
         RunAsync(item, softwareService.BuildInstallRequest);
 
+    /// <summary>Plan F1-09: uninstalling cannot be undone from Zentra, so it asks first.</summary>
     [RelayCommand(CanExecute = nameof(CanRun))]
-    private Task UninstallAsync(SoftwareItem? item) =>
-        RunAsync(item, softwareService.BuildUninstallRequest);
+    private async Task UninstallAsync(SoftwareItem? item)
+    {
+        if (item is null)
+            return;
+        if (
+            !await optimizerDuck.UI.Dialogs.IrreversibleConfirmation.AskAsync(
+                dialogs,
+                Domain.UI.OptimizationConfirmation.Irreversible,
+                Loc.Instance["Irreversible.Uninstall", item.Name],
+                Loc.Instance["Irreversible.Why.Uninstall"]
+            )
+        )
+            return;
+        await RunAsync(item, softwareService.BuildUninstallRequest);
+    }
 
     /// <summary>
     ///     ACT-WINGET-UPGRADE. Behind a confirmation: updates cannot be undone from Zentra, and a

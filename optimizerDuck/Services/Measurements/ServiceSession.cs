@@ -108,6 +108,12 @@ public sealed record ServiceSession
 
     /// <summary>The written report (AI or template), with exactly what was sent to produce it.</summary>
     public Ai.AiReportRecord? Report { get; init; }
+
+    /// <summary>
+    ///     Plan F1-07: the client accepted sending the anonymized data to the AI (Ley 1581), with
+    ///     the version of the text they read. Null: nothing about this session goes to the AI.
+    /// </summary>
+    public Ai.AiConsentRecord? AiConsent { get; init; }
 }
 
 /// <summary>Saves sessions as JSON under %LocalAppData%\Zentra\Sessions\.</summary>

@@ -540,6 +540,70 @@ public class OptimizationServiceTests
         });
     }
 
+    /// <summary>Plan F1-09: without the technician's yes, what cannot be undone never runs.</summary>
+    [Theory]
+    [InlineData(OptimizationConfirmation.Irreversible)]
+    [InlineData(OptimizationConfirmation.HardToRevert)]
+    public async Task ApplyAsync_WithoutConfirmation_RefusesAndRunsNothing(
+        OptimizationConfirmation kind
+    )
+    {
+        await RunInStaThreadAsync(async () =>
+        {
+            var ran = false;
+            var optimization = new FakeOptimization
+            {
+                Confirmation = kind,
+                ApplyImpl = _ =>
+                {
+                    ran = true;
+                    return Task.FromResult(ApplyResult.True());
+                },
+            };
+            var service = CreateService();
+
+            var result = await service.ApplyAsync(optimization, new Progress<ProcessingProgress>());
+
+            Assert.False(ran);
+            Assert.Equal(OptimizationSuccessResult.Failed, result.Status);
+            Assert.False(File.Exists(GetRevertFilePath(optimization.Id)));
+        });
+    }
+
+    [Fact]
+    public async Task ApplyAsync_Confirmed_Runs()
+    {
+        await RunInStaThreadAsync(async () =>
+        {
+            var ran = false;
+            var optimization = new FakeOptimization
+            {
+                Confirmation = OptimizationConfirmation.Irreversible,
+                ApplyImpl = args =>
+                {
+                    ran = true;
+                    args.context.Changes.AddIrreversible("Shell", "irreversible test step");
+                    return Task.FromResult(ApplyResult.True());
+                },
+            };
+            var service = CreateService();
+            try
+            {
+                var result = await service.ApplyAsync(
+                    optimization,
+                    new Progress<ProcessingProgress>(),
+                    confirmed: true
+                );
+                Assert.True(ran);
+                Assert.NotEqual(OptimizationSuccessResult.Failed, result.Status);
+            }
+            finally
+            {
+                File.Delete(GetRevertFilePath(optimization.Id));
+            }
+        });
+    }
+
     private static OptimizationService CreateService()
     {
         var revertManager = new RevertManager(

@@ -16,6 +16,9 @@ public interface IOptimization
     /// <summary>Gets the risk level associated with applying this optimization.</summary>
     OptimizationRisk Risk { get; }
 
+    /// <summary>Plan F1-09: whether it runs only after a "No reversible" confirmation.</summary>
+    OptimizationConfirmation Confirmation => OptimizationConfirmation.None;
+
     /// <summary>Gets the resource key used for localization lookup.</summary>
     string OptimizationKey { get; }
 

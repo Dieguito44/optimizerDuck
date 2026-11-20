@@ -58,10 +58,10 @@ public sealed class KeyLeakSentinelTests : IDisposable
         using (var serilog = App.BuildLoggerConfiguration(logPath).CreateLogger())
         using (var factory = new SerilogLoggerFactory(serilog))
         {
-            // Client mode: "remember" is ignored and nothing is written.
+            // The technician's PC (plan F1-08), the key only in memory.
             var keys = new ApiKeyStore(
                 Path.Combine(_root.FullName, "Secrets"),
-                technicianMode: false,
+                technicianMode: true,
                 factory.CreateLogger<ApiKeyStore>()
             );
             var appLogger = factory.CreateLogger("SessionViewModel");
@@ -70,7 +70,7 @@ public sealed class KeyLeakSentinelTests : IDisposable
             foreach (var scenario in Scenarios(payload))
             {
                 if (!keys.HasKey)
-                    Assert.Null(keys.Set(raw, remember: true));
+                    Assert.Null(keys.Set(raw, remember: false));
 
                 var service = new AiReportService(
                     keys,

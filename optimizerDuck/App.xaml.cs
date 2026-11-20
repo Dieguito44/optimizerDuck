@@ -482,13 +482,13 @@ public partial class App : Application
         else
         {
             _logger?.LogInformation(
-                "CLI run: preset={Preset} diagnose={Diagnose} report={Report} silent={Silent} allowRisky={Risky} keepApps={KeepApps}",
+                "CLI run: preset={Preset} diagnose={Diagnose} report={Report} silent={Silent} allowRisky={Risky} removeApps={RemoveApps}",
                 options.PresetPath,
                 options.Diagnose,
                 options.ReportDirectory,
                 options.Silent,
                 options.AllowRisky,
-                options.KeepApps
+                options.RemovesApps
             );
             var runner = new Services.Cli.CliRunner(
                 _host!.Services.GetRequiredService<Services.Profiles.ServiceProfileRunner>(),

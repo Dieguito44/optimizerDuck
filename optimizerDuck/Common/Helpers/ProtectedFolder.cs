@@ -14,7 +14,7 @@ public static class ProtectedFolder
 {
     /// <summary>
     ///     Creates (or checks) every folder from the outermost to the last, then puts the protected
-    ///     ACL on the last one. False when one of them is a link or has an untrusted owner.
+    ///     ACL on each of them. False when one of them is a link or has an untrusted owner.
     /// </summary>
     public static bool Ensure(bool usersCanRead, params string[] folders)
     {
@@ -36,7 +36,13 @@ public static class ProtectedFolder
             else
                 Directory.CreateDirectory(dir);
         }
-        new DirectoryInfo(folders[^1]).SetAccessControl(Acl(usersCanRead));
+        // Every folder, not only the last: %ProgramData% lets Users create files and folders, and
+        // the folders Zentra makes inherit that. Found on Diego's PC (19/11/2026): Zentra itself
+        // kept "Users: Write". The outer ones stay readable; only the last follows usersCanRead.
+        for (var i = 0; i < folders.Length; i++)
+            new DirectoryInfo(folders[i]).SetAccessControl(
+                Acl(i == folders.Length - 1 ? usersCanRead : true)
+            );
         return true;
     }
 

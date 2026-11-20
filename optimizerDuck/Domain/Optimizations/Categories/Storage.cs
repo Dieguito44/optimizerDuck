@@ -220,7 +220,8 @@ public class Storage : LocalizedObject, IOptimizationCategory
         Id = "C1E85B2A-7F04-4A9D-B36E-2D9F0A71C5E8",
         Risk = OptimizationRisk.Moderate,
         Tags = OptimizationTags.Disk | OptimizationTags.System,
-        Condition = typeof(SmallSystemDiskCondition)
+        Condition = typeof(SmallSystemDiskCondition),
+        Confirmation = OptimizationConfirmation.HardToRevert
     )]
     public class EnableCompactOs : BaseOptimization
     {
@@ -278,7 +279,8 @@ public class Storage : LocalizedObject, IOptimizationCategory
     [Optimization(
         Id = "E9047A6B-3D21-4C8F-A5E0-6B2C9D17F43A",
         Risk = OptimizationRisk.Risky,
-        Tags = OptimizationTags.Disk | OptimizationTags.System
+        Tags = OptimizationTags.Disk | OptimizationTags.System,
+        Confirmation = OptimizationConfirmation.Irreversible
     )]
     public class DismResetBase : BaseOptimization
     {

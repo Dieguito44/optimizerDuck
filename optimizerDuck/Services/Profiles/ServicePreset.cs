@@ -83,6 +83,9 @@ public enum PresetProblemKind
     UnknownSetting,
     DuplicateSetting,
     RiskyNotAllowed,
+
+    /// <summary>Plan F1-09: what cannot be undone is applied one by one, after its own dialog.</summary>
+    NeedsConfirmation,
     InvalidAppName,
     ProtectedApp,
     DuplicateApp,
@@ -181,7 +184,9 @@ public static partial class ServicePresetFile
                 problems.Add(new(PresetProblemKind.UnknownSetting, id.ToString()));
                 continue;
             }
-            if (optimization.Risk == OptimizationRisk.Risky && !preset.AllowRisky)
+            if (optimization.Confirmation != OptimizationConfirmation.None)
+                problems.Add(new(PresetProblemKind.NeedsConfirmation, optimization.Name));
+            else if (optimization.Risk == OptimizationRisk.Risky && !preset.AllowRisky)
                 problems.Add(new(PresetProblemKind.RiskyNotAllowed, optimization.Name));
         }
 

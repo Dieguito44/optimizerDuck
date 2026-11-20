@@ -25,4 +25,7 @@ public sealed class OptimizationAttribute : Attribute
     ///     When <see langword="null" />, the optimization is always available.
     /// </summary>
     public Type? Condition { get; init; }
+
+    /// <summary>Plan F1-09: whether it needs the technician's yes in a "No reversible" dialog.</summary>
+    public OptimizationConfirmation Confirmation { get; init; }
 }

@@ -62,6 +62,9 @@ public abstract partial class BaseOptimization : LocalizedObject, IOptimization
     /// <summary>Gets the risk level associated with this optimization.</summary>
     public OptimizationRisk Risk => Meta.Risk;
 
+    /// <summary>Plan F1-09: declared in <see cref="OptimizationAttribute.Confirmation" />.</summary>
+    public OptimizationConfirmation Confirmation => Meta.Confirmation;
+
     /// <summary>Gets the unique key used for localization and identification.</summary>
     public string OptimizationKey => GetType().Name;
 

@@ -54,8 +54,16 @@ public sealed record CliOptions
     /// <summary>Experto (Risky) settings run only with this flag and allowRisky in the preset.</summary>
     public bool AllowRisky { get; init; }
 
-    /// <summary>Apply the settings, but do not remove the preset's apps.</summary>
+    /// <summary>
+    ///     Plan F1-09: removing apps cannot be undone, so the CLI removes the preset's apps only
+    ///     when told so with this flag. Without it the settings are applied and the apps stay.
+    /// </summary>
+    public bool RemoveApps { get; init; }
+
+    /// <summary>The apps stay (the default since F1-09; the flag is still accepted).</summary>
     public bool KeepApps { get; init; }
+
+    public bool RemovesApps => RemoveApps && !KeepApps;
 
     public bool Help { get; init; }
 
@@ -105,6 +113,9 @@ public sealed record CliOptions
                     break;
                 case "--keep-apps":
                     options = options with { KeepApps = true };
+                    break;
+                case "--remove-apps":
+                    options = options with { RemoveApps = true };
                     break;
                 case "--inventory":
                     options = options with { Inventory = true };
@@ -175,10 +186,16 @@ public sealed record CliOptions
         }
         if (
             options.PresetPath is null
-            && (options.AllowRisky || options.KeepApps || options.Silent)
+            && (options.AllowRisky || options.KeepApps || options.RemoveApps || options.Silent)
         )
         {
-            error = "--allow-risky, --keep-apps and --silent only apply with --preset";
+            error =
+                "--allow-risky, --keep-apps, --remove-apps and --silent only apply with --preset";
+            return null;
+        }
+        if (options.KeepApps && options.RemoveApps)
+        {
+            error = "--keep-apps and --remove-apps go apart";
             return null;
         }
         return options;

@@ -41,13 +41,41 @@ public sealed class AiReportService(
     public static AiReportRecord WriteTemplate(ServiceSession session, SessionReportModel model) =>
         Template(AiPayloadBuilder.Build(session, model), TemplateReason.NoKey, 0, null, null, null);
 
-    public async Task<AiReportRecord> WriteAsync(
+    /// <summary>
+    ///     The report for a session on this PC. Without the client's consent (plan F1-07) nothing
+    ///     is sent: the template writes it.
+    /// </summary>
+    public Task<AiReportRecord> WriteAsync(
         ServiceSession session,
         SessionReportModel model,
         CancellationToken cancellationToken
     )
     {
         var payload = AiPayloadBuilder.Build(session, model);
+        return AiConsent.IsGiven(session)
+            ? WriteAsync(payload, cancellationToken)
+            : Task.FromResult(Template(payload, TemplateReason.NoConsent, 0, null, null, null));
+    }
+
+    /// <summary>
+    ///     Plan F1-08: on the technician's PC, the report for a request file the client's PC wrote.
+    ///     <see cref="AiExchange.ReadRequest" /> already checked its consent and its fingerprint.
+    /// </summary>
+    public Task<AiReportRecord> WriteAsync(
+        AiRequestFile request,
+        CancellationToken cancellationToken
+    ) =>
+        AiConsent.TextVersion == request.Consent.TextVersion
+            ? WriteAsync(request.Payload, cancellationToken)
+            : Task.FromResult(
+                Template(request.Payload, TemplateReason.NoConsent, 0, null, null, null)
+            );
+
+    private async Task<AiReportRecord> WriteAsync(
+        AiPayload payload,
+        CancellationToken cancellationToken
+    )
+    {
         var key = keys.Current;
         if (key is null)
             return Template(payload, TemplateReason.NoKey, 0, null, null, null);

@@ -161,6 +161,31 @@ public partial class OptimizationCategoryViewModel : ViewModel
         {
             var wasApplied = await RevertManager.IsAppliedAsync(optimization.Id);
 
+            // Plan F1-09: what cannot be undone asks first, before the restore point.
+            var confirmed = false;
+            if (!wasApplied && optimization.Confirmation != OptimizationConfirmation.None)
+            {
+                confirmed = await IrreversibleConfirmation.AskAsync(
+                    _contentDialogService,
+                    optimization.Confirmation,
+                    optimization.Name,
+                    IrreversibleConfirmation.WhyFor(
+                        optimization.OptimizationKey,
+                        optimization.Confirmation
+                    )
+                );
+                if (!confirmed)
+                {
+                    optimization.State.IsApplied = wasApplied;
+                    return;
+                }
+                _logger.LogInformation(
+                    "Technician confirmed {Key} ({Kind})",
+                    optimization.OptimizationKey,
+                    optimization.Confirmation
+                );
+            }
+
             var (canProceed, restorePointCreated) = await EnsureRestorePointAsync(
                 optimization,
                 wasApplied
@@ -171,7 +196,7 @@ public partial class OptimizationCategoryViewModel : ViewModel
             try
             {
                 if (!wasApplied)
-                    await ApplyOptimizationAsync(optimization, restorePointCreated);
+                    await ApplyOptimizationAsync(optimization, restorePointCreated, confirmed);
                 else
                     await RevertOptimizationAsync(optimization, restorePointCreated);
             }
@@ -225,7 +250,11 @@ public partial class OptimizationCategoryViewModel : ViewModel
     /// </summary>
     /// <param name="optimization">The optimization to apply.</param>
     /// <param name="restorePointCreated">Whether a restore point was created beforehand.</param>
-    private async Task ApplyOptimizationAsync(IOptimization optimization, bool restorePointCreated)
+    private async Task ApplyOptimizationAsync(
+        IOptimization optimization,
+        bool restorePointCreated,
+        bool confirmed
+    )
     {
         _logger.LogInformation(
             "===== START applying {Name} ({Id}) =====",
@@ -235,7 +264,7 @@ public partial class OptimizationCategoryViewModel : ViewModel
 
         var applyResult = await RunWithProcessingDialogAsync(
             optimization,
-            p => _optimizationService.ApplyAsync(optimization, p)
+            p => _optimizationService.ApplyAsync(optimization, p, confirmed)
         );
 
         // A complete failure leaves nothing to retry.

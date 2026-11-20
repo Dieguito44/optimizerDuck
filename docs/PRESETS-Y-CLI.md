@@ -57,7 +57,8 @@ $p.ExitCode
 | `--report <carpeta>` | Copia `session.json`, el PDF, `ZENTRA-SHA256.txt`, el inventario y `zentra-cli.txt` a esa carpeta. |
 | `--client <nombre>` | Nombre del cliente para el informe. Queda solo en este PC. |
 | `--silent` | No pide confirmación. |
-| `--keep-apps` | Aplica los ajustes sin quitar las apps del preset. |
+| `--remove-apps` | Quita también las apps del preset. Quitar apps no se puede deshacer, así que sin esta opción las apps se quedan (F1-09). |
+| `--keep-apps` | Aplica los ajustes sin quitar las apps. Es lo que pasa por defecto desde la F1-09; se acepta por compatibilidad. |
 | `--allow-risky` | Permite ajustes de nivel Experto. El preset también debe tener `allowRisky`. |
 | `--verify <carpeta>` | Comprueba los archivos del informe contra `ZENTRA-SHA256.txt`. Va solo y no cambia nada. |
 | `--remove-followup` | Borra la tarea de seguimiento y su copia de Zentra. Los resultados quedan. Va solo. |
