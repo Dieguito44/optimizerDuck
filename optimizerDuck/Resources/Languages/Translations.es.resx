@@ -267,7 +267,7 @@
 
   <data name="Dashboard.Actions.GitHub.Title" xml:space="preserve">
 
-    <value>Repositorio de Github</value>
+    <value>Repositorio de GitHub</value>
 
   </data>
 
@@ -946,13 +946,13 @@
 
   <data name="Optimizer.SecurityAndPrivacy" xml:space="preserve">
 
-    <value>Seguridad &amp; Privacidad</value>
+    <value>Seguridad &amp; privacidad</value>
 
   </data>
 
   <data name="Optimizer.BloatwareAndServices" xml:space="preserve">
 
-    <value>Programas innecesarios &amp; Servicios</value>
+    <value>Programas innecesarios &amp; servicios</value>
 
   </data>
 
@@ -1030,7 +1030,7 @@
 
   <data name="Optimizer.PowerManagement.DisableHibernateAndFastStartup.Name" xml:space="preserve">
 
-    <value>Desactivar Hibernación e Inicio Rápido</value>
+    <value>Desactivar hibernación e inicio rápido</value>
 
   </data>
 
@@ -1042,7 +1042,7 @@
 
   <data name="Optimizer.PowerManagement.DisableUSBPowerSaving.Name" xml:space="preserve">
 
-    <value>Desactivar Ahorro de Energía USB</value>
+    <value>Desactivar ahorro de energía USB</value>
 
   </data>
 
@@ -1054,7 +1054,7 @@
 
   <data name="Optimizer.PowerManagement.InstallOptimizerDuckPowerPlan.Name" xml:space="preserve">
 
-    <value>Aplicar Plan de Energía Optimizado</value>
+    <value>Aplicar plan de energía optimizado</value>
 
   </data>
 
@@ -1072,7 +1072,7 @@
 
   <data name="Optimizer.PowerManagement.DisablePowerSaving.Name" xml:space="preserve">
 
-    <value>Desactivar Limitación de Energía del Sistema</value>
+    <value>Desactivar limitación de energía del sistema</value>
 
   </data>
 
@@ -1084,7 +1084,7 @@
 
   <data name="Optimizer.SecurityAndPrivacy.DisableTelemetry.Name" xml:space="preserve">
 
-    <value>Desactivar Recopilación de Datos (Telemetría)</value>
+    <value>Desactivar recopilación de datos (Telemetría)</value>
 
   </data>
 
@@ -1114,7 +1114,7 @@
 
   <data name="Optimizer.SecurityAndPrivacy.DisableErrorReporting.Name" xml:space="preserve">
 
-    <value>Desactivar Informe de Errores</value>
+    <value>Desactivar informe de errores</value>
 
   </data>
 
@@ -1126,7 +1126,7 @@
 
   <data name="Optimizer.SecurityAndPrivacy.DisableAdvertisingAndSuggestions.Name" xml:space="preserve">
 
-    <value>Desactivar Anuncios y Sugerencias</value>
+    <value>Desactivar anuncios y sugerencias</value>
 
   </data>
 
@@ -1138,7 +1138,7 @@
 
   <data name="Optimizer.SecurityAndPrivacy.DisableActivityHistory.Name" xml:space="preserve">
 
-    <value>Desactivar Historial de Actividad</value>
+    <value>Desactivar historial de actividad</value>
 
   </data>
 
@@ -1150,7 +1150,7 @@
 
   <data name="Optimizer.SecurityAndPrivacy.DisableLocationAndSensors.Name" xml:space="preserve">
 
-    <value>Desactivar Ubicación y Sensores</value>
+    <value>Desactivar ubicación y sensores</value>
 
   </data>
 
@@ -1162,7 +1162,7 @@
 
   <data name="Optimizer.SecurityAndPrivacy.DisableAutoLogger.Name" xml:space="preserve">
 
-    <value>Desactivar Registros en Segundo Plano</value>
+    <value>Desactivar registros en segundo plano</value>
 
   </data>
 
@@ -1174,7 +1174,7 @@
 
   <data name="Optimizer.SecurityAndPrivacy.DisableCortana.Name" xml:space="preserve">
 
-    <value>Desactivar Cortana y Búsqueda Web</value>
+    <value>Desactivar Cortana y búsqueda web</value>
 
   </data>
 
@@ -1198,7 +1198,7 @@
 
   <data name="Optimizer.SecurityAndPrivacy.DisableContentDeliveryManager.Name" xml:space="preserve">
 
-    <value>Desactivar Entrega de Contenido en la Nube</value>
+    <value>Desactivar entrega de contenido en la nube</value>
 
   </data>
 
@@ -1210,7 +1210,7 @@
 
   <data name="Optimizer.BloatwareAndServices.DisablePreinstalledApps.Name" xml:space="preserve">
 
-    <value>Bloquear Bloatware Preinstalado</value>
+    <value>Bloquear Bloatware preinstalado</value>
 
   </data>
 
@@ -1245,13 +1245,13 @@
 
   <data name="Optimizer.UserExperience" xml:space="preserve">
 
-    <value>Experiencia de Usuario</value>
+    <value>Experiencia de usuario</value>
 
   </data>
 
   <data name="Optimizer.UserExperience.SpeedUpExplorerAndMenus.Name" xml:space="preserve">
 
-    <value>Acelerar Explorador y Menús</value>
+    <value>Acelerar el Explorador y los menús</value>
 
   </data>
 
@@ -1263,7 +1263,7 @@
 
   <data name="Optimizer.UserExperience.DisableVisualEffects.Name" xml:space="preserve">
 
-    <value>Desactivar Efectos Visuales</value>
+    <value>Desactivar efectos visuales</value>
 
   </data>
 
@@ -1287,7 +1287,7 @@
 
 <data name="Optimizer.Gpu.AmdDisablePowerGating.Name" xml:space="preserve">
 
-    <value>Desactivar Control de Energía AMD</value>
+    <value>Desactivar control de energía AMD</value>
 
   </data>
 
@@ -1299,7 +1299,7 @@
 
 <data name="Optimizer.Gpu.AmdDisableVideoClockGating.Name" xml:space="preserve">
 
-    <value>Desactivar Control de Reloj de Video AMD</value>
+    <value>Desactivar control de reloj de video AMD</value>
 
   </data>
 
@@ -1323,7 +1323,7 @@
 
 <data name="Optimizer.Gpu.NvidiaDisableDynamicPstate.Name" xml:space="preserve">
 
-    <value>Desactivar P-State Dinámico NVIDIA</value>
+    <value>Desactivar P-State dinámico NVIDIA</value>
 
   </data>
 
@@ -1335,7 +1335,7 @@
 
 <data name="Optimizer.Gpu.NvidiaDisableAsyncPstates.Name" xml:space="preserve">
 
-    <value>Desactivar P-States Asíncronos NVIDIA</value>
+    <value>Desactivar P-States asíncronos NVIDIA</value>
 
   </data>
 
@@ -1347,7 +1347,7 @@
 
 <data name="Optimizer.Gpu.IntelDisableAsyncFlips.Name" xml:space="preserve">
 
-    <value>Desactivar Volteos Asíncronos Intel</value>
+    <value>Desactivar volteos asíncronos Intel</value>
 
   </data>
 
@@ -1359,7 +1359,7 @@
 
 <data name="Optimizer.Gpu.IntelDisableAdaptiveVsync.Name" xml:space="preserve">
 
-    <value>Desactivar V-Sync Adaptativo Intel</value>
+    <value>Desactivar V-Sync adaptativo Intel</value>
 
   </data>
 
@@ -1373,7 +1373,7 @@
 
   <data name="Customize.Preferences.Section.Taskbar" xml:space="preserve">
 
-    <value>Barra de Tareas</value>
+    <value>Barra de tareas</value>
 
   </data>
 
@@ -1409,7 +1409,7 @@
 
   <data name="Customize.Preferences.TaskbarAlignment.Name" xml:space="preserve">
 
-    <value>Alineación de la Barra de Tareas</value>
+    <value>Alineación de la barra de tareas</value>
 
   </data>
 
@@ -1433,7 +1433,7 @@
 
   <data name="Customize.Preferences.ExplorerCompactMode.Name" xml:space="preserve">
 
-    <value>Modo Compacto</value>
+    <value>Modo compacto</value>
 
   </data>
 
@@ -1445,7 +1445,7 @@
 
   <data name="Customize.Preferences.SnapAssistFlyout.Name" xml:space="preserve">
 
-    <value>Asistente de Ajuste (Snap)</value>
+    <value>Asistente de ajuste (Snap)</value>
 
   </data>
 
@@ -1457,7 +1457,7 @@
 
   <data name="Customize.Preferences.ExplorerItemCheckboxes.Name" xml:space="preserve">
 
-    <value>Casillas de Verificación</value>
+    <value>Casillas de verificación</value>
 
   </data>
 
@@ -1469,7 +1469,7 @@
 
   <data name="Customize.Preferences.TaskbarTaskViewButton.Name" xml:space="preserve">
 
-    <value>Botón de Vista de Tareas</value>
+    <value>Botón de vista de tareas</value>
 
   </data>
 
@@ -1481,7 +1481,7 @@
 
   <data name="Customize.Preferences.TaskbarEndTask.Name" xml:space="preserve">
 
-    <value>Finalizar Tarea</value>
+    <value>Finalizar tarea</value>
 
   </data>
 
@@ -1499,7 +1499,7 @@
 
   <data name="Customize.Preferences.DarkMode.Name" xml:space="preserve">
 
-    <value>Modo Oscuro</value>
+    <value>Modo oscuro</value>
 
   </data>
 
@@ -1511,7 +1511,7 @@
 
   <data name="Customize.Preferences.ExplorerSyncNotifications.Name" xml:space="preserve">
 
-    <value>Notificaciones de Sincronización</value>
+    <value>Notificaciones de sincronización</value>
 
   </data>
 
@@ -1529,7 +1529,7 @@
 
   <data name="Customize.Preferences.SystemSuggestions.Name" xml:space="preserve">
 
-    <value>Sugerencias del Sistema</value>
+    <value>Sugerencias del sistema</value>
 
   </data>
 
@@ -1547,7 +1547,7 @@
 
   <data name="Customize.Preferences.ToastNotifications.Name" xml:space="preserve">
 
-    <value>Notificaciones Emergentes</value>
+    <value>Notificaciones emergentes</value>
 
   </data>
 
@@ -1595,7 +1595,7 @@
 
   <data name="Customize.Preferences.ClipboardHistory.Name" xml:space="preserve">
 
-    <value>Historial del Portapapeles</value>
+    <value>Historial del portapapeles</value>
 
   </data>
 
@@ -1613,7 +1613,7 @@
 
   <data name="Customize.Preferences.WindowShake.Name" xml:space="preserve">
 
-    <value>Agitar Ventana</value>
+    <value>Agitar ventana</value>
 
   </data>
 
@@ -1625,7 +1625,7 @@
 
   <data name="Customize.Preferences.ClassicContextMenu.Name" xml:space="preserve">
 
-    <value>Menú Contextual Clásico</value>
+    <value>Menú contextual clásico</value>
 
   </data>
 
@@ -1655,7 +1655,7 @@
 
   <data name="Customize.Gaming.Section.GameSettings" xml:space="preserve">
 
-    <value>Configuración de Juegos</value>
+    <value>Configuración de juegos</value>
 
   </data>
 
@@ -1673,7 +1673,7 @@
 
   <data name="Customize.Gaming.GameMode.Name" xml:space="preserve">
 
-    <value>Modo de Juego</value>
+    <value>Modo de juego</value>
 
   </data>
 
@@ -1709,7 +1709,7 @@
 
   <data name="Customize.Gaming.BackgroundRecording.Name" xml:space="preserve">
 
-    <value>Grabación en Segundo Plano (DVR)</value>
+    <value>Grabación en segundo plano (DVR)</value>
 
   </data>
 
@@ -1727,7 +1727,7 @@
 
   <data name="Customize.Gaming.MouseAcceleration.Name" xml:space="preserve">
 
-    <value>Aceleración del Ratón</value>
+    <value>Aceleración del ratón</value>
 
   </data>
 
@@ -1745,7 +1745,7 @@
 
   <data name="Customize.Gaming.FullscreenOptimizations.Name" xml:space="preserve">
 
-    <value>Optimizaciones de Pantalla Completa</value>
+    <value>Optimizaciones de pantalla completa</value>
 
   </data>
 
@@ -1763,7 +1763,7 @@
 
   <data name="Customize.Gaming.HardwareAcceleratedGpuScheduling.Name" xml:space="preserve">
 
-    <value>Programación de GPU Acelerada por Hardware</value>
+    <value>Programación de GPU acelerada por hardware</value>
 
   </data>
 
@@ -1800,7 +1800,7 @@
 
   <data name="RestorePoint.Title" xml:space="preserve">
 
-    <value>Restaurar Sistema</value>
+    <value>Restaurar sistema</value>
 
   </data>
 
@@ -1907,7 +1907,7 @@ Esto garantiza que siempre puedas volver atrás si algo sale mal.</value>
 
   <data name="Bloatware.Header.Title" xml:space="preserve">
 
-    <value>Programas Basura (Bloatware)</value>
+    <value>Programas basura (Bloatware)</value>
 
   </data>
 
@@ -1980,7 +1980,7 @@ Esto garantiza que siempre puedas volver atrás si algo sale mal.</value>
 
   <data name="Settings.Bloatware.RemoveProvisioned.Title" xml:space="preserve">
 
-    <value>Eliminar Paquetes de Aprovisionamiento</value>
+    <value>Eliminar paquetes de aprovisionamiento</value>
 
   </data>
 
@@ -2045,19 +2045,19 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Optimizer.Menu.ViewSource" xml:space="preserve">
 
-    <value>Ver Código</value>
+    <value>Ver código</value>
 
   </data>
 
   <data name="Bloatware.Menu.SelectAllSafe" xml:space="preserve">
 
-    <value>Seleccionar Todos los Seguros</value>
+    <value>Seleccionar todos los seguros</value>
 
   </data>
 
   <data name="Bloatware.Menu.DeselectAllSafe" xml:space="preserve">
 
-    <value>Deseleccionar Todos los Seguros</value>
+    <value>Deseleccionar todos los seguros</value>
 
   </data>
 
@@ -2089,13 +2089,13 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Sidebar.DiskCleanup" xml:space="preserve">
 
-    <value>Limpieza de Disco</value>
+    <value>Limpieza de disco</value>
 
   </data>
 
   <data name="DiskCleanup.Header.Title" xml:space="preserve">
 
-    <value>Limpieza de Disco</value>
+    <value>Limpieza de disco</value>
 
   </data>
 
@@ -2119,13 +2119,13 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="DiskCleanup.Button.SelectAll" xml:space="preserve">
 
-    <value>Seleccionar Todos</value>
+    <value>Seleccionar todos</value>
 
   </data>
 
   <data name="DiskCleanup.Button.DeselectAll" xml:space="preserve">
 
-    <value>Deseleccionar Todos</value>
+    <value>Deseleccionar todos</value>
 
   </data>
 
@@ -2138,7 +2138,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="DiskCleanup.Complete.Title" xml:space="preserve">
 
-    <value>Limpieza Completada</value>
+    <value>Limpieza completada</value>
 
   </data>
 
@@ -2150,7 +2150,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="DiskCleanup.Error.Title" xml:space="preserve">
 
-    <value>Error de Limpieza</value>
+    <value>Error de limpieza</value>
 
   </data>
 
@@ -2162,7 +2162,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="DiskCleanup.Item.TempFiles" xml:space="preserve">
 
-    <value>Archivos Temporales</value>
+    <value>Archivos temporales</value>
 
   </data>
 
@@ -2174,7 +2174,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="DiskCleanup.Item.SystemTemp" xml:space="preserve">
 
-    <value>Archivos Temporales del Sistema</value>
+    <value>Archivos temporales del sistema</value>
 
   </data>
 
@@ -2210,7 +2210,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="DiskCleanup.Item.Thumbnails" xml:space="preserve">
 
-    <value>Caché de Miniaturas</value>
+    <value>Caché de miniaturas</value>
 
   </data>
 
@@ -2222,7 +2222,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="DiskCleanup.Item.RecycleBin" xml:space="preserve">
 
-    <value>Papelera de Reciclaje</value>
+    <value>Papelera de reciclaje</value>
 
   </data>
 
@@ -2234,7 +2234,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="DiskCleanup.Item.ErrorReports" xml:space="preserve">
 
-    <value>Informes de Errores</value>
+    <value>Informes de errores</value>
 
   </data>
 
@@ -2246,7 +2246,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="DiskCleanup.Item.OldWindowsInstallation" xml:space="preserve">
 
-    <value>Instalación Antigua de Windows (Windows.old)</value>
+    <value>Instalación antigua de Windows (Windows.old)</value>
 
   </data>
 
@@ -2356,13 +2356,13 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Sidebar.StartupManager" xml:space="preserve">
 
-    <value>Gestor de Inicio</value>
+    <value>Gestor de inicio</value>
 
   </data>
 
   <data name="StartupManager.Header.Title" xml:space="preserve">
 
-    <value>Gestor de Inicio</value>
+    <value>Gestor de inicio</value>
 
   </data>
 
@@ -2399,13 +2399,13 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="OptimizationDetailsDialog.TechnicalDetails" xml:space="preserve">
 
-    <value>Detalles Técnicos</value>
+    <value>Detalles técnicos</value>
 
   </data>
 
   <data name="OptimizationDetailsDialog.Id" xml:space="preserve">
 
-    <value>ID de Optimización</value>
+    <value>ID de optimización</value>
 
   </data>
 
@@ -2417,7 +2417,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="StartupManager.Apps.Title" xml:space="preserve">
 
-    <value>Aplicaciones de Inicio</value>
+    <value>Aplicaciones de inicio</value>
 
   </data>
 
@@ -2435,7 +2435,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="StartupManager.Tasks.Title" xml:space="preserve">
 
-    <value>Tareas Programadas (Inicio de Sesión)</value>
+    <value>Tareas programadas (inicio de sesión)</value>
 
   </data>
 
@@ -2499,13 +2499,13 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   </data>
   <data name="Common.SortBy.RiskAndStatus" xml:space="preserve">
-    <value>Riesgo &amp; Estado</value>
+    <value>Riesgo &amp; estado</value>
   </data>
 
 
   <data name="StartupManager.Menu.OpenSettings" xml:space="preserve">
 
-    <value>Abrir Configuración</value>
+    <value>Abrir configuración</value>
 
   </data>
 
@@ -2521,7 +2521,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Sidebar.ScheduledTasks" xml:space="preserve">
 
-    <value>Tareas Programadas</value>
+    <value>Tareas programadas</value>
 
   </data>
 
@@ -2529,7 +2529,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="ScheduledTasks.Header.Title" xml:space="preserve">
 
-    <value>Tareas Programadas</value>
+    <value>Tareas programadas</value>
 
   </data>
 
@@ -2562,7 +2562,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="ScheduledTasks.Action.Details" xml:space="preserve">
 
-    <value>Ver Detalles</value>
+    <value>Ver detalles</value>
 
   </data>
 
@@ -2588,7 +2588,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="ScheduledTasks.Dialog.DeleteTitle" xml:space="preserve">
 
-    <value>Eliminar Tarea Programada</value>
+    <value>Eliminar tarea programada</value>
 
   </data>
 
@@ -2628,19 +2628,19 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="ScheduledTasks.Details.LastRun" xml:space="preserve">
 
-    <value>Última Ejecución</value>
+    <value>Última ejecución</value>
 
   </data>
 
   <data name="ScheduledTasks.Details.NextRun" xml:space="preserve">
 
-    <value>Siguiente Ejecución</value>
+    <value>Siguiente ejecución</value>
 
   </data>
 
   <data name="ScheduledTasks.Details.LastResult" xml:space="preserve">
 
-    <value>Último Resultado</value>
+    <value>Último resultado</value>
 
   </data>
 
@@ -2666,7 +2666,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="ScheduledTasks.Menu.OpenSettings" xml:space="preserve">
 
-    <value>Abrir Programador de Tareas</value>
+    <value>Abrir programador de tareas</value>
 
   </data>
 
@@ -2678,13 +2678,13 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="ScheduledTasks.Snackbar.Enabled.Title" xml:space="preserve">
 
-    <value>Tarea Habilitada</value>
+    <value>Tarea habilitada</value>
 
   </data>
 
   <data name="ScheduledTasks.Snackbar.Disabled.Title" xml:space="preserve">
 
-    <value>Tarea Deshabilitada</value>
+    <value>Tarea deshabilitada</value>
 
   </data>
 
@@ -2696,7 +2696,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="ScheduledTasks.Snackbar.Run.Title" xml:space="preserve">
 
-    <value>Tarea Iniciada</value>
+    <value>Tarea iniciada</value>
 
   </data>
 
@@ -2708,7 +2708,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="ScheduledTasks.Snackbar.Stop.Title" xml:space="preserve">
 
-    <value>Tarea Detenida</value>
+    <value>Tarea detenida</value>
 
   </data>
 
@@ -2720,7 +2720,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="ScheduledTasks.Snackbar.Delete.Title" xml:space="preserve">
 
-    <value>Tarea Eliminada</value>
+    <value>Tarea eliminada</value>
 
   </data>
 
@@ -2843,7 +2843,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Common.OpenFolder" xml:space="preserve">
 
-    <value>Abrir Carpeta</value>
+    <value>Abrir carpeta</value>
 
   </data>
 
@@ -2879,7 +2879,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Customize.SystemFeatures.Section.Input" xml:space="preserve">
 
-    <value>Ajustes de Entrada</value>
+    <value>Ajustes de entrada</value>
 
   </data>
 
@@ -2903,7 +2903,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Customize.SystemFeatures.Section.Power" xml:space="preserve">
 
-    <value>Opciones de Energía</value>
+    <value>Opciones de energía</value>
 
   </data>
 
@@ -2921,19 +2921,19 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Customize.Desktop.Section.Icons" xml:space="preserve">
 
-    <value>Íconos del Escritorio</value>
+    <value>Íconos del escritorio</value>
 
   </data>
 
   <data name="Customize.Desktop.Section.Behaviors" xml:space="preserve">
 
-    <value>Comportamientos de Accesos Directos</value>
+    <value>Comportamientos de accesos directos</value>
 
   </data>
 
   <data name="Customize.Desktop.ShowThisPc.Name" xml:space="preserve">
 
-    <value>Este Equipo</value>
+    <value>Este equipo</value>
 
   </data>
 
@@ -2945,7 +2945,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Customize.Desktop.ShowRecycleBin.Name" xml:space="preserve">
 
-    <value>Papelera de Reciclaje</value>
+    <value>Papelera de reciclaje</value>
 
   </data>
 
@@ -2957,7 +2957,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Customize.Desktop.ShowUserFiles.Name" xml:space="preserve">
 
-    <value>Archivos del Usuario</value>
+    <value>Archivos del usuario</value>
 
   </data>
 
@@ -2981,7 +2981,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Customize.Desktop.ShowControlPanel.Name" xml:space="preserve">
 
-    <value>Panel de Control</value>
+    <value>Panel de control</value>
 
   </data>
 
@@ -3005,7 +3005,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Customize.Desktop.ShortcutArrow.Name" xml:space="preserve">
 
-    <value>Flecha de Acceso Directo</value>
+    <value>Flecha de acceso directo</value>
 
   </data>
 
@@ -3053,7 +3053,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="LegalDialog.Title" xml:space="preserve">
 
-    <value>Acuerdo Legal</value>
+    <value>Acuerdo legal</value>
 
   </data>
 
@@ -3068,19 +3068,19 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="LegalDialog.Link.TermsOfService" xml:space="preserve">
 
-    <value>Términos de Servicio</value>
+    <value>Términos de servicio</value>
 
   </data>
 
   <data name="LegalDialog.Link.PrivacyPolicy" xml:space="preserve">
 
-    <value>Política de Privacidad</value>
+    <value>Política de privacidad</value>
 
   </data>
 
   <data name="LegalDialog.Link.Disclaimer" xml:space="preserve">
 
-    <value>Descargo de Responsabilidad</value>
+    <value>Descargo de responsabilidad</value>
 
   </data>
 
@@ -3140,7 +3140,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Dialog.PendingChanges.Title" xml:space="preserve">
 
-    <value>Aplicar Cambios</value>
+    <value>Aplicar cambios</value>
 
   </data>
 
@@ -3152,7 +3152,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Dialog.PendingChanges.CloseButton" xml:space="preserve">
 
-    <value>Salir Igualmente</value>
+    <value>Salir igualmente</value>
 
   </data>
 
@@ -3164,7 +3164,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Dialog.PendingChanges.SecondaryButton" xml:space="preserve">
 
-    <value>Reiniciar Explorador</value>
+    <value>Reiniciar el Explorador</value>
 
   </data>
 
@@ -3182,7 +3182,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="TitleBar.Support" xml:space="preserve">
 
-    <value>Apoyar el Proyecto</value>
+    <value>Apoyar el proyecto</value>
 
   </data>
 
@@ -3212,7 +3212,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
 
   <data name="Customize.SystemFeatures.DeveloperMode.Name" xml:space="preserve">
 
-    <value>Modo Desarrollador</value>
+    <value>Modo desarrollador</value>
 
   </data>
 
@@ -3740,19 +3740,19 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
     <value>Se detectaron paquete(s) inusuales</value>
   </data>
   <data name="Startup.Location.CommonStartupFolder" xml:space="preserve">
-    <value>Carpeta de inicio (Todos los usuarios)</value>
+    <value>Carpeta de inicio (todos los usuarios)</value>
   </data>
   <data name="Startup.Location.RegistryHKCURun" xml:space="preserve">
-    <value>Registro (Usuario actual)</value>
+    <value>Registro (usuario actual)</value>
   </data>
   <data name="Startup.Location.RegistryHKCURunOnce" xml:space="preserve">
     <value>Registro RunOnce (Usuario actual)</value>
   </data>
   <data name="Startup.Location.RegistryHKLMRun" xml:space="preserve">
-    <value>Registro (Equipo local)</value>
+    <value>Registro (equipo local)</value>
   </data>
   <data name="Startup.Location.RegistryHKLMRun32" xml:space="preserve">
-    <value>Registro (Equipo local, 32 bits)</value>
+    <value>Registro (equipo local, 32 bits)</value>
   </data>
   <data name="Startup.Location.RegistryHKLMRunOnce" xml:space="preserve">
     <value>Registro RunOnce (Equipo local)</value>
@@ -3761,7 +3761,7 @@ Actualiza ahora para disfrutar de las nuevas funciones y mejoras.</value>
     <value>Registro RunOnce (Equipo local, 32 bits)</value>
   </data>
   <data name="Startup.Location.UserStartupFolder" xml:space="preserve">
-    <value>Carpeta de inicio (Usuario actual)</value>
+    <value>Carpeta de inicio (usuario actual)</value>
   </data>
   <data name="Startup.Location.UwpStartupTask" xml:space="preserve">
     <value>Aplicación de Microsoft Store</value>
@@ -7040,5 +7040,11 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
   </data>
   <data name="Session.Resumed" xml:space="preserve">
     <value>Sesión retomada: medida "antes" el {0}. Ahora mide "después".</value>
+  </data>
+  <data name="Irreversible.Why.DisableBitLocker" xml:space="preserve">
+    <value>Windows descifra el disco en segundo plano. Zentra no lo vuelve a encender: se enciende a mano en Configuración, Privacidad y seguridad, Cifrado del dispositivo, y eso crea una clave de recuperación nueva que el cliente debe guardar.</value>
+  </data>
+  <data name="Irreversible.Why.RemoveEdge" xml:space="preserve">
+    <value>Zentra no lo vuelve a instalar. Se reinstala con winget install Microsoft.Edge o desde microsoft.com/edge. Se conservan los favoritos y las contraseñas, y WebView2 no se toca.</value>
   </data>
 </root>

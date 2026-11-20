@@ -5298,4 +5298,10 @@ Check those settings in Optimize: revert them, or apply them again to finish.</v
   <data name="Session.Resumed" xml:space="preserve">
     <value>Session resumed: measured "before" on {0}. Now measure "after".</value>
   </data>
+  <data name="Irreversible.Why.DisableBitLocker" xml:space="preserve">
+    <value>Windows decrypts the drive in the background. Zentra does not turn it back on: it is turned on by hand in Settings, Privacy and security, Device encryption, which creates a new recovery key the client must keep.</value>
+  </data>
+  <data name="Irreversible.Why.RemoveEdge" xml:space="preserve">
+    <value>Zentra does not reinstall it. It is reinstalled with winget install Microsoft.Edge or from microsoft.com/edge. Favorites and passwords are kept, and WebView2 is not touched.</value>
+  </data>
 </root>
