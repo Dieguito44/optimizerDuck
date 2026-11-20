@@ -21,6 +21,7 @@ public sealed class CliHost(
     SessionStore sessionStore,
     PdfReportService pdfReportService,
     TimeProvider timeProvider,
+    FollowUp.FollowUpService followUp,
     Microsoft.Extensions.Logging.ILogger<CliHost> logger
 ) : ICliHost
 {
@@ -97,6 +98,16 @@ public sealed class CliHost(
         );
         return (measurement, DiagnosisSummary.From(report));
     }
+
+    public (string Folder, string? Client)? NextFollowUp(DateTimeOffset nowLocal) =>
+        FollowUp.FollowUpService.NextResultsFolder(nowLocal) is { } folder
+            ? (folder, FollowUp.FollowUpService.ReadState()?.ClientLabel)
+            : null;
+
+    public Task RecordFollowUpAsync(FollowUp.FollowUpRun run, CancellationToken ct) =>
+        followUp.RecordRunAsync(run, ct);
+
+    public Task<bool> RemoveFollowUpAsync(CancellationToken ct) => followUp.RemoveAsync(ct);
 
     public Task<IReadOnlyList<string>> WriteInventoryAsync(
         ServiceSession session,

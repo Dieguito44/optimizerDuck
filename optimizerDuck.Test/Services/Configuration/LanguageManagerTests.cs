@@ -198,9 +198,13 @@ public class LanguageManagerTests : IDisposable
         var missing = new List<string>();
         foreach (var lang in SupportedLanguages.All)
         {
+            // A culture reads its own satellite or, when the texts are neutral (Spanish is
+            // "es" since F3-11, used by es-CO), its parent's.
             var satelliteKeys =
-                Translations
-                    .ResourceManager.GetResourceSet(lang.Culture, true, false)
+                (
+                    Translations.ResourceManager.GetResourceSet(lang.Culture, true, false)
+                    ?? Translations.ResourceManager.GetResourceSet(lang.Culture.Parent, true, false)
+                )
                     ?.Cast<DictionaryEntry>()
                     .Select(e => (string)e.Key)
                     .ToHashSet()

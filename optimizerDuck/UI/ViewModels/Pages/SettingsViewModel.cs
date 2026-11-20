@@ -56,7 +56,9 @@ public partial class SettingsViewModel(
 
     protected override Task InitializeOnceAsync()
     {
-        SelectedCultureName = appOptionsMonitor.CurrentValue.App.Language;
+        SelectedCultureName = SupportedLanguages
+            .Resolve(appOptionsMonitor.CurrentValue.App.Language)
+            .Culture.Name;
         ShellTimeoutMs = appOptionsMonitor.CurrentValue.Optimize.ShellTimeoutMs;
         ShowSnackbarNotificationAfterAppliedSuccessfully = appOptionsMonitor
             .CurrentValue

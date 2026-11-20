@@ -65,6 +65,12 @@ public sealed record CliOptions
     /// <summary>A report folder (or its ZENTRA-SHA256.txt) to check, alone (plan F3-04).</summary>
     public string? VerifyPath { get; init; }
 
+    /// <summary>The follow-up check the scheduled task runs (plan F3-05). Alone.</summary>
+    public bool FollowUp { get; init; }
+
+    /// <summary>Deletes the follow-up task and its copy of Zentra (plan F3-05). Alone.</summary>
+    public bool RemoveFollowUp { get; init; }
+
     public bool UsesStandardPreset => PresetPath is { } p && StandardNames.Contains(p);
 
     private static readonly HashSet<string> StandardNames = new(
@@ -103,6 +109,12 @@ public sealed record CliOptions
                 case "--inventory":
                     options = options with { Inventory = true };
                     break;
+                case "--followup":
+                    options = options with { FollowUp = true };
+                    break;
+                case "--remove-followup":
+                    options = options with { RemoveFollowUp = true };
+                    break;
                 case "--preset":
                 case "--report":
                 case "--client":
@@ -130,6 +142,23 @@ public sealed record CliOptions
             }
         }
 
+        if (options.FollowUp || options.RemoveFollowUp)
+        {
+            if (
+                options
+                    != new CliOptions
+                    {
+                        FollowUp = options.FollowUp,
+                        RemoveFollowUp = options.RemoveFollowUp,
+                    }
+                || (options.FollowUp && options.RemoveFollowUp)
+            )
+            {
+                error = "--followup and --remove-followup go alone";
+                return null;
+            }
+            return options;
+        }
         if (options.VerifyPath is not null)
         {
             if (options with { VerifyPath = null } != new CliOptions())

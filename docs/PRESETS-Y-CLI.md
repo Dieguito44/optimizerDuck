@@ -60,6 +60,7 @@ $p.ExitCode
 | `--keep-apps` | Aplica los ajustes sin quitar las apps del preset. |
 | `--allow-risky` | Permite ajustes de nivel Experto. El preset también debe tener `allowRisky`. |
 | `--verify <carpeta>` | Comprueba los archivos del informe contra `ZENTRA-SHA256.txt`. Va solo y no cambia nada. |
+| `--remove-followup` | Borra la tarea de seguimiento y su copia de Zentra. Los resultados quedan. Va solo. |
 | `--help` | Muestra la ayuda. |
 
 Con preset, el orden siempre es el mismo:
@@ -112,3 +113,32 @@ El inventario solo lee:
 - no sale del PC ni se envía a la IA.
 
 Los programas del usuario son los de la persona que está en el PC, aunque el técnico haya elevado con otra cuenta.
+
+## Seguimiento a 7 y 30 días
+
+"Programar seguimiento", en Sesión, pide el consentimiento escrito del cliente y crea la tarea `\Zentra\Seguimiento`. La tarea:
+- corre como SYSTEM a las 11:00 de los días 7 y 30 (más tarde si el PC estaba apagado);
+- ejecuta solo `Zentra.exe --followup`, que mide y diagnostica, sin preset ni cambios;
+- se borra sola después de la segunda revisión.
+
+Cada resultado (`session.json`, PDF y huellas) queda en `%ProgramData%\Zentra\Seguimiento\7-dias_…` y `30-dias_…`. No se envía nada a ninguna parte.
+
+**Seguridad de la carpeta.** Zentra corre como SYSTEM desde una copia guardada en `%ProgramData%\Zentra\Seguimiento\app`. Por eso, esa carpeta tiene su propia ACL, sin herencia de ProgramData:
+- SYSTEM y Administradores: control total.
+- Usuarios: solo lectura.
+
+Así nadie sin permisos de administrador puede cambiar lo que corre SYSTEM. Zentra rechaza programar el seguimiento si la carpeta ya existe con otro dueño, o si es un enlace.
+
+La versión de un solo archivo se descomprime en `…\Seguimiento\extract`, también protegida, y no en la carpeta temporal.
+
+"Quitar seguimiento", o `Zentra.exe --remove-followup`, borra la tarea y la copia. El instalador de la Fase 1 debe llamarlo al desinstalar.
+
+## Segunda opinión con Microsoft Safety Scanner
+
+En Reparar, junto a Defender, el botón descarga el Safety Scanner (unos 200 MB, solo desde microsoft.com). Luego, en orden:
+1. Comprueba la firma de Microsoft y la cadena hasta una raíz de Microsoft, con el archivo bloqueado contra escritura.
+2. Corre `msert.exe /Q /N`: análisis rápido, solo detecta, no quita nada.
+3. Copia lo de ese análisis de `%WINDIR%\debug\msert.log` a `%LOCALAPPDATA%\Zentra\SafetyScanner`.
+4. Borra el escáner, que vence a los 10 días.
+
+Si encuentra algo, se quita con Defender.

@@ -195,6 +195,29 @@ public class CliRunnerTests
             );
         }
 
+        public (string Folder, string? Client)? FollowUpDue { get; set; }
+        public List<optimizerDuck.Services.FollowUp.FollowUpRun> FollowUpRuns { get; } = [];
+        public string? ReportFolder { get; private set; }
+
+        public (string Folder, string? Client)? NextFollowUp(DateTimeOffset nowLocal) =>
+            FollowUpDue;
+
+        public Task RecordFollowUpAsync(
+            optimizerDuck.Services.FollowUp.FollowUpRun run,
+            CancellationToken ct
+        )
+        {
+            calls.Add("followup-recorded");
+            FollowUpRuns.Add(run);
+            return Task.CompletedTask;
+        }
+
+        public Task<bool> RemoveFollowUpAsync(CancellationToken ct)
+        {
+            calls.Add("followup-removed");
+            return Task.FromResult(true);
+        }
+
         public Task<IReadOnlyList<string>> WriteInventoryAsync(
             ServiceSession session,
             CancellationToken ct
@@ -216,6 +239,7 @@ public class CliRunnerTests
         {
             calls.Add("report");
             Extra = extraFiles;
+            ReportFolder = reportDirectory;
             Written = session;
             Transcript = transcript;
             return Task.FromResult<IReadOnlyList<string>>(["session.json"]);
@@ -434,5 +458,52 @@ public class CliRunnerTests
         {
             Directory.Delete(folder, recursive: true);
         }
+    }
+
+    // ---- Plan of improvements F3-05: follow-up --------------------------------------------------
+
+    [Theory]
+    [InlineData("--followup")]
+    [InlineData("--remove-followup")]
+    public void FollowUpFlags_GoAlone(string flag)
+    {
+        Assert.NotNull(CliOptions.Parse([flag], out _));
+        Assert.Null(CliOptions.Parse([flag, "--diagnose"], out _));
+        Assert.Null(CliOptions.Parse(["--followup", "--remove-followup"], out _));
+    }
+
+    [Fact]
+    public async Task FollowUp_OnlyDiagnoses_IntoTheFollowUpFolder_AndIsRecorded()
+    {
+        var run = NewRun();
+        run.Host.FollowUpDue = (@"C:\ProgramData\Zentra\Seguimiento\7-dias_x", "Ana");
+
+        Assert.Equal(CliExitCode.Ok, await Go(run, "--followup"));
+
+        Assert.Equal(["measure:Before", "report", "followup-recorded"], run.Calls); // no preset, no restore point
+        Assert.Equal(@"C:\ProgramData\Zentra\Seguimiento\7-dias_x", run.Host.ReportFolder);
+        Assert.Equal("Ana", run.Host.Written!.ClientLabel);
+        Assert.Equal(58, Assert.Single(run.Host.FollowUpRuns).Score);
+    }
+
+    [Fact]
+    public async Task FollowUp_NothingDue_RemovesTheTask()
+    {
+        var run = NewRun();
+        Assert.Equal(CliExitCode.Ok, await Go(run, "--followup"));
+        Assert.Equal(["followup-removed"], run.Calls);
+    }
+
+    [Fact]
+    public async Task RemoveFollowUp_NeedsAdministrator()
+    {
+        var run = NewRun();
+        run.Host.IsElevated = false;
+        Assert.Equal(CliExitCode.NotElevated, await Go(run, "--remove-followup"));
+        Assert.Empty(run.Calls);
+
+        var admin = NewRun();
+        Assert.Equal(CliExitCode.Ok, await Go(admin, "--remove-followup"));
+        Assert.Equal(["followup-removed"], admin.Calls);
     }
 }
