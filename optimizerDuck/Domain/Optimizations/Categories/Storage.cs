@@ -50,6 +50,10 @@ public class Storage : LocalizedObject, IOptimizationCategory
             OptimizationContext context
         )
         {
+            // QueryCMDAsync has no dry run: a preview (preset or CLI) must not start DISM.
+            if (PreviewOnly(context, "dism /Online /Cleanup-Image /StartComponentCleanup"))
+                return context.Changes.ToApplyResult();
+
             var shell = LongRunningShell(context.Logger);
 
             progress.Report(
@@ -216,6 +220,14 @@ public class Storage : LocalizedObject, IOptimizationCategory
             OptimizationContext context
         )
         {
+            if (
+                PreviewOnly(
+                    context,
+                    "dism /Online /Cleanup-Image /StartComponentCleanup /ResetBase"
+                )
+            )
+                return context.Changes.ToApplyResult();
+
             progress.Report(
                 new ProcessingProgress
                 {
@@ -257,33 +269,50 @@ public class Storage : LocalizedObject, IOptimizationCategory
         {
             var drive = Path.GetPathRoot(Environment.SystemDirectory) ?? @"C:\";
             var wasOn = Services.Diagnostics.PlatformProbes.ReadSystemProtection();
-            var protection = new Services.System.SystemRestoreService(
-                Microsoft
-                    .Extensions
-                    .Logging
-                    .Abstractions
-                    .NullLogger<Services.System.SystemRestoreService>
-                    .Instance
-            ).EnableProtection(drive);
-            context.Logger.LogInformation(
-                "System protection on {Drive}: {Ok}",
-                drive,
-                protection.Succeeded
-            );
-            // Turning protection on is recorded (audit Z-08). It is not undone on revert,
-            // because turning it off deletes every restore point.
-            if (!protection.Succeeded)
-                context.Changes.Add(
-                    Name,
-                    Loc.Instance["Optimizer.Storage.WeeklyRestorePoints.Protection", drive],
-                    false,
-                    error: Loc.Instance["Optimizer.Storage.WeeklyRestorePoints.ProtectionFailed"]
+            var protectionText = Loc.Instance[
+                "Optimizer.Storage.WeeklyRestorePoints.Protection",
+                drive
+            ];
+            if (context.Preview is { } plan)
+            {
+                // A preview only says protection would be turned on; the task below is a
+                // guarded primitive and only describes itself.
+                plan.Add(
+                    PlannedChangeKind.Command,
+                    protectionText,
+                    wasOn.TryGet(out var current) ? (current ? "on" : "off") : null,
+                    "on"
                 );
-            else if (!(wasOn.TryGet(out var on) && on))
-                context.Changes.AddIrreversible(
-                    Name,
-                    Loc.Instance["Optimizer.Storage.WeeklyRestorePoints.Protection", drive]
+            }
+            else
+            {
+                var protection = new Services.System.SystemRestoreService(
+                    Microsoft
+                        .Extensions
+                        .Logging
+                        .Abstractions
+                        .NullLogger<Services.System.SystemRestoreService>
+                        .Instance
+                ).EnableProtection(drive);
+                context.Logger.LogInformation(
+                    "System protection on {Drive}: {Ok}",
+                    drive,
+                    protection.Succeeded
                 );
+                // Turning protection on is recorded (audit Z-08). It is not undone on revert,
+                // because turning it off deletes every restore point.
+                if (!protection.Succeeded)
+                    context.Changes.Add(
+                        Name,
+                        protectionText,
+                        false,
+                        error: Loc.Instance[
+                            "Optimizer.Storage.WeeklyRestorePoints.ProtectionFailed"
+                        ]
+                    );
+                else if (!(wasOn.TryGet(out var on) && on))
+                    context.Changes.AddIrreversible(Name, protectionText);
+            }
 
             var exists = await context.Shell.QueryPowerShellAsync(
                 $"[bool](Get-ScheduledTask -TaskPath '{TaskPath}' -TaskName '{TaskName}' -ErrorAction SilentlyContinue)",
@@ -313,6 +342,18 @@ public class Storage : LocalizedObject, IOptimizationCategory
     ///     Records a command that cannot be undone: irreversible on success, a failed step with
     ///     its output otherwise.
     /// </summary>
+    /// <summary>
+    ///     In a preview, records the command instead of running it and returns true. For the
+    ///     operations that run through QueryCMDAsync, which records nothing and has no dry run.
+    /// </summary>
+    internal static bool PreviewOnly(OpCall call, string command)
+    {
+        if (call.Preview is not { } plan)
+            return false;
+        plan.Add(PlannedChangeKind.Command, command, null, "(run, irreversible)");
+        return true;
+    }
+
     internal static void RecordIrreversible(OpCall call, string command, ShellResult result)
     {
         if (result.ExitCode == 0)

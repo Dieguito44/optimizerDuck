@@ -65,28 +65,38 @@ public sealed class ServiceProfileRunner(
     ILogger<ServiceProfileRunner> logger
 )
 {
-    /// <summary>The profile's settings, resolved against the loaded optimizations, in order.</summary>
-    public async Task<IReadOnlyList<IOptimization>> SettingsAsync()
+    /// <summary>Every optimization this Zentra has: what a preset file is validated against.</summary>
+    public Task<IReadOnlyList<IOptimization>> CatalogAsync() => operations.AllOptimizationsAsync();
+
+    /// <summary>The standard profile's settings, resolved against the loaded optimizations.</summary>
+    public Task<IReadOnlyList<IOptimization>> SettingsAsync() =>
+        SettingsAsync(ServicePreset.Standard);
+
+    /// <summary>A preset's settings, resolved by GUID against the loaded optimizations, in order.</summary>
+    public async Task<IReadOnlyList<IOptimization>> SettingsAsync(ServicePreset preset)
     {
         var all = await operations.AllOptimizationsAsync();
-        return StandardServiceProfile
-            .Settings.Select(type => all.FirstOrDefault(o => o.GetType() == type))
+        return preset
+            .Settings.Select(id => all.FirstOrDefault(o => o.Id == id))
             .OfType<IOptimization>()
             .ToList();
     }
 
-    /// <summary>The installed apps the profile would remove.</summary>
+    public Task<IReadOnlyList<PlannedChange>> PreviewAsync(CancellationToken cancellationToken) =>
+        PreviewAsync(ServicePreset.Standard, cancellationToken);
+
     /// <summary>
     ///     What the profile would change on this PC, value by value (plan F2-03, "WhatIf"): the
     ///     same settings, skipped the same way as <see cref="ApplyAsync" />, run as a dry run.
     ///     Nothing is written and nothing is recorded.
     /// </summary>
     public async Task<IReadOnlyList<PlannedChange>> PreviewAsync(
+        ServicePreset preset,
         CancellationToken cancellationToken
     )
     {
         var plan = new List<PlannedChange>();
-        foreach (var optimization in await SettingsAsync())
+        foreach (var optimization in await SettingsAsync(preset))
         {
             cancellationToken.ThrowIfCancellationRequested();
             if ((await operations.EvaluateConditionAsync(optimization)).IsBlocking)
@@ -98,20 +108,29 @@ public sealed class ServiceProfileRunner(
         return plan;
     }
 
-    public async Task<IReadOnlyList<AppXPackage>> AppsToRemoveAsync() =>
-        (await operations.InstalledAppsAsync())
-            .Where(a => StandardServiceProfile.IsProfileApp(a.Name))
-            .Where(a => !Common.Helpers.Shared.IsProtectedApp(a.Name))
-            .ToList();
+    /// <summary>The installed apps the standard profile would remove.</summary>
+    public Task<IReadOnlyList<AppXPackage>> AppsToRemoveAsync() =>
+        AppsToRemoveAsync(ServicePreset.Standard);
+
+    /// <summary>The installed apps a preset would remove. Protected apps never are.</summary>
+    public async Task<IReadOnlyList<AppXPackage>> AppsToRemoveAsync(ServicePreset preset) =>
+        (await operations.InstalledAppsAsync()).Where(a => preset.RemovesApp(a.Name)).ToList();
+
+    public Task<ProfileRunResult> ApplyAsync(
+        bool removeApps,
+        IProgress<ProcessingProgress> progress,
+        CancellationToken cancellationToken
+    ) => ApplyAsync(ServicePreset.Standard, removeApps, progress, cancellationToken);
 
     public async Task<ProfileRunResult> ApplyAsync(
+        ServicePreset preset,
         bool removeApps,
         IProgress<ProcessingProgress> progress,
         CancellationToken cancellationToken
     )
     {
-        var settings = await SettingsAsync();
-        var apps = removeApps ? await AppsToRemoveAsync() : [];
+        var settings = await SettingsAsync(preset);
+        var apps = removeApps ? await AppsToRemoveAsync(preset) : [];
         var total = settings.Count + apps.Count;
         var step = 0;
         var results = new List<ProfileStepResult>();
@@ -163,7 +182,8 @@ public sealed class ServiceProfileRunner(
 
         var result = new ProfileRunResult(results, removed, failed);
         logger.LogInformation(
-            "Standard profile applied: {Applied} applied, {Optimal} already optimal, {Already} already applied, {NA} not applicable, {Failed} failed; {Removed} apps removed, {AppsFailed} apps failed",
+            "Preset {Preset} applied: {Applied} applied, {Optimal} already optimal, {Already} already applied, {NA} not applicable, {Failed} failed; {Removed} apps removed, {AppsFailed} apps failed",
+            preset.Name,
             result.Count(ProfileStepOutcome.Applied),
             result.Count(ProfileStepOutcome.AlreadyOptimal),
             result.Count(ProfileStepOutcome.AlreadyApplied),
@@ -179,12 +199,18 @@ public sealed class ServiceProfileRunner(
     ///     Reverts every setting of the profile that has revert data, whoever applied it. Removed
     ///     apps do not come back: they are reinstalled from the Microsoft Store.
     /// </summary>
+    public Task<ProfileRunResult> RevertAsync(
+        IProgress<ProcessingProgress> progress,
+        CancellationToken cancellationToken
+    ) => RevertAsync(ServicePreset.Standard, progress, cancellationToken);
+
     public async Task<ProfileRunResult> RevertAsync(
+        ServicePreset preset,
         IProgress<ProcessingProgress> progress,
         CancellationToken cancellationToken
     )
     {
-        var settings = await SettingsAsync();
+        var settings = await SettingsAsync(preset);
         var results = new List<ProfileStepResult>();
         var step = 0;
 

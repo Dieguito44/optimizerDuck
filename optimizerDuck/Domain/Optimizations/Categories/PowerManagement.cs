@@ -74,6 +74,17 @@ public class PowerManagement : LocalizedObject, IOptimizationCategory
                 return OpResult.Success();
             }
 
+            if (call.Preview is { } plan)
+            {
+                plan.Add(
+                    PlannedChangeKind.Command,
+                    "powercfg /hibernate off",
+                    wasPresent is true ? "on" : null,
+                    "off"
+                );
+                return OpResult.Success();
+            }
+
             var result = HibernationService.SetHibernationFile(present: false);
             var revert = new HibernationRevertStep { WasPresent = wasPresent };
 
@@ -147,6 +158,17 @@ public class PowerManagement : LocalizedObject, IOptimizationCategory
                     ServiceStrings.UsbPowerName,
                     ServiceStrings.UsbPowerInfoNoDevices,
                     new UsbPowerDetail { DeviceCount = 0, Reason = UsbReasonNoDevices }
+                );
+                return Task.FromResult(context.Changes.ToApplyResult());
+            }
+
+            if (context.Preview is { } plan)
+            {
+                plan.Add(
+                    PlannedChangeKind.Command,
+                    $"USB power saving ({captured.Count})",
+                    "on",
+                    "off"
                 );
                 return Task.FromResult(context.Changes.ToApplyResult());
             }

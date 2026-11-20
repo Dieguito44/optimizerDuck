@@ -4265,4 +4265,144 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="Session.Folder.NotYet" xml:space="preserve">
     <value>There is no session folder yet: it is created with &quot;Measure before&quot;.</value>
   </data>
+  <data name="Preset.Button.Import" xml:space="preserve">
+    <value>Import preset</value>
+  </data>
+  <data name="Preset.Button.Export" xml:space="preserve">
+    <value>Export preset</value>
+  </data>
+  <data name="Preset.Button.Standard" xml:space="preserve">
+    <value>Back to the standard service</value>
+  </data>
+  <data name="Preset.Current.Standard" xml:space="preserve">
+    <value>Preset: Standard service (built in).</value>
+  </data>
+  <data name="Preset.Current.Imported" xml:space="preserve">
+    <value>Preset: {0} (imported, {1} settings).</value>
+  </data>
+  <data name="Preset.FileFilter" xml:space="preserve">
+    <value>Zentra preset (*.json)|*.json</value>
+  </data>
+  <data name="Preset.Imported" xml:space="preserve">
+    <value>Preset &quot;{0}&quot; imported. &quot;Apply&quot; and &quot;Revert&quot; now use it.</value>
+  </data>
+  <data name="Preset.Exported" xml:space="preserve">
+    <value>Preset saved to {0}</value>
+  </data>
+  <data name="Preset.Invalid" xml:space="preserve">
+    <value>{0} was not imported:</value>
+  </data>
+  <data name="Preset.Confirm.Name" xml:space="preserve">
+    <value>Preset: {0}.</value>
+  </data>
+  <data name="Preset.Problem.NotJson" xml:space="preserve">
+    <value>It is not a valid preset file. {0}</value>
+  </data>
+  <data name="Preset.Problem.TooLarge" xml:space="preserve">
+    <value>The file is too large to be a preset.</value>
+  </data>
+  <data name="Preset.Problem.UnsupportedSchema" xml:space="preserve">
+    <value>Format version {0} is not supported by this Zentra.</value>
+  </data>
+  <data name="Preset.Problem.MissingName" xml:space="preserve">
+    <value>The preset needs a name (up to 80 characters).</value>
+  </data>
+  <data name="Preset.Problem.TooManyEntries" xml:space="preserve">
+    <value>The preset has too many settings or apps.</value>
+  </data>
+  <data name="Preset.Problem.UnknownSetting" xml:space="preserve">
+    <value>This Zentra has no setting with the ID {0}.</value>
+  </data>
+  <data name="Preset.Problem.DuplicateSetting" xml:space="preserve">
+    <value>The setting {0} is listed twice.</value>
+  </data>
+  <data name="Preset.Problem.RiskyNotAllowed" xml:space="preserve">
+    <value>&quot;{0}&quot; is Risky and the preset does not allow Risky settings (allowRisky).</value>
+  </data>
+  <data name="Preset.Problem.InvalidAppName" xml:space="preserve">
+    <value>&quot;{0}&quot; is not a valid app package name (fragments need at least 6 characters).</value>
+  </data>
+  <data name="Preset.Problem.ProtectedApp" xml:space="preserve">
+    <value>&quot;{0}&quot; is a protected app: Zentra never removes it.</value>
+  </data>
+  <data name="Preset.Problem.DuplicateApp" xml:space="preserve">
+    <value>The app {0} is listed twice.</value>
+  </data>
+  <data name="Preset.Problem.Empty" xml:space="preserve">
+    <value>The preset has no settings and no apps.</value>
+  </data>
+  <data name="Cli.Help" xml:space="preserve">
+    <value>Zentra from the command line (as administrator):
+  Zentra.exe --diagnose [--report &lt;folder&gt;] [--client &lt;name&gt;]
+  Zentra.exe --preset &lt;file.json|estandar&gt; [--diagnose] [--report &lt;folder&gt;] [--client &lt;name&gt;] [--silent] [--keep-apps] [--allow-risky]
+
+  --diagnose     Measure and diagnose. With --preset: before and after.
+  --preset       Apply a preset. Always previewed, always after a restore point.
+  --report       Copy session.json, the PDF and zentra-cli.txt to that folder.
+  --client       Client name for the report.
+  --silent       Do not ask for confirmation.
+  --keep-apps    Do not remove the preset&apos;s apps.
+  --allow-risky  Allow Expert settings, if the preset allows them too.
+
+Exit codes: 0 done, 1 arguments, 2 invalid preset, 3 not administrator,
+4 no restore point, 5 done with failures, 6 cancelled, 10 unexpected error.
+In PowerShell, to wait for it: Start-Process Zentra.exe -ArgumentList &apos;--diagnose&apos; -Wait -PassThru</value>
+  </data>
+  <data name="Cli.BadArguments" xml:space="preserve">
+    <value>Invalid arguments: {0}</value>
+  </data>
+  <data name="Cli.NotElevated" xml:space="preserve">
+    <value>Zentra must run as administrator. Nothing was changed.</value>
+  </data>
+  <data name="Cli.Cancelled" xml:space="preserve">
+    <value>Cancelled. Nothing was applied.</value>
+  </data>
+  <data name="Cli.Failed" xml:space="preserve">
+    <value>Unexpected error: {0}. The Zentra log has the details.</value>
+  </data>
+  <data name="Cli.Preset" xml:space="preserve">
+    <value>Preset: {0}</value>
+  </data>
+  <data name="Cli.Preview" xml:space="preserve">
+    <value>Preview: {0} values would change and {1} apps would be removed.</value>
+  </data>
+  <data name="Cli.AppLine" xml:space="preserve">
+    <value>   App · {0}: removed</value>
+  </data>
+  <data name="Cli.RestorePoint" xml:space="preserve">
+    <value>Restore point created.</value>
+  </data>
+  <data name="Cli.RestorePointFailed" xml:space="preserve">
+    <value>The restore point could not be created. Nothing was applied.</value>
+  </data>
+  <data name="Cli.PresetMissing" xml:space="preserve">
+    <value>The preset file does not exist: {0}</value>
+  </data>
+  <data name="Cli.RiskyNeedsFlag" xml:space="preserve">
+    <value>The preset has Expert settings ({0}). They only run with --allow-risky.</value>
+  </data>
+  <data name="Cli.MeasureBefore" xml:space="preserve">
+    <value>Measuring before (a few minutes)...</value>
+  </data>
+  <data name="Cli.MeasureAfter" xml:space="preserve">
+    <value>Measuring after (a few minutes)...</value>
+  </data>
+  <data name="Cli.Score" xml:space="preserve">
+    <value>Score: {0}</value>
+  </data>
+  <data name="Cli.File" xml:space="preserve">
+    <value>File: {0}</value>
+  </data>
+  <data name="Cli.Done" xml:space="preserve">
+    <value>Done.</value>
+  </data>
+  <data name="Cli.DonePartial" xml:space="preserve">
+    <value>Finished with problems: check the settings and apps that failed.</value>
+  </data>
+  <data name="Cli.Confirm.Message" xml:space="preserve">
+    <value>Apply the preset &quot;{0}&quot; on this PC: {1} values would change and {2} apps would be removed. A restore point is created first. Apply?</value>
+  </data>
+  <data name="Cli.Confirm.More" xml:space="preserve">
+    <value>... and {0} more (the full list is in the output).</value>
+  </data>
 </root>

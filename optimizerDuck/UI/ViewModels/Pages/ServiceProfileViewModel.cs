@@ -1,4 +1,5 @@
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Windows;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
@@ -27,6 +28,9 @@ public partial class ServiceProfileViewModel(
     [ObservableProperty]
     [NotifyCanExecuteChangedFor(nameof(ApplyCommand))]
     [NotifyCanExecuteChangedFor(nameof(RevertCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ImportPresetCommand))]
+    [NotifyCanExecuteChangedFor(nameof(ExportPresetCommand))]
+    [NotifyCanExecuteChangedFor(nameof(UseStandardPresetCommand))]
     private bool _isBusy;
 
     [ObservableProperty]
@@ -38,7 +42,101 @@ public partial class ServiceProfileViewModel(
     /// <summary>Settings that failed or apps that could not be removed, by name.</summary>
     public ObservableCollection<string> Problems { get; } = [];
 
+    /// <summary>What "Aplicar" and "Revertir" use (plan F3-01). The standard one until a file is imported.</summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(PresetText))]
+    [NotifyPropertyChangedFor(nameof(IsCustomPreset))]
+    private ServicePreset _preset = ServicePreset.Standard;
+
+    public string PresetText =>
+        Preset.IsBuiltIn
+            ? Loc.Instance["Preset.Current.Standard"]
+            : Loc.Instance["Preset.Current.Imported", Preset.Name, Preset.Settings.Count];
+
+    public bool IsCustomPreset => !Preset.IsBuiltIn;
+
     private bool CanRun() => !IsBusy;
+
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private async Task ImportPresetAsync()
+    {
+        ErrorText = null;
+        Problems.Clear();
+        var dialog = new Microsoft.Win32.OpenFileDialog
+        {
+            Filter = Loc.Instance["Preset.FileFilter"],
+            CheckFileExists = true,
+        };
+        if (dialog.ShowDialog() != true)
+            return;
+
+        try
+        {
+            var result = ServicePresetFile.Load(dialog.FileName, await runner.CatalogAsync());
+            if (!result.IsValid)
+            {
+                ErrorText = Loc.Instance["Preset.Invalid", Path.GetFileName(dialog.FileName)];
+                foreach (var problem in result.Problems)
+                    Problems.Add(ProblemText(problem));
+                return;
+            }
+            Preset = result.Preset!;
+            StatusText = Loc.Instance["Preset.Imported", Preset.Name];
+            logger.LogInformation(
+                "Preset {Name} imported from {File}: {Settings} settings, {Apps} apps",
+                Preset.Name,
+                dialog.FileName,
+                Preset.Settings.Count,
+                Preset.Apps.Count + Preset.AppFragments.Count
+            );
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private void ExportPreset()
+    {
+        ErrorText = null;
+        var dialog = new Microsoft.Win32.SaveFileDialog
+        {
+            Filter = Loc.Instance["Preset.FileFilter"],
+            FileName = SafeFileName(Preset.Name) + ".json",
+        };
+        if (dialog.ShowDialog() != true)
+            return;
+        try
+        {
+            File.WriteAllText(dialog.FileName, ServicePresetFile.Serialize(Preset));
+            StatusText = Loc.Instance["Preset.Exported", dialog.FileName];
+        }
+        catch (Exception ex) when (ex is IOException or UnauthorizedAccessException)
+        {
+            ErrorText = Loc.Instance["Session.Error", SecretRedactor.Redact(ex.Message)];
+        }
+    }
+
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private void UseStandardPreset()
+    {
+        Preset = ServicePreset.Standard;
+        ErrorText = null;
+        Problems.Clear();
+        StatusText = Loc.Instance["Preset.Current.Standard"];
+    }
+
+    /// <summary>One line per problem, in the technician's language.</summary>
+    internal static string ProblemText(PresetProblem problem) =>
+        Loc.Instance[$"Preset.Problem.{problem.Kind}", problem.Detail ?? ""];
+
+    private static string SafeFileName(string name)
+    {
+        var invalid = Path.GetInvalidFileNameChars();
+        var clean = new string(name.Select(c => invalid.Contains(c) ? '-' : c).ToArray()).Trim();
+        return clean.Length == 0 ? "preset" : clean;
+    }
 
     [RelayCommand(CanExecute = nameof(CanRun))]
     private async Task ApplyAsync()
@@ -51,9 +149,10 @@ public partial class ServiceProfileViewModel(
             // button cannot start a second run.
             IsBusy = true;
             StatusText = Loc.Instance["Profile.Preview.Running"];
-            var settings = await runner.SettingsAsync();
-            var apps = await runner.AppsToRemoveAsync();
-            var preview = await runner.PreviewAsync(CancellationToken.None);
+            var preset = Preset;
+            var settings = await runner.SettingsAsync(preset);
+            var apps = await runner.AppsToRemoveAsync(preset);
+            var preview = await runner.PreviewAsync(preset, CancellationToken.None);
             IsBusy = false;
             StatusText = null;
             var appNames =
@@ -66,12 +165,13 @@ public partial class ServiceProfileViewModel(
                 {
                     Title = Loc.Instance["Profile.Confirm.Title"],
                     Content = PreviewContent(
-                        Loc.Instance[
-                            "Profile.Confirm.Message",
-                            settings.Count,
-                            apps.Count,
-                            appNames
-                        ],
+                        (preset.IsBuiltIn ? "" : Loc.Instance["Preset.Confirm.Name", preset.Name])
+                            + Loc.Instance[
+                                "Profile.Confirm.Message",
+                                settings.Count,
+                                apps.Count,
+                                appNames
+                            ],
                         preview
                     ),
                     PrimaryButtonText = Loc.Instance["Profile.Confirm.Apply"],
@@ -87,6 +187,7 @@ public partial class ServiceProfileViewModel(
             IsBusy = true;
             var progress = new Progress<Domain.UI.ProcessingProgress>(p => StatusText = p.Message);
             var result = await runner.ApplyAsync(
+                preset,
                 removeApps: true,
                 progress,
                 CancellationToken.None
@@ -127,7 +228,7 @@ public partial class ServiceProfileViewModel(
 
             IsBusy = true;
             var progress = new Progress<Domain.UI.ProcessingProgress>(p => StatusText = p.Message);
-            var result = await runner.RevertAsync(progress, CancellationToken.None);
+            var result = await runner.RevertAsync(Preset, progress, CancellationToken.None);
             Show(result, applied: false);
         }
         catch (Exception ex)

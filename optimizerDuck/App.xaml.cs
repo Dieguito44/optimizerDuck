@@ -149,6 +149,10 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
+        // CLI mode (plan F3-02) opens no main window: only Shutdown ends it.
+        if (Services.Cli.CliOptions.IsCliInvocation(e.Args))
+            ShutdownMode = ShutdownMode.OnExplicitShutdown;
+
         AppDomain.CurrentDomain.UnhandledException += OnUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
         DispatcherUnhandledException += OnDispatcherUnhandledException;
@@ -359,6 +363,12 @@ public partial class App : Application
 
         var optimizationRegistry = _host.Services.GetRequiredService<OptimizationRegistry>();
 
+        if (Services.Cli.CliOptions.IsCliInvocation(e.Args))
+        {
+            await RunCliAsync(e.Args);
+            return;
+        }
+
         await Dispatcher.InvokeAsync(() =>
         {
             // Theme first: ApplyAccentFor reads GetAppTheme() cache to pick
@@ -388,6 +398,47 @@ public partial class App : Application
             .ConfigureAwait(false);
 
         RevertManager.RemoveOrphanedTempFiles(_logger);
+    }
+
+    /// <summary>
+    ///     Plan of improvements F3-02: runs the command line instead of the window and exits with its
+    ///     code. Arguments are logged; the client label is not (it stays in session.json only).
+    /// </summary>
+    private async Task RunCliAsync(string[] args)
+    {
+        var output = Services.Cli.CliConsole.Open();
+        var options = Services.Cli.CliOptions.Parse(args, out var error);
+        Services.Cli.CliExitCode code;
+        if (options is null)
+        {
+            _logger?.LogWarning("CLI arguments refused: {Error}", error);
+            output.WriteLine(Loc.Instance["Cli.BadArguments", error ?? ""]);
+            output.WriteLine(Loc.Instance["Cli.Help"]);
+            code = Services.Cli.CliExitCode.BadArguments;
+        }
+        else
+        {
+            _logger?.LogInformation(
+                "CLI run: preset={Preset} diagnose={Diagnose} report={Report} silent={Silent} allowRisky={Risky} keepApps={KeepApps}",
+                options.PresetPath,
+                options.Diagnose,
+                options.ReportDirectory,
+                options.Silent,
+                options.AllowRisky,
+                options.KeepApps
+            );
+            var runner = new Services.Cli.CliRunner(
+                _host!.Services.GetRequiredService<Services.Profiles.ServiceProfileRunner>(),
+                _host.Services.GetRequiredService<Services.Cli.ICliHost>(),
+                output,
+                _host.Services.GetRequiredService<ILogger<Services.Cli.CliRunner>>()
+            );
+            code = await runner.RunAsync(options, CancellationToken.None);
+        }
+
+        _logger?.LogInformation("CLI finished: {Code} ({Value})", code, (int)code);
+        await output.FlushAsync();
+        await Dispatcher.InvokeAsync(() => Shutdown((int)code));
     }
 
     protected override void OnExit(ExitEventArgs e)

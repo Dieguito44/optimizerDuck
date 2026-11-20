@@ -293,7 +293,11 @@ public class Gpu : LocalizedObject, IOptimizationCategory
             OptimizationContext context
         )
         {
-            await Services.Diagnostics.DisplayModeService.ApplyAsync(context);
+            // A preview must not switch monitors (or ask someone at the PC to confirm).
+            if (context.Preview is not null)
+                Services.Diagnostics.DisplayModeService.Preview(context);
+            else
+                await Services.Diagnostics.DisplayModeService.ApplyAsync(context);
             return context.Changes.ToApplyResult();
         }
     }
