@@ -157,6 +157,26 @@ public static class SnapshotFactory
                     new("Ethernet", "192.168.1.1", false, DnsKind.Private, null),
                 ]),
             },
+            // Block 4A: NOT measured on Diego's PC either. Neutral values (no problem devices,
+            // no driver offered, the Balanced plan in its balanced mode).
+            Drivers = new DriverSnapshot
+            {
+                ProblemDevices = Measured<IReadOnlyList<ProblemDevice>>.Of([]),
+                WindowsUpdateDrivers = Measured<IReadOnlyList<DriverUpdate>>.Of([]),
+            },
+            Power = new PowerModeSnapshot
+            {
+                Plans = Measured<IReadOnlyList<PowerPlanEntry>>.Of([
+                    new(
+                        Guid.Parse("381b4222-f694-41f0-9685-ff5bb260df2e"),
+                        "Equilibrado",
+                        true,
+                        PowerPlanOrigin.Windows
+                    ),
+                ]),
+                Mode = Measured<PowerMode>.Of(PowerMode.Balanced),
+                OnAcPower = Measured<bool>.Of(true),
+            },
             Browsers = new BrowserSnapshot
             {
                 Extensions = Measured<IReadOnlyList<BrowserExtension>>.Of([]),

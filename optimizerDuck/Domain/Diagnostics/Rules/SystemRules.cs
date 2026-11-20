@@ -384,5 +384,9 @@ public static class DiagnosticRules
         new DnsReviewRule(),
         new BrowserExtensionsRule(),
         new BrowserSearchRule(),
+        // Plan of improvements, block 4A
+        new DeviceProblemRule(),
+        new DriversUpdateRule(),
+        new PowerModeRule(),
     ];
 }

@@ -4610,4 +4610,64 @@ Exit codes: 0 done, 1 arguments, 2 invalid preset, 3 not administrator,
 4 no restore point, 5 done with failures, 6 cancelled, 7 report changed or missing, 10 unexpected error.
 In PowerShell, to wait for it: Start-Process Zentra.exe -ArgumentList &apos;--diagnose&apos; -Wait -PassThru</value>
   </data>
+  <data name="Diagnostic.Rule.R-DEVICE-PROBLEM.Title" xml:space="preserve">
+    <value>Devices with a driver problem</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DEVICE-PROBLEM.Description" xml:space="preserve">
+    <value>Windows reports devices that do not work right, most often because they have no driver installed. The device may not work at all (Wi-Fi, sound, a reader) until its driver is installed.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DRIVERS-WU.Title" xml:space="preserve">
+    <value>Driver updates waiting in Windows Update</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DRIVERS-WU.Description" xml:space="preserve">
+    <value>Windows Update offers newer drivers for this PC as optional updates, and does not install them by itself. The current drivers work; the newer ones may fix bugs.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-POWER-MODE.Title" xml:space="preserve">
+    <value>Power mode and power plans</value>
+  </data>
+  <data name="Diagnostic.Rule.R-POWER-MODE.Description" xml:space="preserve">
+    <value>The Windows power mode is on &quot;best power efficiency&quot; while the PC is plugged in, which slows it without saving anything worthwhile. Power plans from the manufacturer are listed too: on current Windows the Balanced plan is enough.</value>
+  </data>
+  <data name="Diagnostic.Evidence.device.problems" xml:space="preserve">
+    <value>Devices with problems</value>
+  </data>
+  <data name="Diagnostic.Evidence.device.no_driver" xml:space="preserve">
+    <value>No driver installed (code 28)</value>
+  </data>
+  <data name="Diagnostic.Evidence.device.error" xml:space="preserve">
+    <value>Device error code</value>
+  </data>
+  <data name="Diagnostic.Evidence.driver.windows_update" xml:space="preserve">
+    <value>Drivers in Windows Update</value>
+  </data>
+  <data name="Diagnostic.Evidence.driver.updates_available" xml:space="preserve">
+    <value>Driver updates available</value>
+  </data>
+  <data name="Diagnostic.Evidence.driver.update" xml:space="preserve">
+    <value>Driver update</value>
+  </data>
+  <data name="Diagnostic.Evidence.power.plans" xml:space="preserve">
+    <value>Power plans</value>
+  </data>
+  <data name="Diagnostic.Evidence.power.mode" xml:space="preserve">
+    <value>Power mode</value>
+  </data>
+  <data name="Diagnostic.Evidence.power.vendor_plan" xml:space="preserve">
+    <value>Manufacturer power plan (not active)</value>
+  </data>
+  <data name="Diagnostic.Evidence.power.vendor_plan_active" xml:space="preserve">
+    <value>Manufacturer power plan (active)</value>
+  </data>
+  <data name="Diagnostic.Value.best_efficiency" xml:space="preserve">
+    <value>best power efficiency</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DEVICE-DRIVER" xml:space="preserve">
+    <value>Install the missing driver from Windows Update (Optional updates) or the manufacturer&apos;s website</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DRIVER-WU" xml:space="preserve">
+    <value>Review and install the drivers in Windows Update, Advanced options, Optional updates</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-POWER-MODE" xml:space="preserve">
+    <value>Set the power mode to Balanced or Best performance (Settings, System, Power)</value>
+  </data>
 </root>

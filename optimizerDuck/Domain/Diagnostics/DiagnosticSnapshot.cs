@@ -117,6 +117,12 @@ public sealed record DiagnosticSnapshot
 
     /// <summary>Browser extensions, search engine and startup (improvements 3C). Defaults to not measured.</summary>
     public BrowserSnapshot Browsers { get; init; } = new();
+
+    /// <summary>Devices with driver problems and drivers Windows Update offers (improvements 4A).</summary>
+    public DriverSnapshot Drivers { get; init; } = new();
+
+    /// <summary>Power plans and the Windows power mode (improvements 4A). Defaults to not measured.</summary>
+    public PowerModeSnapshot Power { get; init; } = new();
 }
 
 public sealed record OsSnapshot
@@ -453,4 +459,47 @@ public sealed record BrowserSnapshot
 {
     public Measured<IReadOnlyList<BrowserExtension>> Extensions { get; init; }
     public Measured<IReadOnlyList<BrowserHome>> Homes { get; init; }
+}
+
+/// <summary>A device Windows reports with a problem code (Win32_PnPEntity.ConfigManagerErrorCode).</summary>
+public sealed record ProblemDevice(string Name, string? DeviceClass, int Code);
+
+/// <summary>A driver Windows Update offers and the PC does not have yet.</summary>
+public sealed record DriverUpdate(string Title, string? DriverClass);
+
+/// <summary>Drivers (plan of improvements F4-01). Read-only: nothing is installed.</summary>
+public sealed record DriverSnapshot
+{
+    public Measured<IReadOnlyList<ProblemDevice>> ProblemDevices { get; init; }
+    public Measured<IReadOnlyList<DriverUpdate>> WindowsUpdateDrivers { get; init; }
+}
+
+/// <summary>Where a power plan comes from.</summary>
+public enum PowerPlanOrigin
+{
+    Windows,
+    Zentra,
+    Manufacturer,
+    Custom,
+}
+
+public sealed record PowerPlanEntry(Guid Id, string Name, bool IsActive, PowerPlanOrigin Origin);
+
+/// <summary>The Windows power mode (Settings, System, Power), which tunes the Balanced plan.</summary>
+public enum PowerMode
+{
+    BestEfficiency,
+    Balanced,
+    BestPerformance,
+}
+
+/// <summary>Power plans and mode (plan of improvements F4-04). Read-only.</summary>
+public sealed record PowerModeSnapshot
+{
+    public Measured<IReadOnlyList<PowerPlanEntry>> Plans { get; init; }
+
+    /// <summary>Only measured while the Balanced plan is active: other plans ignore the mode.</summary>
+    public Measured<PowerMode> Mode { get; init; }
+
+    public Measured<bool> OnAcPower { get; init; }
 }

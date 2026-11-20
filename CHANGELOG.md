@@ -4,6 +4,24 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Mejoras, Fase 4A: drivers y energía, solo informar (19/11/2026, PR 17, sobre el PR 16)
+
+Primer bloque de la Fase 4, que es opcional.
+
+- **Drivers (F4-01):**
+  - **R-DEVICE-PROBLEM (Media):** dispositivos con código de problema, casi siempre el 28 (sin driver). No cuentan los deshabilitados a propósito (22) ni los desconectados (45).
+  - **R-DRIVERS-WU (Baja):** drivers que Windows Update ofrece como actualizaciones opcionales. Se consultan con el agente de Windows Update, la misma búsqueda de "Buscar actualizaciones": no instala nada. Si Windows Update no responde, es "no medible", nunca "al día".
+- **Energía (F4-04), R-POWER-MODE:** lee los planes, su origen (Windows, Zentra, fabricante o propio) y el modo de energía de Windows. El modo solo cuenta con el plan Equilibrado.
+  - **Baja:** el modo está en "máxima eficiencia" con el PC conectado o en un escritorio.
+  - **Info, sin puntos:** se listan los planes del fabricante.
+- **Catálogo:** 3 acciones manuales (50) y 3 reglas (39).
+- **Verificado en el PC de Diego** (solo lectura, solo conteos):
+  - 0 dispositivos con problemas;
+  - 5 drivers ofrecidos por Windows Update (37 s de búsqueda);
+  - 3 planes de Windows;
+  - modo de máximo rendimiento, conectado.
+- **Tests:** 1710 en total, 0 fallos.
+
 ### Mejoras, Fase 3D: seguimiento, segunda opinión e idiomas (19/11/2026, PR 16, sobre el PR 15)
 
 Cierra la Fase 3.

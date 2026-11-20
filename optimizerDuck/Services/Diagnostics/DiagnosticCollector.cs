@@ -31,6 +31,9 @@ public sealed class DiagnosticCollector(
 
     private static readonly TimeSpan ProbeTimeout = TimeSpan.FromSeconds(10);
 
+    /// <summary>The Windows Update driver search goes online, like "Check for updates" (F4-01).</summary>
+    private static readonly TimeSpan DriverSearchTimeout = TimeSpan.FromSeconds(90);
+
     /// <summary>The battery report (powercfg) takes a few seconds more than a WMI read.</summary>
     private static readonly TimeSpan BatteryTimeout = TimeSpan.FromSeconds(35);
 
@@ -202,6 +205,32 @@ public sealed class DiagnosticCollector(
             ),
             ct
         );
+        // Plan of improvements, block 4A: drivers and power, read-only.
+        var devicesTask = Run(
+            "devices",
+            DriverAndPowerProbes.ReadProblemDevices,
+            ProbeTimeout,
+            Measured<IReadOnlyList<ProblemDevice>>.Missing(NotMeasuredReason.TimedOut),
+            ct
+        );
+        var driverUpdatesTask = Run(
+            "windows update drivers",
+            DriverAndPowerProbes.ReadWindowsUpdateDrivers,
+            DriverSearchTimeout,
+            Measured<IReadOnlyList<DriverUpdate>>.Missing(NotMeasuredReason.TimedOut),
+            ct
+        );
+        var powerTask = Run(
+            "power",
+            DriverAndPowerProbes.ReadPower,
+            ProbeTimeout,
+            (
+                Measured<IReadOnlyList<PowerPlanEntry>>.Missing(NotMeasuredReason.TimedOut),
+                TimedOut<PowerMode>(),
+                TimedOut<bool>()
+            ),
+            ct
+        );
         var startupTask = CountStartupAppsAsync(ct);
         var imageTask = ReadImageHealthAsync(ct);
         var bootTask = Run(
@@ -236,7 +265,10 @@ public sealed class DiagnosticCollector(
                 updateServicesTask,
                 protectionTask,
                 dnsTask,
-                browserTask
+                browserTask,
+                devicesTask,
+                driverUpdatesTask,
+                powerTask
             )
             .ConfigureAwait(false);
 
@@ -313,6 +345,17 @@ public sealed class DiagnosticCollector(
                 await updateServicesTask.ConfigureAwait(false)
             ),
             Network = new NetworkSnapshot { DnsServers = await dnsTask.ConfigureAwait(false) },
+            Drivers = new DriverSnapshot
+            {
+                ProblemDevices = await devicesTask.ConfigureAwait(false),
+                WindowsUpdateDrivers = await driverUpdatesTask.ConfigureAwait(false),
+            },
+            Power = new PowerModeSnapshot
+            {
+                Plans = (await powerTask.ConfigureAwait(false)).Item1,
+                Mode = (await powerTask.ConfigureAwait(false)).Item2,
+                OnAcPower = (await powerTask.ConfigureAwait(false)).Item3,
+            },
             Browsers = new BrowserSnapshot
             {
                 Extensions = (await browserTask.ConfigureAwait(false)).Item1,

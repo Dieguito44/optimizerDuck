@@ -57,6 +57,11 @@ public static class ActionIds
     public const string Retrim = "ACT-RETRIM";
     public const string DnsReview = "ACT-DNS-REVIEW";
     public const string BrowserReview = "ACT-BROWSER-REVIEW";
+
+    // Plan of improvements, block 4A.
+    public const string DeviceDriver = "ACT-DEVICE-DRIVER";
+    public const string DriverWindowsUpdate = "ACT-DRIVER-WU";
+    public const string PowerMode = "ACT-POWER-MODE";
 }
 
 /// <summary>Who carries out an action.</summary>
@@ -172,6 +177,9 @@ public static class ActionCatalog
         new(ActionIds.Retrim, ActionKind.Software, Safe, None, Profile),
         new(ActionIds.DnsReview, ActionKind.Manual, null, None, Rule),
         new(ActionIds.BrowserReview, ActionKind.Manual, null, None, Rule),
+        new(ActionIds.DeviceDriver, ActionKind.Manual, null, None, Rule),
+        new(ActionIds.DriverWindowsUpdate, ActionKind.Manual, null, None, Rule),
+        new(ActionIds.PowerMode, ActionKind.Manual, null, None, Rule),
     }.ToFrozenDictionary(a => a.Id, StringComparer.Ordinal);
 
     /// <summary>
@@ -231,4 +239,9 @@ public static class RuleIds
     public const string DnsReview = "R-DNS-REVIEW";
     public const string BrowserExtensions = "R-BROWSER-EXT";
     public const string BrowserSearch = "R-BROWSER-SEARCH";
+
+    // Plan of improvements, block 4A.
+    public const string DeviceProblem = "R-DEVICE-PROBLEM";
+    public const string DriversUpdate = "R-DRIVERS-WU";
+    public const string PowerModeRule = "R-POWER-MODE";
 }

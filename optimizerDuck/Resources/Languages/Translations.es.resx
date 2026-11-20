@@ -6401,4 +6401,64 @@ Códigos de salida: 0 listo, 1 argumentos, 2 preset no válido, 3 sin administra
 4 sin punto de restauración, 5 con fallos, 6 cancelado, 7 informe alterado o incompleto, 10 error inesperado.
 En PowerShell, para esperar a que termine: Start-Process Zentra.exe -ArgumentList &apos;--diagnose&apos; -Wait -PassThru</value>
   </data>
+  <data name="Diagnostic.Rule.R-DEVICE-PROBLEM.Title" xml:space="preserve">
+    <value>Dispositivos con un problema de driver</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DEVICE-PROBLEM.Description" xml:space="preserve">
+    <value>Windows reporta dispositivos que no funcionan bien, casi siempre porque no tienen driver instalado. El dispositivo puede no funcionar en absoluto (Wi-Fi, sonido, un lector) hasta que se instale su driver.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DRIVERS-WU.Title" xml:space="preserve">
+    <value>Actualizaciones de drivers esperando en Windows Update</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DRIVERS-WU.Description" xml:space="preserve">
+    <value>Windows Update ofrece drivers más nuevos para este PC como actualizaciones opcionales, y no los instala solo. Los drivers actuales funcionan; los nuevos pueden corregir fallas.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-POWER-MODE.Title" xml:space="preserve">
+    <value>Modo de energía y planes de energía</value>
+  </data>
+  <data name="Diagnostic.Rule.R-POWER-MODE.Description" xml:space="preserve">
+    <value>El modo de energía de Windows está en &quot;máxima eficiencia energética&quot; con el PC conectado, lo que lo hace más lento sin ahorrar nada que valga la pena. También se listan los planes de energía del fabricante: en Windows actual basta con el plan Equilibrado.</value>
+  </data>
+  <data name="Diagnostic.Evidence.device.problems" xml:space="preserve">
+    <value>Dispositivos con problemas</value>
+  </data>
+  <data name="Diagnostic.Evidence.device.no_driver" xml:space="preserve">
+    <value>Sin driver instalado (código 28)</value>
+  </data>
+  <data name="Diagnostic.Evidence.device.error" xml:space="preserve">
+    <value>Código de error del dispositivo</value>
+  </data>
+  <data name="Diagnostic.Evidence.driver.windows_update" xml:space="preserve">
+    <value>Drivers en Windows Update</value>
+  </data>
+  <data name="Diagnostic.Evidence.driver.updates_available" xml:space="preserve">
+    <value>Actualizaciones de drivers disponibles</value>
+  </data>
+  <data name="Diagnostic.Evidence.driver.update" xml:space="preserve">
+    <value>Actualización de driver</value>
+  </data>
+  <data name="Diagnostic.Evidence.power.plans" xml:space="preserve">
+    <value>Planes de energía</value>
+  </data>
+  <data name="Diagnostic.Evidence.power.mode" xml:space="preserve">
+    <value>Modo de energía</value>
+  </data>
+  <data name="Diagnostic.Evidence.power.vendor_plan" xml:space="preserve">
+    <value>Plan de energía del fabricante (no activo)</value>
+  </data>
+  <data name="Diagnostic.Evidence.power.vendor_plan_active" xml:space="preserve">
+    <value>Plan de energía del fabricante (activo)</value>
+  </data>
+  <data name="Diagnostic.Value.best_efficiency" xml:space="preserve">
+    <value>máxima eficiencia energética</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DEVICE-DRIVER" xml:space="preserve">
+    <value>Instalar el driver que falta desde Windows Update (Actualizaciones opcionales) o desde la página del fabricante</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-DRIVER-WU" xml:space="preserve">
+    <value>Revisar e instalar los drivers de Windows Update, Opciones avanzadas, Actualizaciones opcionales</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-POWER-MODE" xml:space="preserve">
+    <value>Poner el modo de energía en Equilibrado o Máximo rendimiento (Configuración, Sistema, Energía)</value>
+  </data>
 </root>
