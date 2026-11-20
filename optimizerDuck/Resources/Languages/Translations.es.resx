@@ -6518,4 +6518,76 @@ En PowerShell, para esperar a que termine: Start-Process Zentra.exe -ArgumentLis
   <data name="Latency.Button" xml:space="preserve">
     <value>Abrir la página de LatencyMon</value>
   </data>
+  <data name="CrashReport.Title" xml:space="preserve">
+    <value>Reportes de fallos sin datos personales</value>
+  </data>
+  <data name="CrashReport.Description" xml:space="preserve">
+    <value>Apagado por defecto. Si lo activas, cada fallo de Zentra deja además un reporte sin el nombre del usuario ni del PC, sin la carpeta del usuario, correos, direcciones IP ni claves. Zentra nunca lo envía: cópialo y envíalo tú a quien mantiene Zentra.</value>
+  </data>
+  <data name="CrashReport.Copy" xml:space="preserve">
+    <value>Copiar el último reporte</value>
+  </data>
+  <data name="CrashReport.Folder" xml:space="preserve">
+    <value>Abrir los reportes</value>
+  </data>
+  <data name="CrashReport.None" xml:space="preserve">
+    <value>No hay reportes de fallos.</value>
+  </data>
+  <data name="CrashReport.Copied" xml:space="preserve">
+    <value>{0} copiado. Pégalo en el mensaje para quien mantiene Zentra.</value>
+  </data>
+  <data name="Speed.Title" xml:space="preserve">
+    <value>Velocidad de internet</value>
+  </data>
+  <data name="Speed.Help" xml:space="preserve">
+    <value>Mide la bajada, la subida y la latencia contra la prueba pública de velocidad de Cloudflare. Pregunta antes: el servicio ve la dirección IP pública del cliente.</value>
+  </data>
+  <data name="Speed.Button" xml:space="preserve">
+    <value>Medir velocidad</value>
+  </data>
+  <data name="Speed.Confirm.Title" xml:space="preserve">
+    <value>Prueba de velocidad de internet</value>
+  </data>
+  <data name="Speed.Confirm.Message" xml:space="preserve">
+    <value>Zentra se conecta a {0} (Cloudflare), que verá la dirección IP pública de esta conexión. Descarga unos 45 MB y sube unos 10 MB: con un plan de datos móviles se descuentan del cupo. No se envía nada del PC.</value>
+  </data>
+  <data name="Speed.Confirm.Start" xml:space="preserve">
+    <value>Medir</value>
+  </data>
+  <data name="Speed.Step.latency" xml:space="preserve">
+    <value>Midiendo la latencia...</value>
+  </data>
+  <data name="Speed.Step.download" xml:space="preserve">
+    <value>Midiendo la bajada...</value>
+  </data>
+  <data name="Speed.Step.upload" xml:space="preserve">
+    <value>Midiendo la subida...</value>
+  </data>
+  <data name="Speed.Result" xml:space="preserve">
+    <value>Bajada {0} Mbps · Subida {1} Mbps · Latencia {2} ms (Cloudflare, mediana de varias pruebas).</value>
+  </data>
+  <data name="Speed.Failed" xml:space="preserve">
+    <value>No se pudo medir la velocidad (sin conexión, o el servicio no respondió).</value>
+  </data>
+  <data name="Warranty.Title" xml:space="preserve">
+    <value>Garantía del fabricante</value>
+  </data>
+  <data name="Warranty.Help" xml:space="preserve">
+    <value>Copia el número de serie y abre la página de garantía del fabricante (Lenovo, HP, Dell, ASUS) para pegarlo ahí. El serial no se envía a ninguna otra parte ni va al informe.</value>
+  </data>
+  <data name="Warranty.Button" xml:space="preserve">
+    <value>Consultar garantía</value>
+  </data>
+  <data name="Warranty.UnknownBrand" xml:space="preserve">
+    <value>Fabricante desconocido</value>
+  </data>
+  <data name="Warranty.NoSerial" xml:space="preserve">
+    <value>{0}: el PC no reporta número de serie (suele ser un PC armado por partes). La garantía es la de cada pieza.</value>
+  </data>
+  <data name="Warranty.Opened" xml:space="preserve">
+    <value>{0} {1} · serial {2} copiado: pégalo en la página que se abrió.</value>
+  </data>
+  <data name="Warranty.NoPage" xml:space="preserve">
+    <value>{0} {1} · serial {2} copiado. Zentra no tiene la página de garantía de este fabricante: búscala en su sitio de soporte.</value>
+  </data>
 </root>

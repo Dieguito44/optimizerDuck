@@ -1,6 +1,7 @@
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
@@ -50,6 +51,13 @@ public partial class SettingsViewModel(
 
     [ObservableProperty]
     private bool _smoothScrolling;
+
+    /// <summary>Plan F4-05: redacted crash reports, off by default.</summary>
+    [ObservableProperty]
+    private bool _crashReports;
+
+    [ObservableProperty]
+    private string? _crashReportStatus;
     public string Version { get; } = Shared.FileVersion;
 
     public ObservableCollection<LanguageOption> Languages { get; } = new(SupportedLanguages.All);
@@ -66,6 +74,7 @@ public partial class SettingsViewModel(
             .ShowCompletionNotification;
         SmoothScrolling = appOptionsMonitor.CurrentValue.Optimize.SmoothScrolling;
         SmoothScrollBehavior.GlobalEnabled = SmoothScrolling;
+        CrashReports = appOptionsMonitor.CurrentValue.App.CrashReports;
         RemoveProvisioned = appOptionsMonitor.CurrentValue.Bloatware.RemoveProvisioned;
         CurrentApplicationTheme = ApplicationThemeManager.GetAppTheme();
 
@@ -275,6 +284,59 @@ public partial class SettingsViewModel(
             logger.LogError(ex, "Failed to toggle SmoothScrolling setting");
             SmoothScrolling = appOptionsMonitor.CurrentValue.Optimize.SmoothScrolling;
         }
+    }
+
+    [RelayCommand]
+    private async Task ToggleCrashReports()
+    {
+        if (!IsInitialized)
+            return;
+        try
+        {
+            var newValue = !appOptionsMonitor.CurrentValue.App.CrashReports;
+            await configManager.SetAsync(x => x.App.CrashReports, newValue);
+            CrashReports = newValue;
+            CrashReport.Enabled = newValue;
+        }
+        catch (Exception ex)
+        {
+            logger.LogError(ex, "Failed to toggle crash reports");
+            CrashReports = appOptionsMonitor.CurrentValue.App.CrashReports;
+        }
+    }
+
+    /// <summary>Copies the last report, so the technician sends it by any channel. Zentra sends nothing.</summary>
+    [RelayCommand]
+    private void CopyLatestCrashReport()
+    {
+        try
+        {
+            if (CrashReport.Latest() is not { } path)
+            {
+                CrashReportStatus = Loc.Instance["CrashReport.None"];
+                return;
+            }
+            System.Windows.Clipboard.SetText(File.ReadAllText(path));
+            CrashReportStatus = Loc.Instance["CrashReport.Copied", Path.GetFileName(path)];
+        }
+        catch (Exception ex)
+            when (ex
+                    is IOException
+                        or UnauthorizedAccessException
+                        or System.Runtime.InteropServices.COMException
+            )
+        {
+            CrashReportStatus = Loc.Instance["CrashReport.None"];
+        }
+    }
+
+    [RelayCommand]
+    private void OpenCrashReports()
+    {
+        if (Directory.Exists(CrashReport.Directory))
+            UnelevatedShell.Open(CrashReport.Directory);
+        else
+            CrashReportStatus = Loc.Instance["CrashReport.None"];
     }
 
     [RelayCommand]

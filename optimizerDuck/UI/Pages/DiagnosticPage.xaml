@@ -120,6 +120,43 @@
                     </StackPanel>
                 </Border>
 
+                <!--  Plan of improvements F4-06: internet speed, after consent (Cloudflare sees the IP).  -->
+                <Border Style="{StaticResource CardSurfaceStyle}">
+                    <StackPanel>
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Speed.Title}" />
+                        <ui:TextBlock
+                            Margin="0,2,0,8"
+                            Style="{StaticResource CaptionTextStyle}"
+                            Text="{ext:Loc Speed.Help}"
+                            TextWrapping="Wrap" />
+                        <ui:Button
+                            Command="{Binding ViewModel.Tools.SpeedTestCommand}"
+                            Content="{ext:Loc Speed.Button}"
+                            Cursor="Hand"
+                            Icon="{ui:SymbolIcon TopSpeed24}" />
+                        <ui:TextBlock Margin="0,6,0,0" Text="{Binding ViewModel.Tools.SpeedText}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
+                <!--  Plan of improvements F4-07: the manufacturer's own warranty page, serial copied.  -->
+                <Border Style="{StaticResource CardSurfaceStyle}">
+                    <StackPanel>
+                        <ui:TextBlock FontTypography="BodyStrong" Text="{ext:Loc Warranty.Title}" />
+                        <ui:TextBlock
+                            Margin="0,2,0,8"
+                            Style="{StaticResource CaptionTextStyle}"
+                            Text="{ext:Loc Warranty.Help}"
+                            TextWrapping="Wrap" />
+                        <ui:Button
+                            Appearance="Transparent"
+                            Command="{Binding ViewModel.Tools.WarrantyCommand}"
+                            Content="{ext:Loc Warranty.Button}"
+                            Cursor="Hand"
+                            Icon="{ui:SymbolIcon ShieldCheckmark24}" />
+                        <ui:TextBlock Margin="0,6,0,0" Text="{Binding ViewModel.Tools.WarrantyText}" TextWrapping="Wrap" />
+                    </StackPanel>
+                </Border>
+
                 <!--  Plan of improvements F4-03: DPC latency is measured with LatencyMon, not inside Zentra.  -->
                 <Border Style="{StaticResource CardSurfaceStyle}">
                     <StackPanel>
