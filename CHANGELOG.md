@@ -4,6 +4,30 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Prueba completa en un PC virtual con Windows 11 (20/11/2026, versión 1.1.1)
+
+PC de pruebas en Hyper-V en el PC de Diego, con 4 GB de RAM y 2 núcleos. Windows 11 Pro en español de México sin activar, BitLocker cifrado de fábrica y protección del sistema apagada, como un PC de cliente. Las pruebas se manejaron con puntos de control, PowerShell Direct y automatización de la interfaz.
+
+**Qué se probó y qué salió:**
+- **Cada ajuste aplicado y revertido** en Windows 11: 45 de 69 quedan exactamente como estaban, con 0 problemas. Los demás no aplican a esa VM (no tiene gráfica AMD, NVIDIA ni Intel, ni SSD físico) o son de Windows 10.
+- **Recorrido gráfico a 1366×768:** las 12 páginas y las 10 pestañas de Optimizar, sin errores.
+- **Perfil sugerido:** "Equipo lento (tiene 4 GB de RAM)", y quedó elegido.
+- **Sesión completa:** medir antes, aplicar Equipo lento (23 cambiados, 0 fallos, 7 apps quitadas), reiniciar, medir después y el PDF con la IA, redactado con la clave incluida.
+  - Puntaje de 62 a 74, 11 procesos y 10 servicios menos, 1,3 GB más de espacio.
+  - La RAM y las apps de inicio subieron porque la Store instaló Teams y Office durante la prueba.
+- **Experto:** apagar BitLocker (empieza a descifrar) y quitar Edge. Los dos piden confirmación, y al quitar Edge quedan WebView2 y el perfil con los favoritos.
+- **Línea de comandos:** `--preset estandar`, `juegos` y `privacidad` aplicados con 0 fallos.
+
+**Errores que encontró y se corrigieron:**
+- **El perfil no se aplicaba con la protección del sistema apagada** (de fábrica en muchos PCs). Windows 11 lanza el error 0x80070422 y Zentra no llegaba a encender la protección y reintentar.
+- **La sesión se perdía al reiniciar**, que es justo lo que pide la página entre el perfil y "Medir después". Ahora se retoma la de los últimos 2 días.
+- **La línea de comandos no aplicaba ningún perfil:** el punto de restauración abría un diálogo de la ventana y terminaba con código 10.
+- **"Monitor a su frecuencia máxima" fallaba sin pantalla** (sesión remota, monitor apagado) y detenía la vista previa del perfil Juegos.
+- **Panel:** la gráfica mostraba "{DependencyProperty.UnsetValue}" en un PC sin driver de video, y decía "1 núcleos".
+- **Bitácora:** quitar Edge o apagar BitLocker decía "cambios: 0". Ahora se cuentan y se marcan "(sin vuelta atrás)".
+- **CLI:** `--preset` acepta `equipo-lento`, `juegos` y `privacidad`.
+- **Tests:** 1866, 0 fallos.
+
 ### Perfiles y pestaña Experto (20/11/2026, versión 1.1.0)
 
 Ideas revisadas contra [WinUtil](https://github.com/ChrisTitusTech/winutil) (licencia MIT). Se tomaron las ideas y los valores del registro, no su código.
