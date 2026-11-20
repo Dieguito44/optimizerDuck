@@ -6929,4 +6929,76 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
   <data name="Settings.Header.Description" xml:space="preserve">
     <value>Idioma, tema, reportes de fallos y opciones avanzadas.</value>
   </data>
+  <data name="Optimizer.Expert" xml:space="preserve">
+    <value>Experto</value>
+  </data>
+  <data name="Optimizer.Expert.RemoveEdge.Name" xml:space="preserve">
+    <value>Quitar Microsoft Edge</value>
+  </data>
+  <data name="Optimizer.Expert.RemoveEdge.ShortDescription" xml:space="preserve">
+    <value>Desinstala Edge con su propio desinstalador. Conserva los favoritos y las contraseñas del cliente y no toca WebView2, que usan otras apps. Windows Update puede volver a instalarlo; para reinstalarlo a mano: winget install Microsoft.Edge.</value>
+  </data>
+  <data name="Optimizer.Expert.RemoveEdge.Error.NotInstalled" xml:space="preserve">
+    <value>Edge no está instalado.</value>
+  </data>
+  <data name="Optimizer.Expert.DisableBitLocker.Name" xml:space="preserve">
+    <value>Apagar BitLocker</value>
+  </data>
+  <data name="Optimizer.Expert.DisableBitLocker.ShortDescription" xml:space="preserve">
+    <value>Descifra el disco de Windows; sigue en segundo plano y puede tardar. Zentra no lo vuelve a encender: se enciende en Configuración, Privacidad y seguridad, Cifrado del dispositivo, con una clave de recuperación nueva. Solo con autorización del cliente.</value>
+  </data>
+  <data name="Optimizer.Expert.DisableBitLocker.Error.NotAvailable" xml:space="preserve">
+    <value>BitLocker no está disponible en este PC.</value>
+  </data>
+  <data name="Optimizer.Expert.DisableIpv6.Name" xml:space="preserve">
+    <value>Apagar IPv6</value>
+  </data>
+  <data name="Optimizer.Expert.DisableIpv6.ShortDescription" xml:space="preserve">
+    <value>Apaga IPv6 en las tarjetas de red y en Windows; se aplica al reiniciar. Microsoft no lo recomienda: algunos juegos, proveedores de internet y funciones lo necesitan. Se revierte.</value>
+  </data>
+  <data name="Optimizer.Expert.DisableSearchIndexing.Name" xml:space="preserve">
+    <value>Apagar la búsqueda de Windows (indexador)</value>
+  </data>
+  <data name="Optimizer.Expert.DisableSearchIndexing.ShortDescription" xml:space="preserve">
+    <value>Detiene y deshabilita el servicio de búsqueda. El disco trabaja menos (sirve en discos mecánicos), pero buscar archivos en el Explorador y en Inicio se vuelve mucho más lento. Se revierte.</value>
+  </data>
+  <data name="Optimizer.Expert.DisableReservedStorage.Name" xml:space="preserve">
+    <value>Liberar el almacenamiento reservado</value>
+  </data>
+  <data name="Optimizer.Expert.DisableReservedStorage.ShortDescription" xml:space="preserve">
+    <value>Libera los 7 a 10 GB que Windows guarda para las actualizaciones. Solo vale la pena en discos pequeños; vuelve a activarlo antes de una actualización grande de Windows. Se revierte.</value>
+  </data>
+  <data name="Optimizer.Expert.DisableReservedStorage.Error.NotAvailable" xml:space="preserve">
+    <value>Este Windows no deja cambiar el almacenamiento reservado ahora (puede haber una actualización pendiente).</value>
+  </data>
+  <data name="Optimizer.Expert.DisableUnsignedRdpWarning.Name" xml:space="preserve">
+    <value>Quitar el aviso de archivos RDP sin firma</value>
+  </data>
+  <data name="Optimizer.Expert.DisableUnsignedRdpWarning.ShortDescription" xml:space="preserve">
+    <value>Quita la advertencia al abrir archivos de escritorio remoto (.rdp) sin firma. Esa advertencia protege contra engaños: úsalo solo en el PC de un técnico que abre sus propios archivos .rdp. Se revierte.</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DisableEdgeTelemetryAndAds.Name" xml:space="preserve">
+    <value>Edge sin telemetría ni anuncios</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DisableEdgeTelemetryAndAds.ShortDescription" xml:space="preserve">
+    <value>Apaga en Edge los datos de diagnóstico, las compras, Rewards, las recomendaciones y la pantalla de bienvenida. Edge sigue funcionando y muestra "Administrado por tu organización".</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DisableWpbt.Name" xml:space="preserve">
+    <value>Apagar los programas del fabricante desde la BIOS (WPBT)</value>
+  </data>
+  <data name="Optimizer.SecurityAndPrivacy.DisableWpbt.ShortDescription" xml:space="preserve">
+    <value>Evita que la BIOS instale programas del fabricante en cada arranque sin pedir permiso. En algunos portátiles también apaga su servicio antirrobo.</value>
+  </data>
+  <data name="Optimizer.UserExperience.DetailedBlueScreen.Name" xml:space="preserve">
+    <value>Pantallazo azul con detalles</value>
+  </data>
+  <data name="Optimizer.UserExperience.DetailedBlueScreen.ShortDescription" xml:space="preserve">
+    <value>Si Windows se cae, el pantallazo azul muestra los datos técnicos del error en vez de la carita triste. Útil para diagnosticar.</value>
+  </data>
+  <data name="Optimizer.Gpu.DisableMultiplaneOverlay.Name" xml:space="preserve">
+    <value>Apagar MPO (Multiplane Overlay)</value>
+  </data>
+  <data name="Optimizer.Gpu.DisableMultiplaneOverlay.ShortDescription" xml:space="preserve">
+    <value>Corrige parpadeos, pantallas negras y reinicios del driver de video en algunas gráficas. Se aplica al reiniciar. Úsalo solo si el PC tiene esos síntomas.</value>
+  </data>
 </root>

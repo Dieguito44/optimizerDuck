@@ -364,7 +364,9 @@ public class CliRunnerTests
     [Fact]
     public async Task ExpertSettings_NeedTheFlagToo()
     {
-        var risky = Catalog.First(o => o.Risk == OptimizationRisk.Risky);
+        var risky = Catalog.First(o =>
+            o.Risk == OptimizationRisk.Risky && o.Confirmation == OptimizationConfirmation.None
+        );
         var file = PresetFile(
             new ServicePreset
             {

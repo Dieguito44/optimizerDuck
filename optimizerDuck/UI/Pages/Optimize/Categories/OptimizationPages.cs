@@ -74,3 +74,12 @@ public sealed class AIOptimizerPage : OptimizationPage
         InitializeComponent();
     }
 }
+
+public sealed class ExpertOptimizerPage : OptimizationPage
+{
+    public ExpertOptimizerPage(OptimizationCategoryViewModel viewModel)
+        : base(viewModel)
+    {
+        InitializeComponent();
+    }
+}
