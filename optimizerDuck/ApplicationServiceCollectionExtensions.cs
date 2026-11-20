@@ -69,6 +69,10 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<SessionViewModel>();
         services.AddSingleton<SessionPage>();
         services.AddSingleton<optimizerDuck.Services.Repair.DefenderScanService>();
+        // Plan of improvements F3-08: second opinion with the Microsoft Safety Scanner.
+        services.AddSingleton<optimizerDuck.Services.Repair.SafetyScannerService>();
+        // Plan of improvements F3-05: diagnosis-only follow-up at 7 and 30 days.
+        services.AddSingleton<optimizerDuck.Services.FollowUp.FollowUpService>();
         services.AddSingleton<RepairViewModel>();
         services.AddSingleton<RepairPage>();
         services.AddSingleton<optimizerDuck.Services.Software.SoftwareService>();
@@ -140,6 +144,7 @@ public static class ApplicationServiceCollectionExtensions
         services.AddSingleton<optimizerDuck.Services.Profiles.ServiceProfileRunner>();
         services.AddSingleton<optimizerDuck.UI.ViewModels.Pages.ServiceProfileViewModel>();
         services.AddSingleton<optimizerDuck.UI.ViewModels.Pages.GameModeViewModel>();
+        services.AddSingleton<optimizerDuck.UI.ViewModels.Pages.FollowUpViewModel>();
         services.AddSingleton<PdfReportService>();
         // Plan of improvements F3-02: Zentra.exe without its window.
         services.AddSingleton<

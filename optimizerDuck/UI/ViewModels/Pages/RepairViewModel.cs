@@ -17,6 +17,7 @@ public sealed record RepairStepItem(string Name, string Outcome, string Summary)
 public partial class RepairViewModel(
     RepairService repairService,
     DefenderScanService defenderScanService,
+    SafetyScannerService safetyScannerService,
     Wpf.Ui.IContentDialogService dialogs,
     ToolRunPresenter presenter,
     ILogger<RepairViewModel> logger
@@ -26,6 +27,7 @@ public partial class RepairViewModel(
     [NotifyCanExecuteChangedFor(nameof(RunRepairCommand))]
     [NotifyCanExecuteChangedFor(nameof(FullScanCommand))]
     [NotifyCanExecuteChangedFor(nameof(OfflineScanCommand))]
+    [NotifyCanExecuteChangedFor(nameof(SafetyScanCommand))]
     private bool _isRunning;
 
     [ObservableProperty]
@@ -87,6 +89,44 @@ public partial class RepairViewModel(
         );
         if (answer == Wpf.Ui.Controls.ContentDialogResult.Primary)
             await RunToolAsync(defenderScanService.BuildOfflineScanRequest());
+    }
+
+    /// <summary>
+    ///     Plan F3-08: Microsoft Safety Scanner, after saying what it downloads and that it only
+    ///     detects. The result goes to the results list, with the copy of its log.
+    /// </summary>
+    [RelayCommand(CanExecute = nameof(CanRun))]
+    private async Task SafetyScanAsync()
+    {
+        var answer = await Wpf.Ui.Extensions.ContentDialogServiceExtensions.ShowSimpleDialogAsync(
+            dialogs,
+            new Wpf.Ui.SimpleContentDialogCreateOptions
+            {
+                Title = Loc.Instance["SafetyScanner.Title"],
+                Content = Loc.Instance["SafetyScanner.Confirm"],
+                PrimaryButtonText = Loc.Instance["SafetyScanner.Start"],
+                CloseButtonText = Loc.Instance["Button.Cancel"],
+            }
+        );
+        if (answer != Wpf.Ui.Controls.ContentDialogResult.Primary)
+            return;
+
+        SafetyScanResult? result = null;
+        await RunToolAsync(safetyScannerService.BuildRequest(r => result = r));
+        if (result is null)
+            return;
+
+        Steps.Add(
+            new RepairStepItem(
+                Loc.Instance["SafetyScanner.Title"],
+                Loc.Instance[$"SafetyScanner.Outcome.{result.Outcome}", result.Threats.Count],
+                result.Threats.Count > 0
+                    ? string.Join(", ", result.Threats)
+                        + (result.LogCopyPath is { } log ? $" · {log}" : "")
+                    : result.LogCopyPath ?? ""
+            )
+        );
+        HasResults = true;
     }
 
     private async Task RunToolAsync(Domain.Execution.OperationRequest request)

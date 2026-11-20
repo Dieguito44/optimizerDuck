@@ -35,6 +35,13 @@ public interface ICliHost
         CancellationToken ct
     );
 
+    /// <summary>The folder and client of the next follow-up check, or null when none is due (plan F3-05).</summary>
+    (string Folder, string? Client)? NextFollowUp(DateTimeOffset nowLocal);
+
+    Task RecordFollowUpAsync(FollowUp.FollowUpRun run, CancellationToken ct);
+
+    Task<bool> RemoveFollowUpAsync(CancellationToken ct);
+
     /// <summary>Writes the software inventory into the session folder (plan F3-06).</summary>
     Task<IReadOnlyList<string>> WriteInventoryAsync(ServiceSession session, CancellationToken ct);
 
@@ -98,6 +105,14 @@ public sealed class CliRunner(
             Say(Loc.Instance["Cli.NotElevated"]);
             return CliExitCode.NotElevated;
         }
+        if (options.RemoveFollowUp)
+        {
+            var removed = await host.RemoveFollowUpAsync(ct);
+            Say(Loc.Instance[removed ? "FollowUp.Removed" : "FollowUp.RemoveFailed"]);
+            return removed ? CliExitCode.Ok : CliExitCode.Failed;
+        }
+        if (options.FollowUp)
+            return await FollowUpAsync(ct);
 
         ServicePreset? preset = null;
         if (options.PresetPath is not null)
@@ -213,6 +228,45 @@ public sealed class CliRunner(
             && (result.Count(ProfileStepOutcome.Failed) > 0 || result.AppsFailed.Count > 0);
         Say(partial ? Loc.Instance["Cli.DonePartial"] : Loc.Instance["Cli.Done"]);
         return partial ? CliExitCode.Partial : CliExitCode.Ok;
+    }
+
+    /// <summary>
+    ///     --followup, from the scheduled task: the diagnosis only (measure and diagnose, no preset,
+    ///     no changes) into the follow-up folder, then the run is recorded. The last check removes
+    ///     the task.
+    /// </summary>
+    private async Task<CliExitCode> FollowUpAsync(CancellationToken ct)
+    {
+        var now = host.Now.ToLocalTime();
+        if (host.NextFollowUp(now) is not { } next)
+        {
+            Say(Loc.Instance["FollowUp.NoneDue"]);
+            await host.RemoveFollowUpAsync(ct);
+            return CliExitCode.Ok;
+        }
+
+        var session = new ServiceSession
+        {
+            CreatedAtUtc = host.Now,
+            ClientLabel = next.Client,
+            PresetName = null,
+        };
+        session = await MeasureAsync(session, MeasurementPhase.Before, ct);
+        var files = await host.WriteReportAsync(
+            session,
+            next.Folder,
+            _transcript.ToString(),
+            [],
+            ct
+        );
+        foreach (var file in files)
+            Say(Loc.Instance["Cli.File", file]);
+        await host.RecordFollowUpAsync(
+            new FollowUp.FollowUpRun(host.Now, next.Folder, session.DiagnosisBefore?.Score.Score),
+            ct
+        );
+        Say(Loc.Instance["Cli.Done"]);
+        return CliExitCode.Ok;
     }
 
     /// <summary>--verify: every file of ZENTRA-SHA256.txt against its fingerprint. Changes nothing.</summary>

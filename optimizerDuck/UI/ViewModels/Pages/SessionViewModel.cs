@@ -27,6 +27,7 @@ public partial class SessionViewModel(
     ApiKeyStore apiKeyStore,
     ServiceProfileViewModel profile,
     GameModeViewModel gameMode,
+    FollowUpViewModel followUp,
     TimeProvider timeProvider,
     ILogger<SessionViewModel> logger
 ) : ViewModel
@@ -40,10 +41,19 @@ public partial class SessionViewModel(
     /// <summary>The "Modo juego avanzado" card (phase 7), visible only while it is applied.</summary>
     public GameModeViewModel GameMode { get; } = gameMode;
 
-    public override void OnNavigatedTo() => _ = GameMode.RefreshAsync();
+    /// <summary>The "Seguimiento" card (plan of improvements F3-05).</summary>
+    public FollowUpViewModel FollowUp { get; } = followUp;
+
+    public override void OnNavigatedTo()
+    {
+        _ = GameMode.RefreshAsync();
+        FollowUp.Refresh();
+    }
 
     [ObservableProperty]
     private string _clientLabel = string.Empty;
+
+    partial void OnClientLabelChanged(string value) => FollowUp.ClientLabel = value;
 
     [ObservableProperty]
     [NotifyPropertyChangedFor(nameof(IsIdle))]

@@ -4404,26 +4404,6 @@ How to undo it: on the Session page press Turn the protection back on and restar
   <data name="Inventory.Scope.User" xml:space="preserve">
     <value>This user</value>
   </data>
-  <data name="Cli.Help" xml:space="preserve">
-    <value>Zentra from the command line (as administrator):
-  Zentra.exe --diagnose [--inventory] [--report &lt;folder&gt;] [--client &lt;name&gt;]
-  Zentra.exe --preset &lt;file.json|estandar&gt; [--diagnose] [--inventory] [--report &lt;folder&gt;] [--client &lt;name&gt;] [--silent] [--keep-apps] [--allow-risky]
-  Zentra.exe --verify &lt;report folder&gt;
-
-  --diagnose     Measure and diagnose. With --preset: before and after.
-  --preset       Apply a preset. Always previewed, always after a restore point.
-  --inventory    Also write the installed programs and the Windows activation (read only).
-  --report       Copy session.json, the PDF, ZENTRA-SHA256.txt, the inventory and zentra-cli.txt to that folder.
-  --client       Client name for the report.
-  --silent       Do not ask for confirmation.
-  --keep-apps    Do not remove the preset&apos;s apps.
-  --allow-risky  Allow Expert settings, if the preset allows them too.
-  --verify       Check the report files against ZENTRA-SHA256.txt. Changes nothing.
-
-Exit codes: 0 done, 1 arguments, 2 invalid preset, 3 not administrator,
-4 no restore point, 5 done with failures, 6 cancelled, 7 report changed or missing, 10 unexpected error.
-In PowerShell, to wait for it: Start-Process Zentra.exe -ArgumentList &apos;--diagnose&apos; -Wait -PassThru</value>
-  </data>
   <data name="Diagnostic.Rule.R-DNS-REVIEW.Title" xml:space="preserve">
     <value>DNS servers set by hand to review</value>
   </data>
@@ -4510,5 +4490,108 @@ In PowerShell, to wait for it: Start-Process Zentra.exe -ArgumentList &apos;--di
   </data>
   <data name="Condition.HasSsdVolume.Description" xml:space="preserve">
     <value>ReTrim only applies to SSD drives with a drive letter.</value>
+  </data>
+  <data name="SafetyScanner.Title" xml:space="preserve">
+    <value>Second opinion (Microsoft Safety Scanner)</value>
+  </data>
+  <data name="SafetyScanner.Confirm" xml:space="preserve">
+    <value>Zentra downloads the Microsoft Safety Scanner (about 200 MB) from microsoft.com, checks that Microsoft signed it and runs a quick scan that only detects: it removes nothing. It takes a few minutes; afterwards the scanner is deleted (it expires 10 days after download). If it finds something, remove it with a Defender full or offline scan.</value>
+  </data>
+  <data name="SafetyScanner.Start" xml:space="preserve">
+    <value>Download and scan</value>
+  </data>
+  <data name="SafetyScanner.Downloading" xml:space="preserve">
+    <value>Downloading the Safety Scanner: {0} MB...</value>
+  </data>
+  <data name="SafetyScanner.Scanning" xml:space="preserve">
+    <value>Scanning (quick scan, detect only)...</value>
+  </data>
+  <data name="SafetyScanner.Failed" xml:space="preserve">
+    <value>The Safety Scanner did not run: the download, the Microsoft signature or the scan failed. The log has the details.</value>
+  </data>
+  <data name="SafetyScanner.Outcome.Clean" xml:space="preserve">
+    <value>No threats found</value>
+  </data>
+  <data name="SafetyScanner.Outcome.ThreatsFound" xml:space="preserve">
+    <value>{0} threats found (not removed)</value>
+  </data>
+  <data name="SafetyScanner.Outcome.Unreadable" xml:space="preserve">
+    <value>It ran, but its result could not be read (not measurable)</value>
+  </data>
+  <data name="SafetyScanner.Outcome.Failed" xml:space="preserve">
+    <value>It did not run</value>
+  </data>
+  <data name="FollowUp.Title" xml:space="preserve">
+    <value>Follow-up at 7 and 30 days</value>
+  </data>
+  <data name="FollowUp.Help" xml:space="preserve">
+    <value>With the client&apos;s written consent, a scheduled task runs the diagnosis again (no changes) 7 and 30 days after the service and keeps the result for the next visit. It is removed with one click.</value>
+  </data>
+  <data name="FollowUp.Button.Schedule" xml:space="preserve">
+    <value>Schedule follow-up</value>
+  </data>
+  <data name="FollowUp.Button.Remove" xml:space="preserve">
+    <value>Remove follow-up</value>
+  </data>
+  <data name="FollowUp.Button.Results" xml:space="preserve">
+    <value>Open results</value>
+  </data>
+  <data name="FollowUp.Status.None" xml:space="preserve">
+    <value>No follow-up scheduled.</value>
+  </data>
+  <data name="FollowUp.Status.Scheduled" xml:space="preserve">
+    <value>Scheduled: {0}. Checks done: {1}.</value>
+  </data>
+  <data name="FollowUp.Status.Done" xml:space="preserve">
+    <value>Follow-up finished: {0} checks done.</value>
+  </data>
+  <data name="FollowUp.Consent.Title" xml:space="preserve">
+    <value>Follow-up at 7 and 30 days</value>
+  </data>
+  <data name="FollowUp.Consent.Body" xml:space="preserve">
+    <value>Zentra will create a scheduled task on this PC that, on {0} and on {1}, runs only the diagnosis: it measures and reads, and changes nothing. For that it keeps a copy of Zentra in {2}, where only administrators can write, and saves each result there. Nothing is sent anywhere. The technician removes it with &quot;Remove follow-up&quot;; after the second check the task deletes itself.</value>
+  </data>
+  <data name="FollowUp.Result.Scheduled" xml:space="preserve">
+    <value>Follow-up scheduled.</value>
+  </data>
+  <data name="FollowUp.Result.ConsentRefused" xml:space="preserve">
+    <value>The client did not give consent: nothing was scheduled.</value>
+  </data>
+  <data name="FollowUp.Result.UnsafeFolder" xml:space="preserve">
+    <value>The follow-up folder already exists with an unexpected owner or as a link, so nothing was scheduled. Check ProgramData\Zentra.</value>
+  </data>
+  <data name="FollowUp.Result.Failed" xml:space="preserve">
+    <value>The follow-up could not be scheduled. The log has the details.</value>
+  </data>
+  <data name="FollowUp.Removed" xml:space="preserve">
+    <value>Follow-up removed: the task and the copy of Zentra were deleted; the results stay.</value>
+  </data>
+  <data name="FollowUp.RemoveFailed" xml:space="preserve">
+    <value>The follow-up task could not be removed. The log has the details.</value>
+  </data>
+  <data name="FollowUp.NoneDue" xml:space="preserve">
+    <value>No follow-up check is due.</value>
+  </data>
+  <data name="Cli.Help" xml:space="preserve">
+    <value>Zentra from the command line (as administrator):
+  Zentra.exe --diagnose [--inventory] [--report &lt;folder&gt;] [--client &lt;name&gt;]
+  Zentra.exe --preset &lt;file.json|estandar&gt; [--diagnose] [--inventory] [--report &lt;folder&gt;] [--client &lt;name&gt;] [--silent] [--keep-apps] [--allow-risky]
+  Zentra.exe --verify &lt;report folder&gt;
+  Zentra.exe --remove-followup
+
+  --diagnose         Measure and diagnose. With --preset: before and after.
+  --preset           Apply a preset. Always previewed, always after a restore point.
+  --inventory        Also write the installed programs and the Windows activation (read only).
+  --report           Copy session.json, the PDF, ZENTRA-SHA256.txt, the inventory and zentra-cli.txt to that folder.
+  --client           Client name for the report.
+  --silent           Do not ask for confirmation.
+  --keep-apps        Do not remove the preset&apos;s apps.
+  --allow-risky      Allow Expert settings, if the preset allows them too.
+  --verify           Check the report files against ZENTRA-SHA256.txt. Changes nothing.
+  --remove-followup  Delete the follow-up task and its copy of Zentra (the results stay).
+
+Exit codes: 0 done, 1 arguments, 2 invalid preset, 3 not administrator,
+4 no restore point, 5 done with failures, 6 cancelled, 7 report changed or missing, 10 unexpected error.
+In PowerShell, to wait for it: Start-Process Zentra.exe -ArgumentList &apos;--diagnose&apos; -Wait -PassThru</value>
   </data>
 </root>

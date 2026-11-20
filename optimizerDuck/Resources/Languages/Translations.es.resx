@@ -6211,26 +6211,6 @@ Cómo se deshace: en la página Sesión pulsa Volver a activar la protección y 
   <data name="Inventory.Scope.User" xml:space="preserve">
     <value>Este usuario</value>
   </data>
-  <data name="Cli.Help" xml:space="preserve">
-    <value>Zentra en línea de comandos (como administrador):
-  Zentra.exe --diagnose [--inventory] [--report &lt;carpeta&gt;] [--client &lt;nombre&gt;]
-  Zentra.exe --preset &lt;archivo.json|estandar&gt; [--diagnose] [--inventory] [--report &lt;carpeta&gt;] [--client &lt;nombre&gt;] [--silent] [--keep-apps] [--allow-risky]
-  Zentra.exe --verify &lt;carpeta del informe&gt;
-
-  --diagnose     Mide y diagnostica. Con --preset: antes y después.
-  --preset       Aplica un preset. Siempre con vista previa y punto de restauración.
-  --inventory    Escribe además los programas instalados y la activación de Windows (solo lectura).
-  --report       Copia session.json, el PDF, ZENTRA-SHA256.txt, el inventario y zentra-cli.txt a esa carpeta.
-  --client       Nombre del cliente para el informe.
-  --silent       No pide confirmación.
-  --keep-apps    No quita las apps del preset.
-  --allow-risky  Permite ajustes de nivel Experto, si el preset también los permite.
-  --verify       Compara los archivos del informe con ZENTRA-SHA256.txt. No cambia nada.
-
-Códigos de salida: 0 listo, 1 argumentos, 2 preset no válido, 3 sin administrador,
-4 sin punto de restauración, 5 con fallos, 6 cancelado, 7 informe alterado o incompleto, 10 error inesperado.
-En PowerShell, para esperar a que termine: Start-Process Zentra.exe -ArgumentList &apos;--diagnose&apos; -Wait -PassThru</value>
-  </data>
   <data name="Diagnostic.Rule.R-DNS-REVIEW.Title" xml:space="preserve">
     <value>DNS puestos a mano para revisar</value>
   </data>
@@ -6317,5 +6297,108 @@ En PowerShell, para esperar a que termine: Start-Process Zentra.exe -ArgumentLis
   </data>
   <data name="Condition.HasSsdVolume.Description" xml:space="preserve">
     <value>ReTrim solo aplica a unidades SSD con letra.</value>
+  </data>
+  <data name="SafetyScanner.Title" xml:space="preserve">
+    <value>Segunda opinión (Microsoft Safety Scanner)</value>
+  </data>
+  <data name="SafetyScanner.Confirm" xml:space="preserve">
+    <value>Zentra descarga el Microsoft Safety Scanner (unos 200 MB) desde microsoft.com, comprueba que lo firmó Microsoft y corre un análisis rápido que solo detecta: no quita nada. Tarda unos minutos; al final se borra el escáner (vence 10 días después de descargarlo). Si encuentra algo, quítalo con un análisis completo o sin conexión de Defender.</value>
+  </data>
+  <data name="SafetyScanner.Start" xml:space="preserve">
+    <value>Descargar y analizar</value>
+  </data>
+  <data name="SafetyScanner.Downloading" xml:space="preserve">
+    <value>Descargando el Safety Scanner: {0} MB...</value>
+  </data>
+  <data name="SafetyScanner.Scanning" xml:space="preserve">
+    <value>Analizando (análisis rápido, solo detectar)...</value>
+  </data>
+  <data name="SafetyScanner.Failed" xml:space="preserve">
+    <value>El Safety Scanner no se ejecutó: falló la descarga, la firma de Microsoft o el análisis. El registro tiene el detalle.</value>
+  </data>
+  <data name="SafetyScanner.Outcome.Clean" xml:space="preserve">
+    <value>Sin amenazas</value>
+  </data>
+  <data name="SafetyScanner.Outcome.ThreatsFound" xml:space="preserve">
+    <value>{0} amenazas encontradas (no se quitaron)</value>
+  </data>
+  <data name="SafetyScanner.Outcome.Unreadable" xml:space="preserve">
+    <value>Se ejecutó, pero su resultado no se pudo leer (no medible)</value>
+  </data>
+  <data name="SafetyScanner.Outcome.Failed" xml:space="preserve">
+    <value>No se ejecutó</value>
+  </data>
+  <data name="FollowUp.Title" xml:space="preserve">
+    <value>Seguimiento a 7 y 30 días</value>
+  </data>
+  <data name="FollowUp.Help" xml:space="preserve">
+    <value>Con el consentimiento escrito del cliente, una tarea programada vuelve a correr el diagnóstico (sin cambios) a los 7 y a los 30 días del servicio y guarda el resultado para la siguiente visita. Se quita con un clic.</value>
+  </data>
+  <data name="FollowUp.Button.Schedule" xml:space="preserve">
+    <value>Programar seguimiento</value>
+  </data>
+  <data name="FollowUp.Button.Remove" xml:space="preserve">
+    <value>Quitar seguimiento</value>
+  </data>
+  <data name="FollowUp.Button.Results" xml:space="preserve">
+    <value>Abrir resultados</value>
+  </data>
+  <data name="FollowUp.Status.None" xml:space="preserve">
+    <value>No hay seguimiento programado.</value>
+  </data>
+  <data name="FollowUp.Status.Scheduled" xml:space="preserve">
+    <value>Programado: {0}. Revisiones hechas: {1}.</value>
+  </data>
+  <data name="FollowUp.Status.Done" xml:space="preserve">
+    <value>Seguimiento terminado: {0} revisiones hechas.</value>
+  </data>
+  <data name="FollowUp.Consent.Title" xml:space="preserve">
+    <value>Seguimiento a 7 y 30 días</value>
+  </data>
+  <data name="FollowUp.Consent.Body" xml:space="preserve">
+    <value>Zentra creará en este PC una tarea programada que, el {0} y el {1}, corre solo el diagnóstico: mide y lee, y no cambia nada. Para eso guarda una copia de Zentra en {2}, donde solo los administradores pueden escribir, y deja ahí cada resultado. No se envía nada a ninguna parte. El técnico la quita con &quot;Quitar seguimiento&quot;; después de la segunda revisión la tarea se borra sola.</value>
+  </data>
+  <data name="FollowUp.Result.Scheduled" xml:space="preserve">
+    <value>Seguimiento programado.</value>
+  </data>
+  <data name="FollowUp.Result.ConsentRefused" xml:space="preserve">
+    <value>El cliente no dio su consentimiento: no se programó nada.</value>
+  </data>
+  <data name="FollowUp.Result.UnsafeFolder" xml:space="preserve">
+    <value>La carpeta de seguimiento ya existe con un dueño inesperado o como enlace, así que no se programó nada. Revisa ProgramData\Zentra.</value>
+  </data>
+  <data name="FollowUp.Result.Failed" xml:space="preserve">
+    <value>No se pudo programar el seguimiento. El registro tiene el detalle.</value>
+  </data>
+  <data name="FollowUp.Removed" xml:space="preserve">
+    <value>Seguimiento quitado: se borraron la tarea y la copia de Zentra; los resultados quedan.</value>
+  </data>
+  <data name="FollowUp.RemoveFailed" xml:space="preserve">
+    <value>No se pudo quitar la tarea de seguimiento. El registro tiene el detalle.</value>
+  </data>
+  <data name="FollowUp.NoneDue" xml:space="preserve">
+    <value>No hay ninguna revisión de seguimiento pendiente.</value>
+  </data>
+  <data name="Cli.Help" xml:space="preserve">
+    <value>Zentra en línea de comandos (como administrador):
+  Zentra.exe --diagnose [--inventory] [--report &lt;carpeta&gt;] [--client &lt;nombre&gt;]
+  Zentra.exe --preset &lt;archivo.json|estandar&gt; [--diagnose] [--inventory] [--report &lt;carpeta&gt;] [--client &lt;nombre&gt;] [--silent] [--keep-apps] [--allow-risky]
+  Zentra.exe --verify &lt;carpeta del informe&gt;
+  Zentra.exe --remove-followup
+
+  --diagnose         Mide y diagnostica. Con --preset: antes y después.
+  --preset           Aplica un preset. Siempre con vista previa y punto de restauración.
+  --inventory        Escribe además los programas instalados y la activación de Windows (solo lectura).
+  --report           Copia session.json, el PDF, ZENTRA-SHA256.txt, el inventario y zentra-cli.txt a esa carpeta.
+  --client           Nombre del cliente para el informe.
+  --silent           No pide confirmación.
+  --keep-apps        No quita las apps del preset.
+  --allow-risky      Permite ajustes de nivel Experto, si el preset también los permite.
+  --verify           Compara los archivos del informe con ZENTRA-SHA256.txt. No cambia nada.
+  --remove-followup  Borra la tarea de seguimiento y su copia de Zentra (los resultados quedan).
+
+Códigos de salida: 0 listo, 1 argumentos, 2 preset no válido, 3 sin administrador,
+4 sin punto de restauración, 5 con fallos, 6 cancelado, 7 informe alterado o incompleto, 10 error inesperado.
+En PowerShell, para esperar a que termine: Start-Process Zentra.exe -ArgumentList &apos;--diagnose&apos; -Wait -PassThru</value>
   </data>
 </root>

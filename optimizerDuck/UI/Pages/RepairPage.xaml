@@ -80,6 +80,13 @@
                                 Content="{ext:Loc Defender.Offline.Title}"
                                 Cursor="Hand"
                                 Icon="{ui:SymbolIcon ArrowRepeatAll24}" />
+                            <!--  Plan of improvements F3-08: second opinion, detect only.  -->
+                            <ui:Button
+                                Margin="0,2,8,2"
+                                Command="{Binding ViewModel.SafetyScanCommand}"
+                                Content="{ext:Loc SafetyScanner.Title}"
+                                Cursor="Hand"
+                                Icon="{ui:SymbolIcon ShieldQuestion24}" />
                         </WrapPanel>
                     </StackPanel>
                 </Border>
