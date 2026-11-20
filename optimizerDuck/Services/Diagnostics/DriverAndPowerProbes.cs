@@ -166,32 +166,10 @@ internal static class DriverAndPowerProbes
             : Measured<PowerMode>.Missing(NotMeasuredReason.NotReported);
     }
 
-    private static Measured<bool> ReadOnAc()
-    {
-        if (!GetSystemPowerStatus(out var status))
-            return Measured<bool>.Missing(NotMeasuredReason.QueryFailed);
-        return status.ACLineStatus switch
-        {
-            0 => Measured<bool>.Of(false),
-            1 => Measured<bool>.Of(true),
-            _ => Measured<bool>.Missing(NotMeasuredReason.NotReported),
-        };
-    }
-
-    [StructLayout(LayoutKind.Sequential)]
-    private struct SystemPowerStatus
-    {
-        public byte ACLineStatus;
-        public byte BatteryFlag;
-        public byte BatteryLifePercent;
-        public byte SystemStatusFlag;
-        public int BatteryLifeTime;
-        public int BatteryFullLifeTime;
-    }
-
-    [DllImport("kernel32.dll", SetLastError = true)]
-    [return: MarshalAs(UnmanagedType.Bool)]
-    private static extern bool GetSystemPowerStatus(out SystemPowerStatus status);
+    private static Measured<bool> ReadOnAc() =>
+        PowerStatus.OnAcPower() is { } ac
+            ? Measured<bool>.Of(ac)
+            : Measured<bool>.Missing(NotMeasuredReason.NotReported);
 
     [DllImport("powrprof.dll")]
     private static extern uint PowerGetEffectiveOverlayScheme(out Guid overlay);

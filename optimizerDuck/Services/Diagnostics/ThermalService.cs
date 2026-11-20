@@ -57,7 +57,7 @@ public static class ThermalService
             var end = DateTime.UtcNow + duration;
             do
             {
-                if (ReadOnce(computer) is { } t)
+                if (ReadPackageCelsius(computer) is { } t)
                     samples.Add(t);
                 await Task.Delay(TimeSpan.FromSeconds(1), ct);
             } while (DateTime.UtcNow < end);
@@ -95,7 +95,7 @@ public static class ThermalService
     }
 
     /// <summary>The hottest CPU package/die sensor (Tctl/Tdie on AMD, Package on Intel).</summary>
-    private static double? ReadOnce(Computer computer)
+    internal static double? ReadPackageCelsius(Computer computer)
     {
         double? max = null;
         foreach (var hardware in computer.Hardware.Where(h => h.HardwareType == HardwareType.Cpu))
