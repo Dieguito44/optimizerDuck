@@ -133,6 +133,23 @@ public static class SnapshotFactory
                 SystemProtectionOn = Measured<bool>.Of(true),
                 BatteryCycles = Measured<int>.Missing(NotMeasuredReason.NotApplicable),
             },
+            // Version 1.2.0 checks have their own tests (HealthRuleTests); here they pass.
+            Health = new HealthSnapshot
+            {
+                IdleCpuPercent = Measured<double>.Of(3.2),
+                Runtimes = Measured<IReadOnlyList<RuntimeStatus>>.Of([
+                    new("vcredist-x64", true, "14.44.35211"),
+                    new("vcredist-x86", true, "14.44.35211"),
+                    new("netfx-4.8", true, "4.8.1"),
+                ]),
+                AppCrashes30d = Measured<int>.Of(2),
+                ClockOffsetSeconds = Measured<double>.Of(0.4),
+                LiveKernelReportsBytes = Measured<long>.Of(300L * 1024 * 1024),
+                Antivirus = Measured<IReadOnlyList<AntivirusEntry>>.Of([
+                    new("Microsoft Defender Antivirus", true, true, true),
+                ]),
+                LeakingProcesses = Measured<IReadOnlyList<LeakingProcess>>.Of([]),
+            },
             // TPM 2.0 (Tbsi_GetDeviceInfo) and the 2023 certificate already applied
             // (WindowsUEFICA2023Capable = 2), read on Diego's PC on 19/11/2026.
             Platform = new PlatformSnapshot

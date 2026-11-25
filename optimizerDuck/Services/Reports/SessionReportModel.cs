@@ -111,6 +111,9 @@ public sealed record SessionReportModel
     /// </summary>
     public const double DiskNoise = 0.10;
 
+    /// <summary>The CPU at rest moves a little on its own (version 1.2.0).</summary>
+    public const double CpuNoise = 0.25;
+
     public static SessionReportModel Build(
         ServiceSession session,
         IEnumerable<ChangeRecord> history,
@@ -321,6 +324,38 @@ public sealed record SessionReportModel
                 Better.Higher,
                 culture,
                 DiskNoise
+            ),
+            // Version 1.2.0: added last, the first eight keep their place.
+            Row(
+                "Report.Metric.BootMainPath",
+                before?.BootDesktopMs,
+                after?.BootDesktopMs,
+                ms => ms / 1000.0,
+                "0.0",
+                " s",
+                Better.Lower,
+                culture
+            ),
+            Row(
+                "Report.Metric.BootPostBoot",
+                before?.BootAfterDesktopMs,
+                after?.BootAfterDesktopMs,
+                ms => ms / 1000.0,
+                "0.0",
+                " s",
+                Better.Lower,
+                culture
+            ),
+            Row(
+                "Report.Metric.IdleCpu",
+                before?.IdleCpuPercent,
+                after?.IdleCpuPercent,
+                v => v,
+                "0.0",
+                " %",
+                Better.Lower,
+                culture,
+                CpuNoise
             ),
         ];
     }

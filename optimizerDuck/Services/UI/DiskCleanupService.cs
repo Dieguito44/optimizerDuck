@@ -88,6 +88,16 @@ public class DiskCleanupService(ILogger<DiskCleanupService> logger)
                 Path = Path.Combine(localAppData, "CrashDumps"),
                 Icon = SymbolRegular.Bug24,
             },
+            // Version 1.2.0 (R-DUMPS-BIG): one dump per video driver reset or watchdog; on a PC
+            // with many resets they take gigabytes. Minidumps stay: R-UNSTABLE counts them.
+            new CleanupItem
+            {
+                Id = "LiveKernelReports",
+                NameKey = "DiskCleanup.Item.LiveKernelReports",
+                DescriptionKey = "DiskCleanup.Item.LiveKernelReports.Description",
+                Path = Path.Combine(windowsDir, "LiveKernelReports"),
+                Icon = SymbolRegular.Bug24,
+            },
             new CleanupItem
             {
                 Id = "OldWindowsInstallation",

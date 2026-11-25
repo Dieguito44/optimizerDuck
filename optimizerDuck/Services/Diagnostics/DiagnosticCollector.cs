@@ -231,13 +231,61 @@ public sealed class DiagnosticCollector(
             ),
             ct
         );
+        // Version 1.2.0, extended diagnosis: read-only.
+        var runtimesTask = Run(
+            "runtimes",
+            HealthProbes.ReadRuntimes,
+            ProbeTimeout,
+            Measured<IReadOnlyList<RuntimeStatus>>.Missing(NotMeasuredReason.TimedOut),
+            ct
+        );
+        var crashesTask = Run(
+            "app crashes",
+            HealthProbes.ReadAppCrashes,
+            ProbeTimeout,
+            new HealthProbes.CrashesResult(TimedOut<int>(), [], []),
+            ct
+        );
+        var clockTask = Run(
+            "clock",
+            HealthProbes.ReadClockOffset,
+            ProbeTimeout,
+            TimedOut<double>(),
+            ct
+        );
+        var dumpsTask = Run(
+            "live kernel reports",
+            HealthProbes.ReadLiveKernelReportsBytes,
+            ProbeTimeout,
+            TimedOut<long>(),
+            ct
+        );
+        var antivirusTask = Run(
+            "antivirus",
+            HealthProbes.ReadAntivirus,
+            ProbeTimeout,
+            Measured<IReadOnlyList<AntivirusEntry>>.Missing(NotMeasuredReason.TimedOut),
+            ct
+        );
+        var leaksTask = Run(
+            "leaks",
+            HealthProbes.ReadLeakingProcesses,
+            ProbeTimeout,
+            Measured<IReadOnlyList<LeakingProcess>>.Missing(NotMeasuredReason.TimedOut),
+            ct
+        );
         var startupTask = CountStartupAppsAsync(ct);
         var imageTask = ReadImageHealthAsync(ct);
         var bootTask = Run(
             "boot",
-            () => Measurements.BootTimeProbe.Read().MedianMs,
+            () => Measurements.BootTimeProbe.Read(),
             ProbeTimeout,
-            TimedOut<int>(),
+            new Measurements.BootTimeResult(
+                TimedOut<int>(),
+                Measured<Domain.Measurements.BootTimeSource>.Missing(NotMeasuredReason.TimedOut),
+                0,
+                []
+            ),
             ct
         );
 
@@ -268,7 +316,13 @@ public sealed class DiagnosticCollector(
                 browserTask,
                 devicesTask,
                 driverUpdatesTask,
-                powerTask
+                powerTask,
+                runtimesTask,
+                crashesTask,
+                clockTask,
+                dumpsTask,
+                antivirusTask,
+                leaksTask
             )
             .ConfigureAwait(false);
 
@@ -309,9 +363,25 @@ public sealed class DiagnosticCollector(
             },
         };
 
+        var boot = await bootTask.ConfigureAwait(false);
+        var crashes = await crashesTask.ConfigureAwait(false);
         var snapshot = DiagnosticSnapshotBuilder.Build(info, probes, now) with
         {
-            BootMedianMs = await bootTask.ConfigureAwait(false),
+            BootMedianMs = boot.MedianMs,
+            BootDesktopMs = boot.DesktopMs,
+            BootAfterDesktopMs = boot.AfterDesktopMs,
+            Health = new HealthSnapshot
+            {
+                IdleCpuPercent = Measured<double>.Missing(NotMeasuredReason.NotReported),
+                Runtimes = await runtimesTask.ConfigureAwait(false),
+                AppCrashes30d = crashes.Total,
+                CrashGroups = crashes.Groups,
+                CrashedApps = crashes.Apps,
+                ClockOffsetSeconds = await clockTask.ConfigureAwait(false),
+                LiveKernelReportsBytes = await dumpsTask.ConfigureAwait(false),
+                Antivirus = await antivirusTask.ConfigureAwait(false),
+                LeakingProcesses = await leaksTask.ConfigureAwait(false),
+            },
             ImageHealth = await imageTask.ConfigureAwait(false),
             Display = DisplaySnapshotMapper.Map(
                 await displayTask.ConfigureAwait(false),
@@ -516,21 +586,48 @@ public sealed class DiagnosticService(
     ///     RAM in use at rest from a session measurement (R-RAM-IDLE-HIGH). The diagnosis alone
     ///     cannot take it: it needs a 60 second average some minutes after logon.
     /// </param>
-    public Task<DiagnosticReport> RunAsync(CancellationToken ct = default) => RunAsync(null, ct);
+    public Task<DiagnosticReport> RunAsync(CancellationToken ct = default) =>
+        RunAsync((Measured<double>?)null, ct);
 
     public async Task<DiagnosticReport> RunAsync(
         Measured<double>? idleRamPercent,
         CancellationToken ct = default
     ) => await RunAsync(idleRamPercent, null, ct).ConfigureAwait(false);
 
+    /// <summary>
+    ///     A diagnosis with what a session measurement adds: the RAM and CPU at rest and the
+    ///     small-file reads of the disk (version 1.2.0).
+    /// </summary>
+    public async Task<DiagnosticReport> RunAsync(
+        Domain.Measurements.Measurement measurement,
+        CancellationToken ct = default
+    ) =>
+        await RunAsync(
+                measurement.IdleRamPercent,
+                measurement.RandomReadIops,
+                measurement.IdleCpuPercent,
+                ct
+            )
+            .ConfigureAwait(false);
+
+    public Task<DiagnosticReport> RunAsync(
+        Measured<double>? idleRamPercent,
+        Measured<double>? randomReadIops,
+        CancellationToken ct = default
+    ) => RunAsync(idleRamPercent, randomReadIops, null, ct);
+
     /// <param name="randomReadIops">The session's small-file reads (R-HDD-SYSTEM fallback, 1.1.2).</param>
+    /// <param name="idleCpuPercent">The session's CPU at rest (R-CPU-IDLE-HIGH, 1.2.0).</param>
     public async Task<DiagnosticReport> RunAsync(
         Measured<double>? idleRamPercent,
         Measured<double>? randomReadIops,
+        Measured<double>? idleCpuPercent,
         CancellationToken ct = default
     )
     {
         var snapshot = await collector.CollectAsync(ct).ConfigureAwait(false);
+        if (idleCpuPercent is { } cpu)
+            snapshot = snapshot with { Health = snapshot.Health with { IdleCpuPercent = cpu } };
         if (idleRamPercent is { } idle)
             snapshot = snapshot with
             {

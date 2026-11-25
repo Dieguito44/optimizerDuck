@@ -94,6 +94,15 @@ public sealed record DiagnosticSnapshot
     /// <summary>Median of the last 3 boots in milliseconds (see BootTimeProbe).</summary>
     public Measured<int> BootMedianMs { get; init; }
 
+    /// <summary>
+    ///     The first part of the boot: up to the desktop (Diagnostics-Performance
+    ///     MainPathBootTime, version 1.2.0). Median of the same boots.
+    /// </summary>
+    public Measured<int> BootDesktopMs { get; init; }
+
+    /// <summary>The second part: the desktop loading startup programs (BootPostBootTime).</summary>
+    public Measured<int> BootAfterDesktopMs { get; init; }
+
     /// <summary>Component store state (DISM CheckHealth, read-only and fast).</summary>
     public Measured<Services.Repair.WindowsImageHealth> ImageHealth { get; init; }
 
@@ -123,6 +132,9 @@ public sealed record DiagnosticSnapshot
 
     /// <summary>Power plans and the Windows power mode (improvements 4A). Defaults to not measured.</summary>
     public PowerModeSnapshot Power { get; init; } = new();
+
+    /// <summary>Extended diagnosis (version 1.2.0). Defaults to not measured.</summary>
+    public HealthSnapshot Health { get; init; } = new();
 }
 
 public sealed record OsSnapshot
@@ -512,4 +524,53 @@ public sealed record PowerModeSnapshot
     public Measured<PowerMode> Mode { get; init; }
 
     public Measured<bool> OnAcPower { get; init; }
+}
+
+/// <summary>A Microsoft runtime many programs need (version 1.2.0).</summary>
+/// <param name="Id">"vcredist-x64", "vcredist-x86" or "netfx-4.8".</param>
+/// <param name="Version">The installed version, e.g. "14.42.34433"; null when missing.</param>
+public sealed record RuntimeStatus(string Id, bool Installed, string? Version);
+
+/// <summary>Program crashes (Application Error 1000) of one kind of faulting module.</summary>
+/// <param name="Group">"vcruntime", "gpu", "dotnet", "system" or "other".</param>
+public sealed record CrashGroup(string Group, int Count);
+
+/// <summary>A program that crashed. The name stays on the PC: never sent to the AI.</summary>
+public sealed record CrashedApp(string Name, int Count);
+
+/// <summary>An antivirus Windows Security Center knows (root\SecurityCenter2).</summary>
+public sealed record AntivirusEntry(string Name, bool Enabled, bool UpToDate, bool IsDefender);
+
+/// <summary>A program holding far too many handles or GDI objects (a leak). Name stays local.</summary>
+public sealed record LeakingProcess(string Name, int Handles, int GdiObjects);
+
+/// <summary>Extended diagnosis (version 1.2.0, ideas from the NexCore analysis). Read-only.</summary>
+public sealed record HealthSnapshot
+{
+    /// <summary>CPU in use at rest, % (only from a session measurement, like the idle RAM).</summary>
+    public Measured<double> IdleCpuPercent { get; init; }
+
+    /// <summary>Visual C++ 2015-2022 (x64, x86) and .NET Framework 4.8.</summary>
+    public Measured<IReadOnlyList<RuntimeStatus>> Runtimes { get; init; }
+
+    /// <summary>Program crashes (Application Error 1000) in the last 30 days.</summary>
+    public Measured<int> AppCrashes30d { get; init; }
+
+    /// <summary>Those crashes by kind of faulting module.</summary>
+    public IReadOnlyList<CrashGroup> CrashGroups { get; init; } = [];
+
+    /// <summary>The programs that crashed most (top 3). Local report only.</summary>
+    public IReadOnlyList<CrashedApp> CrashedApps { get; init; } = [];
+
+    /// <summary>The PC clock minus an internet time server (SNTP), seconds.</summary>
+    public Measured<double> ClockOffsetSeconds { get; init; }
+
+    /// <summary>Size of C:\Windows\LiveKernelReports (driver and watchdog dumps), bytes.</summary>
+    public Measured<long> LiveKernelReportsBytes { get; init; }
+
+    /// <summary>Antivirus products. Not applicable on Windows Server (no Security Center).</summary>
+    public Measured<IReadOnlyList<AntivirusEntry>> Antivirus { get; init; }
+
+    /// <summary>Programs with a handle or GDI leak.</summary>
+    public Measured<IReadOnlyList<LeakingProcess>> LeakingProcesses { get; init; }
 }

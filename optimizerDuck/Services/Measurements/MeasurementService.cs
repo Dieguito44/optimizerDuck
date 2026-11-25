@@ -61,7 +61,9 @@ public sealed class MeasurementService(
         var busy = new HashSet<string>(BackgroundWorkProbe.RunningNow());
         await WaitForIdleAsync(progress, ct).ConfigureAwait(false);
         progress?.Report(new(MeasurementStep.IdleRam, (int)IdleWindow.TotalSeconds));
+        var cpuStart = CpuTimes.Read();
         var (idleUsed, idlePercent) = await SampleIdleRamAsync(progress, ct).ConfigureAwait(false);
+        var idleCpu = CpuTimes.BusyPercent(cpuStart, CpuTimes.Read());
         busy.UnionWith(BackgroundWorkProbe.RunningNow());
 
         progress?.Report(new(MeasurementStep.Counts));
@@ -93,10 +95,13 @@ public sealed class MeasurementService(
             FastStartupEnabled = ReadFastStartup(),
             BootMedianMs = boot.MedianMs,
             BootSource = boot.Source,
+            BootDesktopMs = boot.DesktopMs,
+            BootAfterDesktopMs = boot.AfterDesktopMs,
             BootSamples = boot.Samples,
             BootCulprits = boot.Culprits,
             IdleRamUsedBytes = idleUsed,
             IdleRamPercent = idlePercent,
+            IdleCpuPercent = idleCpu,
             SystemFreeBytes = ReadSystemFreeBytes(),
             StartupAppsEnabled = startupApps,
             ProcessCount = processes,
@@ -170,6 +175,33 @@ public sealed class MeasurementService(
         catch (Exception ex) when (ex is InvalidOperationException or Win32Exception)
         {
             return TimeSpan.FromMilliseconds(Environment.TickCount64);
+        }
+    }
+
+    /// <summary>Whole-PC CPU time (GetSystemTimes), to measure the CPU at rest (version 1.2.0).</summary>
+    internal readonly record struct CpuTimes(long Idle, long Kernel, long User)
+    {
+        [global::System.Runtime.InteropServices.DllImport("kernel32.dll")]
+        [return: global::System.Runtime.InteropServices.MarshalAs(
+            global::System.Runtime.InteropServices.UnmanagedType.Bool
+        )]
+        private static extern bool GetSystemTimes(out long idle, out long kernel, out long user);
+
+        public static CpuTimes? Read() =>
+            GetSystemTimes(out var idle, out var kernel, out var user)
+                ? new CpuTimes(idle, kernel, user)
+                : null;
+
+        /// <summary>Busy share between two readings. Kernel time includes the idle time.</summary>
+        public static Measured<double> BusyPercent(CpuTimes? start, CpuTimes? end)
+        {
+            if (start is not { } a || end is not { } b)
+                return Measured<double>.Missing(NotMeasuredReason.QueryFailed);
+            var total = (b.Kernel - a.Kernel) + (b.User - a.User);
+            if (total <= 0)
+                return Measured<double>.Missing(NotMeasuredReason.QueryFailed);
+            var busy = total - (b.Idle - a.Idle);
+            return Measured<double>.Of(Math.Round(Math.Clamp(busy * 100.0 / total, 0, 100), 1));
         }
     }
 
