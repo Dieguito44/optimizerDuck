@@ -63,6 +63,12 @@ public static class ActionIds
     public const string DeviceDriver = "ACT-DEVICE-DRIVER";
     public const string DriverWindowsUpdate = "ACT-DRIVER-WU";
     public const string PowerMode = "ACT-POWER-MODE";
+
+    // Version 1.2.0, extended diagnosis: steps the technician takes by hand.
+    public const string Runtimes = "ACT-RUNTIMES";
+    public const string ClockSync = "ACT-CLOCK-SYNC";
+    public const string SsdTool = "ACT-SSD-TOOL";
+    public const string AntivirusReview = "ACT-AV-REVIEW";
 }
 
 /// <summary>Who carries out an action.</summary>
@@ -182,16 +188,19 @@ public static class ActionCatalog
         new(ActionIds.DeviceDriver, ActionKind.Manual, null, None, Rule),
         new(ActionIds.DriverWindowsUpdate, ActionKind.Manual, null, None, Rule),
         new(ActionIds.PowerMode, ActionKind.Manual, null, None, Rule),
+        new(ActionIds.Runtimes, ActionKind.Manual, null, None, Rule),
+        new(ActionIds.ClockSync, ActionKind.Manual, null, None, Rule),
+        new(ActionIds.SsdTool, ActionKind.Manual, null, None, Rule),
+        new(ActionIds.AntivirusReview, ActionKind.Manual, null, None, Rule),
     }.ToFrozenDictionary(a => a.Id, StringComparer.Ordinal);
 
     /// <summary>
     ///     Rule-driven actions whose rules arrive in later phases (3, 4 and 6B). The catalog tests
     ///     require this list to shrink as those rules land.
     /// </summary>
-    public static readonly FrozenSet<string> PendingRuleActions = new[]
-    {
-        ActionIds.HeavyApps,
-    }.ToFrozenSet(StringComparer.Ordinal);
+    public static readonly FrozenSet<string> PendingRuleActions = Array
+        .Empty<string>()
+        .ToFrozenSet(StringComparer.Ordinal);
 
     public static bool Contains(string actionId) => All.ContainsKey(actionId);
 }
@@ -247,4 +256,14 @@ public static class RuleIds
     public const string DeviceProblem = "R-DEVICE-PROBLEM";
     public const string DriversUpdate = "R-DRIVERS-WU";
     public const string PowerModeRule = "R-POWER-MODE";
+
+    // Version 1.2.0, extended diagnosis.
+    public const string CpuIdleHigh = "R-CPU-IDLE-HIGH";
+    public const string RuntimesMissing = "R-RUNTIMES";
+    public const string AppCrashes = "R-APP-CRASHES";
+    public const string ClockOff = "R-CLOCK-OFF";
+    public const string DumpsBig = "R-DUMPS-BIG";
+    public const string SsdTool = "R-SSD-TOOL";
+    public const string Antivirus = "R-ANTIVIRUS";
+    public const string Leak = "R-LEAK";
 }

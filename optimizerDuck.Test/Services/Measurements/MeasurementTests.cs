@@ -363,11 +363,9 @@ public class SpanishTextEncodingTests
     [Fact]
     public void SpanishTranslations_HaveNoBrokenAccents()
     {
-        var set = Translations.ResourceManager.GetResourceSet(
-            new CultureInfo("es-ES"),
-            true,
-            false
-        )!;
+        // "es", the culture of the file: "es-ES" without parents only worked when an earlier
+        // test had already loaded it.
+        var set = Translations.ResourceManager.GetResourceSet(new CultureInfo("es"), true, false)!;
         var broken = set.Cast<DictionaryEntry>()
             .Where(e =>
                 e.Value is string s && (s.Contains('Ã') || s.Contains("â€") || s.Contains("Â¿"))

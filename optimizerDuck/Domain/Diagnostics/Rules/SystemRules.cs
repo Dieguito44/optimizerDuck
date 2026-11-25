@@ -46,16 +46,22 @@ public sealed class BootSlowRule : IDiagnosticRule
         if (!snapshot.BootMedianMs.TryGet(out var ms))
             return RuleResult.NotMeasurable(RuleId, snapshot.BootMedianMs.Reason, "boot.median");
 
-        return ms > MaxMs
-            ? RuleResult.Found(
-                new Finding(
-                    RuleId,
-                    Severity.Medium,
-                    [new("boot.median_s", Math.Round(ms / 1000m, 1), Unit: "s")],
-                    [ActionIds.StartupReview]
-                )
-            )
-            : RuleResult.Pass(RuleId);
+        if (ms <= MaxMs)
+            return RuleResult.Pass(RuleId);
+
+        // Version 1.2.0: where the time goes. Up to the desktop is Windows, drivers and the
+        // disk; after it, the startup programs.
+        var evidence = new List<EvidenceFact>
+        {
+            new("boot.median_s", Math.Round(ms / 1000m, 1), Unit: "s"),
+        };
+        if (snapshot.BootDesktopMs.TryGet(out var main))
+            evidence.Add(new("boot.main_path_s", Math.Round(main / 1000m, 1), Unit: "s"));
+        if (snapshot.BootAfterDesktopMs.TryGet(out var post))
+            evidence.Add(new("boot.post_boot_s", Math.Round(post / 1000m, 1), Unit: "s"));
+        return RuleResult.Found(
+            new Finding(RuleId, Severity.Medium, evidence, [ActionIds.StartupReview])
+        );
     }
 }
 
@@ -429,5 +435,14 @@ public static class DiagnosticRules
         new DeviceProblemRule(),
         new DriversUpdateRule(),
         new PowerModeRule(),
+        // Version 1.2.0, extended diagnosis
+        new CpuIdleHighRule(),
+        new RuntimesRule(),
+        new AppCrashesRule(),
+        new ClockOffRule(),
+        new DumpsBigRule(),
+        new AntivirusRule(),
+        new LeakRule(),
+        new SsdToolRule(),
     ];
 }

@@ -43,6 +43,12 @@ public sealed record Measurement
 
     public Measured<BootTimeSource> BootSource { get; init; }
 
+    /// <summary>Up to the desktop, median ms (version 1.2.0). Only when Windows logs event 100.</summary>
+    public Measured<int> BootDesktopMs { get; init; }
+
+    /// <summary>The desktop loading startup programs, median ms (version 1.2.0).</summary>
+    public Measured<int> BootAfterDesktopMs { get; init; }
+
     public int BootSamples { get; init; }
 
     public IReadOnlyList<BootCulprit> BootCulprits { get; init; } = [];
@@ -51,6 +57,9 @@ public sealed record Measurement
     public Measured<long> IdleRamUsedBytes { get; init; }
 
     public Measured<double> IdleRamPercent { get; init; }
+
+    /// <summary>CPU in use over the same 60 s at rest, % (version 1.2.0).</summary>
+    public Measured<double> IdleCpuPercent { get; init; }
 
     public Measured<long> SystemFreeBytes { get; init; }
 

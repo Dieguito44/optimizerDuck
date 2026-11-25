@@ -13,7 +13,16 @@ public sealed record BootTimeResult(
     Measured<BootTimeSource> Source,
     int Samples,
     IReadOnlyList<BootCulprit> Culprits
-);
+)
+{
+    /// <summary>Up to the desktop (MainPathBootTime), version 1.2.0. Only from event 100.</summary>
+    public Measured<int> DesktopMs { get; init; } =
+        Measured<int>.Missing(NotMeasuredReason.NotReported);
+
+    /// <summary>The desktop loading startup programs (BootPostBootTime). Only from event 100.</summary>
+    public Measured<int> AfterDesktopMs { get; init; } =
+        Measured<int>.Missing(NotMeasuredReason.NotReported);
+}
 
 /// <summary>
 ///     Reads boot times from the event log (plan phase 3). First choice: Diagnostics-Performance
@@ -37,11 +46,15 @@ public static class BootTimeProbe
         var culprits = ReadCulprits();
         if (event100.Count > 0)
             return new BootTimeResult(
-                Measured<int>.Of(Median(event100)),
+                Measured<int>.Of(Median([.. event100.Select(b => b.Total)])),
                 Measured<BootTimeSource>.Of(BootTimeSource.DiagnosticsPerformance),
                 event100.Count,
                 culprits
-            );
+            )
+            {
+                DesktopMs = MedianOf(event100.Select(b => b.Desktop)),
+                AfterDesktopMs = MedianOf(event100.Select(b => b.AfterDesktop)),
+            };
 
         var planB = ReadKernelToLogon(bootsAfterUtc, out var reason);
         if (planB.Count == 0 && bootsAfterUtc is not null)
@@ -103,9 +116,23 @@ public static class BootTimeProbe
             ? $" and TimeCreated[@SystemTime>='{t.ToUniversalTime():yyyy-MM-ddTHH:mm:ss.fffZ}']"
             : "";
 
-    private static List<int> ReadEvent100(DateTime? bootsAfterUtc)
+    /// <summary>Median of the values that were logged (0 or missing means not logged).</summary>
+    private static Measured<int> MedianOf(IEnumerable<int?> values)
     {
-        var values = new List<int>();
+        var known = values.Where(v => v is > 0).Select(v => v!.Value).ToList();
+        return known.Count > 0
+            ? Measured<int>.Of(Median(known))
+            : Measured<int>.Missing(NotMeasuredReason.NotReported);
+    }
+
+    private static int? Positive(string? text) =>
+        int.TryParse(text, out var ms) && ms > 0 ? ms : null;
+
+    private static List<(int Total, int? Desktop, int? AfterDesktop)> ReadEvent100(
+        DateTime? bootsAfterUtc
+    )
+    {
+        var values = new List<(int, int?, int?)>();
         foreach (
             var data in ReadEvents(
                 PerformanceLog,
@@ -114,8 +141,14 @@ public static class BootTimeProbe
                 out _
             )
         )
-            if (int.TryParse(data.GetValueOrDefault("BootTime"), out var ms) && ms > 0)
-                values.Add(ms);
+            if (Positive(data.GetValueOrDefault("BootTime")) is { } ms)
+                values.Add(
+                    (
+                        ms,
+                        Positive(data.GetValueOrDefault("MainPathBootTime")),
+                        Positive(data.GetValueOrDefault("BootPostBootTime"))
+                    )
+                );
         return values;
     }
 

@@ -94,15 +94,7 @@ public sealed class CliHost(
             ct
         );
         progress.Report(Loc.Instance["Session.Step.Diagnosis"]);
-        var report = await Task.Run(
-            () =>
-                diagnosticService.RunAsync(
-                    measurement.IdleRamPercent,
-                    measurement.RandomReadIops,
-                    ct
-                ),
-            ct
-        );
+        var report = await Task.Run(() => diagnosticService.RunAsync(measurement, ct), ct);
         return (measurement, DiagnosisSummary.From(report));
     }
 

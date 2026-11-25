@@ -7134,4 +7134,139 @@ Revisa esos ajustes en Optimizar: reviértelos, o aplícalos de nuevo para termi
   <data name="Session.End.TechnicianPc" xml:space="preserve">
     <value>Este es tu PC de técnico: aquí no se quita Zentra.</value>
   </data>
+  <data name="Diagnostic.Rule.R-CPU-IDLE-HIGH.Title" xml:space="preserve">
+    <value>La CPU trabaja sin nada abierto</value>
+  </data>
+  <data name="Diagnostic.Rule.R-CPU-IDLE-HIGH.Description" xml:space="preserve">
+    <value>Sin nada abierto, el procesador pasa del 10 % de uso. Algo trabaja en segundo plano: un programa pesado, una app de inicio o un programa malicioso. El informe de programas pesados muestra cuál.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RUNTIMES.Title" xml:space="preserve">
+    <value>Falta Visual C++ o .NET, o está viejo</value>
+  </data>
+  <data name="Diagnostic.Rule.R-RUNTIMES.Description" xml:space="preserve">
+    <value>Muchos programas y juegos necesitan Visual C++ 2015-2022 y .NET Framework de Microsoft. Si faltan, o Visual C++ es anterior a la 14.40, los programas no abren y dan errores como msvcp140.dll. Microsoft los da gratis en su página.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-APP-CRASHES.Title" xml:space="preserve">
+    <value>Los programas se cierran solos</value>
+  </data>
+  <data name="Diagnostic.Rule.R-APP-CRASHES.Description" xml:space="preserve">
+    <value>Windows registró programas que se cerraron por un error 5 veces o más en 30 días. La parte que falló dice dónde buscar: Visual C++, el driver de video o .NET.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-CLOCK-OFF.Title" xml:space="preserve">
+    <value>La hora está desajustada</value>
+  </data>
+  <data name="Diagnostic.Rule.R-CLOCK-OFF.Description" xml:space="preserve">
+    <value>La hora del PC tiene más de 2 minutos de diferencia con la hora de internet. Con la hora mal fallan páginas web, Windows Update y algunos juegos.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DUMPS-BIG.Title" xml:space="preserve">
+    <value>Los volcados de drivers ocupan mucho</value>
+  </data>
+  <data name="Diagnostic.Rule.R-DUMPS-BIG.Description" xml:space="preserve">
+    <value>Windows guarda una copia de la memoria cada vez que un driver deja de responder (carpeta LiveKernelReports), y ya ocupan más de 1 GB. La limpieza de disco de Zentra las borra.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-SSD-TOOL.Title" xml:space="preserve">
+    <value>El SSD tiene herramienta del fabricante</value>
+  </data>
+  <data name="Diagnostic.Rule.R-SSD-TOOL.Description" xml:space="preserve">
+    <value>La herramienta del fabricante actualiza el firmware del SSD y muestra su salud. Es gratis; se instala solo si el cliente quiere.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-ANTIVIRUS.Title" xml:space="preserve">
+    <value>Hay que revisar el antivirus</value>
+  </data>
+  <data name="Diagnostic.Rule.R-ANTIVIRUS.Description" xml:space="preserve">
+    <value>No hay antivirus encendido, hay uno desactualizado, o hay dos a la vez y frenan el PC. Zentra nunca apaga un antivirus: hay que revisarlo a mano.</value>
+  </data>
+  <data name="Diagnostic.Rule.R-LEAK.Title" xml:space="preserve">
+    <value>Un programa acapara recursos</value>
+  </data>
+  <data name="Diagnostic.Rule.R-LEAK.Description" xml:space="preserve">
+    <value>Un programa tiene demasiados identificadores u objetos gráficos abiertos. Tiene una fuga, y el PC se pone más lento mientras más tiempo lleva encendido. Hay que reiniciar o actualizar ese programa.</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-RUNTIMES" xml:space="preserve">
+    <value>Instalar Visual C++ y .NET de Microsoft</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-CLOCK-SYNC" xml:space="preserve">
+    <value>Sincronizar la hora (Configuración, Hora e idioma, Sincronizar ahora)</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-SSD-TOOL" xml:space="preserve">
+    <value>Revisar el SSD con la herramienta del fabricante</value>
+  </data>
+  <data name="Diagnostic.Action.ACT-AV-REVIEW" xml:space="preserve">
+    <value>Revisar el antivirus</value>
+  </data>
+  <data name="Diagnostic.Evidence.cpu.idle_percent" xml:space="preserve">
+    <value>CPU en uso en reposo</value>
+  </data>
+  <data name="Diagnostic.Evidence.runtime.state" xml:space="preserve">
+    <value>Componente</value>
+  </data>
+  <data name="Diagnostic.Evidence.crashes.total" xml:space="preserve">
+    <value>Cierres por error (30 días)</value>
+  </data>
+  <data name="Diagnostic.Evidence.crashes.vcruntime" xml:space="preserve">
+    <value>Fallaron en Visual C++</value>
+  </data>
+  <data name="Diagnostic.Evidence.crashes.gpu" xml:space="preserve">
+    <value>Fallaron en el driver de video</value>
+  </data>
+  <data name="Diagnostic.Evidence.crashes.dotnet" xml:space="preserve">
+    <value>Fallaron en .NET</value>
+  </data>
+  <data name="Diagnostic.Evidence.crashes.system" xml:space="preserve">
+    <value>Fallaron en Windows</value>
+  </data>
+  <data name="Diagnostic.Evidence.crashes.app" xml:space="preserve">
+    <value>Programa</value>
+  </data>
+  <data name="Diagnostic.Evidence.clock.offset_s" xml:space="preserve">
+    <value>Diferencia de la hora</value>
+  </data>
+  <data name="Diagnostic.Evidence.dumps.live_kernel_gb" xml:space="preserve">
+    <value>Volcados de drivers (LiveKernelReports)</value>
+  </data>
+  <data name="Diagnostic.Evidence.ssd.maker_tool" xml:space="preserve">
+    <value>Herramienta del fabricante</value>
+  </data>
+  <data name="Diagnostic.Evidence.av.state" xml:space="preserve">
+    <value>Antivirus</value>
+  </data>
+  <data name="Diagnostic.Evidence.av.multiple" xml:space="preserve">
+    <value>Antivirus activos a la vez</value>
+  </data>
+  <data name="Diagnostic.Evidence.leak.count" xml:space="preserve">
+    <value>Programas con fuga</value>
+  </data>
+  <data name="Diagnostic.Evidence.leak.handles" xml:space="preserve">
+    <value>Identificadores abiertos</value>
+  </data>
+  <data name="Diagnostic.Evidence.leak.gdi" xml:space="preserve">
+    <value>Objetos gráficos (GDI)</value>
+  </data>
+  <data name="Diagnostic.Evidence.boot.main_path_s" xml:space="preserve">
+    <value>Hasta el escritorio</value>
+  </data>
+  <data name="Diagnostic.Evidence.boot.post_boot_s" xml:space="preserve">
+    <value>Cargando programas de inicio</value>
+  </data>
+  <data name="Diagnostic.Value.not_installed" xml:space="preserve">
+    <value>no está instalado</value>
+  </data>
+  <data name="Diagnostic.Value.outdated" xml:space="preserve">
+    <value>desactualizado</value>
+  </data>
+  <data name="Report.Metric.BootMainPath" xml:space="preserve">
+    <value>Arranque hasta el escritorio</value>
+  </data>
+  <data name="Report.Metric.BootPostBoot" xml:space="preserve">
+    <value>Carga de programas de inicio</value>
+  </data>
+  <data name="Report.Metric.IdleCpu" xml:space="preserve">
+    <value>CPU en uso en reposo</value>
+  </data>
+  <data name="DiskCleanup.Item.LiveKernelReports" xml:space="preserve">
+    <value>Volcados de drivers</value>
+  </data>
+  <data name="DiskCleanup.Item.LiveKernelReports.Description" xml:space="preserve">
+    <value>Copias de la memoria que Windows guarda cuando un driver deja de responder. Solo sirven para enviar el fallo al fabricante.</value>
+  </data>
 </root>

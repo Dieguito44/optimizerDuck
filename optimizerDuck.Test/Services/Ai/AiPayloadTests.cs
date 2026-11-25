@@ -75,7 +75,7 @@ public class AiPayloadTests
         var payload = AiFixtures.Payload();
 
         Assert.NotEmpty(payload.Findings);
-        Assert.Equal(8, payload.Metrics.Count);
+        Assert.Equal(11, payload.Metrics.Count);
         Assert.NotNull(payload.Hardware);
         Assert.False(string.IsNullOrEmpty(payload.Hardware!.Cpu));
         Assert.Contains(payload.Metrics, m => m.Improved == true);

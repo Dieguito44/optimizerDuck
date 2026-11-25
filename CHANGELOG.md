@@ -4,6 +4,29 @@ Zentra es un fork de [optimizerDuck](https://github.com/itsfatduck/optimizerDuck
 
 ## [Sin publicar]
 
+### Diagnóstico ampliado (24/11/2026, rama diagnostico-ampliado)
+
+Primer bloque de lo que faltaba del plan por fases. Son ideas tomadas del análisis de NexCore, con código y textos propios. Todo es de solo lectura; las acciones las hace el técnico a mano.
+
+- **8 reglas nuevas:**
+  - **CPU en reposo (R-CPU-IDLE-HIGH):** se mide en la sesión, en los mismos 60 s que la RAM. Más del 10 % sin nada abierto es un hallazgo.
+  - **Visual C++ y .NET (R-RUNTIMES):** avisa si falta Visual C++ 2015-2022 (x64 o x86) o si es anterior a la 14.40, que hace fallar programas nuevos con msvcp140.dll. También revisa .NET Framework 4.8.
+  - **Programas que se cierran solos (R-APP-CRASHES):** cuenta el evento 1000 de 30 días, desde 5 cierres. Los agrupa por la parte que falló: Visual C++, driver de video, .NET o Windows. Los nombres de los programas solo salen en el informe del técnico, nunca a la IA.
+  - **Hora desajustada (R-CLOCK-OFF):** compara la hora con time.windows.com. Más de 2 minutos es un hallazgo.
+  - **Volcados de drivers (R-DUMPS-BIG):** avisa si LiveKernelReports pasa de 1 GB. Sin permisos de administrador sale "no medible", nunca un 0 inventado.
+  - **Herramienta del fabricante del SSD (R-SSD-TOOL, informativa):** Samsung Magician, WD Dashboard, Crucial Storage Executive, Kingston SSD Manager y otras.
+  - **Antivirus (R-ANTIVIRUS):** avisa si no hay antivirus encendido, si hay uno desactualizado o si hay dos a la vez. Zentra nunca apaga un antivirus.
+  - **Fugas (R-LEAK):** avisa si un programa tiene 100.000 identificadores u 8.000 objetos gráficos abiertos.
+- **Arranque en dos partes:** "hasta el escritorio" y "cargando programas de inicio", en el arranque lento y en el PDF. Solo cuando Windows registra el evento 100.
+- **PDF:** tres filas nuevas de antes y después: arranque hasta el escritorio, carga de programas y CPU en reposo. Van al final, así que las ocho de antes quedan en su lugar.
+- **Limpieza:** nueva categoría "Volcados de drivers" (LiveKernelReports). Los minidumps se quedan porque R-UNSTABLE los cuenta.
+- **Probado en el PC de Diego, sin administrador:**
+  - Visual C++ 14.52 al día, 17 cierres en 30 días (2 en el driver de video) y 8 s de diferencia en la hora.
+  - Solo Defender encendido y sin fugas.
+  - Cada lectura tarda menos de 200 ms.
+- **Test arreglado:** el de los acentos en español leía la cultura es-ES sin padres, y solo pasaba si otro test la había cargado antes.
+- **Tests:** 1959, 0 fallos.
+
 ### Versión 1.1.2 (20/11/2026, rama version-1.1.2)
 
 Las ocho mejoras que se acordaron después de la prueba en el PC virtual.

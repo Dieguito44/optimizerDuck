@@ -17,7 +17,7 @@ public class ActionCatalogTests
     [Fact]
     public void Catalog_HoldsThe41ActionsOfThePlan()
     {
-        Assert.Equal(51, ActionCatalog.All.Count); // 41 of the plan + 3 of 2B + 3 of 3C + 3 of 4A + MPO (1.1.2)
+        Assert.Equal(55, ActionCatalog.All.Count); // 41 of the plan + 3 of 2B + 3 of 3C + 3 of 4A + MPO (1.1.2) + 4 of 1.2.0
         Assert.All(ActionCatalog.All.Keys, id => Assert.Matches(@"^ACT-[A-Z0-9-]+$", id));
     }
 
@@ -78,7 +78,7 @@ public class ActionCatalogTests
             )
             .ToHashSet();
         Assert.Equal(ruleTypes, DiagnosticRules.All.Select(r => r.GetType()).ToHashSet());
-        Assert.Equal(40, ids.Count); // 19 of phases 2-4, 10 of phase 6B, 4 of 2B, 3 of 3C, 3 of 4A, GPU resets (1.1.2)
+        Assert.Equal(48, ids.Count); // 19 of phases 2-4, 10 of phase 6B, 4 of 2B, 3 of 3C, 3 of 4A, GPU resets (1.1.2), 8 of 1.2.0
     }
 }
 
@@ -163,7 +163,8 @@ public class DiegoPcGoldenTests
         var report = DiagnosticReport.Create(DiegoPc(), Refs, DiagnosticRules.All);
 
         Assert.Equal(
-            [RuleIds.ApuUma, RuleIds.SsdHealth, RuleIds.Unstable, RuleIds.VbsOn],
+            // R-SSD-TOOL is information: it names Crucial's and Kingston's tools, no points.
+            [RuleIds.ApuUma, RuleIds.SsdHealth, RuleIds.SsdTool, RuleIds.Unstable, RuleIds.VbsOn],
             report.Findings.Select(f => f.RuleId).Order()
         );
         // Plan F2-07: one lifetime disk error is High (not Critical) and shutdowns without blue
@@ -171,7 +172,13 @@ public class DiegoPcGoldenTests
         Assert.Equal(70, report.Score.Score);
         Assert.Equal(0, report.Score.RulesNotMeasurable);
         Assert.Equal(
-            [("R-APU-UMA", 12), ("R-SSD-HEALTH", 12), ("R-UNSTABLE", 6), ("R-VBS-ON", 0)],
+            [
+                ("R-APU-UMA", 12),
+                ("R-SSD-HEALTH", 12),
+                ("R-SSD-TOOL", 0),
+                ("R-UNSTABLE", 6),
+                ("R-VBS-ON", 0),
+            ],
             report.Score.Deductions.Select(d => (d.RuleId, d.Points)).OrderBy(d => d.RuleId)
         );
     }
